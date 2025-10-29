@@ -53,7 +53,9 @@ in
   networking.hostName = "NixyPenguin";
 
   # Configure network connections interactively with nmcli or nmtui.
-  services.iwd.enable = true;
+  networking.wireless.iwd = {
+    enable = true;
+  };
   networking.networkmanager.enable = true;
   networking.networkmanager.wifi.backend = "iwd";
   hardware.enableRedistributableFirmware = true;
