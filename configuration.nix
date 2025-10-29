@@ -110,7 +110,6 @@
   environment.systemPackages = with pkgs; [
     git
     openssl
-    (callPackage ./scripts { })
   ];
 
   # programs.firefox.enable = true;
