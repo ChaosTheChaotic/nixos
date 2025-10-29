@@ -9,7 +9,24 @@
   ...
 }:
 
-{
+let
+  scripts = pkgs.stdenv.mkDerivation {
+    name = "pscripts";
+    src = ./scripts;
+    installPhase = ''
+      mkdir -p $out/bin
+      cp -r $src/* $out/bin/
+      chmod -R +x $out/bin/
+    '';
+  };
+in
+  {
+  environment.systemPackages = with pkgs; [
+    scripts
+    git
+    openssl
+  ];
+
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -105,12 +122,6 @@
   environment.variables = {
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
   };
-
-  # Root packages
-  environment.systemPackages = with pkgs; [
-    git
-    openssl
-  ];
 
   # programs.firefox.enable = true;
 
