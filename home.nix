@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   home.username = "chaos";
@@ -93,6 +93,19 @@
 
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
+  };
+
+  programs.kitty = lib.mkForce {
+    enable = true;
+    enableGitIntegration = true;
+    settings = {
+      confirm_os_window_close = 0;
+      dynamic_background_opacity = true;
+      enable_audio_bell = false;
+      background_opacity = "0.3";
+      background_blur = 5;
+      cursor_trail = 1;
+    };
   };
 
   home.stateVersion = "25.11";
