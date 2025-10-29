@@ -25,6 +25,8 @@ in
     scripts
     git
     openssl
+    man-pages
+    man-pages-posix
   ];
 
   imports = [
