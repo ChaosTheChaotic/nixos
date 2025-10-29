@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+
+# ==============================================================================
+# Configuration
+# ==============================================================================
+MAX_JOBS=8
+LOCK_FILE=$(mktemp -t pull_lock.XXXXXX)
+FAILED_REPOS_FILE=$(mktemp -t failed_repos.XXXXXX)
+
+# Setup lock file and cleanup
+exec 200>"$LOCK_FILE"
+trap 'rm -f "$LOCK_FILE" "$FAILED_REPOS_FILE"' EXIT
+
+# ==============================================================================
+# ANSI Formatting
+# ==============================================================================
+BOLD="\033[1m"
+RESET="\033[0m"
+BLUE="${BOLD}\033[34m"
+GREEN="${BOLD}\033[32m"
+RED="${BOLD}\033[31m"
+CYAN="${BOLD}\033[36m"
+YELLOW="${BOLD}\033[33m"
+SUCCESS_SYMBOL="${GREEN}✓${RESET}"
+FAIL_SYMBOL="${RED}✗${RESET}"
+
+# ==============================================================================
+# Functions
+# ==============================================================================
+print_separator() {
+    local title="$1"
+    local color="${2:-$CYAN}"
+    local width=$(tput cols)
+    local title_len=${#title}
+    local dash_len=$(( (width - title_len - 6) / 2 ))
+    
+    # Generate ASCII-safe dashes
+    local dashes=$(printf "%0.s-" $(seq 1 $dash_len))
+    
+    # Build separator line
+    printf "\n${CYAN}%s ${color}[ %s ]${CYAN} %s${RESET}\n" \
+        "$dashes" "$title" "$dashes"
+}
+
+print_header() {
+    local dir="$1"
+    local status="$2"
+    local symbol
+    
+    if [ "$status" -eq 0 ]; then
+        symbol="$SUCCESS_SYMBOL"
+    else
+        symbol="$FAIL_SYMBOL"
+        echo "${dir}" >> "$FAILED_REPOS_FILE"
+    fi
+    
+    echo -e "${BLUE}Pulling ${YELLOW}${dir} ${symbol}${RESET}"
+}
+
+# ==============================================================================
+# Main Execution
+# ==============================================================================
+print_separator "Updating Repositories" "$BLUE"
+
+current_jobs=0
+updated_count=0
+failed_count=0
+
+# Process all git repositories
+for dir in */; do
+    [[ -d "${dir}/.git" ]] || continue
+
+    (
+        cd -- "$dir" || exit 1
+        
+        # Capture git pull output and status
+        pull_output=$(git pull 2>&1)
+        pull_status=$?
+        
+        # Synchronized output
+        flock -x 200
+        print_header "${dir%/}" "$pull_status"
+        echo "$pull_output"
+        echo ""  # Spacer line
+        flock -u 200
+        
+        exit "$pull_status"
+    ) &
+    
+    # Job control
+    ((current_jobs++))
+    if (( current_jobs >= MAX_JOBS )); then
+        wait -n
+        ((current_jobs--))
+    fi
+done
+
+# Wait for remaining jobs
+wait
+
+# ==============================================================================
+# Final Status
+# ==============================================================================
+print_separator "Summary" "$BLUE"
+
+# Show repositories with errors
+if [[ -s "$FAILED_REPOS_FILE" ]]; then
+    failed_count=$(wc -l < "$FAILED_REPOS_FILE")
+    updated_count=$(( $(find . -maxdepth 1 -type d | wc -l) - failed_count - 1 ))
+
+    echo -e "  ${GREEN}Successfully updated: ${updated_count}${RESET}"
+    echo -e "  ${RED}Failed updates: ${failed_count}${RESET}\n"
+    
+    echo -e "${RED}Repositories with errors:${RESET}"
+    while read -r repo; do
+        echo -e "  ${FAIL_SYMBOL} ${YELLOW}${repo}${RESET}"
+    done < "$FAILED_REPOS_FILE"
+else
+  echo -e "\n${GREEN}All $(( $(find . -maxdepth 1 -type d | wc -l) - 1)) repositories updated successfully!${RESET}"
+fi
+
+print_separator "Operation Complete" "$GREEN"

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+POWER=$(cat /sys/class/power_supply/macsmc-battery/capacity)
+STATE=$(cat /sys/class/power_supply/macsmc-battery/status)
+
+echo "Capacity: $POWER"
+echo "Status: $STATE"
