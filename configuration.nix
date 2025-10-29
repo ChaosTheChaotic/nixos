@@ -53,7 +53,10 @@ in
   networking.hostName = "NixyPenguin";
 
   # Configure network connections interactively with nmcli or nmtui.
+  services.iwd.enable = true;
   networking.networkmanager.enable = true;
+  networking.networkmanager.wifi.backend = "iwd";
+  hardware.enableRedistributableFirmware = true;
 
   # Set your time zone.
   # time.timeZone = "Europe/Amsterdam";
