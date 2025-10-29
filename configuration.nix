@@ -23,7 +23,7 @@
   #hardware.asahi.peripheralFirmwareDirectory = ./firmware;
   hardware.asahi = {
     peripheralFirmwareDirectory = ./firmware;
-    expeimentalGPUInstallMode = "replace";
+    experimentalGPUInstallMode = "replace";
     setupAsahiSound = true;
   };
 
