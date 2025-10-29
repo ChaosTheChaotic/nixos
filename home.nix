@@ -62,7 +62,7 @@
       cp = "cp -rv";
       mv = "mv -v";
       lg = "lazygit";
-      rb = "sudo nixos-rebuild --flake /etc/nixos";
+      rb = "sudo nixos-rebuild switch --flake /etc/nixos";
     };
     sessionVariables = {
       EDITOR = "nvim";
