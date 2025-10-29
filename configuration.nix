@@ -20,7 +20,12 @@
     "flakes"
   ];
 
-  hardware.asahi.peripheralFirmwareDirectory = ./firmware;
+  #hardware.asahi.peripheralFirmwareDirectory = ./firmware;
+  hardware.asahi = {
+    peripheralFirmwareDirectory = ./firmware;
+    expeimentalGPUInstallMode = "replace";
+    setupAsahiSound = true;
+  };
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
