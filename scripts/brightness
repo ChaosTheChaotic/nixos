@@ -20,7 +20,7 @@ change_brightness() {
   local cur new
 
   cur=$(get_brightness)
-  new=$((cur+p))
+  new=$((cur + p))
 
   ((new < 5)) && new=5
   ((new > 100)) && new=100
