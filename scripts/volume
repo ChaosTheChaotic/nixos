@@ -34,6 +34,7 @@ toggle_mic() {
     pamixer --default-source -m
   elif [ "$(pamixer --default-source --get-mute)" == "true" ]; then
     pamixer -u --default-source
+  fi
 }
 
 get_mic_vol() {
