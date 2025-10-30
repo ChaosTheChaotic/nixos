@@ -27,6 +27,7 @@ in
     openssl
     man-pages
     man-pages-posix
+    brightnessctl
   ];
 
   imports = [

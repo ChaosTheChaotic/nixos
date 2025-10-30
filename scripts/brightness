@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+step=5
+
+get_brightness() {
+  brightnessctl -m | cut -d, -f4 | tr -d '%'
+}
+
+change_brightness() {
+  local p=$1
+  local cur new
+
+  cur = $(get_brightness)
+  new=$((cur+p))
+
+  ((new < 5)) && new=5
+  ((new > 10)) && new=100
+
+  brightnessctl set "${new}%"
+}
+
+case $1 in
+  "--get")
+    get_brightness
+    ;;
+  "--inc")
+    change_brightness "$step"
+    ;;
+  "--dec")
+    change_brightness "-$step"
+    ;;
+  *)
+    get_brightness
+    ;;
+esac
