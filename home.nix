@@ -106,6 +106,11 @@
       background_opacity = "0.3";
       background_blur = 5;
       cursor_trail = 1;
+      font_family = "FantasqueSansM Nerd Font Mono";
+      bold_font = "auto";
+      italic_font = "auto";
+      bold_italic_font = "auto";
+      window_padding_width = 4;
     };
   };
 
