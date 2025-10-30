@@ -163,7 +163,7 @@
     enable = true;
   };
   home.file.".config/waybar" = {
-    source = config.lib.file.outOfStoreSymlink "${builtins.toString ./.}/config/waybar";
+    source = lib.file.outOfStoreSymlink "${builtins.toString ./.}/config/waybar";
     recursive = true;
   };
 
