@@ -61,6 +61,7 @@ in
   # Configure network connections interactively with nmcli or nmtui.
   networking.wireless.iwd = {
     enable = true;
+    settings.General.EnableNetworkConfiguration = true;
   };
   networking.networkmanager.enable = true;
   networking.networkmanager.wifi.backend = "iwd";
