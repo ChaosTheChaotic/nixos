@@ -48,6 +48,12 @@ in
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = false;
+  boot.kernelParams = [
+    "zswap.enabled=1"
+    "zswap.compressor=zstd"
+    "zswap.zpool=zsmalloc"
+    "zswap.max_pool_percent=50"
+  ];
 
   # networking.hostName = "nixos"; # Define your hostname.
   networking.hostName = "NixyPenguin";
