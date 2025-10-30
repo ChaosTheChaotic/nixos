@@ -165,7 +165,6 @@
   xdg.configFile."waybar" = {
     source = ./config/waybar;
     recursive = true;
-    submodules = true;
   };
 
   home.stateVersion = "25.11";
