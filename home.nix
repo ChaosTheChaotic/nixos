@@ -166,8 +166,15 @@
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
 
-    programs.firefox = {
+    programs.floorp = {
       enable = true;
+      profiles.default = {
+	extensions = {
+	  packages = with pkgs.nur.repos.rycee.firefox-addons; [
+	    ublock-origin
+	  ];
+	};
+      };
     };
   };
 }
