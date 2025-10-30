@@ -42,6 +42,8 @@
     nixfmt
     nixd
     fantasque-sans-mono
+    cava
+    btop
   ];
 
   programs.git = {
