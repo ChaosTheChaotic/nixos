@@ -162,10 +162,16 @@
   programs.waybar = {
     enable = true;
   };
-  home.file.".config/waybar" = {
-    source = lib.file.outOfStoreSymlink "${builtins.toString ./.}/config/waybar";
-    recursive = true;
+  options = {
+    dotfiles = lib.mkOption {
+      type = lib.types.path;
+      apply = toString;
+      default = "${builtins.toString ./.}/config";
+      example = "${builtins.toString ./.}/config";
+      description = "Location of dotfiles";
+    };
   };
+  xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/waybar";
 
   home.stateVersion = "25.11";
 }
