@@ -20,7 +20,7 @@ let
     '';
   };
 in
-  {
+{
   environment.systemPackages = with pkgs; [
     scripts
     git
