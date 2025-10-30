@@ -41,6 +41,7 @@
     openssl
     nixfmt
     nixd
+    fantasque-sans-mono
   ];
 
   programs.git = {
