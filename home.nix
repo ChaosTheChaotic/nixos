@@ -53,6 +53,7 @@
       playerctl
       hyprpaper
       sd
+      fd
     ];
     home.stateVersion = "25.11";
 
