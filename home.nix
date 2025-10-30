@@ -153,8 +153,8 @@
       color6 = "#ea9a97";
       color14 = "#ea9a97";
       # White
-      color7 = "e0def4";
-      color15 = "e0def4";
+      color7 = "#e0def4";
+      color15 = "#e0def4";
     };
   };
 
