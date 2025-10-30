@@ -166,6 +166,6 @@
       };
     };
     xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/waybar";
-    xdg.configFile."hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
+    home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
   };
 }
