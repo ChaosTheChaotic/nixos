@@ -8,7 +8,7 @@
     "$HOME/.local/bin"
   ];
 
-  fonts.fontconfig.enable = true;
+  config = { fonts.fontconfig.enable = true; };
 
   programs.home-manager.enable = true;
   programs.atuin.enable = true;
