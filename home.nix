@@ -55,7 +55,6 @@
       sd
       fd
       shfmt
-      rustfmt
       stylua
     ];
     home.stateVersion = "25.11";
