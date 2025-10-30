@@ -56,7 +56,7 @@ in
     "zswap.max_pool_percent=50"
   ];
 
-  systemd.extraConfig = "DefaultTimeoutStopSec=10s";
+  systemd.settings.Manager = "DefaultTimeoutStopSec=10s";
 
   # networking.hostName = "nixos"; # Define your hostname.
   networking.hostName = "NixyPenguin";
