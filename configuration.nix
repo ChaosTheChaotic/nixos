@@ -6,6 +6,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -28,6 +29,10 @@ in
     man-pages
     man-pages-posix
     brightnessctl
+  ];
+
+  nixpkgs.overlays = [
+    inputs.nur.overlay
   ];
 
   imports = [
