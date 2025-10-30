@@ -1,3 +1,82 @@
 #!/usr/bin/env bash
 
+get_vol() {
+  vol=$(pamixer --get-volume)
+  echo "$vol"
+}
 
+inc_vol() {
+  if [ "$(pamixer --get-mute)" == "true" ]; then
+    toggle_mute
+  else 
+    pamixer -i 5 --allow-boost --set-limit 150
+  fi
+}
+
+dec_vol() {
+  if [ "$(pamixer --get-mute)" == "true" ]; then
+    toggle_mute
+  else
+    pamixer -d 5
+  fi
+}
+
+toggle_mute() {
+  if [ "$(pamixer --get-mute)" == "false" ]; then
+    pamixer -m
+  elif [ "$(pamixer --get-mute)" == "true" ]; then
+    pamixer -u
+  fi
+}
+
+toggle_mic() {
+  if [ "$(pamixer --default-source --get-mute)" == "false" ]; then
+    pamixer --default-source -m
+  elif [ "$(pamixer --default-source --get-mute)" == "true" ]; then
+    pamixer -u --default-source u
+}
+
+get_mic_vol() {
+  vol=$(pamixer --default-source --get-volume)
+  echo "$vol"
+}
+
+inc_mic_vol() {
+  if [ "$(pamixer --default-source --get-mute)" == "true" ]; then
+    toggle_mic
+  else
+    pamixer --default-source -i 5
+  fi
+}
+
+dec_mic_vol() {
+  if [ "$(pamixer --default-source --get-mute)" == "true" ]; then
+    toggle_mic
+  else
+    pamixer --default-source -i d
+  fi
+}
+
+case $1 in
+  "--get")
+    get_vol
+    ;;
+  "--inc")
+    inc_vol
+    ;;
+  "--dec")
+    dec_vol
+    ;;
+  "--get-mic")
+    get_mic_vol
+    ;;
+  "--inc-mic")
+    inc_mic_vol
+    ;;
+  "--dec-mic")
+    dec_mic_vol
+    ;;
+  *)
+    get_vol
+    ;;
+esac
