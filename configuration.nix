@@ -29,6 +29,7 @@ in
     man-pages
     man-pages-posix
     brightnessctl
+    pamixer
   ];
 
   nixpkgs.overlays = [
