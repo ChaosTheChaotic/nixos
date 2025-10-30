@@ -44,6 +44,7 @@
     fantasque-sans-mono
     cava
     btop
+    playerctl
   ];
 
   programs.git = {
