@@ -1,6 +1,16 @@
 { config, pkgs, lib, ... }:
 
 {
+  options = {
+    dotfiles = lib.mkOption {
+      type = lib.types.path;
+      apply = toString;
+      default = "${builtins.toString ./.}/config";
+      example = "${builtins.toString ./.}/config";
+      description = "Location of dotfiles";
+    };
+  };
+
   config = {
     home.username = "chaos";
     home.homeDirectory = "/home/chaos";
@@ -148,23 +158,12 @@
       };
     };
     programs.waybar.enable = true;
-  };
-
-  wayland.windowManager.hyprland.settings = {
-    "$mod" = "SUPER";
-    exec-once = [
-      "${pkgs.waybar}/bin/waybar"
-    ];
-  };
-
-  options = {
-    dotfiles = lib.mkOption {
-      type = lib.types.path;
-      apply = toString;
-      default = "${builtins.toString ./.}/config";
-      example = "${builtins.toString ./.}/config";
-      description = "Location of dotfiles";
+    wayland.windowManager.hyprland.settings = {
+      "$mod" = "SUPER";
+      exec-once = [
+        "${pkgs.waybar}/bin/waybar"
+      ];
     };
+    xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/waybar";
   };
-  xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/waybar";
 }
