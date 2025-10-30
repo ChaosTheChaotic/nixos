@@ -123,7 +123,7 @@
       selection_foreground = "#e0def4";
       selection_background = "#44415a";
       cursor = "#56526e";
-      cursor_text_color = "e0def4";
+      cursor_text_color = "#e0def4";
       url_color = "#c4a7e7";
       active_tab_foreground = "#e0def4";
       active_tab_background = "#393552";
