@@ -164,6 +164,6 @@
         "${pkgs.waybar}/bin/waybar"
       ];
     };
-    home.file.".config/waybar" = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/waybar";
+    home.file.".config/waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/waybar";
   };
 }
