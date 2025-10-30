@@ -52,6 +52,7 @@
       btop
       playerctl
       hyprpaper
+      sd
     ];
     home.stateVersion = "25.11";
 
