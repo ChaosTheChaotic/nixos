@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+print_help() {
+  echo "Usage: volume [OPTIONS]"
+  echo "Args:"
+  echo "--get	   Get the current volume"
+  echo "--inc 	   Increase the volume"
+  echo "--dec 	   Decrease the volume"
+  echo "--get-mic  Get the microphone volume"
+  echo "--inc-mic  Increase the microphone volume"
+  echo "--dec-mic  Decrease the microphone volume"
+  echo "-h, --help Show this help menu"
+}
+
 get_vol() {
   vol=$(pamixer --get-volume)
   echo "$vol"
@@ -77,7 +89,11 @@ case $1 in
   "--dec-mic")
     dec_mic_vol
     ;;
+  "-h" | "--help")
+    print_help
+    ;;
   *)
-    get_vol
+    print_help
+    echo -e "\n\nCurrent volume: $(get_vol)"
     ;;
 esac

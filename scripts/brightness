@@ -2,6 +2,15 @@
 
 step=5
 
+print_help() {
+  echo "Usage: brightness [OPTION]"
+  echo "Args:"
+  echo "--get	   Get the brightness"
+  echo "--inc 	   Increase the brightness by 5"
+  echo "--dec 	   Decrease the brightness by 5"
+  echo "-h, --help Show this menu"
+}
+
 get_brightness() {
   brightnessctl -m | cut -d, -f4 | tr -d '%'
 }
@@ -29,7 +38,11 @@ case $1 in
   "--dec")
     change_brightness "-$step"
     ;;
+  "-h" | "--help")
+    print_help
+    ;;
   *)
-    get_brightness
+    print_help
+    echo -e "\n\nCurrent brightness: $(get_brightness)"
     ;;
 esac
