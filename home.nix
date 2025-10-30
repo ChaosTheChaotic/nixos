@@ -96,6 +96,9 @@
 
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
+    exec-once = [
+      "${pkgs.waybar}/bin/waybar"
+    ];
   };
 
   programs.kitty = lib.mkForce {
@@ -154,6 +157,12 @@
       color15 = "e0def4";
     };
   };
+
+  programs.waybar = {
+    enable = true;
+  };
+  xdg.configFile."waybar/config.jsonc".source = ./config/waybar/config.jsonc;
+  xdg.configFile."waybar/style.css".source = ./config/waybar/style.css;
 
   home.stateVersion = "25.11";
 }
