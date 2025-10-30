@@ -158,12 +158,14 @@
       };
     };
     programs.waybar.enable = true;
-    wayland.windowManager.hyprland.settings = {
-      "$mod" = "SUPER";
-      exec-once = [
-        "${pkgs.waybar}/bin/waybar"
-      ];
+    services.hyprpaper = {
+      enable = true;
+      settings = {
+	wallpaper = [ ",./wallpapers/rascii.png" ];
+	preload = [ "./wallpapers/rascii.png" ];
+      };
     };
     xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/waybar";
+    xdg.configFile."hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
   };
 }
