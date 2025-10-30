@@ -162,8 +162,8 @@
   programs.waybar = {
     enable = true;
   };
-  xdg.configFile."waybar" = {
-    source = ./config/waybar;
+  home.file.".config/waybar" = {
+    source = config.lib.file.outOfStoreSymlink "${builtins.toString ./.}/config/waybar";
     recursive = true;
   };
 
