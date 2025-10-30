@@ -108,11 +108,50 @@
       background_opacity = "0.3";
       background_blur = 5;
       cursor_trail = 1;
-      font_family = "FantasqueSansM Nerd Font Mono";
+      #font_family = "FantasqueSansM Nerd Font Mono";
+      font_family = "JetBrains Mono Nerd Font";
       bold_font = "auto";
       italic_font = "auto";
       bold_italic_font = "auto";
       window_padding_width = 4;
+      # The kitty theme starts here
+      foreground = "#e0def4";
+      background = "#232136";
+      selection_foreground = "#e0def4";
+      selection_background = "#44415a";
+      cursor = "#56526e";
+      cursor_text_color = "e0def4";
+      url_color = "#c4a7e7";
+      active_tab_foreground = "#e0def4";
+      active_tab_background = "#393552";
+      inactive_tab_foreground = "#6e6a86";
+      inactive_tab_background = "#232136";
+      active_border_color = "#3e8fb0";
+      inactive_border_color = "#44415a";
+      # Black
+      color0 = "#393552";
+      color8 = "#6e6a86";
+      # Red
+      color1 = "#eb6f92";
+      color9 = "#eb6f92";
+      # Green
+      color2 = "#3e8fb0";
+      color19 = "#3e8fb0";
+      # Yellow
+      color3 = "#f6c117";
+      color11 = "#f6c117";
+      # Blue
+      color4 = "#9ccfd8";
+      color12 = "#9ccfd8";
+      # Magenta
+      color5 = "#c4a7e7";
+      color13 = "#c4a7e7";
+      # Cyan
+      color6 = "#ea9a97";
+      color14 = "#ea9a97";
+      # White
+      color7 = "e0def4";
+      color15 = "e0def4";
     };
   };
 
