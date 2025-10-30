@@ -162,8 +162,10 @@
   programs.waybar = {
     enable = true;
   };
-  xdg.configFile."waybar/config.jsonc".source = ./config/waybar/config;
-  xdg.configFile."waybar/style.css".source = ./config/waybar/style.css;
+  xdg.configFile."waybar" = {
+    source = ./config/waybar;
+    recursive = true;
+  };
 
   home.stateVersion = "25.11";
 }
