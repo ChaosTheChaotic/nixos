@@ -1,51 +1,55 @@
 { config, pkgs, lib, ... }:
 
 {
-  home.username = "chaos";
-  home.homeDirectory = "/home/chaos";
+  config = {
+    home.username = "chaos";
+    home.homeDirectory = "/home/chaos";
 
-  home.sessionPath = [
-    "$HOME/.local/bin"
-  ];
+    home.sessionPath = [
+      "$HOME/.local/bin"
+    ];
+    home.packages = with pkgs; [
+      fastfetch
+      gcc
+      ripgrep
+      jq
+      zip
+      unzip
+      file
+      which
+      neovim
+      zoxide
+      uv
+      rsync
+      bat
+      pnpm
+      lazygit
+      nodejs
+      nerd-fonts.fira-code
+      nerd-fonts.jetbrains-mono
+      eza
+      gnumake
+      lua
+      luarocks
+      clang-tools
+      rustup
+      pkg-config
+      openssl
+      nixfmt
+      nixd
+      fantasque-sans-mono
+      cava
+      btop
+      playerctl
+    ];
 
-  config = { fonts.fontconfig.enable = true; };
+    home.stateVersion = "25.11";
+
+    fonts.fontconfig.enable = true;
+  };
 
   programs.home-manager.enable = true;
   programs.atuin.enable = true;
-  home.packages = with pkgs; [
-    fastfetch
-    gcc
-    ripgrep
-    jq
-    zip
-    unzip
-    file
-    which
-    neovim
-    zoxide
-    uv
-    rsync
-    bat
-    pnpm
-    lazygit
-    nodejs
-    nerd-fonts.fira-code
-    nerd-fonts.jetbrains-mono
-    eza
-    gnumake
-    lua
-    luarocks
-    clang-tools
-    rustup
-    pkg-config
-    openssl
-    nixfmt
-    nixd
-    fantasque-sans-mono
-    cava
-    btop
-    playerctl
-  ];
 
   programs.git = {
     enable = true;
@@ -172,6 +176,4 @@
     };
   };
   xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/waybar";
-
-  home.stateVersion = "25.11";
 }
