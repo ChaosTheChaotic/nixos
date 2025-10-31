@@ -32,6 +32,7 @@ in
     pamixer
     bluez
     bluetui
+    unp
   ];
 
   nixpkgs.overlays = [
