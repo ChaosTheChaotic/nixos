@@ -162,21 +162,8 @@ in
 
   programs.nix-ld = {
     enable = true;
-    libraries = with pkgs; [
-      gtk3
-      cairo
-      pango
-      harfbuzz
-      atk
-      gdk-pixbuf
-      glib
-      libepoxy
-      alsa-lib
-      cdparanoia
-      libcdio
-      libcdio-paranoia
-      sqlite
-    ];
+    #libraries = with pkgs; [
+    #];
   };
 
   programs.hyprland = {
