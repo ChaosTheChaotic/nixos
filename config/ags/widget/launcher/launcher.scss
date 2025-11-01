@@ -1,0 +1,803 @@
+@use "../../styles/colors";
+@forward "./sticker-results.scss";
+
+// Main launcher window
+launcher {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+// Container for launcher content
+launcher-container {
+  min-width: 1200px;
+  padding: 120px 0px 0px 0px;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &box {
+    margin-top: 0;
+    padding-top: 0;
+  }
+}
+
+// Main content area with split panel
+.launcher-main-content {
+  background: transparent;
+  min-height: 200px;
+}
+
+// Left panel for search and results
+.launcher-left-panel {
+  background: transparent;
+  border-right: 1px solid colors.c(border, 0.1);
+  padding-right: 24px;
+}
+
+// Right panel for details
+.launcher-detail-panel {
+  background: linear-gradient(135deg,
+      colors.c(surface, 0.03) 0%,
+      colors.c(surface, 0.06) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 32px;
+  border-radius: 0 16px 16px 0;
+
+  .detail-panel-content {
+    min-height: 500px;
+  }
+}
+
+// Detail screenshot frame
+.detail-screenshot-frame {
+  width: 480px;
+  height: 270px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: colors.c(surface, 0.1);
+  border: 2px solid colors.c(border, 0.15);
+  box-shadow:
+    0 8px 32px colors.c(base, 0.25),
+    0 4px 16px colors.c(base, 0.15),
+    inset 0 1px 2px colors.c(base, 0.2);
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: linear-gradient(180deg,
+        transparent 70%,
+        colors.c(base, 0.1) 100%);
+    pointer-events: none;
+  }
+}
+
+.detail-screenshot-preview {
+  width: 480px;
+  height: 270px;
+  object-fit: cover;
+}
+
+// Detail window info
+.detail-window-info {
+  text-align: center;
+
+  .detail-window-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: colors.c(text);
+    margin-bottom: 12px;
+  }
+
+  .detail-label {
+    font-size: 13px;
+    color: colors.c(text, 0.6);
+    font-weight: 400;
+  }
+
+  .detail-value {
+    font-size: 14px;
+    color: colors.c(text);
+    font-weight: 500;
+  }
+}
+
+// Detail badges
+.detail-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 4px;
+
+  &.floating {
+    background: linear-gradient(135deg,
+        colors.c(iris, 0.2) 0%,
+        colors.c(iris, 0.15) 100%);
+    color: colors.c(iris);
+    border: 1px solid colors.c(iris, 0.3);
+  }
+
+  &.fullscreen {
+    background: linear-gradient(135deg,
+        colors.c(rose, 0.2) 0%,
+        colors.c(rose, 0.15) 100%);
+    color: colors.c(rose);
+    border: 1px solid colors.c(rose, 0.3);
+  }
+}
+
+// Search box wrapper with gradient border
+.launcher-search-box-wrapper {
+  background: linear-gradient(90deg,
+      colors.c(love, 0.5) 0%,
+      colors.c(pine, 0.5) 25%,
+      colors.c(rose, 0.5) 50%,
+      colors.c(iris, 0.5) 75%,
+      colors.c(love, 0.5) 100%);
+  background-size: 200% 100%;
+  border-radius: 16px;
+  padding: 0px;
+  width: 100%;
+  max-width: 600px;
+  animation: gradientRotate 12s linear infinite;
+  box-shadow:
+    0 8px 32px colors.c(base, 0.4),
+    0 4px 16px colors.c(base, 0.2);
+  overflow: visible; // Fix border cutoff
+}
+
+// Search box area
+.launcher-search-box {
+  background: linear-gradient(135deg,
+      colors.c(background, 0.95) 0%,
+      colors.c(background-elevated, 0.9) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 0;
+  margin: 0;
+  width: calc(100% - 2px);
+  margin: 1px;
+  margin-top: 1px;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
+  &:hover {
+    // transform: translateY(-1px);
+  }
+}
+
+// Animated gradient border
+@keyframes gradientRotate {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+// Pulse animation for loading state
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+// Search input container
+.search-input-container {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid colors.c(accent, 0.3);
+  padding: 20px 12px;
+  margin: 0;
+  position: relative;
+  transition: all 200ms ease;
+  width: 600px; // Fixed width
+
+  &:focus-within {
+    background-color: colors.c(overlay, 0.05);
+    border-bottom-color: colors.c(accent, 0.3);
+  }
+}
+
+// Search input
+.launcher-search-input {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  font-weight: 300;
+  color: colors.c(foreground);
+  min-height: 36px;
+  caret-color: colors.c(accent);
+  outline: none;
+  box-shadow: none;
+
+  &:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+// Search icon
+.search-icon {
+  display: none; // Hide the icon since it's causing layout issues
+}
+
+// Evaluator result display (math, units, etc.)
+.evaluator-result {
+  font-size: 18px;
+  font-weight: 400;
+  color: colors.c(accent);
+  opacity: 0.9;
+  padding: 0 8px;
+  white-space: nowrap;
+  animation: fadeIn 200ms ease-out;
+  max-width: 250px; // Limit width to prevent expansion
+}
+
+// Color preview box
+.color-preview {
+  margin-right: 16px;
+  animation: fadeIn 200ms ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+
+  to {
+    opacity: 0.9;
+    transform: translateX(0);
+  }
+}
+
+// Results container
+launcher-results-container {
+  overflow: hidden;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  padding-top: 0px;
+  margin-top: 0px;
+}
+
+// Results box
+launcher-results {
+  background: transparent;
+  border: none;
+  overflow: hidden;
+}
+
+// Results list
+launcher-results-list {
+  padding: 0;
+
+  >* {
+    margin: 0;
+    border-radius: 0;
+
+    &:hover {
+      border-radius: 0;
+    }
+  }
+}
+
+// Launcher result button
+overview-search-result-btn {
+  width: 100%;
+  padding: 16px 24px;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  position: relative;
+  transition: all 150ms ease;
+  border-bottom: 1px solid colors.c(border, 0.1);
+
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: colors.c(overlay, 0.08);
+    padding-left: 28px;
+  }
+
+  &:focus {
+    outline: colors.c(accent, 0.3) solid 2px;
+    background-color: colors.c(overlay, 0.8);
+  }
+
+  &.selected {
+    background-color: colors.c(accent, 0.1);
+    color: colors.c(foreground);
+    border-bottom-color: colors.c(accent, 0.2);
+    padding-left: 32px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background-color: colors.c(accent);
+    }
+
+    overview-search-results-txt {
+      color: colors.c(foreground);
+
+      &.txt-subtext {
+        color: colors.c(foreground-alt);
+      }
+    }
+  }
+
+  &:active {
+    transform: scale(0.995);
+  }
+
+  // Icon positioning
+  image {
+    margin-right: 12px;
+  }
+}
+
+// Text styles
+.overview-search-results-txt {
+  margin: 1px 0;
+
+  &.txt-smallie {
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  &.txt-norm {
+    font-size: 15px;
+    font-weight: 300;
+  }
+
+  &.txt-subtext {
+    opacity: 0.7;
+  }
+}
+
+// Action bar
+.launcher-action-bar {
+  padding: 0px 14px;
+  margin-top: 8px;
+  background-color: colors.c(base, 0.05);
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid colors.c(accent, 0.1);
+  align-items: center;
+  min-height: 56px;
+
+  background: linear-gradient(to bottom,
+      colors.c(base, 0.03) 0%,
+      colors.c(base, 0.08) 100%);
+}
+
+// Action labels
+.action-label {
+  font-size: 12px;
+  color: colors.c(foreground-alt);
+  opacity: 0.8;
+}
+
+.action-hint {
+  font-size: 12px;
+  color: colors.c(foreground-alt);
+  opacity: 0.5;
+  font-style: italic;
+}
+
+// Item height calculation
+.launcher-item {
+  height: 56px; // Fixed height for each item
+}
+
+// Add animation for smooth height transitions
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Dynamic results animation
+launcher-results-container {
+  margin-top: 0;
+  padding-top: 0;
+
+  &.animating {
+    overflow: visible;
+  }
+
+  launcher-results {
+    animation: slideDown 200ms ease-out;
+  }
+}
+
+// Empty state message
+.launcher-empty {
+  padding: 0px;
+  text-align: center;
+  opacity: 0.5;
+  font-size: 14px;
+  color: colors.c(foreground-alt);
+}
+
+// Compact mode when no results
+.launcher-search-box {
+  &.compact {
+    .search-input-container {
+      border-bottom: none;
+
+      padding-bottom: 0px;
+      margin-bottom: 0px;
+    }
+
+    .launcher-action-bar {
+      // border-top: none;
+    }
+  }
+}
+
+// Screen capture results styling
+result-group-results {
+
+  .results-category-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: colors.c(foreground-alt, 0.6);
+    margin-bottom: 10px;
+    margin-left: 24px;
+    margin-top: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Enhanced clipboard image styling without overlay
+.clipboard-image-container {
+  position: relative;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  object-fit: cover;
+}
+
+.clipboard-image-frame {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+  background: colors.c(surface, 0.05);
+  border: 2px solid colors.c(border, 0.15);
+  box-shadow:
+    0 4px 12px colors.c(base, 0.15),
+    0 2px 6px colors.c(base, 0.1);
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 2px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .clipboard-image-preview {
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+// Badge container positioned below image
+.clipboard-image-badge-container {
+  margin-top: -12px;
+  z-index: 1;
+  padding: 0 8px;
+}
+
+// Format badge (PNG, JPG, etc.)
+.clipboard-format-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: colors.c(background);
+  background: linear-gradient(135deg,
+      colors.c(accent) 0%,
+      colors.c(accent, 0.8) 100%);
+  padding: 3px 10px;
+  border-radius: 10px;
+  border: 1px solid colors.c(background, 0.2);
+  box-shadow:
+    0 2px 8px colors.c(accent, 0.3),
+    0 1px 3px colors.c(base, 0.2);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+// Clipboard entry specific styling
+.clipboard-entry {
+  &.image-entry {
+    min-height: 96px; // Account for larger image preview with badge
+
+    &:hover {
+      .clipboard-image-frame {
+        transform: translateY(-2px);
+        box-shadow:
+          0 8px 20px colors.c(base, 0.25),
+          0 4px 10px colors.c(base, 0.2);
+        background: colors.c(surface, 0.1);
+        border-color: colors.c(accent, 0.3);
+
+        drawingarea {
+          transform: scale(1.05);
+        }
+      }
+
+      .clipboard-format-badge {
+        transform: translateY(-2px);
+        box-shadow:
+          0 4px 12px colors.c(accent, 0.4),
+          0 2px 6px colors.c(base, 0.3);
+      }
+    }
+
+    &.selected {
+      .clipboard-image-frame {
+        background: colors.c(accent, 0.1);
+        border-color: colors.c(accent, 0.5);
+        box-shadow:
+          0 6px 16px colors.c(accent, 0.3),
+          0 3px 8px colors.c(accent, 0.2);
+      }
+
+      .clipboard-format-badge {
+        background: linear-gradient(135deg,
+            colors.c(success) 0%,
+            colors.c(success, 0.85) 100%);
+        box-shadow:
+          0 4px 12px colors.c(success, 0.4),
+          0 2px 6px colors.c(base, 0.3);
+      }
+
+      drawingarea {
+        transform: scale(1.02);
+      }
+    }
+  }
+}
+
+// Clipboard metadata styling
+.clipboard-metadata {
+  .separator {
+    opacity: 0.3;
+    margin: 0 2px;
+  }
+
+  .image-dimensions {
+    color: colors.c(iris, 0.8);
+    font-weight: 500;
+  }
+
+  .image-size {
+    color: colors.c(rose, 0.8);
+    font-weight: 500;
+  }
+}
+
+// Clipboard content text
+.clipboard-content-text {
+  font-weight: 400;
+
+  &.image-entry {
+    font-weight: 500;
+    color: colors.c(foreground);
+  }
+}
+
+// Regular icon container
+.launcher-result-icon-container {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: linear-gradient(135deg,
+      colors.c(overlay, 0.08) 0%,
+      colors.c(overlay, 0.03) 100%);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid colors.c(border, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 200ms ease;
+
+  &:hover {
+    background: linear-gradient(135deg,
+        colors.c(overlay, 0.12) 0%,
+        colors.c(overlay, 0.06) 100%);
+    border-color: colors.c(border, 0.2);
+  }
+
+  .launcher-result-icon {
+    font-size: 24px;
+    color: colors.c(foreground, 0.8);
+  }
+}
+
+// Type badge
+.clipboard-type-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: colors.c(accent, 0.15);
+  color: colors.c(accent);
+  border: 1px solid colors.c(accent, 0.2);
+  letter-spacing: 0.5px;
+}
+
+// Enhance selected state for clipboard items
+overview-search-result-btn.selected {
+  .clipboard-image-container {
+    border-color: colors.c(accent, 0.3);
+    box-shadow:
+      0 4px 16px colors.c(accent, 0.15),
+      inset 0 1px 1px colors.c(success, 0.2);
+  }
+
+  .launcher-result-icon-container {
+    background: linear-gradient(135deg,
+        colors.c(accent, 0.15) 0%,
+        colors.c(accent, 0.08) 100%);
+    border-color: colors.c(accent, 0.25);
+  }
+}
+
+// Hyprland window screenshots
+.window-screenshot-container {
+  position: relative;
+  width: 76px;
+  height: 76px;
+}
+
+.window-screenshot-frame {
+  width: 76px;
+  height: 76px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: colors.c(surface, 0.05);
+  border: 1px solid colors.c(border, 0.1);
+  box-shadow:
+    0 2px 8px colors.c(base, 0.15),
+    0 1px 3px colors.c(base, 0.1);
+  transition: all 200ms ease;
+
+  // Add a subtle inner shadow for depth
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    box-shadow: inset 0 1px 2px colors.c(base, 0.2);
+    pointer-events: none;
+  }
+}
+
+.window-screenshot-preview {
+  width: 76px;
+  height: 76px;
+
+  drawingarea {
+    transition: transform 200ms ease;
+  }
+}
+
+// Window class badge container
+.window-class-badge-container {
+  margin-top: -12px;
+  z-index: 1;
+  padding: 0 8px;
+}
+
+// Window class badge (KIT, FIR, etc.)
+.window-class-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: colors.c(background);
+  background: linear-gradient(135deg,
+      colors.c(iris) 0%,
+      colors.c(iris, 0.8) 100%);
+  padding: 3px 10px;
+  border-radius: 10px;
+  border: 1px solid colors.c(background, 0.2);
+  box-shadow:
+    0 2px 8px colors.c(iris, 0.3),
+    0 1px 3px colors.c(base, 0.2);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+// Hyprland window specific styling
+.hyprland-window {
+  min-height: 96px; // Account for larger screenshot preview with badge
+
+  &:hover {
+    .window-screenshot-frame {
+      transform: translateY(-2px);
+      box-shadow:
+        0 8px 20px colors.c(base, 0.25),
+        0 4px 10px colors.c(base, 0.2);
+      background: colors.c(surface, 0.1);
+      border-color: colors.c(iris, 0.3);
+
+      drawingarea {
+        transform: scale(1.05);
+      }
+    }
+
+    .window-class-badge {
+      transform: translateY(-2px);
+      box-shadow:
+        0 4px 12px colors.c(iris, 0.4),
+        0 2px 6px colors.c(base, 0.3);
+    }
+  }
+
+  &.selected {
+    .window-screenshot-frame {
+      background: colors.c(accent, 0.1);
+      border-color: colors.c(accent, 0.5);
+      box-shadow:
+        0 6px 16px colors.c(accent, 0.3),
+        0 3px 8px colors.c(accent, 0.2);
+    }
+
+    .window-class-badge {
+      background: linear-gradient(135deg,
+          colors.c(success) 0%,
+          colors.c(success, 0.85) 100%);
+      box-shadow:
+        0 4px 12px colors.c(success, 0.4),
+        0 2px 6px colors.c(base, 0.3);
+    }
+
+    drawingarea {
+      transform: scale(1.02);
+    }
+  }
+}
+
+// Window metadata styling
+.window-metadata {
+  .txt-subtext {
+    color: colors.c(text, 0.6);
+  }
+}
+
+.window-title-text {
+  font-weight: 500;
+  color: colors.c(text);
+}
