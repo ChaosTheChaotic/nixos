@@ -61,6 +61,8 @@
       gjs
       gtksourceview5
       gtk4-layer-shell
+      grim
+      slurp
     ];
     home.stateVersion = "25.11";
 
