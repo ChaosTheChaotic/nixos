@@ -35,6 +35,7 @@ in
     unp
     cmake
     ffmpeg
+    upower
   ];
 
   nixpkgs.overlays = [

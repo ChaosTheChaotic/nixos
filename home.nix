@@ -63,6 +63,7 @@
       gtk4-layer-shell
       grim
       slurp
+      libayatana-appindicator
     ];
     home.stateVersion = "25.11";
 
