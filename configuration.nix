@@ -159,6 +159,7 @@ in
     extraGroups = [
       "wheel"
       "networkmanager"
+      "adbusers"
     ];
     shell = pkgs.zsh;
   };
@@ -179,6 +180,8 @@ in
     enable = true;
     extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
   };
+
+  programs.adb.enable = true;
 
   # For pkg-config
   environment.variables = {
