@@ -65,12 +65,6 @@
       slurp
       wl-clipboard
       libayatana-appindicator
-      dart-sass
-      sassc
-      libsoup_3
-      (ags.overrideAttrs (old: {
-        buildInputs = old.buildInputs ++ [ pkgs.libdbusmenu-gtk3 ];
-      }))
     ];
     home.stateVersion = "25.11";
 
