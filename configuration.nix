@@ -34,6 +34,7 @@ in
     bluetui
     unp
     cmake
+    ffmpeg
   ];
 
   nixpkgs.overlays = [
