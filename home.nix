@@ -61,7 +61,6 @@
       gjs
       gtksourceview5
       gtk4-layer-shell
-      gtk4
     ];
     home.stateVersion = "25.11";
 
