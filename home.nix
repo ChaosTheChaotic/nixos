@@ -64,7 +64,6 @@
       grim
       slurp
       wl-clipboard
-      cliphist
       libayatana-appindicator
       dart-sass
       sassc
@@ -205,6 +204,10 @@
 	name = "rose-pine-moon";
 	package = pkgs.rose-pine-icon-theme;
       };
+    };
+    services.cliphist = {
+      enable = true;
+      allowImages = true;
     };
   };
 }
