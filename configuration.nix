@@ -33,6 +33,7 @@ in
     bluez
     bluetui
     unp
+    cmake
   ];
 
   nixpkgs.overlays = [
