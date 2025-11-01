@@ -63,6 +63,8 @@
       gtk4-layer-shell
       grim
       slurp
+      wl-clipboard
+      cliphist
       libayatana-appindicator
       dart-sass
       sassc
