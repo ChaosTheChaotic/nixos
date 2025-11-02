@@ -23,15 +23,21 @@
       agenix,
       ...
     }@inputs:
+    let
+      csys = "aarch64-linux";
+    in
     {
       nixosConfigurations."NixyPenguin" = nixpkgs.lib.nixosSystem {
-        system = "aarch64-linux";
+        system = csys;
 	specialArgs = { inherit inputs ;};
         modules = [
           nixos-apple-silicon.nixosModules.apple-silicon-support
           ./configuration.nix
-          home-manager.nixosModules.home-manager
 	  agenix.nixosModules.default
+	  {
+	    environment.systemPackages = [ agenix.packages.${csys}.default ];
+	  }
+          home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
