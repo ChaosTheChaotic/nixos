@@ -10,6 +10,7 @@
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    agenix.url = "github:ryantm/agenix";
   };
 
   outputs =
@@ -19,6 +20,7 @@
       nixos-apple-silicon,
       home-manager,
       nur,
+      agenix,
       ...
     }@inputs:
     {
@@ -29,6 +31,7 @@
           nixos-apple-silicon.nixosModules.apple-silicon-support
           ./configuration.nix
           home-manager.nixosModules.home-manager
+	  agenix.nixosModules.default
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
