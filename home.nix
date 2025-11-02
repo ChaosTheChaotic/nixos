@@ -66,6 +66,7 @@
       wl-clipboard
       libayatana-appindicator
       gobject-introspection
+      noto-fonts-color-emoji
       astal.hyprland
       astal.wireplumber
       astal.network
@@ -186,7 +187,7 @@
         color15 = "#e0def4";
       };
     };
-    programs.waybar.enable = true;
+    #programs.waybar.enable = true;
     services.dunst.enable = true;
     xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/waybar";
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
