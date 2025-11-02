@@ -65,6 +65,20 @@
       slurp
       wl-clipboard
       libayatana-appindicator
+      gobject-introspection
+      astal.hyprland
+      astal.wireplumber
+      astal.network
+      astal.apps
+      astal.bluetooth
+      astal.powerprofiles
+      astal.notifd
+      astal.mpris
+      astal.battery
+      astal.tray
+      (ags.overrideAttrs (old: {
+        buildInputs = old.buildInputs ++ [ pkgs.libdbusmenu-gtk3 ];
+      }))
     ];
     home.stateVersion = "25.11";
 
@@ -177,6 +191,7 @@
     xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/waybar";
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
+    home.file.".config/ags".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/ags";
 
     programs.floorp = {
       enable = true;
