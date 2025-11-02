@@ -36,6 +36,7 @@ in
     cmake
     ffmpeg
     upower
+    wireguard-tools
   ];
 
   nixpkgs.overlays = [
