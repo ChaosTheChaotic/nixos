@@ -15,6 +15,12 @@
     home.username = "chaos";
     home.homeDirectory = "/home/chaos";
 
+    home.sessionVariables = {
+      GSK_RENDERER = "ngl";
+      GDK_BACKEND = "wayland";
+      LAYER_SHELL_ENABLE = "1";
+    };
+
     home.sessionPath = [
       "$HOME/.local/bin"
     ];
