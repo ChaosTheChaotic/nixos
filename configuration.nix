@@ -105,6 +105,24 @@ in
   };
   networking.networkmanager.enable = true;
   networking.networkmanager.wifi.backend = "iwd";
+
+  age.secrets.wg-priv.file = ./secrets/wg-priv.age;
+
+  networking.wg-quick.interfaces = {
+    wg0 = {
+      address = [ "10.2.0.2/32" ];
+      dns = [ "10.2.0.1" ];
+      privateKeyFile = config.age.secrets.wg-priv.path;
+      peers = [
+	{
+	  publicKey = "KiCvg9+bh7/ssQDALW3uXSTLaURS3mgZdi/O9CxlFXo=";
+	  allowedIPs = ["0.0.0.0/0" "::/0"];
+	  endpoint = "79.127.254.65:51820";
+	}
+      ];
+    };
+  };
+
   hardware.enableRedistributableFirmware = true;
 
   # Set your time zone.
