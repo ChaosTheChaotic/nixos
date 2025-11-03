@@ -25,6 +25,16 @@
         gtksourceview5
         gtk4-layer-shell
         libsoup_3
+	astal.hyprland
+      	astal.wireplumber
+      	astal.network
+      	astal.apps
+      	astal.bluetooth
+      	astal.powerprofiles
+      	astal.notifd
+      	astal.mpris
+      	astal.battery
+      	astal.tray
       ];
     };
 
