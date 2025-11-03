@@ -24,7 +24,7 @@
         graphene
         gtksourceview5
         gtk4-layer-shell
-        libsoup
+        libsoup_3
       ];
     };
 
