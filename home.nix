@@ -20,6 +20,7 @@
       GDK_BACKEND = "wayland";
       LAYER_SHELL_ENABLE = "1";
       GI_TYPELIB_PATH = with pkgs; lib.makeSearchPath "lib/girepository-1.0" [
+	networkmanager
         gtk4
         graphene
         gtksourceview5
