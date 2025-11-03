@@ -37,6 +37,7 @@ in
     ffmpeg
     upower
     wireguard-tools
+    usbutils
   ];
 
   nixpkgs.overlays = [
