@@ -213,9 +213,14 @@
         color15 = "#e0def4";
       };
     };
-    programs.waybar.enable = true;
+    home.activation = {
+      startAGS = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+	if hyprctl monitors > /dev/null 2>&1; then
+	ags run --gtk4 ${config.home.homeDirectory}/nixos-cfg/config/ags/dist/app.js
+	fi
+      '';
+    };
     services.dunst.enable = true;
-    xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/waybar";
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
     home.file.".config/ags".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/ags";
