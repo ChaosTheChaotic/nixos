@@ -89,6 +89,7 @@
       grim
       slurp
       wl-clipboard
+      qalculate-qt
       libayatana-appindicator
       gobject-introspection
       noto-fonts-color-emoji
