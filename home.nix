@@ -215,8 +215,8 @@
     };
     home.activation = {
       startAGS = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-	if hyprctl monitors > /dev/null 2>&1; then
-	pkill ags && ags run --gtk4 ${config.home.homeDirectory}/nixos-cfg/config/ags/dist/app.js
+	if hyprctl monitors > /dev/null 2>&1 && [ -z "$(pgrep ags)" ]; then
+	  pkill ags && ags run --gtk4 ${config.home.homeDirectory}/nixos-cfg/config/ags/dist/app.js
 	fi
       '';
     };
