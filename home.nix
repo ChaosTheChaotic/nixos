@@ -38,6 +38,7 @@
       	astal.tray
       ];
       GSETTINGS_SCHEMA_DIR = "${pkgs.astal.notifd}/share/gsettings-schemas/astal-notifd-0-unstable-2025-10-23/glib-2.0/schemas";
+      GIO_MODULE_DIR = "${pkgs.glib-networking}/lib/gio/modules/";
     };
 
     home.sessionPath = [
