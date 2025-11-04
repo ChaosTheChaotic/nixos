@@ -38,6 +38,7 @@ in
     upower
     wireguard-tools
     usbutils
+    glib-networking
   ];
 
   nixpkgs.overlays = [
