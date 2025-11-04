@@ -39,6 +39,7 @@ in
     wireguard-tools
     usbutils
     glib-networking
+    gdb
   ];
 
   nixpkgs.overlays = [
