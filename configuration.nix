@@ -40,6 +40,7 @@ in
     usbutils
     glib-networking
     gdb
+    gnupg
   ];
 
   nixpkgs.overlays = [
