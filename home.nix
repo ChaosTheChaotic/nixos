@@ -86,7 +86,6 @@
       shfmt
       stylua
       typescript
-      vesktop
       wireplumber
       gjs
       gtksourceview5
