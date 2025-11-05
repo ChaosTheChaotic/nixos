@@ -11,6 +11,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     agenix.url = "github:ryantm/agenix";
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -21,6 +25,7 @@
       home-manager,
       nur,
       agenix,
+      stylix,
       ...
     }@inputs:
     let
@@ -32,6 +37,7 @@
 	specialArgs = { inherit inputs ;};
         modules = [
           nixos-apple-silicon.nixosModules.apple-silicon-support
+	  stylix.nixosModules.stylix
           ./configuration.nix
 	  agenix.nixosModules.default
 	  {
