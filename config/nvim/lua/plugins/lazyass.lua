@@ -439,7 +439,8 @@ return {
 				dashboard.button("l", "󰒲  Lazy", ":Lazy<CR>"),
 				dashboard.button("m", "󱁤  Mason", ":Mason<CR>"),
 				dashboard.button("g", "  LazyGit", ":LazyGit<CR>"),
-				dashboard.button("c", "  Configuration", ":e ~/.config/nvim/lua/plugins/lazyass.lua<CR>"),
+				--dashboard.button("c", "  Configuration", ":e ~/.config/nvim/lua/plugins/lazyass.lua<CR>"),
+				dashboard.button("c", "  Configuration", ":e ~/nixos-cfg/config/nvim/lua/plugins/lazyass.lua<CR>"),
 				dashboard.button("q", "󰈆  Quit Neovim", ":qa<CR>"),
 			}
 			alpha.setup(dashboard.config)
