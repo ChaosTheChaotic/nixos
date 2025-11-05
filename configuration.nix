@@ -41,6 +41,7 @@ in
     glib-networking
     gdb
     gnupg
+    ncdu
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
 
