@@ -122,11 +122,14 @@ in
       dns = [ "10.2.0.1" ];
       privateKeyFile = config.age.secrets.wg-priv.path;
       peers = [
-	{
-	  publicKey = "KiCvg9+bh7/ssQDALW3uXSTLaURS3mgZdi/O9CxlFXo=";
-	  allowedIPs = ["0.0.0.0/0" "::/0"];
-	  endpoint = "79.127.254.65:51820";
-	}
+        {
+          publicKey = "KiCvg9+bh7/ssQDALW3uXSTLaURS3mgZdi/O9CxlFXo=";
+          allowedIPs = [
+            "0.0.0.0/0"
+            "::/0"
+          ];
+          endpoint = "79.127.254.65:51820";
+        }
       ];
     };
   };

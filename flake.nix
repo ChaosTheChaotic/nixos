@@ -34,14 +34,14 @@
     {
       nixosConfigurations."NixyPenguin" = nixpkgs.lib.nixosSystem {
         system = csys;
-	specialArgs = { inherit inputs ;};
+        specialArgs = { inherit inputs; };
         modules = [
           nixos-apple-silicon.nixosModules.apple-silicon-support
           ./configuration.nix
-	  agenix.nixosModules.default
-	  {
-	    environment.systemPackages = [ agenix.packages.${csys}.default ];
-	  }
+          agenix.nixosModules.default
+          {
+            environment.systemPackages = [ agenix.packages.${csys}.default ];
+          }
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
