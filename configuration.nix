@@ -100,6 +100,8 @@ in
     DefaultTimeoutStartSec = "15s";
   };
 
+  system.autoUpgrade.enable = false;
+
   # networking.hostName = "nixos"; # Define your hostname.
   networking.hostName = "NixyPenguin";
 
