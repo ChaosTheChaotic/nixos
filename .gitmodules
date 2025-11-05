@@ -1,0 +1,3 @@
+[submodule "config/Vencord"]
+    path = config/Vencord
+    ignore = dirty
