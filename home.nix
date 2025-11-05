@@ -219,10 +219,7 @@
         color15 = "#e0def4";
       };
     };
-    services.dunst = {
-      enable = true;
-      configFile = "${config.dotfiles}/dunst/dunstrc";
-    };
+    services.dunst.enable = true;
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
     home.file.".config/ags".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/ags";
