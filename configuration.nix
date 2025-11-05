@@ -41,6 +41,7 @@ in
     glib-networking
     gdb
     gnupg
+    inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
 
   nixpkgs.overlays = [
