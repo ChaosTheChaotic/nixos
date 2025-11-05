@@ -11,10 +11,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     agenix.url = "github:ryantm/agenix";
-    stylix = {
-      url = "github:nix-community/stylix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     rose-pine-hyprcursor = {
       url = "github:ndom91/rose-pine-hyprcursor";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -29,7 +25,6 @@
       home-manager,
       nur,
       agenix,
-      stylix,
       rose-pine-hyprcursor,
       ...
     }@inputs:
@@ -42,7 +37,6 @@
 	specialArgs = { inherit inputs ;};
         modules = [
           nixos-apple-silicon.nixosModules.apple-silicon-support
-	  stylix.nixosModules.stylix
           ./configuration.nix
 	  agenix.nixosModules.default
 	  {
