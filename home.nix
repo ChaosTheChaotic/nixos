@@ -94,6 +94,7 @@
       slurp
       wl-clipboard
       qalculate-qt
+      base16-schemes
       libnotify
       libayatana-appindicator
       gobject-introspection
