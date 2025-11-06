@@ -86,6 +86,7 @@
       shfmt
       stylua
       typescript
+      inputs.lobster.${pkgs.system}.lobster
       wireplumber
       gjs
       gtksourceview5
