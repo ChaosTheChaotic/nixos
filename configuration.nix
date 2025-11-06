@@ -42,7 +42,8 @@ in
     gdb
     gnupg
     ncdu
-    inputs.lobster.${pkgs.system}.lobster
+    vlc
+    inputs.lobster.packages.${pkgs.system}.lobster
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
 
