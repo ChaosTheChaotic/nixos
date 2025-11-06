@@ -42,6 +42,7 @@ in
     gdb
     gnupg
     ncdu
+    inputs.lobster.${pkgs.system}.lobster
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
 
