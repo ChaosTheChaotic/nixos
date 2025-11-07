@@ -100,6 +100,7 @@
       gobject-introspection
       noto-fonts-color-emoji
       spotdl
+      prismlauncher
       astal.hyprland
       astal.wireplumber
       astal.network
