@@ -276,6 +276,8 @@
     home.file.".config/ags".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/ags";
     home.file.".config/lobster".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/lobster";
 
+    home.file.".local/share/PrismLauncher".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/PrismLauncher";
+
     programs.floorp = {
       enable = true;
       profiles.default = {

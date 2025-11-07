@@ -1,0 +1,65 @@
+{
+    "entries": [
+        {
+            "base": "meta",
+            "current_age": 0,
+            "etag": "W/\"690e34ef-8e1\"",
+            "last_changed_timestamp": 1762548589603,
+            "max_age": 600,
+            "md5sum": "a0e14fec70af8e55cb22968c991fc9cd",
+            "path": "index.json",
+            "remote_changed_timestamp": "Fri, 07 Nov 2025 18:05:35 GMT"
+        },
+        {
+            "base": "meta",
+            "current_age": 0,
+            "etag": "W/\"690e34ee-4e2\"",
+            "last_changed_timestamp": 1762548603855,
+            "max_age": 600,
+            "md5sum": "2609de2cf613e4f4d75eca840750281f",
+            "path": "net.fabricmc.fabric-loader/0.17.3.json",
+            "remote_changed_timestamp": "Fri, 07 Nov 2025 18:05:34 GMT"
+        },
+        {
+            "base": "meta",
+            "current_age": 0,
+            "etag": "W/\"690e34ee-177cd\"",
+            "last_changed_timestamp": 1762548598295,
+            "max_age": 600,
+            "md5sum": "fe003e8ee047db96d3e2f87b68b4037b",
+            "path": "net.fabricmc.fabric-loader/index.json",
+            "remote_changed_timestamp": "Fri, 07 Nov 2025 18:05:34 GMT"
+        },
+        {
+            "base": "meta",
+            "current_age": 510,
+            "etag": "W/\"690e34ef-69d5\"",
+            "last_changed_timestamp": 1762548603707,
+            "max_age": 600,
+            "md5sum": "80a1f39e499c459d91656ad63c72c40a",
+            "path": "net.minecraft/1.21.10.json",
+            "remote_changed_timestamp": "Fri, 07 Nov 2025 18:05:35 GMT"
+        },
+        {
+            "base": "meta",
+            "current_age": 592,
+            "etag": "W/\"690e34ef-63933\"",
+            "last_changed_timestamp": 1762548590071,
+            "max_age": 600,
+            "md5sum": "3113e1173da48b35fdbb34fcac4ad747",
+            "path": "net.minecraft/index.json",
+            "remote_changed_timestamp": "Fri, 07 Nov 2025 18:05:35 GMT"
+        },
+        {
+            "base": "translations",
+            "current_age": 0,
+            "etag": "W/\"690e351c-6238\"",
+            "last_changed_timestamp": 1762548421039,
+            "max_age": 600,
+            "md5sum": "f69c6eb6995f4eda8e11e21dcde9f218",
+            "path": "index_v2.json",
+            "remote_changed_timestamp": "Fri, 07 Nov 2025 18:06:20 GMT"
+        }
+    ],
+    "version": "1"
+}

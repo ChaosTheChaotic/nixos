@@ -1,0 +1,575 @@
+     0.002 D | Testing "/home/chaos/.local/share/PrismLauncher/qtlogging.ini" ...
+     0.003 D | Testing "/nix/store/d2clqcfbhm3cn4nkpz0a7mjhs7li15a4-prismlauncher-unwrapped-9.4/share/PrismLauncher/qtlogging.ini" ...
+     0.003 D | Loading logging rules from: "/nix/store/d2clqcfbhm3cn4nkpz0a7mjhs7li15a4-prismlauncher-unwrapped-9.4/share/PrismLauncher/qtlogging.ini"
+     0.003 D | Setting log rules:
+     0.003 D |      "*.debug=true"
+     0.003 D |      "launcher.auth.credentials.debug=false"
+     0.003 D |      "launcher.task=false"
+     0.003 D |      "launcher.task.net=true"
+     0.003 D |      "launcher.task.net.download.debug=false"
+     0.003 D |      "launcher.task.net.metacache=false"
+     0.003 D |      "launcher.task.net.metacache.http=true"
+     0.003 D |      "launcher.task.net.upload=true"
+     0.003 D |      "qt.*.debug=false"
+     0.003 D | <> Log initialized.
+     0.003 D | <> No migration needed from "PolyMC"
+     0.003 D | <> No migration needed from "MultiMC"
+     0.003 D | Prism Launcher, © 2022-2025 Prism Launcher Contributors, © 2021-2022 PolyMC Contributors, © 2012-2021 MultiMC Contributors
+     0.003 D | Version                    :  "9.4"
+     0.003 D | Platform                   :  "nixpkgs"
+     0.003 D | Git commit                 :  ""
+     0.003 D | Git refspec                :  "refs/heads/stable"
+     0.003 D | Compiled for               :  "Linux 6.12.53 aarch64"
+     0.003 D | Compiled by                :  "GNU - 14.3.0"
+     0.003 D | Build Artifact             :  ""
+     0.003 D | Updates Enabled           :  No
+     0.003 D | Work dir before adjustment :  "/home/chaos/nixos-cfg/config/ags/dist"
+     0.003 D | Work dir after adjustment  :  "/home/chaos/.local/share/PrismLauncher"
+     0.003 D | Adjusted by                :  "Persistent data path"
+     0.003 D | Binary path                :  "/nix/store/d2clqcfbhm3cn4nkpz0a7mjhs7li15a4-prismlauncher-unwrapped-9.4/bin"
+     0.003 D | Application root path      :  "/nix/store/d2clqcfbhm3cn4nkpz0a7mjhs7li15a4-prismlauncher-unwrapped-9.4"
+     0.003 D | <> Paths set.
+     0.017 D | Detected default console font: "DejaVu Sans Mono" , substitutions: ""
+     0.031 D | <> Settings loaded.
+     0.032 D | Detecting proxy settings...
+     0.032 D | Using no proxy is an option!
+     0.032 D | <> Network done.
+     0.032 C | Exception: "Unable to open /home/chaos/.local/share/PrismLauncher/translations/index_v2.json for reading: No such file or directory"
+     0.033 C | Translations Download Failed: index file not readable
+     0.033 W | Selected invalid language "" , defaulting to "en_US"
+     0.033 D | Your language is ""
+     0.033 D | <> Translations loaded.
+     0.034 D | Started watching  "/home/chaos/.local/share/PrismLauncher/icons"
+     0.034 D | Sorting icon list...
+     0.038 D | <> Instance icons initialized.
+     0.039 D | [Theme] Determining System Widget Theme...
+     0.039 D | [Theme] System theme seems to be: "fusion"
+     0.039 D | [Theme] <> Initializing Icon Themes
+     0.039 D | [Theme] Loaded Built-In Icon Theme "pe_colored"
+     0.039 D | [Theme] Loaded Built-In Icon Theme "pe_light"
+     0.039 D | [Theme] Loaded Built-In Icon Theme "pe_dark"
+     0.039 D | [Theme] Loaded Built-In Icon Theme "pe_blue"
+     0.040 D | [Theme] Loaded Built-In Icon Theme "breeze_light"
+     0.040 D | [Theme] Loaded Built-In Icon Theme "breeze_dark"
+     0.040 D | [Theme] Loaded Built-In Icon Theme "OSX"
+     0.040 D | [Theme] Loaded Built-In Icon Theme "iOS"
+     0.040 D | [Theme] Loaded Built-In Icon Theme "flat"
+     0.040 D | [Theme] Loaded Built-In Icon Theme "flat_white"
+     0.040 D | [Theme] Loaded Built-In Icon Theme "multimc"
+     0.040 D | [Theme] Icon Theme Folder Path:  "/home/chaos/.local/share/PrismLauncher/iconthemes"
+     0.040 D | [Theme] <> Icon themes initialized.
+     0.040 D | [Theme] <> Initializing Widget Themes
+     0.040 D | [Theme] Loading Built-in Theme: "system"
+     0.040 D | [Theme] Loading Built-in Theme: "dark"
+     0.040 D | [Theme] Loading Built-in Theme: "bright"
+     0.040 D | [Theme] <> Initializing System Widget Themes
+     0.040 D | [Theme] Loading System Theme: "Windows"
+     0.040 D | [Theme] Loading System Theme: "Fusion"
+     0.040 D | [Theme] Theme Folder Path:  "/home/chaos/.local/share/PrismLauncher/themes"
+     0.040 D | [Theme] <> Widget themes initialized.
+     0.040 D | [Theme] CatPacks Folder Path: "/home/chaos/.local/share/PrismLauncher/catpacks"
+     0.050 D | Instance path              :  "instances"
+     0.050 D | Loading Instances...
+     0.050 D | Discovering instances in "/home/chaos/.local/share/PrismLauncher/instances"
+     0.050 D | <> Instances loaded.
+     0.050 D | Loading accounts...
+     0.050 C | "Failed to read the account list file (accounts.json)."
+     0.050 D | <> Accounts loaded.
+     0.050 D | <> Cache initialized.
+     0.050 D | Downloading Translations Index...
+     0.075 D | Detected native libraries: "/nix/store/pi4x21ykq2sp2kn7d6ag1qcq2r9vh9ld-glfw-minecraft-3.4/lib/libglfw.so" "/nix/store/8yjqk1m8mcsy1fb4sy5wcl44bgq0fmgy-openal-soft-1.24.3/lib/libopenal.so"
+     0.099 D | [Theme] <> Icon theme set.
+     0.099 D | [Theme] applying theme "System"
+     0.099 D | [Theme] <> Application theme set.
+     0.229 D | [Theme] <> Initializing Icon Themes
+     0.230 D | [Theme] Loaded Built-In Icon Theme "pe_colored"
+     0.230 D | [Theme] Loaded Built-In Icon Theme "pe_light"
+     0.230 D | [Theme] Loaded Built-In Icon Theme "pe_dark"
+     0.230 D | [Theme] Loaded Built-In Icon Theme "pe_blue"
+     0.230 D | [Theme] Loaded Built-In Icon Theme "breeze_light"
+     0.230 D | [Theme] Loaded Built-In Icon Theme "breeze_dark"
+     0.230 D | [Theme] Loaded Built-In Icon Theme "OSX"
+     0.230 D | [Theme] Loaded Built-In Icon Theme "iOS"
+     0.230 D | [Theme] Loaded Built-In Icon Theme "flat"
+     0.230 D | [Theme] Loaded Built-In Icon Theme "flat_white"
+     0.230 D | [Theme] Loaded Built-In Icon Theme "multimc"
+     0.230 D | [Theme] Icon Theme Folder Path:  "/home/chaos/.local/share/PrismLauncher/iconthemes"
+     0.230 D | [Theme] <> Icon themes initialized.
+     0.230 D | [Theme] <> Initializing Widget Themes
+     0.230 D | [Theme] Loading Built-in Theme: "system"
+     0.230 D | [Theme] Loading Built-in Theme: "dark"
+     0.230 D | [Theme] Loading Built-in Theme: "bright"
+     0.230 D | [Theme] <> Initializing System Widget Themes
+     0.230 D | [Theme] Loading System Theme: "Windows"
+     0.230 D | [Theme] Loading System Theme: "Fusion"
+     0.230 D | [Theme] Theme Folder Path:  "/home/chaos/.local/share/PrismLauncher/themes"
+     0.230 D | [Theme] <> Widget themes initialized.
+     0.230 D | [Theme] CatPacks Folder Path: "/home/chaos/.local/share/PrismLauncher/catpacks"
+     0.259 D | Setting Icons
+     0.259 D | Setting Cat
+     0.259 D | [Theme] applying catpack "kitteh"
+     1.592 D | Got translations index!
+     1.597 W | QAbstractItemModel::endInsertRows:  Invalid index ( 89 , 0 ) in model TranslationsModel(0x5555b1e07bc0)
+     1.597 W | QAbstractItemModel::endInsertRows:  Invalid index ( 89 , 1 ) in model TranslationsModel(0x5555b1e07bc0)
+     1.640 I | [qt.text.font.db]: OpenType support missing for "DejaVu Sans", script 32
+     1.641 I | [qt.text.font.db]: OpenType support missing for "Unifont", script 32
+     1.642 I | [qt.text.font.db]: OpenType support missing for "FreeSans", script 32
+     1.643 I | [qt.text.font.db]: OpenType support missing for "FreeMono", script 32
+     1.644 I | [qt.text.font.db]: OpenType support missing for "FreeSerif", script 32
+     1.646 I | [qt.text.font.db]: OpenType support missing for "FiraCode Nerd Font", script 32
+     1.647 I | [qt.text.font.db]: OpenType support missing for "FiraCode Nerd Font Mono", script 32
+     1.649 I | [qt.text.font.db]: OpenType support missing for "FiraCode Nerd Font Propo", script 32
+     1.651 I | [qt.text.font.db]: OpenType support missing for "DejaVu Math TeX Gyre", script 32
+     1.652 I | [qt.text.font.db]: OpenType support missing for "DejaVu Sans Mono", script 32
+     1.653 I | [qt.text.font.db]: OpenType support missing for "DejaVu Serif", script 32
+     1.653 I | [qt.text.font.db]: OpenType support missing for "JetBrainsMonoNL Nerd Font", script 32
+     1.654 I | [qt.text.font.db]: OpenType support missing for "JetBrainsMonoNL Nerd Font Mono", script 32
+     1.655 I | [qt.text.font.db]: OpenType support missing for "JetBrainsMonoNL Nerd Font Propo", script 32
+     1.656 I | [qt.text.font.db]: OpenType support missing for "JetBrainsMono Nerd Font", script 32
+     1.656 I | [qt.text.font.db]: OpenType support missing for "JetBrainsMono Nerd Font Mono", script 32
+     1.657 I | [qt.text.font.db]: OpenType support missing for "JetBrainsMono Nerd Font Propo", script 32
+     1.658 I | [qt.text.font.db]: OpenType support missing for "Liberation Mono", script 32
+     1.659 I | [qt.text.font.db]: OpenType support missing for "Liberation Sans", script 32
+     1.660 I | [qt.text.font.db]: OpenType support missing for "Liberation Serif", script 32
+     1.661 I | [qt.text.font.db]: OpenType support missing for "TeX Gyre Schola", script 32
+     1.661 I | [qt.text.font.db]: OpenType support missing for "TeX Gyre Bonum", script 32
+     1.662 I | [qt.text.font.db]: OpenType support missing for "TeX Gyre Cursor", script 32
+     1.663 I | [qt.text.font.db]: OpenType support missing for "TeX Gyre Heros", script 32
+     1.664 I | [qt.text.font.db]: OpenType support missing for "TeX Gyre Pagella", script 32
+     1.665 I | [qt.text.font.db]: OpenType support missing for "TeX Gyre Termes", script 32
+     1.666 I | [qt.text.font.db]: OpenType support missing for "TeX Gyre Adventor", script 32
+     1.666 I | [qt.text.font.db]: OpenType support missing for "Fantasque Sans Mono", script 32
+     1.667 I | [qt.text.font.db]: OpenType support missing for "TeX Gyre Heros Cn", script 32
+     1.670 I | [qt.text.font.db]: OpenType support missing for "TeX Gyre Chorus", script 32
+     1.671 I | [qt.text.font.db]: OpenType support missing for "Noto Color Emoji", script 32
+     1.671 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.672 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.672 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.673 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.673 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.674 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.674 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.675 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.675 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.676 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.677 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.677 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.677 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.678 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.678 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.679 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.680 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.681 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.682 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.682 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.682 I | [qt.text.font.db]: OpenType support missing for "", script 32
+     1.691 I | [qt.text.font.db]: OpenType support missing for "DejaVu Sans", script 16
+     1.694 I | [qt.text.font.db]: OpenType support missing for "DejaVu Sans", script 12
+     1.697 I | [qt.text.font.db]: OpenType support missing for "DejaVu Sans", script 11
+     1.705 W | Cannot update builtin language "en_US"
+     1.705 D | Dir changed: "/home/chaos/.local/share/PrismLauncher/translations"
+     3.935 W | beginResetModel called on VersionProxyModel(0x5555b1e6d1a0) without calling endResetModel first
+     3.935 W | endResetModel called on VersionProxyModel(0x5555b1e6d1a0) without calling beginResetModel first
+     3.936 D | Probing the following Java paths: 
+     3.992 W | Entry "" could not be stripped from variable "LD_LIBRARY_PATH"
+     3.993 D | Env: stripped "LD_LIBRARY_PATH" "/run/opengl-driver/lib:/nix/store/zmjqwzhgl9hwr8xnk8raj8d50lzkql66-gcc-14.3.0-lib/lib:/nix/store/pi4x21ykq2sp2kn7d6ag1qcq2r9vh9ld-glfw-minecraft-3.4/lib:/nix/store/8yjqk1m8mcsy1fb4sy5wcl44bgq0fmgy-openal-soft-1.24.3/lib:/nix/store/jkr9d5sqkvxyb9nm4n704gjdwkc9cd42-alsa-lib-1.2.14/lib:/nix/store/rymaz3kix2642nb8rl23wk8n0lmcdqkh-libjack2-1.9.22/lib:/nix/store/257525xb5cvv0s718836wql5b2f9vwpb-libpulseaudio-17.0/lib:/nix/store/8d6yp75zdr5zqfb71k84fq7dczwpkf41-pipewire-1.4.9/lib:/nix/store/v0dmz23d6lnzwcrps1sky0q4f0vy6yph-libglvnd-1.7.0/lib:/nix/store/d8ichf2lplx593rnnjlf9i0yimmxr244-libx11-1.8.12/lib:/nix/store/z31661zix58xdmbyrr339msiia1pf3c4-libxcursor-1.2.3/lib:/nix/store/9lhnj4w8lvj3mmlif5yv6xv5d1cb35gg-libxext-1.3.6/lib:/nix/store/z1if2zpg430a41v9jci6z5lpjgskil1g-libxrandr-1.5.4/lib:/nix/store/548chq703v1mya48mh26xylgqb9m3i87-libxxf86vm-1.1.6/lib:/nix/store/k31ib8a2xkhv19d404khgk589kgdiv8f-systemd-minimal-libs-258/lib:/nix/store/z035pkccpi5jv3qdkwsa8h5y0p86ma0w-vulkan-loader-1.4.328.0/lib:/nix/store/jyr6zm92a2hb3mhpr6ld9jqjcgkc5sn9-flite-2.2-lib/lib:/nix/store/asa1kz0xh327z9mnkf0v39j9winbb5cy-gamemode-1.8.2-lib/lib:/nix/store/1g17jf34jnrf4zm3vfcvc2maj9m8nx3d-libusb-1.0.29/lib" to "/run/opengl-driver/lib:/nix/store/zmjqwzhgl9hwr8xnk8raj8d50lzkql66-gcc-14.3.0-lib/lib:/nix/store/pi4x21ykq2sp2kn7d6ag1qcq2r9vh9ld-glfw-minecraft-3.4/lib:/nix/store/8yjqk1m8mcsy1fb4sy5wcl44bgq0fmgy-openal-soft-1.24.3/lib:/nix/store/jkr9d5sqkvxyb9nm4n704gjdwkc9cd42-alsa-lib-1.2.14/lib:/nix/store/rymaz3kix2642nb8rl23wk8n0lmcdqkh-libjack2-1.9.22/lib:/nix/store/257525xb5cvv0s718836wql5b2f9vwpb-libpulseaudio-17.0/lib:/nix/store/8d6yp75zdr5zqfb71k84fq7dczwpkf41-pipewire-1.4.9/lib:/nix/store/v0dmz23d6lnzwcrps1sky0q4f0vy6yph-libglvnd-1.7.0/lib:/nix/store/d8ichf2lplx593rnnjlf9i0yimmxr244-libx11-1.8.12/lib:/nix/store/z31661zix58xdmbyrr339msiia1pf3c4-libxcursor-1.2.3/lib:/nix/store/9lhnj4w8lvj3mmlif5yv6xv5d1cb35gg-libxext-1.3.6/lib:/nix/store/z1if2zpg430a41v9jci6z5lpjgskil1g-libxrandr-1.5.4/lib:/nix/store/548chq703v1mya48mh26xylgqb9m3i87-libxxf86vm-1.1.6/lib:/nix/store/k31ib8a2xkhv19d404khgk589kgdiv8f-systemd-minimal-libs-258/lib:/nix/store/z035pkccpi5jv3qdkwsa8h5y0p86ma0w-vulkan-loader-1.4.328.0/lib:/nix/store/jyr6zm92a2hb3mhpr6ld9jqjcgkc5sn9-flite-2.2-lib/lib:/nix/store/asa1kz0xh327z9mnkf0v39j9winbb5cy-gamemode-1.8.2-lib/lib:/nix/store/1g17jf34jnrf4zm3vfcvc2maj9m8nx3d-libusb-1.0.29/lib"
+     3.993 W | Entry "" could not be stripped from variable "QT_PLUGIN_PATH"
+     3.993 D | Env: stripped "QT_PLUGIN_PATH" "/nix/store/9a63r7wm744vp4hylxqc4431rbhjw3dr-qtwayland-6.10.0/lib/qt-6/plugins:/nix/store/ncpal3v5rzw6snnzq3bh8bdqzhn2c28c-qtdeclarative-6.10.0/lib/qt-6/plugins:/nix/store/2862y52k6j0436yx30y81qf19f56y2vd-qtsvg-6.10.0/lib/qt-6/plugins:/nix/store/035nwyn9za836bmcy0yzj4ys0nwry9dj-qtbase-6.10.0/lib/qt-6/plugins:/nix/store/q5k1icwwdwchmi7gd8w6q6zqxrilnmp6-qtwayland-6.10.0-only-plugins-qml/lib/qt-6/plugins:/nix/store/kf7f10aw4mv2ma0f9wcipmg770xdjqxm-qtbase-6.10.0-only-plugins-qml/lib/qt-6/plugins" to "/nix/store/9a63r7wm744vp4hylxqc4431rbhjw3dr-qtwayland-6.10.0/lib/qt-6/plugins:/nix/store/ncpal3v5rzw6snnzq3bh8bdqzhn2c28c-qtdeclarative-6.10.0/lib/qt-6/plugins:/nix/store/2862y52k6j0436yx30y81qf19f56y2vd-qtsvg-6.10.0/lib/qt-6/plugins:/nix/store/035nwyn9za836bmcy0yzj4ys0nwry9dj-qtbase-6.10.0/lib/qt-6/plugins:/nix/store/q5k1icwwdwchmi7gd8w6q6zqxrilnmp6-qtwayland-6.10.0-only-plugins-qml/lib/qt-6/plugins:/nix/store/kf7f10aw4mv2ma0f9wcipmg770xdjqxm-qtbase-6.10.0-only-plugins-qml/lib/qt-6/plugins"
+     3.993 D | Running java checker: "java" "-jar /nix/store/d2clqcfbhm3cn4nkpz0a7mjhs7li15a4-prismlauncher-unwrapped-9.4/share/PrismLauncher/JavaCheck.jar"
+     3.994 W | Entry "" could not be stripped from variable "LD_LIBRARY_PATH"
+     3.994 D | Env: stripped "LD_LIBRARY_PATH" "/run/opengl-driver/lib:/nix/store/zmjqwzhgl9hwr8xnk8raj8d50lzkql66-gcc-14.3.0-lib/lib:/nix/store/pi4x21ykq2sp2kn7d6ag1qcq2r9vh9ld-glfw-minecraft-3.4/lib:/nix/store/8yjqk1m8mcsy1fb4sy5wcl44bgq0fmgy-openal-soft-1.24.3/lib:/nix/store/jkr9d5sqkvxyb9nm4n704gjdwkc9cd42-alsa-lib-1.2.14/lib:/nix/store/rymaz3kix2642nb8rl23wk8n0lmcdqkh-libjack2-1.9.22/lib:/nix/store/257525xb5cvv0s718836wql5b2f9vwpb-libpulseaudio-17.0/lib:/nix/store/8d6yp75zdr5zqfb71k84fq7dczwpkf41-pipewire-1.4.9/lib:/nix/store/v0dmz23d6lnzwcrps1sky0q4f0vy6yph-libglvnd-1.7.0/lib:/nix/store/d8ichf2lplx593rnnjlf9i0yimmxr244-libx11-1.8.12/lib:/nix/store/z31661zix58xdmbyrr339msiia1pf3c4-libxcursor-1.2.3/lib:/nix/store/9lhnj4w8lvj3mmlif5yv6xv5d1cb35gg-libxext-1.3.6/lib:/nix/store/z1if2zpg430a41v9jci6z5lpjgskil1g-libxrandr-1.5.4/lib:/nix/store/548chq703v1mya48mh26xylgqb9m3i87-libxxf86vm-1.1.6/lib:/nix/store/k31ib8a2xkhv19d404khgk589kgdiv8f-systemd-minimal-libs-258/lib:/nix/store/z035pkccpi5jv3qdkwsa8h5y0p86ma0w-vulkan-loader-1.4.328.0/lib:/nix/store/jyr6zm92a2hb3mhpr6ld9jqjcgkc5sn9-flite-2.2-lib/lib:/nix/store/asa1kz0xh327z9mnkf0v39j9winbb5cy-gamemode-1.8.2-lib/lib:/nix/store/1g17jf34jnrf4zm3vfcvc2maj9m8nx3d-libusb-1.0.29/lib" to "/run/opengl-driver/lib:/nix/store/zmjqwzhgl9hwr8xnk8raj8d50lzkql66-gcc-14.3.0-lib/lib:/nix/store/pi4x21ykq2sp2kn7d6ag1qcq2r9vh9ld-glfw-minecraft-3.4/lib:/nix/store/8yjqk1m8mcsy1fb4sy5wcl44bgq0fmgy-openal-soft-1.24.3/lib:/nix/store/jkr9d5sqkvxyb9nm4n704gjdwkc9cd42-alsa-lib-1.2.14/lib:/nix/store/rymaz3kix2642nb8rl23wk8n0lmcdqkh-libjack2-1.9.22/lib:/nix/store/257525xb5cvv0s718836wql5b2f9vwpb-libpulseaudio-17.0/lib:/nix/store/8d6yp75zdr5zqfb71k84fq7dczwpkf41-pipewire-1.4.9/lib:/nix/store/v0dmz23d6lnzwcrps1sky0q4f0vy6yph-libglvnd-1.7.0/lib:/nix/store/d8ichf2lplx593rnnjlf9i0yimmxr244-libx11-1.8.12/lib:/nix/store/z31661zix58xdmbyrr339msiia1pf3c4-libxcursor-1.2.3/lib:/nix/store/9lhnj4w8lvj3mmlif5yv6xv5d1cb35gg-libxext-1.3.6/lib:/nix/store/z1if2zpg430a41v9jci6z5lpjgskil1g-libxrandr-1.5.4/lib:/nix/store/548chq703v1mya48mh26xylgqb9m3i87-libxxf86vm-1.1.6/lib:/nix/store/k31ib8a2xkhv19d404khgk589kgdiv8f-systemd-minimal-libs-258/lib:/nix/store/z035pkccpi5jv3qdkwsa8h5y0p86ma0w-vulkan-loader-1.4.328.0/lib:/nix/store/jyr6zm92a2hb3mhpr6ld9jqjcgkc5sn9-flite-2.2-lib/lib:/nix/store/asa1kz0xh327z9mnkf0v39j9winbb5cy-gamemode-1.8.2-lib/lib:/nix/store/1g17jf34jnrf4zm3vfcvc2maj9m8nx3d-libusb-1.0.29/lib"
+     3.994 W | Entry "" could not be stripped from variable "QT_PLUGIN_PATH"
+     3.994 D | Env: stripped "QT_PLUGIN_PATH" "/nix/store/9a63r7wm744vp4hylxqc4431rbhjw3dr-qtwayland-6.10.0/lib/qt-6/plugins:/nix/store/ncpal3v5rzw6snnzq3bh8bdqzhn2c28c-qtdeclarative-6.10.0/lib/qt-6/plugins:/nix/store/2862y52k6j0436yx30y81qf19f56y2vd-qtsvg-6.10.0/lib/qt-6/plugins:/nix/store/035nwyn9za836bmcy0yzj4ys0nwry9dj-qtbase-6.10.0/lib/qt-6/plugins:/nix/store/q5k1icwwdwchmi7gd8w6q6zqxrilnmp6-qtwayland-6.10.0-only-plugins-qml/lib/qt-6/plugins:/nix/store/kf7f10aw4mv2ma0f9wcipmg770xdjqxm-qtbase-6.10.0-only-plugins-qml/lib/qt-6/plugins" to "/nix/store/9a63r7wm744vp4hylxqc4431rbhjw3dr-qtwayland-6.10.0/lib/qt-6/plugins:/nix/store/ncpal3v5rzw6snnzq3bh8bdqzhn2c28c-qtdeclarative-6.10.0/lib/qt-6/plugins:/nix/store/2862y52k6j0436yx30y81qf19f56y2vd-qtsvg-6.10.0/lib/qt-6/plugins:/nix/store/035nwyn9za836bmcy0yzj4ys0nwry9dj-qtbase-6.10.0/lib/qt-6/plugins:/nix/store/q5k1icwwdwchmi7gd8w6q6zqxrilnmp6-qtwayland-6.10.0-only-plugins-qml/lib/qt-6/plugins:/nix/store/kf7f10aw4mv2ma0f9wcipmg770xdjqxm-qtbase-6.10.0-only-plugins-qml/lib/qt-6/plugins"
+     3.994 D | Running java checker: "/nix/store/gxjm3qjq9kyvi5hv7r4s8ngbkg1d94df-openjdk-21.0.9+8/bin/java" "-jar /nix/store/d2clqcfbhm3cn4nkpz0a7mjhs7li15a4-prismlauncher-unwrapped-9.4/share/PrismLauncher/JavaCheck.jar"
+     3.995 W | Entry "" could not be stripped from variable "LD_LIBRARY_PATH"
+     3.995 D | Env: stripped "LD_LIBRARY_PATH" "/run/opengl-driver/lib:/nix/store/zmjqwzhgl9hwr8xnk8raj8d50lzkql66-gcc-14.3.0-lib/lib:/nix/store/pi4x21ykq2sp2kn7d6ag1qcq2r9vh9ld-glfw-minecraft-3.4/lib:/nix/store/8yjqk1m8mcsy1fb4sy5wcl44bgq0fmgy-openal-soft-1.24.3/lib:/nix/store/jkr9d5sqkvxyb9nm4n704gjdwkc9cd42-alsa-lib-1.2.14/lib:/nix/store/rymaz3kix2642nb8rl23wk8n0lmcdqkh-libjack2-1.9.22/lib:/nix/store/257525xb5cvv0s718836wql5b2f9vwpb-libpulseaudio-17.0/lib:/nix/store/8d6yp75zdr5zqfb71k84fq7dczwpkf41-pipewire-1.4.9/lib:/nix/store/v0dmz23d6lnzwcrps1sky0q4f0vy6yph-libglvnd-1.7.0/lib:/nix/store/d8ichf2lplx593rnnjlf9i0yimmxr244-libx11-1.8.12/lib:/nix/store/z31661zix58xdmbyrr339msiia1pf3c4-libxcursor-1.2.3/lib:/nix/store/9lhnj4w8lvj3mmlif5yv6xv5d1cb35gg-libxext-1.3.6/lib:/nix/store/z1if2zpg430a41v9jci6z5lpjgskil1g-libxrandr-1.5.4/lib:/nix/store/548chq703v1mya48mh26xylgqb9m3i87-libxxf86vm-1.1.6/lib:/nix/store/k31ib8a2xkhv19d404khgk589kgdiv8f-systemd-minimal-libs-258/lib:/nix/store/z035pkccpi5jv3qdkwsa8h5y0p86ma0w-vulkan-loader-1.4.328.0/lib:/nix/store/jyr6zm92a2hb3mhpr6ld9jqjcgkc5sn9-flite-2.2-lib/lib:/nix/store/asa1kz0xh327z9mnkf0v39j9winbb5cy-gamemode-1.8.2-lib/lib:/nix/store/1g17jf34jnrf4zm3vfcvc2maj9m8nx3d-libusb-1.0.29/lib" to "/run/opengl-driver/lib:/nix/store/zmjqwzhgl9hwr8xnk8raj8d50lzkql66-gcc-14.3.0-lib/lib:/nix/store/pi4x21ykq2sp2kn7d6ag1qcq2r9vh9ld-glfw-minecraft-3.4/lib:/nix/store/8yjqk1m8mcsy1fb4sy5wcl44bgq0fmgy-openal-soft-1.24.3/lib:/nix/store/jkr9d5sqkvxyb9nm4n704gjdwkc9cd42-alsa-lib-1.2.14/lib:/nix/store/rymaz3kix2642nb8rl23wk8n0lmcdqkh-libjack2-1.9.22/lib:/nix/store/257525xb5cvv0s718836wql5b2f9vwpb-libpulseaudio-17.0/lib:/nix/store/8d6yp75zdr5zqfb71k84fq7dczwpkf41-pipewire-1.4.9/lib:/nix/store/v0dmz23d6lnzwcrps1sky0q4f0vy6yph-libglvnd-1.7.0/lib:/nix/store/d8ichf2lplx593rnnjlf9i0yimmxr244-libx11-1.8.12/lib:/nix/store/z31661zix58xdmbyrr339msiia1pf3c4-libxcursor-1.2.3/lib:/nix/store/9lhnj4w8lvj3mmlif5yv6xv5d1cb35gg-libxext-1.3.6/lib:/nix/store/z1if2zpg430a41v9jci6z5lpjgskil1g-libxrandr-1.5.4/lib:/nix/store/548chq703v1mya48mh26xylgqb9m3i87-libxxf86vm-1.1.6/lib:/nix/store/k31ib8a2xkhv19d404khgk589kgdiv8f-systemd-minimal-libs-258/lib:/nix/store/z035pkccpi5jv3qdkwsa8h5y0p86ma0w-vulkan-loader-1.4.328.0/lib:/nix/store/jyr6zm92a2hb3mhpr6ld9jqjcgkc5sn9-flite-2.2-lib/lib:/nix/store/asa1kz0xh327z9mnkf0v39j9winbb5cy-gamemode-1.8.2-lib/lib:/nix/store/1g17jf34jnrf4zm3vfcvc2maj9m8nx3d-libusb-1.0.29/lib"
+     3.995 W | Entry "" could not be stripped from variable "QT_PLUGIN_PATH"
+     3.995 D | Env: stripped "QT_PLUGIN_PATH" "/nix/store/9a63r7wm744vp4hylxqc4431rbhjw3dr-qtwayland-6.10.0/lib/qt-6/plugins:/nix/store/ncpal3v5rzw6snnzq3bh8bdqzhn2c28c-qtdeclarative-6.10.0/lib/qt-6/plugins:/nix/store/2862y52k6j0436yx30y81qf19f56y2vd-qtsvg-6.10.0/lib/qt-6/plugins:/nix/store/035nwyn9za836bmcy0yzj4ys0nwry9dj-qtbase-6.10.0/lib/qt-6/plugins:/nix/store/q5k1icwwdwchmi7gd8w6q6zqxrilnmp6-qtwayland-6.10.0-only-plugins-qml/lib/qt-6/plugins:/nix/store/kf7f10aw4mv2ma0f9wcipmg770xdjqxm-qtbase-6.10.0-only-plugins-qml/lib/qt-6/plugins" to "/nix/store/9a63r7wm744vp4hylxqc4431rbhjw3dr-qtwayland-6.10.0/lib/qt-6/plugins:/nix/store/ncpal3v5rzw6snnzq3bh8bdqzhn2c28c-qtdeclarative-6.10.0/lib/qt-6/plugins:/nix/store/2862y52k6j0436yx30y81qf19f56y2vd-qtsvg-6.10.0/lib/qt-6/plugins:/nix/store/035nwyn9za836bmcy0yzj4ys0nwry9dj-qtbase-6.10.0/lib/qt-6/plugins:/nix/store/q5k1icwwdwchmi7gd8w6q6zqxrilnmp6-qtwayland-6.10.0-only-plugins-qml/lib/qt-6/plugins:/nix/store/kf7f10aw4mv2ma0f9wcipmg770xdjqxm-qtbase-6.10.0-only-plugins-qml/lib/qt-6/plugins"
+     3.995 D | Running java checker: "/nix/store/p3bfrj38ikjbv5qvf6j04dprkgzlwsr2-openjdk-17.0.17+10/bin/java" "-jar /nix/store/d2clqcfbhm3cn4nkpz0a7mjhs7li15a4-prismlauncher-unwrapped-9.4/share/PrismLauncher/JavaCheck.jar"
+     3.996 W | Entry "" could not be stripped from variable "LD_LIBRARY_PATH"
+     3.996 D | Env: stripped "LD_LIBRARY_PATH" "/run/opengl-driver/lib:/nix/store/zmjqwzhgl9hwr8xnk8raj8d50lzkql66-gcc-14.3.0-lib/lib:/nix/store/pi4x21ykq2sp2kn7d6ag1qcq2r9vh9ld-glfw-minecraft-3.4/lib:/nix/store/8yjqk1m8mcsy1fb4sy5wcl44bgq0fmgy-openal-soft-1.24.3/lib:/nix/store/jkr9d5sqkvxyb9nm4n704gjdwkc9cd42-alsa-lib-1.2.14/lib:/nix/store/rymaz3kix2642nb8rl23wk8n0lmcdqkh-libjack2-1.9.22/lib:/nix/store/257525xb5cvv0s718836wql5b2f9vwpb-libpulseaudio-17.0/lib:/nix/store/8d6yp75zdr5zqfb71k84fq7dczwpkf41-pipewire-1.4.9/lib:/nix/store/v0dmz23d6lnzwcrps1sky0q4f0vy6yph-libglvnd-1.7.0/lib:/nix/store/d8ichf2lplx593rnnjlf9i0yimmxr244-libx11-1.8.12/lib:/nix/store/z31661zix58xdmbyrr339msiia1pf3c4-libxcursor-1.2.3/lib:/nix/store/9lhnj4w8lvj3mmlif5yv6xv5d1cb35gg-libxext-1.3.6/lib:/nix/store/z1if2zpg430a41v9jci6z5lpjgskil1g-libxrandr-1.5.4/lib:/nix/store/548chq703v1mya48mh26xylgqb9m3i87-libxxf86vm-1.1.6/lib:/nix/store/k31ib8a2xkhv19d404khgk589kgdiv8f-systemd-minimal-libs-258/lib:/nix/store/z035pkccpi5jv3qdkwsa8h5y0p86ma0w-vulkan-loader-1.4.328.0/lib:/nix/store/jyr6zm92a2hb3mhpr6ld9jqjcgkc5sn9-flite-2.2-lib/lib:/nix/store/asa1kz0xh327z9mnkf0v39j9winbb5cy-gamemode-1.8.2-lib/lib:/nix/store/1g17jf34jnrf4zm3vfcvc2maj9m8nx3d-libusb-1.0.29/lib" to "/run/opengl-driver/lib:/nix/store/zmjqwzhgl9hwr8xnk8raj8d50lzkql66-gcc-14.3.0-lib/lib:/nix/store/pi4x21ykq2sp2kn7d6ag1qcq2r9vh9ld-glfw-minecraft-3.4/lib:/nix/store/8yjqk1m8mcsy1fb4sy5wcl44bgq0fmgy-openal-soft-1.24.3/lib:/nix/store/jkr9d5sqkvxyb9nm4n704gjdwkc9cd42-alsa-lib-1.2.14/lib:/nix/store/rymaz3kix2642nb8rl23wk8n0lmcdqkh-libjack2-1.9.22/lib:/nix/store/257525xb5cvv0s718836wql5b2f9vwpb-libpulseaudio-17.0/lib:/nix/store/8d6yp75zdr5zqfb71k84fq7dczwpkf41-pipewire-1.4.9/lib:/nix/store/v0dmz23d6lnzwcrps1sky0q4f0vy6yph-libglvnd-1.7.0/lib:/nix/store/d8ichf2lplx593rnnjlf9i0yimmxr244-libx11-1.8.12/lib:/nix/store/z31661zix58xdmbyrr339msiia1pf3c4-libxcursor-1.2.3/lib:/nix/store/9lhnj4w8lvj3mmlif5yv6xv5d1cb35gg-libxext-1.3.6/lib:/nix/store/z1if2zpg430a41v9jci6z5lpjgskil1g-libxrandr-1.5.4/lib:/nix/store/548chq703v1mya48mh26xylgqb9m3i87-libxxf86vm-1.1.6/lib:/nix/store/k31ib8a2xkhv19d404khgk589kgdiv8f-systemd-minimal-libs-258/lib:/nix/store/z035pkccpi5jv3qdkwsa8h5y0p86ma0w-vulkan-loader-1.4.328.0/lib:/nix/store/jyr6zm92a2hb3mhpr6ld9jqjcgkc5sn9-flite-2.2-lib/lib:/nix/store/asa1kz0xh327z9mnkf0v39j9winbb5cy-gamemode-1.8.2-lib/lib:/nix/store/1g17jf34jnrf4zm3vfcvc2maj9m8nx3d-libusb-1.0.29/lib"
+     3.996 W | Entry "" could not be stripped from variable "QT_PLUGIN_PATH"
+     3.996 D | Env: stripped "QT_PLUGIN_PATH" "/nix/store/9a63r7wm744vp4hylxqc4431rbhjw3dr-qtwayland-6.10.0/lib/qt-6/plugins:/nix/store/ncpal3v5rzw6snnzq3bh8bdqzhn2c28c-qtdeclarative-6.10.0/lib/qt-6/plugins:/nix/store/2862y52k6j0436yx30y81qf19f56y2vd-qtsvg-6.10.0/lib/qt-6/plugins:/nix/store/035nwyn9za836bmcy0yzj4ys0nwry9dj-qtbase-6.10.0/lib/qt-6/plugins:/nix/store/q5k1icwwdwchmi7gd8w6q6zqxrilnmp6-qtwayland-6.10.0-only-plugins-qml/lib/qt-6/plugins:/nix/store/kf7f10aw4mv2ma0f9wcipmg770xdjqxm-qtbase-6.10.0-only-plugins-qml/lib/qt-6/plugins" to "/nix/store/9a63r7wm744vp4hylxqc4431rbhjw3dr-qtwayland-6.10.0/lib/qt-6/plugins:/nix/store/ncpal3v5rzw6snnzq3bh8bdqzhn2c28c-qtdeclarative-6.10.0/lib/qt-6/plugins:/nix/store/2862y52k6j0436yx30y81qf19f56y2vd-qtsvg-6.10.0/lib/qt-6/plugins:/nix/store/035nwyn9za836bmcy0yzj4ys0nwry9dj-qtbase-6.10.0/lib/qt-6/plugins:/nix/store/q5k1icwwdwchmi7gd8w6q6zqxrilnmp6-qtwayland-6.10.0-only-plugins-qml/lib/qt-6/plugins:/nix/store/kf7f10aw4mv2ma0f9wcipmg770xdjqxm-qtbase-6.10.0-only-plugins-qml/lib/qt-6/plugins"
+     3.996 D | Running java checker: "/nix/store/w89qf2w1biwvy4q9nv9wbwidrxcb260s-openjdk-8u472-b08/bin/java" "-jar /nix/store/d2clqcfbhm3cn4nkpz0a7mjhs7li15a4-prismlauncher-unwrapped-9.4/share/PrismLauncher/JavaCheck.jar"
+     4.036 D | STDOUT "os.arch=aarch64\njava.version=21.0.9\njava.vendor=N/A\n"
+     4.037 W | STDERR ""
+     4.037 D | Java checker finished with status QProcess::NormalExit exit code 0
+     4.037 D | Java checker succeeded.
+     4.050 D | STDOUT "os.arch=aarch64\njava.version=17.0.17\njava.vendor=N/A\n"
+     4.050 W | STDERR ""
+     4.050 D | Java checker finished with status QProcess::NormalExit exit code 0
+     4.050 D | Java checker succeeded.
+     4.075 D | STDOUT "os.arch=aarch64\njava.version=21.0.9\njava.vendor=N/A\n"
+     4.075 W | STDERR ""
+     4.075 D | Java checker finished with status QProcess::NormalExit exit code 0
+     4.075 D | Java checker succeeded.
+     4.082 D | STDOUT "os.arch=aarch64\njava.version=1.8.0_472\njava.vendor=Oracle Corporation\n"
+     4.082 W | STDERR ""
+     4.082 D | Java checker finished with status QProcess::NormalExit exit code 0
+     4.083 D | Java checker succeeded.
+     4.083 D | Found the following valid Java installations:
+     4.083 D |   "21.0.9" "aarch64" "java"
+     4.084 D |   "21.0.9" "aarch64" "/nix/store/gxjm3qjq9kyvi5hv7r4s8ngbkg1d94df-openjdk-21.0.9+8/bin/java"
+     4.084 D |   "17.0.17" "aarch64" "/nix/store/p3bfrj38ikjbv5qvf6j04dprkgzlwsr2-openjdk-17.0.17+10/bin/java"
+     4.084 D |   "1.8.0_472" "aarch64" "/nix/store/w89qf2w1biwvy4q9nv9wbwidrxcb260s-openjdk-8u472-b08/bin/java"
+     4.084 W | beginResetModel called on JavaInstallList(0x5555b2313c90) without calling endResetModel first
+     4.084 W | beginResetModel called on VersionFilterModel(0x5555b1e6cee0) without calling endResetModel first
+     4.084 W | beginResetModel called on VersionProxyModel(0x5555b1e6d1a0) without calling endResetModel first
+     4.084 W | endResetModel called on JavaInstallList(0x5555b2313c90) without calling beginResetModel first
+     4.084 W | endResetModel called on VersionFilterModel(0x5555b1e6cee0) without calling beginResetModel first
+     4.084 W | endResetModel called on VersionProxyModel(0x5555b1e6d1a0) without calling beginResetModel first
+     4.086 W | Entry "" could not be stripped from variable "LD_LIBRARY_PATH"
+     4.086 D | Env: stripped "LD_LIBRARY_PATH" "/run/opengl-driver/lib:/nix/store/zmjqwzhgl9hwr8xnk8raj8d50lzkql66-gcc-14.3.0-lib/lib:/nix/store/pi4x21ykq2sp2kn7d6ag1qcq2r9vh9ld-glfw-minecraft-3.4/lib:/nix/store/8yjqk1m8mcsy1fb4sy5wcl44bgq0fmgy-openal-soft-1.24.3/lib:/nix/store/jkr9d5sqkvxyb9nm4n704gjdwkc9cd42-alsa-lib-1.2.14/lib:/nix/store/rymaz3kix2642nb8rl23wk8n0lmcdqkh-libjack2-1.9.22/lib:/nix/store/257525xb5cvv0s718836wql5b2f9vwpb-libpulseaudio-17.0/lib:/nix/store/8d6yp75zdr5zqfb71k84fq7dczwpkf41-pipewire-1.4.9/lib:/nix/store/v0dmz23d6lnzwcrps1sky0q4f0vy6yph-libglvnd-1.7.0/lib:/nix/store/d8ichf2lplx593rnnjlf9i0yimmxr244-libx11-1.8.12/lib:/nix/store/z31661zix58xdmbyrr339msiia1pf3c4-libxcursor-1.2.3/lib:/nix/store/9lhnj4w8lvj3mmlif5yv6xv5d1cb35gg-libxext-1.3.6/lib:/nix/store/z1if2zpg430a41v9jci6z5lpjgskil1g-libxrandr-1.5.4/lib:/nix/store/548chq703v1mya48mh26xylgqb9m3i87-libxxf86vm-1.1.6/lib:/nix/store/k31ib8a2xkhv19d404khgk589kgdiv8f-systemd-minimal-libs-258/lib:/nix/store/z035pkccpi5jv3qdkwsa8h5y0p86ma0w-vulkan-loader-1.4.328.0/lib:/nix/store/jyr6zm92a2hb3mhpr6ld9jqjcgkc5sn9-flite-2.2-lib/lib:/nix/store/asa1kz0xh327z9mnkf0v39j9winbb5cy-gamemode-1.8.2-lib/lib:/nix/store/1g17jf34jnrf4zm3vfcvc2maj9m8nx3d-libusb-1.0.29/lib" to "/run/opengl-driver/lib:/nix/store/zmjqwzhgl9hwr8xnk8raj8d50lzkql66-gcc-14.3.0-lib/lib:/nix/store/pi4x21ykq2sp2kn7d6ag1qcq2r9vh9ld-glfw-minecraft-3.4/lib:/nix/store/8yjqk1m8mcsy1fb4sy5wcl44bgq0fmgy-openal-soft-1.24.3/lib:/nix/store/jkr9d5sqkvxyb9nm4n704gjdwkc9cd42-alsa-lib-1.2.14/lib:/nix/store/rymaz3kix2642nb8rl23wk8n0lmcdqkh-libjack2-1.9.22/lib:/nix/store/257525xb5cvv0s718836wql5b2f9vwpb-libpulseaudio-17.0/lib:/nix/store/8d6yp75zdr5zqfb71k84fq7dczwpkf41-pipewire-1.4.9/lib:/nix/store/v0dmz23d6lnzwcrps1sky0q4f0vy6yph-libglvnd-1.7.0/lib:/nix/store/d8ichf2lplx593rnnjlf9i0yimmxr244-libx11-1.8.12/lib:/nix/store/z31661zix58xdmbyrr339msiia1pf3c4-libxcursor-1.2.3/lib:/nix/store/9lhnj4w8lvj3mmlif5yv6xv5d1cb35gg-libxext-1.3.6/lib:/nix/store/z1if2zpg430a41v9jci6z5lpjgskil1g-libxrandr-1.5.4/lib:/nix/store/548chq703v1mya48mh26xylgqb9m3i87-libxxf86vm-1.1.6/lib:/nix/store/k31ib8a2xkhv19d404khgk589kgdiv8f-systemd-minimal-libs-258/lib:/nix/store/z035pkccpi5jv3qdkwsa8h5y0p86ma0w-vulkan-loader-1.4.328.0/lib:/nix/store/jyr6zm92a2hb3mhpr6ld9jqjcgkc5sn9-flite-2.2-lib/lib:/nix/store/asa1kz0xh327z9mnkf0v39j9winbb5cy-gamemode-1.8.2-lib/lib:/nix/store/1g17jf34jnrf4zm3vfcvc2maj9m8nx3d-libusb-1.0.29/lib"
+     4.086 W | Entry "" could not be stripped from variable "QT_PLUGIN_PATH"
+     4.086 D | Env: stripped "QT_PLUGIN_PATH" "/nix/store/9a63r7wm744vp4hylxqc4431rbhjw3dr-qtwayland-6.10.0/lib/qt-6/plugins:/nix/store/ncpal3v5rzw6snnzq3bh8bdqzhn2c28c-qtdeclarative-6.10.0/lib/qt-6/plugins:/nix/store/2862y52k6j0436yx30y81qf19f56y2vd-qtsvg-6.10.0/lib/qt-6/plugins:/nix/store/035nwyn9za836bmcy0yzj4ys0nwry9dj-qtbase-6.10.0/lib/qt-6/plugins:/nix/store/q5k1icwwdwchmi7gd8w6q6zqxrilnmp6-qtwayland-6.10.0-only-plugins-qml/lib/qt-6/plugins:/nix/store/kf7f10aw4mv2ma0f9wcipmg770xdjqxm-qtbase-6.10.0-only-plugins-qml/lib/qt-6/plugins" to "/nix/store/9a63r7wm744vp4hylxqc4431rbhjw3dr-qtwayland-6.10.0/lib/qt-6/plugins:/nix/store/ncpal3v5rzw6snnzq3bh8bdqzhn2c28c-qtdeclarative-6.10.0/lib/qt-6/plugins:/nix/store/2862y52k6j0436yx30y81qf19f56y2vd-qtsvg-6.10.0/lib/qt-6/plugins:/nix/store/035nwyn9za836bmcy0yzj4ys0nwry9dj-qtbase-6.10.0/lib/qt-6/plugins:/nix/store/q5k1icwwdwchmi7gd8w6q6zqxrilnmp6-qtwayland-6.10.0-only-plugins-qml/lib/qt-6/plugins:/nix/store/kf7f10aw4mv2ma0f9wcipmg770xdjqxm-qtbase-6.10.0-only-plugins-qml/lib/qt-6/plugins"
+     4.086 D | Running java checker: "/nix/store/w89qf2w1biwvy4q9nv9wbwidrxcb260s-openjdk-8u472-b08/bin/java" "-Xms512m -Xmx4096m -jar /nix/store/d2clqcfbhm3cn4nkpz0a7mjhs7li15a4-prismlauncher-unwrapped-9.4/share/PrismLauncher/JavaCheck.jar"
+     4.144 D | STDOUT "os.arch=aarch64\njava.version=1.8.0_472\njava.vendor=Oracle Corporation\n"
+     4.144 W | STDERR ""
+     4.144 D | Java checker finished with status QProcess::NormalExit exit code 0
+     4.144 D | Java checker succeeded.
+    31.946 D | [launcher.task.net.metacache.http]: Saving metacache with 14 entries
+    43.074 D | [Theme] <> Icon theme set.
+    43.074 D | [Theme] applying theme "System"
+    43.129 D | [Theme] <> Application theme set.
+    43.130 D | Setting Icons
+    43.154 D | Setting Icons
+    46.885 D | Setting Cat
+    46.885 D | [Theme] applying catpack "teawie"
+    46.891 D | Setting Cat
+    46.892 D | [Theme] applying catpack "teawie"
+    48.737 D | Setting Cat
+    48.737 D | [Theme] applying catpack "rory-flat"
+    48.739 D | Setting Cat
+    48.739 D | [Theme] applying catpack "rory-flat"
+    50.186 D | Setting Cat
+    50.186 D | [Theme] applying catpack "rory"
+    50.189 D | Setting Cat
+    50.189 D | [Theme] applying catpack "rory"
+    51.876 D | Setting Cat
+    51.876 D | [Theme] applying catpack "rory-flat"
+    51.878 D | Setting Cat
+    51.878 D | [Theme] applying catpack "rory-flat"
+    54.014 D | Setting Cat
+    54.014 D | [Theme] applying catpack "rory"
+    54.017 D | Setting Cat
+    54.017 D | [Theme] applying catpack "rory"
+    56.162 D | Setting Icons
+    56.169 D | Setting Cat
+    56.169 D | [Theme] applying catpack "rory"
+    56.170 D | [Theme] <> Initializing Icon Themes
+    56.170 D | [Theme] Loaded Built-In Icon Theme "pe_colored"
+    56.170 D | [Theme] Loaded Built-In Icon Theme "pe_light"
+    56.170 D | [Theme] Loaded Built-In Icon Theme "pe_dark"
+    56.170 D | [Theme] Loaded Built-In Icon Theme "pe_blue"
+    56.171 D | [Theme] Loaded Built-In Icon Theme "breeze_light"
+    56.171 D | [Theme] Loaded Built-In Icon Theme "breeze_dark"
+    56.171 D | [Theme] Loaded Built-In Icon Theme "OSX"
+    56.171 D | [Theme] Loaded Built-In Icon Theme "iOS"
+    56.171 D | [Theme] Loaded Built-In Icon Theme "flat"
+    56.171 D | [Theme] Loaded Built-In Icon Theme "flat_white"
+    56.171 D | [Theme] Loaded Built-In Icon Theme "multimc"
+    56.171 D | [Theme] Icon Theme Folder Path:  "/home/chaos/.local/share/PrismLauncher/iconthemes"
+    56.171 D | [Theme] <> Icon themes initialized.
+    56.171 D | [Theme] <> Initializing Widget Themes
+    56.171 D | [Theme] Loading Built-in Theme: "system"
+    56.171 D | [Theme] Loading Built-in Theme: "dark"
+    56.171 D | [Theme] Loading Built-in Theme: "bright"
+    56.171 D | [Theme] <> Initializing System Widget Themes
+    56.171 D | [Theme] Loading System Theme: "Windows"
+    56.171 D | [Theme] Loading System Theme: "Fusion"
+    56.171 D | [Theme] Theme Folder Path:  "/home/chaos/.local/share/PrismLauncher/themes"
+    56.171 D | [Theme] <> Widget themes initialized.
+    56.171 D | [Theme] CatPacks Folder Path: "/home/chaos/.local/share/PrismLauncher/catpacks"
+    60.039 D | [Theme] <> Icon theme set.
+    60.039 D | [Theme] applying theme "System"
+    60.107 D | [Theme] <> Application theme set.
+    60.107 D | Setting Icons
+    62.245 D | [Theme] <> Icon theme set.
+    62.245 D | [Theme] applying theme "System"
+    62.270 D | [Theme] <> Application theme set.
+    62.271 D | Setting Icons
+    67.542 D | AuthFlow: "Logging in with Microsoft account."
+    67.542 D | AuthFlow: "Logging in with Microsoft account(device code)."
+    67.542 D | [launcher.task.net.upload]: "{f5458c9c-db89-42d7-a1f5-2d18169be717}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode"
+    69.545 D | [launcher.task.net.upload]: "{f5458c9c-db89-42d7-a1f5-2d18169be717}" Request succeeded: "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode"
+    71.782 D | Opening URL "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id=c36a9fb6-4f2a-41ff-90bd-ae7cc92031eb&code_challenge=Ie0JNmJUQT8X_K3L1CFdPhe3Vo4HOBc8z9ievLA5uo0&code_challenge_method=S256&prompt=select_account&redirect_uri=prismlauncher://oauth/microsoft&response_type=code&scope=XboxLive.SignIn XboxLive.offline_access&state=WTk-0VGz"
+    74.950 D | [launcher.task.net.upload]: "{1ad4112f-505f-40f9-89f5-8838b9764f60}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+    76.133 C | [launcher.task.net.upload]: "{1ad4112f-505f-40f9-89f5-8838b9764f60}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+    76.133 C | [launcher.task.net.upload]: "{1ad4112f-505f-40f9-89f5-8838b9764f60}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+    76.134 D | [launcher.task.net.upload]: "{1ad4112f-505f-40f9-89f5-8838b9764f60}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+    80.946 D | [launcher.task.net.upload]: "{3c9bda29-9b58-46dd-af87-e2d42ed65979}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+    81.750 C | [launcher.task.net.upload]: "{3c9bda29-9b58-46dd-af87-e2d42ed65979}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+    81.750 C | [launcher.task.net.upload]: "{3c9bda29-9b58-46dd-af87-e2d42ed65979}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+    81.750 D | [launcher.task.net.upload]: "{3c9bda29-9b58-46dd-af87-e2d42ed65979}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+    86.948 D | [launcher.task.net.upload]: "{31b381ec-e455-4d0a-b065-69fefd2ce31f}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+    87.587 C | [launcher.task.net.upload]: "{31b381ec-e455-4d0a-b065-69fefd2ce31f}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+    87.587 C | [launcher.task.net.upload]: "{31b381ec-e455-4d0a-b065-69fefd2ce31f}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+    87.587 D | [launcher.task.net.upload]: "{31b381ec-e455-4d0a-b065-69fefd2ce31f}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+    92.946 D | [launcher.task.net.upload]: "{48b1a0f6-6e92-43b4-ac18-9ab18a2704e8}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+    93.589 C | [launcher.task.net.upload]: "{48b1a0f6-6e92-43b4-ac18-9ab18a2704e8}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+    93.589 C | [launcher.task.net.upload]: "{48b1a0f6-6e92-43b4-ac18-9ab18a2704e8}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+    93.589 D | [launcher.task.net.upload]: "{48b1a0f6-6e92-43b4-ac18-9ab18a2704e8}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+    98.946 D | [launcher.task.net.upload]: "{25d2dbb0-1ec3-4d8e-876c-542efa8c3d08}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+    99.539 C | [launcher.task.net.upload]: "{25d2dbb0-1ec3-4d8e-876c-542efa8c3d08}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+    99.539 C | [launcher.task.net.upload]: "{25d2dbb0-1ec3-4d8e-876c-542efa8c3d08}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+    99.539 D | [launcher.task.net.upload]: "{25d2dbb0-1ec3-4d8e-876c-542efa8c3d08}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   104.947 D | [launcher.task.net.upload]: "{27201430-c299-4602-ae7f-6f549c0b0c34}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   105.559 C | [launcher.task.net.upload]: "{27201430-c299-4602-ae7f-6f549c0b0c34}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   105.559 C | [launcher.task.net.upload]: "{27201430-c299-4602-ae7f-6f549c0b0c34}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   105.559 D | [launcher.task.net.upload]: "{27201430-c299-4602-ae7f-6f549c0b0c34}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   110.947 D | [launcher.task.net.upload]: "{f85b29b0-5496-42d0-9971-389607a8634d}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   112.690 C | [launcher.task.net.upload]: "{f85b29b0-5496-42d0-9971-389607a8634d}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   112.690 C | [launcher.task.net.upload]: "{f85b29b0-5496-42d0-9971-389607a8634d}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   112.690 D | [launcher.task.net.upload]: "{f85b29b0-5496-42d0-9971-389607a8634d}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   117.947 D | [launcher.task.net.upload]: "{3539b65f-26e8-47cd-b822-e8f41b34f616}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   118.644 C | [launcher.task.net.upload]: "{3539b65f-26e8-47cd-b822-e8f41b34f616}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   118.644 C | [launcher.task.net.upload]: "{3539b65f-26e8-47cd-b822-e8f41b34f616}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   118.644 D | [launcher.task.net.upload]: "{3539b65f-26e8-47cd-b822-e8f41b34f616}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   123.947 D | [launcher.task.net.upload]: "{0b26437e-f10b-4c6a-9d14-f1c7df805dce}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   124.601 C | [launcher.task.net.upload]: "{0b26437e-f10b-4c6a-9d14-f1c7df805dce}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   124.601 C | [launcher.task.net.upload]: "{0b26437e-f10b-4c6a-9d14-f1c7df805dce}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   124.601 D | [launcher.task.net.upload]: "{0b26437e-f10b-4c6a-9d14-f1c7df805dce}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   129.947 D | [launcher.task.net.upload]: "{07352ae5-f1f6-42fd-9da3-e86b98b3fb71}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   131.513 C | [launcher.task.net.upload]: "{07352ae5-f1f6-42fd-9da3-e86b98b3fb71}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   131.514 C | [launcher.task.net.upload]: "{07352ae5-f1f6-42fd-9da3-e86b98b3fb71}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   131.514 D | [launcher.task.net.upload]: "{07352ae5-f1f6-42fd-9da3-e86b98b3fb71}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   136.946 D | [launcher.task.net.upload]: "{e56a794f-a869-4453-a586-6c5534baf82a}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   137.707 C | [launcher.task.net.upload]: "{e56a794f-a869-4453-a586-6c5534baf82a}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   137.707 C | [launcher.task.net.upload]: "{e56a794f-a869-4453-a586-6c5534baf82a}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   137.707 D | [launcher.task.net.upload]: "{e56a794f-a869-4453-a586-6c5534baf82a}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   142.054 D | Opening URL "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id=c36a9fb6-4f2a-41ff-90bd-ae7cc92031eb&code_challenge=Ie0JNmJUQT8X_K3L1CFdPhe3Vo4HOBc8z9ievLA5uo0&code_challenge_method=S256&prompt=select_account&redirect_uri=prismlauncher://oauth/microsoft&response_type=code&scope=XboxLive.SignIn XboxLive.offline_access&state=WTk-0VGz"
+   142.947 D | [launcher.task.net.upload]: "{6035e4ff-0028-400c-b140-6c76769ad0d0}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   143.780 C | [launcher.task.net.upload]: "{6035e4ff-0028-400c-b140-6c76769ad0d0}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   143.780 C | [launcher.task.net.upload]: "{6035e4ff-0028-400c-b140-6c76769ad0d0}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   143.780 D | [launcher.task.net.upload]: "{6035e4ff-0028-400c-b140-6c76769ad0d0}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   148.947 D | [launcher.task.net.upload]: "{9854d9d6-f68c-4709-8c02-59df308846c0}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   151.011 C | [launcher.task.net.upload]: "{9854d9d6-f68c-4709-8c02-59df308846c0}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   151.011 C | [launcher.task.net.upload]: "{9854d9d6-f68c-4709-8c02-59df308846c0}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   151.011 D | [launcher.task.net.upload]: "{9854d9d6-f68c-4709-8c02-59df308846c0}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   154.258 D | Received message "{\"args\":{},\"command\":\"activate\"}" while still initializing. It will be ignored.
+   154.282 D | Reloading news.
+   154.284 D | Processing QUrl("prismlauncher://oauth/microsoft?code=M.C552_SN1.2.U.6887c801-6c81-1826-c5a7-342129ca6dd7&state=WTk-0VGz")
+   155.098 D | AuthFlow: "Logging in as an Xbox user."
+   155.098 D | First layer of XBox auth ... commencing.
+   155.099 D | [launcher.task.net.upload]: "{a7791761-9402-4670-9309-05fefabed09a}" Running  "https://user.auth.xboxlive.com/user/authenticate"
+   155.672 D | Finished loading RSS feed.
+   155.686 D | Loaded news entry "[Pride Month 2025 #4/4] Week 4 Showcase"
+   155.686 D | Loaded news entry "[Pride Month 2025 #3/4] Week 3 Showcase"
+   155.686 D | Loaded news entry "[Pride Month 2025 #2/4] Week 2 Showcase"
+   155.686 D | Loaded news entry "[Pride Month 2025 #1/4] Week 1 Showcase"
+   155.686 D | Loaded news entry "[Pride Month 2025 #0/4] Happy Pride!"
+   155.686 D | Loaded news entry "Prism Launcher Release 9.4, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 9.3, now available"
+   155.686 D | Loaded news entry "[April Fools 2025] Announcing Prism Premium"
+   155.686 D | Loaded news entry "Moving on from Twitter"
+   155.686 D | Loaded news entry "Prism Launcher Release 9.2, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 9.1, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 9.0, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 8.4, now available"
+   155.686 D | Loaded news entry "Microsoft authentication issues in some regions"
+   155.686 D | Loaded news entry "Prism Launcher Release 8.3, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 8.2, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 8.1, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 8.0, now available"
+   155.686 D | Loaded news entry "[MALWARE WARNING] RCE Vulnerability on some modded servers - Bleeding Pipe"
+   155.686 D | Loaded news entry "Prism Launcher Release 7.2, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 7.1, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 7.0, now available"
+   155.686 D | Loaded news entry "FTB Modpack Downloading Removal."
+   155.686 D | Loaded news entry "[MALWARE WARNING] \"fractureiser\" malware in many popular Minecraft mods and modpacks"
+   155.686 D | Loaded news entry "[SECURITY UPDATE] Prism Launcher Release 6.3, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 6.2, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 6.1, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 6.0, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 5.2, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 5.1, now available"
+   155.686 D | Loaded news entry "Prism Launcher Release 5.0, now available"
+   155.686 D | Loaded news entry "PolyMC Update 1.4.2, now available"
+   155.686 D | Loaded news entry "PolyMC Update 1.4.1, now available"
+   155.686 D | Loaded news entry "PolyMC Update 1.4.0, now available"
+   155.686 D | Loaded news entry "PolyMC Update 1.3.2, now available"
+   155.686 D | Loaded news entry "PolyMC Update 1.3.1, now available"
+   155.686 D | Loaded news entry "PolyMC Update 1.3.0, now available"
+   155.686 D | Loaded news entry "PolyMC Update 1.2.2, now available (CurseForge Hotfix)"
+   155.686 D | Loaded news entry "PolyMC Update 1.2.1, now available"
+   155.686 D | Loaded news entry "PolyMC Update 1.2.0, now available"
+   155.686 D | Loaded news entry "PolyMC Update 1.1.1, now available"
+   155.686 D | Loaded news entry "PolyMC Update 1.1.0, now available"
+   155.687 D | Loaded news entry "Moving on"
+   155.687 D | Loaded news entry "Modrinth support and Mod downloading"
+   155.687 D | Loaded news entry "New maintainers and step down."
+   155.687 D | News loading succeeded.
+   155.946 D | [launcher.task.net.upload]: "{ded3699b-aedf-42fa-a270-02994f293c4b}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   156.092 D | [launcher.task.net.upload]: "{a7791761-9402-4670-9309-05fefabed09a}" Request succeeded: "https://user.auth.xboxlive.com/user/authenticate"
+   156.092 D | Parsing "UToken" :
+   156.093 D | "UToken" is valid.
+   156.093 D | AuthFlow: "Getting authorization to access Xbox services."
+   156.093 D | Getting authorization token for  "http://xboxlive.com"
+   156.093 D | [launcher.task.net.upload]: "{e5c5838f-7abf-4553-8d85-1b121dd2ab04}" Running  "https://xsts.auth.xboxlive.com/xsts/authorize"
+   156.829 C | [launcher.task.net.upload]: "{ded3699b-aedf-42fa-a270-02994f293c4b}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   156.829 C | [launcher.task.net.upload]: "{ded3699b-aedf-42fa-a270-02994f293c4b}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   156.829 D | [launcher.task.net.upload]: "{ded3699b-aedf-42fa-a270-02994f293c4b}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   157.973 D | [launcher.task.net.upload]: "{e5c5838f-7abf-4553-8d85-1b121dd2ab04}" Request succeeded: "https://xsts.auth.xboxlive.com/xsts/authorize"
+   157.973 D | Parsing "Xbox" :
+   157.973 D | "Xbox" is valid.
+   157.973 D | AuthFlow: "Getting authorization to access Mojang services."
+   157.973 D | Getting authorization token for  "rp://api.minecraftservices.com/"
+   157.974 D | [launcher.task.net.upload]: "{3ab6c708-9cb0-4efc-a723-208be288910a}" Running  "https://xsts.auth.xboxlive.com/xsts/authorize"
+   158.299 D | [launcher.task.net.upload]: "{3ab6c708-9cb0-4efc-a723-208be288910a}" Request succeeded: "https://xsts.auth.xboxlive.com/xsts/authorize"
+   158.300 D | Parsing "Mojang" :
+   158.300 D | "Mojang" is valid.
+   158.300 D | AuthFlow: "Accessing Mojang services."
+   158.300 D | Getting Minecraft access token...
+   158.301 D | [launcher.task.net.upload]: "{2d1a70ed-894e-468d-9721-63fd612b582c}" Running  "https://api.minecraftservices.com/launcher/login"
+   160.581 D | [launcher.task.net.upload]: "{2d1a70ed-894e-468d-9721-63fd612b582c}" Request succeeded: "https://api.minecraftservices.com/launcher/login"
+   160.581 D | Parsing Mojang response...
+   160.581 D | Mojang response is valid.
+   160.581 D | AuthFlow: "Fetching Xbox profile."
+   160.581 D | Getting Xbox profile...
+   161.946 D | [launcher.task.net.upload]: "{192a5348-c491-40a8-a594-102d9e53b410}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   163.318 D | Wizard result = 0
+   170.654 W | beginResetModel called on VersionProxyModel(0x5555b26072f0) without calling endResetModel first
+   170.654 W | beginResetModel called on VersionBasicModel(0x5555b260a680) without calling endResetModel first
+   170.654 W | beginResetModel called on AllVersionProxyModel(0x5555b260a6a0) without calling endResetModel first
+   170.655 W | endResetModel called on VersionProxyModel(0x5555b26072f0) without calling beginResetModel first
+   170.655 W | endResetModel called on VersionBasicModel(0x5555b260a680) without calling beginResetModel first
+   170.655 W | endResetModel called on AllVersionProxyModel(0x5555b260a6a0) without calling beginResetModel first
+   170.660 W | The ftb app setings doesn't exist.
+   170.666 W | beginResetModel called on VersionProxyModel(0x5555b2e7bc80) without calling endResetModel first
+   170.666 W | beginResetModel called on VersionBasicModel(0x5555b2e7c3e0) without calling endResetModel first
+   170.666 W | beginResetModel called on CheckComboModel(0x5555b2cc8c00) without calling endResetModel first
+   170.667 W | endResetModel called on VersionProxyModel(0x5555b2e7bc80) without calling beginResetModel first
+   170.667 W | endResetModel called on VersionBasicModel(0x5555b2e7c3e0) without calling beginResetModel first
+   170.667 W | endResetModel called on CheckComboModel(0x5555b2cc8c00) without calling beginResetModel first
+   170.669 W | beginResetModel called on VersionProxyModel(0x5555b250c710) without calling endResetModel first
+   170.670 W | endResetModel called on VersionProxyModel(0x5555b250c710) without calling beginResetModel first
+   178.432 W | beginResetModel called on VersionProxyModel(0x5555b217f8c0) without calling endResetModel first
+   178.433 W | endResetModel called on VersionProxyModel(0x5555b217f8c0) without calling beginResetModel first
+   183.885 D | "Latest" | Component list save performed now
+   183.900 D | Discovering instances in "/home/chaos/.local/share/PrismLauncher/instances"
+   183.901 D | Found instance ID "Latest"
+   183.901 D | Will load group list now.
+   183.901 D | Loaded instance  "Latest"  from  "/home/chaos/.local/share/PrismLauncher/instances/Latest"
+   183.902 D | [launcher.instance.profile.resolve]: Loading components
+   183.902 D | "Latest" | Component list save is scheduled
+   183.902 D | [launcher.instance.profile.resolve]: "Latest" | Remote loading is being run for "net.minecraft"
+   183.903 D | [launcher.instance.profile.resolve]: "Latest" | Remote loading is being run for "net.fabricmc.fabric-loader"
+   183.903 D | [launcher.instance.profile]: "Latest" | Component list update/resolve task failed  Reason: "Some component metadata load tasks failed."
+   183.914 D | Instance-type specific settings were loaded!
+   183.925 D | Will save group list now.
+   183.929 D | Group list saved.
+   188.947 D | "Latest" | Component list save performed now
+   213.947 D | [launcher.task.net.metacache.http]: Saving metacache with 14 entries
+   413.998 D | [Theme] applying theme "Dark"
+   544.005 D | [Theme] <> Initializing Icon Themes
+   544.005 D | [Theme] Loaded Built-In Icon Theme "pe_colored"
+   544.005 D | [Theme] Loaded Built-In Icon Theme "pe_light"
+   544.005 D | [Theme] Loaded Built-In Icon Theme "pe_dark"
+   544.005 D | [Theme] Loaded Built-In Icon Theme "pe_blue"
+   544.005 D | [Theme] Loaded Built-In Icon Theme "breeze_light"
+   544.005 D | [Theme] Loaded Built-In Icon Theme "breeze_dark"
+   544.005 D | [Theme] Loaded Built-In Icon Theme "OSX"
+   544.005 D | [Theme] Loaded Built-In Icon Theme "iOS"
+   544.006 D | [Theme] Loaded Built-In Icon Theme "flat"
+   544.006 D | [Theme] Loaded Built-In Icon Theme "flat_white"
+   544.006 D | [Theme] Loaded Built-In Icon Theme "multimc"
+   544.006 D | [Theme] Icon Theme Folder Path:  "/home/chaos/.local/share/PrismLauncher/iconthemes"
+   544.006 D | [Theme] <> Icon themes initialized.
+   544.006 D | [Theme] <> Initializing Widget Themes
+   544.006 D | [Theme] Loading Built-in Theme: "system"
+   544.006 D | [Theme] Loading Built-in Theme: "dark"
+   544.006 D | [Theme] Loading Built-in Theme: "bright"
+   544.006 D | [Theme] <> Initializing System Widget Themes
+   544.006 D | [Theme] Loading System Theme: "Windows"
+   544.006 D | [Theme] Loading System Theme: "Fusion"
+   544.006 D | [Theme] Theme Folder Path:  "/home/chaos/.local/share/PrismLauncher/themes"
+   544.006 D | [Theme] <> Widget themes initialized.
+   544.006 D | [Theme] CatPacks Folder Path: "/home/chaos/.local/share/PrismLauncher/catpacks"
+   547.918 D | AuthFlow: "Logging in with Microsoft account."
+   547.919 D | AuthFlow: "Logging in with Microsoft account(device code)."
+   547.920 D | [launcher.task.net.upload]: "{99333458-613f-4863-bea0-c5a93fa8e2b3}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode"
+   549.070 D | Opening URL "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id=c36a9fb6-4f2a-41ff-90bd-ae7cc92031eb&code_challenge=kt2nk9wyoGHjQZ1GbD4FeSi2CdGBoRgJy0BcYXqvSeY&code_challenge_method=S256&prompt=select_account&redirect_uri=prismlauncher://oauth/microsoft&response_type=code&scope=XboxLive.SignIn XboxLive.offline_access&state=DeHeijj3"
+   549.478 D | [launcher.task.net.upload]: "{99333458-613f-4863-bea0-c5a93fa8e2b3}" Request succeeded: "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode"
+   554.947 D | [launcher.task.net.upload]: "{f9242791-6392-4e48-9219-78dc5b891d8a}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   555.749 C | [launcher.task.net.upload]: "{f9242791-6392-4e48-9219-78dc5b891d8a}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   555.749 C | [launcher.task.net.upload]: "{f9242791-6392-4e48-9219-78dc5b891d8a}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   555.749 D | [launcher.task.net.upload]: "{f9242791-6392-4e48-9219-78dc5b891d8a}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   558.428 D | Processing QUrl("prismlauncher://oauth/microsoft?code=M.C552_BAY.2.U.4804729c-6ba8-3c7c-5043-96d1158dae95&state=DeHeijj3")
+   559.242 D | AuthFlow: "Logging in as an Xbox user."
+   559.242 D | First layer of XBox auth ... commencing.
+   559.243 D | [launcher.task.net.upload]: "{c42b7c64-41e3-4b7a-baa5-a6940df2ca9f}" Running  "https://user.auth.xboxlive.com/user/authenticate"
+   560.600 D | [launcher.task.net.upload]: "{c42b7c64-41e3-4b7a-baa5-a6940df2ca9f}" Request succeeded: "https://user.auth.xboxlive.com/user/authenticate"
+   560.601 D | Parsing "UToken" :
+   560.601 D | "UToken" is valid.
+   560.601 D | AuthFlow: "Getting authorization to access Xbox services."
+   560.601 D | Getting authorization token for  "http://xboxlive.com"
+   560.601 D | [launcher.task.net.upload]: "{4389e22d-314e-4502-951f-71d8a3fb5bc3}" Running  "https://xsts.auth.xboxlive.com/xsts/authorize"
+   560.947 D | [launcher.task.net.upload]: "{77932074-e6fa-4814-905a-8629247907e9}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   561.606 C | [launcher.task.net.upload]: "{77932074-e6fa-4814-905a-8629247907e9}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   561.607 C | [launcher.task.net.upload]: "{77932074-e6fa-4814-905a-8629247907e9}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   561.607 D | [launcher.task.net.upload]: "{77932074-e6fa-4814-905a-8629247907e9}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   561.789 D | [launcher.task.net.upload]: "{4389e22d-314e-4502-951f-71d8a3fb5bc3}" Request succeeded: "https://xsts.auth.xboxlive.com/xsts/authorize"
+   561.790 D | Parsing "Xbox" :
+   561.790 D | "Xbox" is valid.
+   561.790 D | AuthFlow: "Getting authorization to access Mojang services."
+   561.790 D | Getting authorization token for  "rp://api.minecraftservices.com/"
+   561.791 D | [launcher.task.net.upload]: "{8bf441e5-ea0a-41ab-b7ab-0874756fe17e}" Running  "https://xsts.auth.xboxlive.com/xsts/authorize"
+   562.140 D | [launcher.task.net.upload]: "{8bf441e5-ea0a-41ab-b7ab-0874756fe17e}" Request succeeded: "https://xsts.auth.xboxlive.com/xsts/authorize"
+   562.140 D | Parsing "Mojang" :
+   562.140 D | "Mojang" is valid.
+   562.140 D | AuthFlow: "Accessing Mojang services."
+   562.141 D | Getting Minecraft access token...
+   562.141 D | [launcher.task.net.upload]: "{d3d59b17-cf50-4617-9cbf-e6fc92b105c7}" Running  "https://api.minecraftservices.com/launcher/login"
+   563.910 D | [launcher.task.net.upload]: "{d3d59b17-cf50-4617-9cbf-e6fc92b105c7}" Request succeeded: "https://api.minecraftservices.com/launcher/login"
+   563.910 D | Parsing Mojang response...
+   563.910 D | Mojang response is valid.
+   563.910 D | AuthFlow: "Fetching Xbox profile."
+   563.911 D | Getting Xbox profile...
+   565.206 D | AuthFlow: "Determining game ownership."
+   565.206 D | Getting entitlements...
+   565.928 D | Parsing Minecraft entitlements...
+   565.929 D | AuthFlow: "Fetching the Minecraft profile."
+   566.207 D | Parsing Minecraft profile...
+   566.208 D | AuthFlow: "Getting skin."
+   566.947 D | [launcher.task.net.upload]: "{0f170fb6-730b-476b-8cb9-0b23bc90c32e}" Running  "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   567.402 C | [launcher.task.net.upload]: "{0f170fb6-730b-476b-8cb9-0b23bc90c32e}" Failed "https://login.microsoftonline.com/consumers/oauth2/v2.0/token" with reason QNetworkReply::ProtocolInvalidOperationError
+   567.402 C | [launcher.task.net.upload]: "{0f170fb6-730b-476b-8cb9-0b23bc90c32e}" HTTP Status 400 ;error "Error transferring https://login.microsoftonline.com/consumers/oauth2/v2.0/token - server replied: "
+   567.402 D | [launcher.task.net.upload]: "{0f170fb6-730b-476b-8cb9-0b23bc90c32e}" Request failed in previous step: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
+   567.635 D | Inserting account at index 0
+   567.636 D | Writing account list to "accounts.json"
+   567.636 D | Building JSON data structure.
+   567.636 D | Building account array.
+   567.636 D | Writing account list to file.
+   567.641 D | Saved account list to "accounts.json"
+   567.644 W | dataChanged() called with an invalid index range:
+    topleft: QModelIndex(-1,-1,0x0,QObject(0x0))
+    bottomRight:QModelIndex(-1,-1,0x0,QObject(0x0))
+   567.644 D | Writing account list to "accounts.json"
+   567.644 D | Building JSON data structure.
+   567.644 D | Building account array.
+   567.645 D | Writing account list to file.
+   567.654 D | Saved account list to "accounts.json"
+   576.549 D | Paged dialog close requested
+   576.549 D | Sorting icon list...
+   576.551 D | Detecting proxy settings...
+   576.551 D | Using no proxy is an option!
+   576.551 D | Paged dialog close approved
+   576.551 D | Paged dialog geometry saved
+   576.590 D | Discovering instances in "/home/chaos/.local/share/PrismLauncher/instances"
+   576.590 D | Found instance ID "Latest"
+   576.590 D | Should keep and soft-reload "Latest"
+   580.219 W | beginResetModel called on VersionProxyModel(0x5555b326aca0) without calling endResetModel first
+   580.219 W | beginResetModel called on VersionBasicModel(0x5555b3027a00) without calling endResetModel first
+   580.219 W | beginResetModel called on AllVersionProxyModel(0x5555b3027a20) without calling endResetModel first
+   580.221 W | endResetModel called on VersionProxyModel(0x5555b326aca0) without calling beginResetModel first
+   580.221 W | endResetModel called on VersionBasicModel(0x5555b3027a00) without calling beginResetModel first
+   580.221 W | endResetModel called on AllVersionProxyModel(0x5555b3027a20) without calling beginResetModel first
+   580.239 W | The ftb app setings doesn't exist.
+   580.247 W | beginResetModel called on VersionProxyModel(0x5555b2c0fa50) without calling endResetModel first
+   580.247 W | beginResetModel called on VersionBasicModel(0x5555b28d35c0) without calling endResetModel first
+   580.247 W | beginResetModel called on CheckComboModel(0x5555b28d6510) without calling endResetModel first
+   580.248 W | endResetModel called on VersionProxyModel(0x5555b2c0fa50) without calling beginResetModel first
+   580.248 W | endResetModel called on VersionBasicModel(0x5555b28d35c0) without calling beginResetModel first
+   580.248 W | endResetModel called on CheckComboModel(0x5555b28d6510) without calling beginResetModel first
+   580.270 W | beginResetModel called on VersionProxyModel(0x5555b2e6bbb0) without calling endResetModel first
+   580.270 W | endResetModel called on VersionProxyModel(0x5555b2e6bbb0) without calling beginResetModel first
