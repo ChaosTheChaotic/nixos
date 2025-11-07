@@ -270,24 +270,6 @@
       };
     };
 
-    xdg.desktopEntries = {
-      "org.prismlauncher.PrismLauncher" = {
-	name = "Prism Launcher";
-	exec = "prismlauncher -d ${config.dotfiles}/PrismLauncher %U";
-	terminal = false;
-	categories = [ "Game" "ActionGame" "AdventureGame" "Simulation" ];
-	mimeType = [ "application/zip" "application/x-modrinth-modpack+zip" "x-scheme-handler/curseforge" "x-scheme-handler/prismlauncher" ];
-	icon = "org.prismlauncher.PrismLauncher";
-	startupNotify = true;
-	type = "Application";
-	comment = "Discover, manage, and play Minecraft instances";
-	settings = {
-    	  Keywords = "Minecraft;Game;Launcher;Prism;";
-	  StartupWMClass = "PrismLauncher";
-    	};
-      };
-    };
-
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
     home.file.".config/ags".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/ags";
