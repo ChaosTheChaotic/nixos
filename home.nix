@@ -99,6 +99,7 @@
       libayatana-appindicator
       gobject-introspection
       noto-fonts-color-emoji
+      spotdl
       astal.hyprland
       astal.wireplumber
       astal.network
