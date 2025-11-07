@@ -42,9 +42,6 @@
       LD_LIBRARY_PATH = with pkgs; lib.makeSearchPath "lib" [
 	sqlite.out
       ];
-      XDG_DATA_DIRS = with pkgs; lib.makeSearchPath "share/applications" [
-	prismlauncher
-      ];
     };
 
     home.sessionPath = [
@@ -271,6 +268,23 @@
         };
       };
     };
+
+    xdg.desktopEntries = {
+      "org.prismlauncher.PrismLauncher" = {
+	name = "Prism Launcher";
+	exec = "prismlauncher -d ${config.dotfiles}/PrismLauncher %U";
+	terminal = false;
+	categories = [ "Game" "ActionGame" "AdventureGame" "Simulation" ];
+	keywords = [ "game" ];
+	mimeType = [ "application/zip" "application/x-modrinth-modpack+zip" "x-scheme-handler/curseforge" "x-scheme-handler/prismlauncher" ];
+	startupWMClass = "PrismLauncher";
+	icon = "org.prismlauncher.PrismLauncher";
+	startupNotify = true;
+	type = "Application";
+	comment = "Discover, manage, and play Minecraft instances";
+      };
+    };
+
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
     home.file.".config/ags".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/ags";
