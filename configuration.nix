@@ -203,6 +203,8 @@ in
     shell = pkgs.zsh;
   };
 
+  programs.java.enable = true;
+
   programs.nix-ld = {
     enable = true;
     #libraries = with pkgs; [
