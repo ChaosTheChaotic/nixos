@@ -42,6 +42,9 @@
       LD_LIBRARY_PATH = with pkgs; lib.makeSearchPath "lib" [
 	sqlite.out
       ];
+      XDG_DATA_DIRS = with pkgs; lib.makeSearchPath "share/applications" [
+	prismlauncher
+      ];
     };
 
     home.sessionPath = [
