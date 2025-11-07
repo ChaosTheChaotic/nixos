@@ -275,13 +275,15 @@
 	exec = "prismlauncher -d ${config.dotfiles}/PrismLauncher %U";
 	terminal = false;
 	categories = [ "Game" "ActionGame" "AdventureGame" "Simulation" ];
-	keywords = [ "game" ];
 	mimeType = [ "application/zip" "application/x-modrinth-modpack+zip" "x-scheme-handler/curseforge" "x-scheme-handler/prismlauncher" ];
-	startupWMClass = "PrismLauncher";
 	icon = "org.prismlauncher.PrismLauncher";
 	startupNotify = true;
 	type = "Application";
 	comment = "Discover, manage, and play Minecraft instances";
+	settings = {
+    	  Keywords = "Minecraft;Game;Launcher;Prism;";
+	  StartupWMClass = "PrismLauncher";
+    	};
       };
     };
 
