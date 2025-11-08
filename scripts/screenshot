@@ -25,10 +25,6 @@ parse_opts() {
   local OPTIND OPTARG opt
   while getopts 'hcsd' opt; do
     case "$opt" in
-      h)
-	echo "$USAGE"
-	exit 0
-	;;
       c)
 	clip=true
 	;;
@@ -46,7 +42,7 @@ parse_opts() {
 	  od=$nxtopt
 	fi
 	;;
-      *)
+      h|*)
 	echo "$USAGE"
 	exit 0
 	;;
