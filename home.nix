@@ -9,6 +9,13 @@
       example = "${builtins.toString ./.}/config";
       description = "Location of dotfiles";
     };
+    apps = lib.mkOption {
+      type = lib.types.path;
+      apply = toString;
+      default = "${builtins.toString ./.}/apps";
+      example = "${builtins.toString ./.}/apps";
+      description = "Location of applications";
+    };
   };
 
   config = {
@@ -275,10 +282,13 @@
 	name = "Adiman";
 	comment = "Music Player for linux inspired by Namida";
 	terminal = false;
-	exec = "${config.home.homeDirectory}/Adiman-aarch64.AppImage %U";
-	icon = "Adiman";
+	exec = "${config.apps}/adiman/Adiman-${pkgs.system}.AppImage";
+	icon = "${config.apps}/adiman/Adiman.png";
 	type = "Application";
 	categories = [ "AudioVideo" "Audio" "Music" "Player" ];
+	settings = {
+	  StartupWMClass = "Adiman";
+	};
       };
     };
 
