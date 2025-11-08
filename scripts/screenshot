@@ -45,6 +45,10 @@ parse_opts() {
 	  ((OPTIND++))
 	  od=$nxtopt
 	fi
+      *)
+	echo "$USAGE"
+	exit 0
+	;;
     esac
   done
   $fs && mkdir -p "$od"
