@@ -12,7 +12,7 @@ Options
   -n Notify the user (requires notify-send)
   -d Writes to either a specified directory or to ~/Screenshots and does not write to clipboard
 
-If neither -c or -d are specified then the screenshot will not be saved
+If neither -c or -d are specified then the program will exit with error
 EOF
 
 clip=false
@@ -57,27 +57,30 @@ notify_usr() {
   local title="Screenshot taken"
   local body="Screenshot of"
 
-  !(test $status -eq 0) && title="Failed to screenshot" body="Failed to take a screenshot of"
+  !(test $status -eq 0) && title="Failed to screenshot" && body="Failed to take a screenshot of"
   ($full) && body="${body} all wayland outputs"
   !($full) && body="${body} the selected area"
   !(test $status -eq 0) && body="${body} and have it"
   (($clip) && ($fs)) && body="${body} saved to clipboard and $od"
-  ($clip) && body="${body} saved to clipboard"
-  ($fs) && body="${body} saved to $od"
+  ($clip) && !($fs) && body="${body} saved to clipboard"
+  ($fs) && !($clip) && body="${body} saved to $od"
 
   notify-send "$title" "$body"
 }
 
 take_scr() {
   local cmd="grim"
-  local nocmd=$(!($fs) && !($clip))
+  local sts=0
+
+  (!($clip) && !($fs)) && echo "No output specified (use -c for clipboard or -d for file)" && exit 1
   !($full) && cmd="${cmd} -g \"\$(slurp)\""
-  ($fs) && cmd="${cmd} \"$od/$(date +"%y-%m-%d_%h-%m-%s").png\""
-  ($clip) && cmd="${cmd} -t png - | wl-copy -t image/png"
-  $nocmd && cmd="" # grim will take a screenshot by default if i don't use this
-  $cmd
-  local sts=$?
-  (($noti) && !($nocmd)) && notify_usr $sts
+  (($fs) && ($clip)) && cmd="${cmd} - | tee \"$od/$(date +"%y-%m-%d_%H-%M-%S").png\" | wl-copy -t image/png"
+  (($fs) && !($clip)) && cmd="${cmd} \"$od/$(date +"%y-%m-%d_%H-%M-%S").png\""
+  (($clip) && !($fs)) && cmd="${cmd} - | wl-copy -t image/png"
+  
+  eval $cmd
+  sts=$?
+  ($noti) && notify_usr $sts
 }
 
 parse_opts "$@"
