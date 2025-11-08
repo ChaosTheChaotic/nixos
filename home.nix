@@ -153,7 +153,7 @@
       };
       sessionVariables = {
         EDITOR = "nvim";
-	MANPAGER="sh -c 'sed -u -e \"s/\\x1B\[[0-9;]*m//g; s/.\\x08//g\" | bat -p -lman'";
+	MANPAGER="sh -c 'sed -u -e s/\x1B\[[0-9;]*m//g; s/.\x08//g | bat -p -lman'";
 	BAT_THEME="rose-pine";
       };
       syntaxHighlighting.enable = true;
@@ -282,7 +282,7 @@
 
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
-    home.file.".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
+    home.file.".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
     home.file.".config/ags".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/ags";
     home.file.".config/lobster".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/lobster";
 
