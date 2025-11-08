@@ -74,7 +74,7 @@ take_scr() {
 
   (!($clip) && !($fs)) && echo "No output specified (use -c for clipboard or -d for file)" && exit 1
   !($full) && cmd="${cmd} -g \"\$(slurp)\""
-  (($fs) && ($clip)) && cmd="${cmd} - | tee \"$od/$(date +"%y-%m-%d_%H-%M-%S").png\" | wl-copy -t image/png"
+  (($fs) && ($clip)) && cmd="${cmd} - | tee \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\" | wl-copy -t image/png"
   (($fs) && !($clip)) && cmd="${cmd} \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\""
   (($clip) && !($fs)) && cmd="${cmd} - | wl-copy -t image/png"
   
