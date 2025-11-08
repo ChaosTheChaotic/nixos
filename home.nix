@@ -49,6 +49,7 @@
       LD_LIBRARY_PATH = with pkgs; lib.makeSearchPath "lib" [
 	sqlite.out
       ];
+      XDG_DATA_DIRS = "${config.apps}:$XDG_DATA_DIRS";
     };
 
     home.sessionPath = [
@@ -274,21 +275,6 @@
           default_icon = "dialog-error";
           format = "<b><span foreground='#eb6f92'>%s</span></b>\n%b";
         };
-      };
-    };
-
-    xdg.desktopEntries = {
-      "adiman" = {
-	name = "Adiman";
-	comment = "Music Player for linux inspired by Namida";
-	terminal = false;
-	exec = "${config.apps}/adiman/Adiman-${pkgs.system}.AppImage";
-	icon = "${config.apps}/adiman/Adiman.png";
-	type = "Application";
-	categories = [ "AudioVideo" "Audio" "Music" "Player" ];
-	settings = {
-	  StartupWMClass = "Adiman";
-	};
       };
     };
 
