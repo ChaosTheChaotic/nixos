@@ -52,7 +52,7 @@ parse_opts() {
 	;;
     esac
   done
-  $fs && mkdir -p "$od"
+  ($fs) && mkdir -p "$od"
 }
 
 notify_usr() {
@@ -62,25 +62,25 @@ notify_usr() {
   local body="Screenshot of"
 
   !(test -eq $status 0) && title="Failed to screenshot" icon="dialog-error" body="Failed to take a screenshot of"
-  $full && body="${body} all wayland outputs"
-  !$full && body="${body} the selected area"
+  ($full) && body="${body} all wayland outputs"
+  !($full) && body="${body} the selected area"
   !(test -eq $status 0) && body="${body} and have it"
-  ($clip && $fs) && body="${body} saved to clipboard and $od"
-  $clip="${body} saved to clipboard"
-  $fs && body="${body} saved to $od"
+  (($clip) && ($fs)) && body="${body} saved to clipboard and $od"
+  ($clip) && body="${body} saved to clipboard"
+  ($fs) && body="${body} saved to $od"
 
   notify-send -i="$icon" "$title" "$body"
 }
 
 take_scr() {
   CMD="grim"
-  !$full && CMD="${CMD} -g \"\$(slurp)\""
-  $fs && CMD="${CMD} \"$od/$(date +"%Y-%m-%d_%H-%M-%S").png\""
-  $clip && CMD="${CMD} -t png - | wl-copy -t image/png"
-  (!$fs && !$clip) && CMD="" # grim will take a screenshot by default if I don't use this
+  !($full) && CMD="${CMD} -g \"\$(slurp)\""
+  ($fs) && CMD="${CMD} \"$od/$(date +"%Y-%m-%d_%H-%M-%S").png\""
+  ($clip) && CMD="${CMD} -t png - | wl-copy -t image/png"
+  (!($fs) && !($clip)) && CMD="" # grim will take a screenshot by default if I don't use this
   $CMD
   STS=$?
-  $noti && notify_usr $STS
+  ($noti) && notify_usr $STS
 }
 
 parse_opts "$@"
