@@ -69,15 +69,15 @@ notify_usr() {
 }
 
 take_scr() {
-  CMD="grim"
-  NOCMD=(!($fs) && !($clip))
-  !($full) && CMD="${CMD} -g \"\$(slurp)\""
-  ($fs) && CMD="${CMD} \"$od/$(date +"%Y-%m-%d_%H-%M-%S").png\""
-  ($clip) && CMD="${CMD} -t png - | wl-copy -t image/png"
-  $NOCMD && CMD="" # grim will take a screenshot by default if I don't use this
-  $CMD
-  STS=$?
-  (($noti) && ($NOCMD)) && notify_usr $STS
+  local cmd="grim"
+  local nocmd=$(!($fs) && !($clip))
+  !($full) && cmd="${cmd} -g \"\$(slurp)\""
+  ($fs) && cmd="${cmd} \"$od/$(date +"%y-%m-%d_%h-%m-%s").png\""
+  ($clip) && cmd="${cmd} -t png - | wl-copy -t image/png"
+  $nocmd && cmd="" # grim will take a screenshot by default if i don't use this
+  $cmd
+  local sts=$?
+  (($noti) && ($nocmd)) && notify_usr $sts
 }
 
 parse_opts "$@"
