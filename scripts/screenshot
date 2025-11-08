@@ -77,7 +77,7 @@ take_scr() {
   (!($fs) && !($clip)) && CMD="" # grim will take a screenshot by default if I don't use this
   $CMD
   STS=$?
-  ($noti) && notify_usr $STS
+  (($noti) && (test -n $CMD)) && notify_usr $STS
 }
 
 parse_opts "$@"
