@@ -270,6 +270,18 @@
       };
     };
 
+    xdg.desktopEntries = {
+      "adiman" = {
+	name = "Adiman";
+	comment = "Music Player for linux inspired by Namida";
+	terminal = false;
+	exec = "${config.home.homeDirectory}/Adiman-aarch64.AppImage %U";
+	icon = "${config.home.homeDirectory}/Adiman-aarch64.AppImage";
+	type = "Application";
+	categories = [ "AudioVideo" "Audio" "Music" "Player" ];
+      };
+    };
+
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
     home.file.".config/ags".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/ags";

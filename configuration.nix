@@ -205,6 +205,11 @@ in
 
   programs.java.enable = true;
 
+  programs.appimage = {
+    enable = true;
+    binfmt = true;
+  };
+
   programs.nix-ld = {
     enable = true;
     #libraries = with pkgs; [
