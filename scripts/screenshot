@@ -55,10 +55,9 @@ parse_opts() {
 notify_usr() {
   local status=$1
   local title="Screenshot taken"
-  local icon="camera-photo"
   local body="Screenshot of"
 
-  !(test $status -eq 0) && title="Failed to screenshot" icon="dialog-error" body="Failed to take a screenshot of"
+  !(test $status -eq 0) && title="Failed to screenshot" body="Failed to take a screenshot of"
   ($full) && body="${body} all wayland outputs"
   !($full) && body="${body} the selected area"
   !(test $status -eq 0) && body="${body} and have it"
@@ -66,7 +65,7 @@ notify_usr() {
   ($clip) && body="${body} saved to clipboard"
   ($fs) && body="${body} saved to $od"
 
-  notify-send -i="$icon" "$title" "$body"
+  notify-send "$title" "$body"
 }
 
 take_scr() {
