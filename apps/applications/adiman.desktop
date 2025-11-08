@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Adiman
-Exec=bash -c 'cd "$(dirname "%k")" && adiman/Adiman.AppImage'
+Exec=bash -c 'cd "$(dirname "%k")" && ../adiman/Adiman.AppImage'
 Type=Application
 Comment=Music player for linux inspired by Namida
 Terminal=false
