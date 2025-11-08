@@ -24,7 +24,7 @@ od="$HOME/Screenshots"
 parse_opts() {
   test "$#" -eq 0 && echo "$USAGE" && exit 0
   local OPTIND OPTARG opt
-  while getopts 'hcsd' opt; do
+  while getopts 'hcsnd' opt; do
     case "$opt" in
       c)
 	clip=true
