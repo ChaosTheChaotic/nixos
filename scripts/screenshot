@@ -22,6 +22,7 @@ fs=false
 od="$HOME/Screenshots"
 
 parse_opts() {
+  test -eq $# 0 && echo "$USAGE" && exit 0
   local OPTIND OPTARG opt
   while getopts 'hcsd' opt; do
     case "$opt" in
