@@ -58,10 +58,10 @@ notify_usr() {
   local icon="camera-photo"
   local body="Screenshot of"
 
-  !(test -eq $status 0) && title="Failed to screenshot" icon="dialog-error" body="Failed to take a screenshot of"
+  !(test $status -eq 0) && title="Failed to screenshot" icon="dialog-error" body="Failed to take a screenshot of"
   ($full) && body="${body} all wayland outputs"
   !($full) && body="${body} the selected area"
-  !(test -eq $status 0) && body="${body} and have it"
+  !(test $status -eq 0) && body="${body} and have it"
   (($clip) && ($fs)) && body="${body} saved to clipboard and $od"
   ($clip) && body="${body} saved to clipboard"
   ($fs) && body="${body} saved to $od"
