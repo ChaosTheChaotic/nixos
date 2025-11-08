@@ -276,7 +276,7 @@
 	comment = "Music Player for linux inspired by Namida";
 	terminal = false;
 	exec = "${config.home.homeDirectory}/Adiman-aarch64.AppImage %U";
-	icon = "${config.home.homeDirectory}/Adiman-aarch64.AppImage";
+	icon = "Adiman";
 	type = "Application";
 	categories = [ "AudioVideo" "Audio" "Music" "Player" ];
       };
