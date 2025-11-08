@@ -77,7 +77,7 @@ take_scr() {
   $nocmd && cmd="" # grim will take a screenshot by default if i don't use this
   $cmd
   local sts=$?
-  (($noti) && ($nocmd)) && notify_usr $sts
+  (($noti) && !($nocmd)) && notify_usr $sts
 }
 
 parse_opts "$@"
