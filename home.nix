@@ -150,10 +150,10 @@
         lg = "lazygit";
 	prismlauncher = "prismlauncher -d ${config.dotfiles}/PrismLauncher";
         rb = "sudo nixos-rebuild switch --flake /etc/nixos";
+	man = "MANPAGER=\"sh -c \'sed -u -e \"s/\\x1B\[[0-9;]*m//g; s/.\\x08//g\" | bat -p -lman\'\"";
       };
       sessionVariables = {
         EDITOR = "nvim";
-	MANPAGER = "sh -c 'sed -u -e '\''s/\\x1B\\[[0-9;]*m//g; s/.\\x08//g'\'' | bat -p -lman'";
 	BAT_THEME="rose-pine-moon";
       };
       syntaxHighlighting.enable = true;
