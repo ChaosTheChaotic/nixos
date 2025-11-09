@@ -20,6 +20,7 @@ let
       chmod -R +x $out/bin/
     '';
   };
+  extraFonts = pkgs.callPackage ./fonts.nix { };
 in
 {
   environment.systemPackages = with pkgs; [
@@ -49,6 +50,8 @@ in
     inputs.lobster.packages.${pkgs.system}.lobster
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
+
+  fonts.packages = [ extraFonts ];
 
   nixpkgs.overlays = [
     inputs.nur.overlays.default
