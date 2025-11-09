@@ -45,6 +45,7 @@ in
     vlc
     chafa
     html-xml-utils
+    xxd
     inputs.lobster.packages.${pkgs.system}.lobster
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
