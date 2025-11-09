@@ -313,5 +313,6 @@
       enable = true;
       allowImages = true;
     };
+    programs.hyprlock.enable = true;
   };
 }
