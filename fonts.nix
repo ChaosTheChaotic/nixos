@@ -18,7 +18,6 @@ stdenvNoCC.mkDerivation {
   meta = with lib; {
     description = "Extra fonts";
     homepage = "";
-    license = licenses.unfree;
     platforms = platforms.all;
     maintainers = with maintainers; [ ];
   };
