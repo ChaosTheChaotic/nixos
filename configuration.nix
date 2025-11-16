@@ -47,6 +47,7 @@ in
     chafa
     html-xml-utils
     xxd
+    go
     inputs.lobster.packages.${pkgs.system}.lobster
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
