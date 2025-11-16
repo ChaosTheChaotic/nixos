@@ -122,6 +122,7 @@ return {
 					"jsonls",
 					"cmake",
 					"jdtls",
+					"gopls",
 				},
 				automatic_installation = true,
 			})
@@ -244,6 +245,10 @@ return {
 	        name = "nixd",
 	        cmd = { "nixd" },
 	      },
+	      go = {
+		name = "gopls",
+		cmd = { "gopls" },
+	      }
 	    }
 
 	    -- Autostart LSP servers based on filetype
