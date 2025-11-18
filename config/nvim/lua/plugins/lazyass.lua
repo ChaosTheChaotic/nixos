@@ -252,7 +252,7 @@ return {
 	      },
 	      kotlin = {
 		name = "kotlin_lsp",
-		cmd = { "kotlin_lsp" },
+		cmd = { "kotlin-lsp" },
 	      },
 	    }
 
