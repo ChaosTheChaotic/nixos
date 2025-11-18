@@ -123,6 +123,7 @@ return {
 					"cmake",
 					"jdtls",
 					"gopls",
+					"kotlin_lsp",
 				},
 				automatic_installation = true,
 			})
@@ -248,7 +249,11 @@ return {
 	      go = {
 		name = "gopls",
 		cmd = { "gopls" },
-	      }
+	      },
+	      kotlin = {
+		name = "kotlin_lsp",
+		cmd = { "kotlin_lsp" },
+	      },
 	    }
 
 	    -- Autostart LSP servers based on filetype
