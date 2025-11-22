@@ -235,9 +235,9 @@ in
 
   programs.adb.enable = true;
 
-  # For pkg-config
   environment.variables = {
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+    C_INCLUDE_PATH = "${pkgs.libsecret.dev}/include";
   };
 
   # programs.firefox.enable = true;
