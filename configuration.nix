@@ -48,7 +48,7 @@ in
     html-xml-utils
     xxd
     go
-    libsecret
+    libsecret.dev
     inputs.lobster.packages.${pkgs.system}.lobster
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
