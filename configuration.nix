@@ -48,7 +48,6 @@ in
     html-xml-utils
     xxd
     go
-    libsecret.dev
     inputs.lobster.packages.${pkgs.system}.lobster
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
@@ -237,7 +236,6 @@ in
 
   environment.variables = {
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
-    C_INCLUDE_PATH = "${pkgs.libsecret.dev}/include/libsecret-1";
   };
 
   # programs.firefox.enable = true;
