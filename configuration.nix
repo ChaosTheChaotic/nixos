@@ -26,7 +26,7 @@ in
   environment.systemPackages = with pkgs; [
     scripts
     git
-    openssl
+    openssl.dev
     man-pages
     man-pages-posix
     brightnessctl
