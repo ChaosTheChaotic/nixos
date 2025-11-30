@@ -124,6 +124,7 @@ in
   networking.networkmanager.wifi.backend = "iwd";
 
   networking.nameservers = [ "1.1.1.1" "8.8.8.8" "9.9.9.9"];
+  networking.networkmanager.dns = "none";
 
   age.secrets.wg-priv.file = ./secrets/wg-priv.age;
 
