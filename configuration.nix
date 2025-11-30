@@ -131,7 +131,7 @@ in
   networking.wg-quick.interfaces = {
     wg0 = {
       address = [ "10.2.0.2/32" ];
-      dns = [ "10.2.0.1" ];
+      dns = [ "1.1.1.1" "8.8.8.8" "9.9.9.9" "10.2.0.1" ];
       privateKeyFile = config.age.secrets.wg-priv.path;
       peers = [
         {
