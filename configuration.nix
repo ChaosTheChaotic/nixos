@@ -123,6 +123,8 @@ in
   networking.networkmanager.enable = true;
   networking.networkmanager.wifi.backend = "iwd";
 
+  networking.nameservers = [ "1.1.1.1" "8.8.8.8" "9.9.9.9"];
+
   age.secrets.wg-priv.file = ./secrets/wg-priv.age;
 
   networking.wg-quick.interfaces = {
