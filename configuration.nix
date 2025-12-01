@@ -48,6 +48,7 @@ in
     html-xml-utils
     xxd
     go
+    ccache
     inputs.lobster.packages.${pkgs.system}.lobster
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
