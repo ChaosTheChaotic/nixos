@@ -156,6 +156,11 @@ in
     };
   };
 
+  services.zerotierone = {
+    enable = true;
+    joinNetworks = [ "8d1c312afa2aad91" ];
+  };
+
   hardware.enableRedistributableFirmware = true;
 
   # Set your time zone.
