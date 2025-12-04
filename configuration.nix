@@ -252,6 +252,8 @@ in
 
   programs.adb.enable = true;
 
+  programs.kdeconnect.enable = true;
+
   environment.variables = {
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
     C_INCLUDE_PATH = "${pkgs.openssl.dev}/include";
