@@ -5,3 +5,8 @@ STATE=$(cat /sys/class/power_supply/macsmc-battery/status)
 
 echo "Capacity: $POWER"
 echo "Status: $STATE"
+if [[ "$STATE" == "Discharging" ]]; then
+  echo "Estimated time untill empty: $(cat /sys/class/power_supply/macsmc-battery/time_to_empty_now)"
+elif [[ "$STATE" == "Charging" ]]; then
+  echo "Estimated time until full: $(cat /sys/class/power_supply/macsmc-battery/time_to_full_now)"
+fi
