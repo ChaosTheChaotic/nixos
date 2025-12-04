@@ -109,6 +109,7 @@
       noto-fonts-color-emoji
       spotdl
       prismlauncher
+      kdePackages.kdeconnect-kde
       astal.hyprland
       astal.wireplumber
       astal.network
