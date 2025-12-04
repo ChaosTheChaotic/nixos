@@ -57,6 +57,13 @@ notify_usr() {
   local title="Screenshot taken"
   local body="Screenshot of"
 
+  if [ $status -eq 2 ]; then
+    title="Screenshot cancelled"
+    body="The screenshot was cancelled by the user"
+    notify-send "$title" "$body"
+    return
+  fi
+
   !(test $status -eq 0) && title="Failed to screenshot" && body="Failed to take a screenshot of"
   ($full) && body="${body} all wayland outputs"
   !($full) && body="${body} the selected area"
@@ -73,13 +80,33 @@ take_scr() {
   local sts=0
 
   (!($clip) && !($fs)) && echo "No output specified (use -c for clipboard or -d for file)" && exit 1
-  !($full) && cmd="${cmd} -g \"\$(slurp)\""
-  (($fs) && ($clip)) && cmd="${cmd} - | tee \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\" | wl-copy -t image/png"
-  (($fs) && !($clip)) && cmd="${cmd} \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\""
-  (($clip) && !($fs)) && cmd="${cmd} - | wl-copy -t image/png"
+  if !($full); then
+    geometry=$(slurp 2>&1)
+    local slurp_exit=$?
+    
+    if [ $slurp_exit -eq 1 ]; then
+      ($noti) && notify_usr 2
+      exit 0
+    elif [ $slurp_exit -ne 0 ]; then
+      echo "Error running slurp: $geometry" >&2
+      ($noti) && notify_usr 1
+      exit 1
+    fi
+    
+    cmd="${cmd} -g \"$geometry\""
+  fi
+  
+  if (($fs) && ($clip)); then
+    cmd="${cmd} - | tee \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\" | wl-copy -t image/png"
+  elif (($fs) && !($clip)); then
+    cmd="${cmd} \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\""
+  elif (($clip) && !($fs)); then
+    cmd="${cmd} - | wl-copy -t image/png"
+  fi
   
   eval $cmd
   sts=$?
+  
   ($noti) && notify_usr $sts
 }
 

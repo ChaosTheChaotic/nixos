@@ -240,45 +240,82 @@
       enable = true;
       settings = {
         global = {
-          width = 400;
-          offset = "5x5";
-          progress_bar_min_width = 380;
-          progress_bar_max_width = 380;
-          progress_bar_corner_radius = 2;
-          padding = 10;
-          horizontal_padding = 10;
-          frame_width = 1;
-          gap_size = 3;
+          # Geometry and positioning
+          monitor = 0;
+          follow = "none";
+          width = 300;
+          height = 300;
+          origin = "top-right";
+          offset = "20x50";
+          scale = 0;
+          notification_limit = 20;
+          
+          # Appearance
+          transparency = 0;
+          corner_radius = 20;
+          icon_corner_radius = 10;
+          frame_width = 2;
+          gap_size = 15;
+          padding = 15;
+          horizontal_padding = 15;
+          text_icon_padding = 40;
+          separator_height = 2;
+          separator_color = "frame";
+          
+          # Text and formatting
+          alignment = "left";
+          vertical_alignment = "center";
+          line_height = 0;
+          ellipsize = "middle";
+          markup = "full";
+          format = "<i>%s</i>\n%b";
+          sort = "yes";
+          show_indicators = "yes";
           font = "Monospace 14";
+          
+          # Icons
           icon_theme = "rose-pine-icons";
           enable_recursive_icon_lookup = true;
-          corner_radius = 2;
-          background = "#393552";
+          
+          # Colors
+          highlight = "#FF470A";
+          frame_color = "#191724";
+          background = "#191724";
           foreground = "#e0def4";
+        };
+        
+        experimental = {
+          per_monitor_dpi = false;
         };
     
         urgency_low = {
           background = "#393955";
-          highlight = "#3e8fb0";
+          foreground = "#908caa";
           frame_color = "#3e8fb0";
+          highlight = "#3e8fb0";
+          timeout = 10;
           default_icon = "dialog-information";
-          format = "<b><span foreground='#3e8fb0'>%s</span></b>\n%b";
+          format = "<i>%s</i>\n<b><span foreground='#3e8fb0'>%b</span></b>";
         };
     
         urgency_normal = {
-          background = "#443c53";
+          background = "#151515bb";
+          foreground = "#ffffff";
+          frame_color = "#151515c8";
           highlight = "#f6c177";
-          frame_color = "#f6c177";
+          timeout = 10;
           default_icon = "dialog-warning";
-          format = "<b><span foreground='#f6c177'>%s</span></b>\n%b";
+          format = "<i>%s</i>\n<b><span foreground='#f6c177'>%b</span></b>";
         };
     
         urgency_critical = {
-          background = "#433754";
+          background = "#900000";
+          foreground = "#ffffff";
+          frame_color = "#ff0000";
           highlight = "#eb6f92";
-          frame_color = "#eb6f92";
+          timeout = 0;
           default_icon = "dialog-error";
-          format = "<b><span foreground='#eb6f92'>%s</span></b>\n%b";
+          format = "<i>%s</i>\n<b><span foreground='#eb6f92'>%b</span></b>";
         };
       };
     };
