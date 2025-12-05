@@ -6,6 +6,7 @@ print_help() {
   echo "--get	   Get the current volume"
   echo "--inc 	   Increase the volume"
   echo "--dec 	   Decrease the volume"
+  echo "--mute	   Toggles the mute status"
   echo "--get-mic  Get the microphone volume"
   echo "--inc-mic  Increase the microphone volume"
   echo "--dec-mic  Decrease the microphone volume"
