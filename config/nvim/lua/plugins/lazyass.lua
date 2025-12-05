@@ -120,7 +120,7 @@ return {
 					"cssls",
 					"html",
 					"jsonls",
-					"cmake",
+					--"cmake",
 					"jdtls",
 					"gopls",
 					--"kotlin_lsp",
