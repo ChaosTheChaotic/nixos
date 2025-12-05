@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+TEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
+
+printf "Temp: %.2f\n" "$(awk -v temp="$TEMP" 'BEGIN { printf "%.2f", temp / 1000 }')"
