@@ -21,8 +21,8 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
--- Setup lazy.nvim
-require("lazy").setup({
+-- Setup config in a variable
+local cfg = {
   spec = {
     -- import your plugins
     { import = "plugins" },
@@ -32,5 +32,11 @@ require("lazy").setup({
   install = { colorscheme = { "habamax" } },
   -- automatically check for plugin updates
   checker = { enabled = true },
-  lockfile = vim.fn.expand("~/nixos-cfg/config/nvim/lazy-lock.json"),
-})
+}
+
+if vim.fn.filereadable("/etc/NIXOS") == 1 then
+  cfg.lockfile = vim.fn.expand("~/nixos-cfg/config/nvim/lazy-lock.json")
+end
+
+-- Setup lazy.nvim
+require("lazy").setup(cfg)
