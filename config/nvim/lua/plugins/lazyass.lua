@@ -124,7 +124,7 @@ return {
 		    "gopls",
 		    --"kotlin_lsp",
 		  }
-		  if vim.fn.filereadable("/etc/NIXOS") == 1 then
+		  if vim.fn.filereadable("/etc/NIXOS") ~= 1 then
 		    table.insert(lsps, "lua_ls")
 		    table.insert(lsps, "cmake")
 		  end
