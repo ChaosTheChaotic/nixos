@@ -17,7 +17,7 @@ fmt_s() {
 POWER=$(cat /sys/class/power_supply/macsmc-battery/capacity)
 STATE=$(cat /sys/class/power_supply/macsmc-battery/status)
 
-echo "Capacity: $POWER"
+echo "Capacity: $POWER%"
 echo "Status: $STATE"
 if [[ "$STATE" == "Discharging" ]]; then
     T_S=$(cat /sys/class/power_supply/macsmc-battery/time_to_empty_now 2>/dev/null)
