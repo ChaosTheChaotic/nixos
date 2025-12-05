@@ -110,6 +110,7 @@
       spotdl
       prismlauncher
       kdePackages.kdeconnect-kde
+      libunwind
       astal.hyprland
       astal.wireplumber
       astal.network

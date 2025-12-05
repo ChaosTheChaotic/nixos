@@ -1,3 +1,8 @@
+local nixos = vim.fs.stat("/etc/NIXOS")
+if nixos then
+  vim.env.LAZY_LOCK_FILE = vim.fn.expand("~/nixos-cfg/config/nvim/lazy-lock.json")
+end
+
 require("config.lazy")
 
 
