@@ -49,6 +49,7 @@
       LD_LIBRARY_PATH = with pkgs; lib.makeSearchPath "lib" [
 	sqlite.out
 	libunwind.out
+	binutils.out
       ];
       XDG_DATA_DIRS = "${config.apps}:$XDG_DATA_DIRS";
     };
@@ -112,6 +113,7 @@
       prismlauncher
       kdePackages.kdeconnect-kde
       libunwind
+      binutils
       astal.hyprland
       astal.wireplumber
       astal.network
