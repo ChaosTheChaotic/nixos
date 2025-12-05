@@ -206,6 +206,7 @@ return {
 	            },
 	            diagnostics = { globals = { "vim" } },
 	            telemetry = { enable = false },
+		    automatic_installation = false,
 	          },
 	        },
 	      },
