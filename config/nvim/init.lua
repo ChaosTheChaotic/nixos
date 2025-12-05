@@ -1,7 +1,3 @@
-if vim.fn.filereadable("/etc/NIXOS") == 1 then
-  vim.env.LAZY_LOCK_FILE = vim.fn.expand("~/nixos-cfg/config/nvim/lazy-lock.json")
-end
-
 require("config.lazy")
 
 
