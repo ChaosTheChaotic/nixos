@@ -1,12 +1,30 @@
 #!/usr/bin/env bash
 
+fmt_s() {
+  local ts=$1
+  if [[ "$ts" -le 0 ]]; then
+    echo "N/A"
+    return
+  fi
+
+  local h=$((ts / 3600))
+  local m=$(((ts % 3600) / 60))
+  local s=$((ts % 60))
+  # Use printf for leading zeroes
+  printf "%d:%02d:%02d" $h $m $s
+}
+
 POWER=$(cat /sys/class/power_supply/macsmc-battery/capacity)
 STATE=$(cat /sys/class/power_supply/macsmc-battery/status)
 
 echo "Capacity: $POWER"
 echo "Status: $STATE"
 if [[ "$STATE" == "Discharging" ]]; then
-  echo "Estimated time untill empty: $(cat /sys/class/power_supply/macsmc-battery/time_to_empty_now)"
+    T_S=$(cat /sys/class/power_supply/macsmc-battery/time_to_empty_now 2>/dev/null)
+    FMT_T=$(fmt_s $T_S)
+    echo "Estimated time until empty: $FMT_T"
 elif [[ "$STATE" == "Charging" ]]; then
-  echo "Estimated time until full: $(cat /sys/class/power_supply/macsmc-battery/time_to_full_now)"
+    T_S=$(cat /sys/class/power_supply/macsmc-battery/time_to_full_now 2>/dev/null)
+    FMT_T=$(fmt_s $T_S)
+    echo "Estimated time until full: $FMT_T"
 fi
