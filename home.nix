@@ -48,6 +48,7 @@
       GIO_MODULE_DIR = "${pkgs.glib-networking}/lib/gio/modules/";
       LD_LIBRARY_PATH = with pkgs; lib.makeSearchPath "lib" [
 	sqlite.out
+	libunwind.out
       ];
       XDG_DATA_DIRS = "${config.apps}:$XDG_DATA_DIRS";
     };
