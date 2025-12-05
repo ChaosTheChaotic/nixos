@@ -112,6 +112,8 @@
       prismlauncher
       kdePackages.kdeconnect-kde
       libunwind
+      cmake-language-server
+      lua-language-server
       astal.hyprland
       astal.wireplumber
       astal.network
