@@ -110,21 +110,26 @@ return {
 	{
 		"williamboman/mason-lspconfig.nvim",
 		config = function()
+		  local lsps = {
+		    --"lua_ls",
+		    "ts_ls",
+		    "pyright",
+		    "bashls",
+		    "rust_analyzer",
+		    "cssls",
+		    "html",
+		    "jsonls",
+		    --"cmake",
+		    "jdtls",
+		    "gopls",
+		    --"kotlin_lsp",
+		  }
+		  if vim.fn.filereadable("/etc/NIXOS") == 1 then
+		    table.insert(lsps, "lua_ls")
+		    table.insert(lsps, "cmake")
+		  end
 			require("mason-lspconfig").setup({
-				ensure_installed = {
-					"lua_ls",
-					"ts_ls",
-					"pyright",
-					"bashls",
-					"rust_analyzer",
-					"cssls",
-					"html",
-					"jsonls",
-					--"cmake",
-					"jdtls",
-					"gopls",
-					--"kotlin_lsp",
-				},
+				ensure_installed = lsps,
 				automatic_installation = true,
 			})
 		end,
