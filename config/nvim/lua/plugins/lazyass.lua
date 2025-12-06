@@ -262,6 +262,24 @@ return {
 	      --},
 	    }
 
+	    vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+	        pattern = {"CMakeLists.txt", "*.cmake"},
+	        callback = function(ev)
+	            -- Start cmake-language-server for CMake files
+	            vim.lsp.start({
+	                name = "cmake",
+	                cmd = { "cmake-language-server" },
+	                capabilities = capabilities,
+	                on_attach = on_attach,
+	                root_dir = vim.fs.dirname(vim.fs.find({ "CMakeLists.txt", ".git" }, {
+	                    upward = true,
+	                    path = vim.fs.dirname(ev.file),
+	                })[1] or vim.fn.getcwd()),
+	                settings = {},
+	            })
+	        end,
+	    })
+
 	    -- Autostart LSP servers based on filetype
 	    vim.api.nvim_create_autocmd("FileType", {
 	      pattern = vim.tbl_keys(servers),
