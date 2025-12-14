@@ -44,7 +44,7 @@
       	astal.battery
       	astal.tray
       ];
-      GSETTINGS_SCHEMA_DIR = "${pkgs.astal.notifd}/share/gsettings-schemas/astal-notifd-0-unstable-2025-11-07/glib-2.0/schemas:${pkgs.gtk4}/share/gsettings-schemas/gtk4-4.20.3/glib-2.0/schemas/";
+      GSETTINGS_SCHEMA_DIR = "${pkgs.astal.notifd}/share/gsettings-schemas/astal-notifd-0-unstable-2025-11-26/glib-2.0/schemas:${pkgs.gtk4}/share/gsettings-schemas/gtk4-4.20.3/glib-2.0/schemas/";
       GIO_MODULE_DIR = "${pkgs.glib-networking}/lib/gio/modules/";
       LD_LIBRARY_PATH = with pkgs; lib.makeSearchPath "lib" [
 	sqlite.out
