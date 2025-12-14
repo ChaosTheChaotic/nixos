@@ -6,19 +6,25 @@ vim.diagnostic.config({
 		spacing = 4,
 		update_in_insert = true, -- Enable updates in insert mode
 	},
-	signs = true,
+	signs = {
+    	  text = {
+    	    [vim.diagnostic.severity.ERROR] = " ",
+    	    [vim.diagnostic.severity.WARN]  = " ",
+    	    [vim.diagnostic.severity.HINT]  = " ",
+    	    [vim.diagnostic.severity.INFO]  = " ",
+    	  },
+    	  numhl = {
+    	    [vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+    	    [vim.diagnostic.severity.WARN]  = "DiagnosticSignWarn",
+    	    [vim.diagnostic.severity.HINT]  = "DiagnosticSignHint",
+    	    [vim.diagnostic.severity.INFO]  = "DiagnosticSignInfo",
+    	  },
+    	},
 	update_in_insert = true,
 	underline = true,
 	severity_sort = true,
 })
 vim.keymap.set("i", "<C-e>", vim.diagnostic.open_float, { noremap = true, silent = true })
-
--- Custom signs for diagnostics
-local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
-for type, icon in pairs(signs) do
-	local hl = "DiagnosticSign" .. type
-	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
 
 vim.opt.tabstop = 8
 vim.opt.softtabstop = 2
