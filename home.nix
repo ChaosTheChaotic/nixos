@@ -156,6 +156,7 @@
         lg = "lazygit";
 	prismlauncher = "prismlauncher -d ${config.dotfiles}/PrismLauncher";
         rb = "sudo nixos-rebuild switch --flake /etc/nixos";
+	scrcpy = "scrcpy --render-driver=opengl";
       };
       sessionVariables = {
         EDITOR = "nvim";
