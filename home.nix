@@ -114,6 +114,7 @@
       libunwind
       cmake-language-server
       lua-language-server
+      scrcpy
       astal.hyprland
       astal.wireplumber
       astal.network
