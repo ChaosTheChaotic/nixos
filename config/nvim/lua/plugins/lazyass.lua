@@ -159,7 +159,7 @@ return {
 	      vim.fn.expand("~/.config/love/Mods"),
 	    }
 	    local decomlatro_uri = vim.uri_from_fname(vim.fn.expand("~/decomlatro"))
-	    
+
 	    -- Enhanced LSP mappings
 	    local on_attach = function(client, bufnr)
 	      local opts = { noremap = true, silent = true, buffer = bufnr }
@@ -168,7 +168,7 @@ return {
 	      vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, opts)
 	      vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, opts)
 	      vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, opts)
-	      
+
 	      -- Conditionally add decomlatro to workspace for lua_ls
 	      if client.name == "lua_ls" then
 	        local current_file = vim.api.nvim_buf_get_name(bufnr)
@@ -197,7 +197,7 @@ return {
 	        end
 	      end
 	    end
-	
+
 	    -- File type to LSP server mapping
 	    local servers = {
 	      lua = {
@@ -299,7 +299,7 @@ return {
 	              return
 	            end
 	          end
-	          
+
 	          -- Start the language server
 	          vim.lsp.start({
 	            name = server.name,
