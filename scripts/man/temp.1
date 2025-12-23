@@ -1,0 +1,25 @@
+.TH TEMP 1 "1970-1-1" "v1.0" "Custom Scripts Manual"
+.SH NAME
+temp \- display CPU thermal zone temperature
+.SH SYNOPSIS
+.B temp
+.SH DESCRIPTION
+.B temp
+is a utility that reads the system temperature from the primary thermal zone
+device and displays it in a human-readable format.
+.PP
+The script retrieves the raw value from
+.I /sys/class/thermal/thermal_zone0/temp
+and converts it from millidegrees Celsius to degrees Celsius.
+.SH OUTPUT
+The script outputs a single line to standard output:
+.TP
+.B Temp: XX.XX
+The current temperature formatted to two decimal places.
+.SH FILES
+.TP
+.I /sys/class/thermal/thermal_zone0/temp
+The kernel interface used to read the raw thermal data.
+.SH SEE ALSO
+.MR awk 1 ,
+.MR printf 1

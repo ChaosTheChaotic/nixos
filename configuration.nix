@@ -13,11 +13,19 @@
 let
   scripts = pkgs.stdenv.mkDerivation {
     name = "pscripts";
-    src = ./scripts;
+    src = ./scripts/bin;
     installPhase = ''
       mkdir -p $out/bin
       cp -r $src/* $out/bin/
       chmod -R +x $out/bin/
+    '';
+  };
+  scriptsManPgs = pkgs.stdenv.mkDerivation {
+    name = "pscripts-manpgs";
+    src = ./scripts/man;
+    installPhase = ''
+      mkdir -p $out/share/man/man1
+      find $src -name "*.1" -exec install -m 644 {} $out/share/man/man1/ \;
     '';
   };
   extraFonts = pkgs.callPackage ./fonts.nix { };
@@ -25,6 +33,7 @@ in
 {
   environment.systemPackages = with pkgs; [
     scripts
+    scriptsManPgs
     git
     openssl.dev
     man-pages
@@ -248,6 +257,11 @@ in
   environment.variables = {
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
     C_INCLUDE_PATH = "${pkgs.openssl.dev}/include";
+  };
+
+  documentation = {
+    enable = true;
+    man.enable = true;
   };
 
   # programs.firefox.enable = true;

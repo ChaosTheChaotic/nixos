@@ -1,0 +1,51 @@
+.TH GPE 1 "1970-1-1" "v1.0" "Custom Scripts Manuals"
+.SH NAME
+gpe \- update all git repositories in the current directory in parallel
+.SH SYNOPSIS
+.B gpe
+.SH DESCRIPTION
+.B gpe
+is a batch update utility that scans the immediate subdirectories of the current 
+working directory for Git repositories and executes
+.MR git-pull 1
+on each.
+.PP
+To optimize performance, the script processes up to 8 repositories 
+simultaneously. It provides a colorized, synchronized output to ensure that 
+the status of each repository remains readable despite the parallel execution.
+.SH FEATURES
+.TP
+.B Parallel Execution
+Uses job control to manage a maximum of 8 concurrent background processes.
+.TP
+.B Output Synchronization
+Uses
+.MR flock 1
+to ensure that the multi-line output from different repositories does not 
+interleave in the terminal.
+.TP
+.B Error Reporting
+Maintains a temporary log of failed updates and presents a detailed summary 
+upon completion, listing exactly which repositories encountered errors.
+.SH OUTPUT
+The script provides a visual status for each directory:
+.TP
+.B \[u2713] (Green Check)
+Indicates the repository was updated successfully.
+.TP
+.B \[u2717] (Red X)
+Indicates that the
+.B git pull
+command failed (e.g., due to merge conflicts, network issues, or local changes).
+.SH NOTES
+The script ignores any directory that does not contain a 
+.I .git 
+subfolder. It uses
+.MR mktemp 1
+to create lock files and failure logs, which are automatically cleaned up 
+on exit.
+.SH SEE ALSO
+.MR git 1 ,
+.MR git-pull 1 ,
+.MR flock 1 ,
+.MR wait 1

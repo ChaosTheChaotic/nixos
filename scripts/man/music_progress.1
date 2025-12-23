@@ -1,0 +1,38 @@
+.TH MUSIC_PROGRESS 1 "1970-1-1" "v1.0" "Custom Scripts Manual"
+
+.SH NAME
+music_progress \- Display a visual progress bar for the adiman music player
+
+.SH SYNOPSIS
+.B music_progress
+
+.SH DESCRIPTION
+.B music_progress
+is a bash script that interfaces with
+.BR playerctl (1)
+to track the playback status of the "adiman" music player. It calculates the elapsed time versus the total duration of the current track and renders a 20-character progress bar.
+
+If the player is paused, the script displays an empty bar. If no media information is available, it defaults to a null time format.
+
+.SH OUTPUT
+The script outputs a single line to the terminal in the following format:
+.IP
+[ ▓▓▓▓▓---------- ] 01:30 / 04:00
+
+.SH DEPENDENCIES
+.TP
+.B playerctl
+The script requires the 
+.UR github.com
+playerctl utility
+.UE
+to communicate via the MPRIS D-Bus Interface.
+.TP
+.B adiman
+The script is hardcoded to specifically target the "adiman" player instance.
+
+.SH AUTHOR
+Originally created by someone on github I forgot the name of; modified by me to target the adiman player.
+
+.SH SEE ALSO
+.BR playerctl (1)

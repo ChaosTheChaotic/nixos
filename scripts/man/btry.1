@@ -1,0 +1,54 @@
+.TH BATTERY 1 "1970-1-1" "v1.0" "Custom Scripts Manuals"
+.SH NAME
+battery \- display battery capacity, status, and remaining time
+.SH SYNOPSIS
+.B battery
+.SH DESCRIPTION
+.B battery
+is a utility script that reads power information from the 
+.I macsmc-battery
+interface. It provides a human-readable summary of the current charge level, 
+charging state, and time estimates.
+.PP
+The script reformats raw seconds from the kernel into a 
+.B H:MM:SS
+time format for better readability.
+.SH OUTPUT
+The script prints the following fields to standard output:
+.TP
+.B Capacity
+The current battery charge percentage.
+.TP
+.B Status
+The current power state (e.g., Charging, Discharging, Full, or Not charging).
+.TP
+.B Estimated time until empty/full
+Displayed only when the battery is actively discharging or charging. 
+It shows the time remaining in 
+.B H:MM:SS
+format. If the data is unavailable or zero, it returns 
+.B N/A .
+.SH FILES
+The script reads data from the following sysfs paths:
+.TP
+.I /sys/class/power_supply/macsmc-battery/capacity
+Current battery charge percentage.
+.TP
+.I /sys/class/power_supply/macsmc-battery/status
+Current charging state.
+.TP
+.I /sys/class/power_supply/macsmc-battery/time_to_empty_now
+Raw seconds remaining until the battery is depleted.
+.TP
+.I /sys/class/power_supply/macsmc-battery/time_to_full_now
+Raw seconds remaining until the battery is fully charged.
+.SH NOTES
+This script is specifically configured for systems using the 
+.B macsmc-battery 
+driver (common on Linux on Apple Silicon). It may require modification 
+to work with standard 
+.B BAT0 
+interfaces.
+.SH SEE ALSO
+.MR printf 1 ,
+.MR bash 1

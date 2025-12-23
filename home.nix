@@ -115,6 +115,7 @@
       cmake-language-server
       lua-language-server
       scrcpy
+      vesktop
       astal.hyprland
       astal.wireplumber
       astal.network

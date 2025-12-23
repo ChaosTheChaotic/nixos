@@ -1,0 +1,43 @@
+.TH KBD_BACKLIGHT 1 "1970-1-1" "v1.0" "Custom Scripts Manuals"
+.SH NAME
+kbd_backlight \- set the keyboard backlight brightness level
+.SH SYNOPSIS
+.B kbd_backlight
+[\fIBRIGHTNESS\fR]
+.SH DESCRIPTION
+.B kbd_backlight
+is a simple utility to control the intensity of the keyboard LEDs.
+It writes a numerical value directly to the kernel's LED class interface.
+.PP
+The script accepts a single integer argument. If no argument is provided,
+it defaults to
+.B 0
+(turning the backlight off).
+.SH ARGUMENTS
+.TP
+.I BRIGHTNESS
+An integer value representing the desired brightness level.
+The range is hardware-dependent (commonly 0 to 3 or 0 to 255).
+.SH SECURITY
+This script uses
+.MR sudo 1
+in conjunction with
+.MR tee 1
+to gain the necessary write permissions for the
+.I sysfs
+directory. The user must have appropriate sudoers privileges to execute
+this command.
+.SH FILES
+.TP
+.I /sys/class/leds/kbd_backlight/brightness
+The kernel device interface used to control the keyboard LED hardware.
+.SH EXAMPLES
+.TP
+.B kbd_backlight 3
+Sets the keyboard backlight to level 3.
+.TP
+.B kbd_backlight
+Turns the keyboard backlight off (defaults to 0).
+.SH SEE ALSO
+.MR sudo 8 ,
+.MR tee 1

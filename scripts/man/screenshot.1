@@ -1,0 +1,70 @@
+.TH SCREENSHOT 1 "1970-1-1" "v1.0" "Custom Scripts Manual"
+.SH NAME
+screenshot \- capture images of the screen on Wayland
+.SH SYNOPSIS
+.B screenshot
+[\fB\-c\fR] [\fB\-s\fR] [\fB\-n\fR] [\fB\-d\fR [\fIdirectory\fR]]
+.br
+.B screenshot \-h
+.SH DESCRIPTION
+.B screenshot
+is a wrapper script for
+.MR grim 1
+and
+.MR slurp 1
+designed to capture the screen on Wayland compositors. 
+.PP
+By default, the script prompts the user to select a specific area using
+.MR slurp 1 .
+If no output destination (\fB\-c\fR or \fB\-d\fR) is specified, the script 
+will exit with an error.
+.SH OPTIONS
+.TP
+.B \-h
+Print the help message and exit.
+.TP
+.B \-c
+Write the captured screenshot to the system clipboard using
+.MR wl-copy 1 .
+.TP
+.B \-s
+Screenshot all active outputs (full screen). This bypasses the region 
+selection tool.
+.TP
+.B \-n
+Notify the user of the result using
+.MR notify-send 1 .
+This provides feedback on success, failure, or cancellation.
+.TP
+.B \-d [\fIdirectory\fR]
+Save the screenshot to a file. If a 
+.I directory 
+is provided, the file is saved there. Otherwise, it defaults to 
+.IR ~/Screenshots .
+Files are named using the timestamp format: 
+.IR Screenshot-YY-MM-DD_HH-MM-SS.png .
+.SH EXIT STATUS
+.TP
+.B 0
+Success or user-initiated cancellation.
+.TP
+.B 1
+Failure due to missing output arguments or internal command errors.
+.SH EXAMPLES
+.TP
+.B screenshot -c
+Select a region and copy it to the clipboard.
+.TP
+.B screenshot -sn
+Capture all screens and send a desktop notification upon completion.
+.TP
+.B screenshot -d ~/Pictures/Work
+Select a region and save the file to the specified work directory.
+.TP
+.B screenshot -cd
+Save a region capture to both the clipboard and the default Screenshots folder.
+.SH SEE ALSO
+.MR grim 1 ,
+.MR slurp 1 ,
+.MR wl-copy 1 ,
+.MR notify-send 1

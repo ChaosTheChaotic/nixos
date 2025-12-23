@@ -1,0 +1,42 @@
+.TH BRIGHTNESS 1 "1970-1-1" "v1.0" "Custom Scripts Manuals"
+.SH NAME
+brightness \- adjust display backlight brightness using brightnessctl
+.SH SYNOPSIS
+.B brightness
+[\fIOPTION\fR]
+.SH DESCRIPTION
+.B brightness
+is a simple wrapper script that provides a standardized interface to the
+.MR brightnessctl 1
+utility. It allows users to query, increase, or decrease the display brightness 
+level in fixed increments.
+.SH OPTIONS
+.TP
+.B \-\-get
+Retrieve the current brightness level as a percentage (0-100).
+.TP
+.B \-\-inc
+Increase the current brightness by a fixed step of 5%.
+.TP
+.B \-\-dec
+Decrease the current brightness by a fixed step of 5%.
+.TP
+.B \-h, \-\-help
+Display the help menu and exit.
+.SH EXAMPLES
+.TP
+.B brightness \-\-inc
+Increase the display brightness by 5%.
+.TP
+.B brightness \-\-get
+Output the current brightness percentage to standard output.
+.SH ENVIRONMENT
+The script relies on the presence of the
+.MR brightnessctl 1
+command in the system's PATH.
+.SH BUGS
+Brightness levels are capped between 5% and 100%. The script prevents setting 
+the brightness to 0% to avoid accidentally rendering the display unusable.
+.SH SEE ALSO
+.MR brightnessctl 1 ,
+.MR cut 1
