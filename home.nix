@@ -1,6 +1,16 @@
 { config, pkgs, lib, inputs, ... }:
 
-{
+let
+  vesktopWithArgs = pkgs.symlinkJoin {
+    name = "vesktop-windows-ua";
+    paths = [ pkgs.vesktop ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/vesktop \
+        --add-flags "--user-agent-os windows"
+    '';
+  };
+in {
   options = {
     dotfiles = lib.mkOption {
       type = lib.types.path;
@@ -115,7 +125,7 @@
       cmake-language-server
       lua-language-server
       scrcpy
-      vesktop
+      vesktopWithArgs
       astal.hyprland
       astal.wireplumber
       astal.network
