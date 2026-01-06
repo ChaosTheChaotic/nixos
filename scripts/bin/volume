@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 
+step=5
+
 print_help() {
-  echo "Usage: volume [OPTIONS]"
+  echo "Usage: volume [OPTIONS] [VALUE]"
   echo "Args:"
-  echo "--get	   Get the current volume"
-  echo "--inc 	   Increase the volume"
-  echo "--dec 	   Decrease the volume"
-  echo "--mute	   Toggles the mute status"
-  echo "--get-mic  Get the microphone volume"
-  echo "--inc-mic  Increase the microphone volume"
-  echo "--dec-mic  Decrease the microphone volume"
+  echo "--get		   Get the current volume"
+  echo "--inc [VALUE]  	   Increase volume by n (default: 5)"
+  echo "--dec [VALUE]  	   Decrease volume by n (default: 5)"
+  echo "--mute	       	   Toggles the mute status"
+  echo "--get-mic      	   Get the microphone volume"
+  echo "--inc-mic [VALUE]  Increase mic volume by n (default: 5)"
+  echo "--dec-mic [VALUE]  Decrease mic volume by n (default: 5)"
   echo "-h, --help Show this help menu"
 }
+
+is_num() { [[ "$1" =~ ^[0-9]+$ ]]; }
 
 get_vol() {
   vol=$(pamixer --get-volume)
@@ -19,19 +23,19 @@ get_vol() {
 }
 
 inc_vol() {
+  local amount=${1:-$step}
   if [ "$(pamixer --get-mute)" == "true" ]; then
-    toggle_mute
-  else
-    pamixer -i 5 --allow-boost --set-limit 150
+    pamixer -u
   fi
+  pamixer -i "$amount" --allow-boost --set-limit 150
 }
 
 dec_vol() {
+  local amount=${1:-$step}
   if [ "$(pamixer --get-mute)" == "true" ]; then
-    toggle_mute
-  else
-    pamixer -d 5
+    pamixer -u
   fi
+  pamixer -d "$amount"
 }
 
 toggle_mute() {
@@ -56,43 +60,30 @@ get_mic_vol() {
 }
 
 inc_mic_vol() {
+  local amount=${1:-$step}
   if [ "$(pamixer --default-source --get-mute)" == "true" ]; then
-    toggle_mic
-  else
-    pamixer --default-source -i 5
+    pamixer --default-source -u
   fi
+  pamixer --default-source -i "$amount"
 }
 
 dec_mic_vol() {
+  local amount=${1:-$step}
   if [ "$(pamixer --default-source --get-mute)" == "true" ]; then
-    toggle_mic
-  else
-    pamixer --default-source -d d
+    pamixer --default-source -u
   fi
+  pamixer --default-source -d "$amount"
 }
 
 case $1 in
-  "--get")
-    get_vol
-    ;;
-  "--inc")
-    inc_vol
-    ;;
-  "--dec")
-    dec_vol
-    ;;
-  "--get-mic")
-    get_mic_vol
-    ;;
-  "--inc-mic")
-    inc_mic_vol
-    ;;
-  "--dec-mic")
-    dec_mic_vol
-    ;;
-  "-h" | "--help")
-    print_help
-    ;;
+  "--get")     pamixer --get-volume ;;
+  "--inc")     is_num "$2" || [[ -z "$2" ]] && inc_vol "${2:-$step}" || echo "Error: Not a number" ;;
+  "--dec")     is_num "$2" || [[ -z "$2" ]] && dec_vol "${2:-$step}" || echo "Error: Not a number" ;;
+  "--mute")    pamixer -t ;;
+  "--get-mic") pamixer --default-source --get-volume ;;
+  "--inc-mic") is_num "$2" || [[ -z "$2" ]] && inc_mic_vol "${2:-$step}" || echo "Error: Not a number" ;;
+  "--dec-mic") is_num "$2" || [[ -z "$2" ]] && dec_mic_vol "${2:-$step}" || echo "Error: Not a number" ;;
+  "-h"|"--help") print_help ;;
   *)
     print_help
     echo -e "\n\nCurrent volume: $(get_vol)"

@@ -1,3 +1,17 @@
 #!/usr/bin/env bash
 
-echo "${1:-0}" | sudo tee /sys/class/leds/kbd_backlight/brightness
+TARGET="/sys/class/leds/kbd_backlight/brightness"
+
+# Display brightness on no arg
+if [[ -z "$1" ]]; then
+    cat "$TARGET"
+    exit 0
+fi
+
+# Check if $1 is unsigned int
+if [[ ! "$1" =~ ^[0-9]+$ ]]; then
+    echo "Error: '$1' is not a valid numeric brightness level." >&2
+    exit 1
+fi
+
+echo "$1" | sudo tee "$TARGET" > /dev/null

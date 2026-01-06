@@ -3,12 +3,13 @@
 step=5
 
 print_help() {
-  echo "Usage: brightness [OPTION]"
+  echo "Usage: brightness [OPTION] [AMOUNT]"
   echo "Args:"
-  echo "--get	   Get the brightness"
-  echo "--inc 	   Increase the brightness by 5"
-  echo "--dec 	   Decrease the brightness by 5"
-  echo "-h, --help Show this menu"
+  echo "--get		   Get the brightness"
+  echo "--inc [AMOUNT] 	   Increase the brightness by the next arg or 5 if none provided"
+  echo "--dec [AMOUNT] 	   Decrease the brightness by the next arg or 5 if none provided"
+  echo "--set AMOUNT	   Set the brightness to the second arg"
+  echo "-h, --help	   Show this menu"
 }
 
 get_brightness() {
@@ -33,10 +34,30 @@ case $1 in
     get_brightness
     ;;
   "--inc")
-    change_brightness "$step"
+    amt=${2:-$step}
+    if [[ ! "$2" =~ ^([0-9]|[1-9]|[0-9]|100)$ ]]; then
+      echo "Error: --inc requires a numeric value (0-100)"
+      exit 1
+    fi
+    change_brightness "$amt"
     ;;
   "--dec")
-    change_brightness "-$step"
+    amt=${2:-$step}
+    if [[ ! "$2" =~ ^([0-9]|[1-9]|[0-9]|100)$ ]]; then
+      echo "Error: --inc requires a numeric value (0-100)"
+      exit 1
+    fi
+    change_brightness "-$amt"
+    ;;
+  "--set")
+    if [[ ! "$2" =~ ^([0-9]|[1-9][0-9]|100)$ ]]; then
+      echo "Error: --set requires a numeric value (0-100)"
+      exit 1
+    fi
+    val=$2
+    ((val < 5)) && val=5
+    ((val > 100)) && val=100
+    brightnessctl set "${val}%"
     ;;
   "-h" | "--help")
     print_help

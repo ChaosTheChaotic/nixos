@@ -18,12 +18,12 @@ the script will automatically unmute the device before adjusting the level.
 .B \-\-get
 Retrieve the current speaker volume percentage.
 .TP
-.B \-\-inc
-Increase the speaker volume by 5%. 
-Allows boosting up to a hard limit of 150%.
+.B \-\-inc [VALUE]
+Increase the speaker volume by \fIVALUE\fR% (default 5). 
+Allows boosting up to 150%.
 .TP
-.B \-\-dec
-Decrease the speaker volume by 5%.
+.B \-\-dec [VALUE]
+Decrease the speaker volume by \fIVALUE\fR% (default 5).
 .TP
 .B \-\-mute
 Toggle the mute status of the default speaker.
@@ -31,11 +31,11 @@ Toggle the mute status of the default speaker.
 .B \-\-get\-mic
 Retrieve the current microphone volume percentage.
 .TP
-.B \-\-inc\-mic
-Increase the microphone volume by 5%.
+.B \-\-inc\-mic [VALUE]
+Increase the microphone volume by \fIVALUE\fR% (default 5).
 .TP
-.B \-\-dec\-mic
-Decrease the microphone volume by 5%.
+.B \-\-dec\-mic [VALUE]
+Decrease the microphone volume by \fIVALUE\fR% (default 5).
 .TP
 .B \-h, \-\-help
 Display the help menu and exit.
@@ -46,6 +46,12 @@ Unmutes the speakers (if necessary) and increases volume by 5%.
 .TP
 .B volume \-\-get\-mic
 Returns the current recording level of the default microphone.
+.TP
+.B volume \-\-inc
+Increases volume by the default 5%.
+.TP
+.B volume \-\-inc 20
+Increases volume by 20%.
 .SH NOTES
 The speaker volume increase is limited to 150% to prevent hardware damage 
 while allowing levels above the standard 100% threshold.

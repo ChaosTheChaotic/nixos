@@ -1,0 +1,42 @@
+[modules]
+left = [ "Workspaces" ]
+center = [ "WindowTitle", "MediaPlayer" ]
+right = [ "SystemInfo", [ "Clock", "Tray", "Privacy", "Settings" ] ]
+
+[appearance]
+font_name = "Inter"
+
+[appearance.background_color]
+base = "#232136"   
+strong = "#2a273f" 
+weak = "#393552"   
+text = "#e0def4"   
+
+[appearance.primary_color]
+base = "#c4a7e7"   
+strong = "#ebbcba" 
+weak = "#9ccfd8"   
+text = "#232136"   
+
+[appearance.secondary_color]
+base = "#44415a"   
+strong = "#56526e" 
+weak = "#2a273f"   
+text = "#e0def4"   
+
+[appearance.success_color]
+base = "#3e8fb0"   
+strong = "#9ccfd8" 
+weak = "#56526e"   
+text = "#232136"   
+
+[appearance.danger_color]
+base = "#eb6f92"   
+strong = "#f6c177" 
+weak = "#ea9a97"   
+text = "#232136"   
+
+[appearance.text_color]
+base = "#e0def4"   
+strong = "#ffffff" 
+weak = "#908caa"   
