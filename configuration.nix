@@ -54,12 +54,12 @@ in
     ncdu
     vlc
     chafa
-    html-xml-utils
     xxd
     go
     ccache
     inputs.lobster.packages.${pkgs.system}.lobster
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
+    android-tools
   ];
 
   fonts.packages = [ extraFonts ];
@@ -249,8 +249,6 @@ in
     enable = true;
     extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
   };
-
-  programs.adb.enable = true;
 
   programs.kdeconnect.enable = true;
 
