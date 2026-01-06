@@ -16,6 +16,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     lobster.url = "github:justchokingaround/lobster";
+    ashell.url = "github:MalpenZibo/ashell";
   };
 
   outputs =
@@ -28,6 +29,7 @@
       agenix,
       rose-pine-hyprcursor,
       lobster,
+      ashell,
       ...
     }@inputs:
     let
@@ -48,6 +50,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+	    home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.chaos = ./home.nix;
           }
         ];

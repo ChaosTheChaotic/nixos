@@ -43,19 +43,7 @@ in {
         gtksourceview5
         gtk4-layer-shell
         libsoup_3
-	astal.hyprland
-      	astal.wireplumber
-      	astal.network
-      	astal.apps
-      	astal.bluetooth
-      	astal.powerprofiles
-      	astal.notifd
-      	astal.mpris
-      	astal.battery
-      	astal.tray
       ];
-      GSETTINGS_SCHEMA_DIR = "${pkgs.astal.notifd}/share/gsettings-schemas/astal-notifd-0-unstable-2025-11-26/glib-2.0/schemas:${pkgs.gtk4}/share/gsettings-schemas/gtk4-4.20.3/glib-2.0/schemas/";
-      GIO_MODULE_DIR = "${pkgs.glib-networking}/lib/gio/modules/";
       LD_LIBRARY_PATH = with pkgs; lib.makeSearchPath "lib" [
 	sqlite.out
 	libunwind.out
@@ -126,19 +114,7 @@ in {
       lua-language-server
       scrcpy
       vesktopWithArgs
-      astal.hyprland
-      astal.wireplumber
-      astal.network
-      astal.apps
-      astal.bluetooth
-      astal.powerprofiles
-      astal.notifd
-      astal.mpris
-      astal.battery
-      astal.tray
-      (ags.overrideAttrs (old: {
-        buildInputs = old.buildInputs ++ [ pkgs.libdbusmenu-gtk3 ];
-      }))
+      inputs.ashell.packages.${pkgs.system}.default
     ];
     home.stateVersion = "25.11";
 
@@ -340,7 +316,7 @@ in {
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
     home.file.".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
-    home.file.".config/ags".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/ags";
+    #home.file.".config/ashell".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/ashell";
     home.file.".config/lobster".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/lobster";
 
     programs.floorp = {
