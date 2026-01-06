@@ -17,6 +17,7 @@
     };
     lobster.url = "github:justchokingaround/lobster";
     ashell.url = "github:MalpenZibo/ashell";
+    vicinae.url = "github:vicinaehq/vicinae";
   };
 
   outputs =
@@ -30,6 +31,7 @@
       rose-pine-hyprcursor,
       lobster,
       ashell,
+      vicinae,
       ...
     }@inputs:
     let

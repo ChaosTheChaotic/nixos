@@ -115,6 +115,7 @@ in {
       scrcpy
       vesktopWithArgs
       inputs.ashell.packages.${pkgs.system}.default
+      inputs.vicinae.packages.${pkgs.system}.default
     ];
     home.stateVersion = "25.11";
 
