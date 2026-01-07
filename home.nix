@@ -1,14 +1,17 @@
 { config, pkgs, lib, inputs, ... }:
 
 let
-  vesktopWithArgs = pkgs.symlinkJoin {
-    name = "vesktop-windows-ua";
-    paths = [ pkgs.vesktop ];
-    buildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/vesktop \
-        --add-flags "--user-agent-os windows"
-    '';
+  equibopVersion = "3.1.6";
+  
+  equibop = pkgs.appimageTools.wrapType2 {
+    pname = "Equibop";
+    version = equibopVersion;
+    src = pkgs.fetchurl {
+      url = "https://github.com/Equicord/Equibop/releases/download/v${equibopVersion}/Equibop-${equibopVersion}-arm64.AppImage";
+      sha256 = "sha256:17845c7fbad4c986805b817cfab1d08f5fb87cfd084589831182661d3e363351";
+    };
+    #extraPkgs = pkgs: with pkgs; [ ];
+    extraWrapperArgs = [ "--add-flags" "--user-agent-os windows" ];
   };
 in {
   options = {
@@ -113,7 +116,7 @@ in {
       cmake-language-server
       lua-language-server
       scrcpy
-      vesktopWithArgs
+      equibop
       inputs.ashell.packages.${pkgs.system}.default
       inputs.vicinae.packages.${pkgs.system}.default
     ];
