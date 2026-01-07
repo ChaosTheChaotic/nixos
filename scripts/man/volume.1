@@ -25,6 +25,9 @@ Allows boosting up to 150%.
 .B \-\-dec [VALUE]
 Decrease the speaker volume by \fIVALUE\fR% (default 5).
 .TP
+.B \-\-set [VALUE]
+Set the speaker volume to \fIVALUE\fR%. Errors on \fIVALUE\fR% not being a number.
+.TP
 .B \-\-mute
 Toggle the mute status of the default speaker.
 .TP
@@ -52,6 +55,9 @@ Increases volume by the default 5%.
 .TP
 .B volume \-\-inc 20
 Increases volume by 20%.
+.TP
+.B volume \-\-set 20
+Sets the volume to 20% on the speakers.
 .SH NOTES
 The speaker volume increase is limited to 150% to prevent hardware damage 
 while allowing levels above the standard 100% threshold.

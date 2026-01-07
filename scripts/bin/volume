@@ -6,13 +6,14 @@ print_help() {
   echo "Usage: volume [OPTIONS] [VALUE]"
   echo "Args:"
   echo "--get		   Get the current volume"
-  echo "--inc [VALUE]  	   Increase volume by n (default: 5)"
-  echo "--dec [VALUE]  	   Decrease volume by n (default: 5)"
+  echo "--inc [VALUE]  	   Increase volume by [VALUE] (default: 5)"
+  echo "--dec [VALUE]  	   Decrease volume by [VALUE] (default: 5)"
+  echo "--set [VALUE]	   Set the volume to VALUE (0-100)"
   echo "--mute	       	   Toggles the mute status"
   echo "--get-mic      	   Get the microphone volume"
-  echo "--inc-mic [VALUE]  Increase mic volume by n (default: 5)"
-  echo "--dec-mic [VALUE]  Decrease mic volume by n (default: 5)"
-  echo "-h, --help Show this help menu"
+  echo "--inc-mic [VALUE]  Increase mic volume by [VALUE] (default: 5)"
+  echo "--dec-mic [VALUE]  Decrease mic volume by [VALUE] (default: 5)"
+  echo "-h, --help	   Show this help menu"
 }
 
 is_num() { [[ "$1" =~ ^[0-9]+$ ]]; }
@@ -79,6 +80,13 @@ case $1 in
   "--get")     pamixer --get-volume ;;
   "--inc")     is_num "$2" || [[ -z "$2" ]] && inc_vol "${2:-$step}" || echo "Error: Not a number" ;;
   "--dec")     is_num "$2" || [[ -z "$2" ]] && dec_vol "${2:-$step}" || echo "Error: Not a number" ;;
+  "--set")
+      if [[ -n "$2" ]] && is_num "$2"; then
+          pamixer --set-volume "$2"
+      else
+          echo "Error: Not a valid %"
+      fi
+      ;;
   "--mute")    pamixer -t ;;
   "--get-mic") pamixer --default-source --get-volume ;;
   "--inc-mic") is_num "$2" || [[ -z "$2" ]] && inc_mic_vol "${2:-$step}" || echo "Error: Not a number" ;;
