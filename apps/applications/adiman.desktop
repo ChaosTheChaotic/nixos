@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Adiman
-Exec=bash -c 'cd "$(dirname "%k")" && ../adiman/Adiman.AppImage'
+Exec=bash -c 'nix develop "github:ChaosTheChaotic/Adiman/dev" -c ~/nixos-cfg/apps/adiman/Adiman.AppImage || nix develop "$HOME/Adiman" -c ~/nixos-cfg/apps/adiman/Adiman.AppImage'
 Type=Application
 Comment=Music player for linux inspired by Namida
 Terminal=false
