@@ -171,6 +171,11 @@ in {
           name = "F-Sy-H";
           src = inputs.f-sy-h;
         }
+        {
+          name = "vi-mode";
+          src = pkgs.zsh-vi-mode;
+          file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
+        }
       ];
       initContent = ''
         export NIX_LD=$(nix eval --impure --raw --expr 'let pkgs = import <nixpkgs> {}; NIX_LD = pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"; in NIX_LD')
