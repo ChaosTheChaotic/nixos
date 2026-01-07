@@ -78,6 +78,22 @@
         "type": "github"
       }
     },
+    "f-sy-h": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1752868581,
+        "narHash": "sha256-rcbJM5TXMODxo6bpmTPM0LRHn4E/aOpXY72n2srSWfs=",
+        "owner": "z-shell",
+        "repo": "F-Sy-H",
+        "rev": "f5af74afe220ea139a32506a57711cf085ca49ff",
+        "type": "github"
+      },
+      "original": {
+        "owner": "z-shell",
+        "repo": "F-Sy-H",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "locked": {
         "lastModified": 1746162366,
@@ -336,6 +352,7 @@
       "inputs": {
         "agenix": "agenix",
         "ashell": "ashell",
+        "f-sy-h": "f-sy-h",
         "home-manager": "home-manager_2",
         "lobster": "lobster",
         "nixos-apple-silicon": "nixos-apple-silicon",

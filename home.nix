@@ -150,7 +150,7 @@ in {
         EDITOR = "nvim";
 	BAT_THEME="rose-pine-moon";
       };
-      syntaxHighlighting.enable = true;
+      #syntaxHighlighting.enable = true;
       autosuggestion.enable = true;
       oh-my-zsh = {
         enable = true;
@@ -166,6 +166,12 @@ in {
           "zoxide"
         ];
       };
+      plugins = [
+        {
+          name = "F-Sy-H";
+          src = inputs.f-sy-h;
+        }
+      ];
       initContent = ''
         export NIX_LD=$(nix eval --impure --raw --expr 'let pkgs = import <nixpkgs> {}; NIX_LD = pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"; in NIX_LD')
 	man() {

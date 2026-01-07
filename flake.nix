@@ -18,6 +18,10 @@
     lobster.url = "github:justchokingaround/lobster";
     ashell.url = "github:MalpenZibo/ashell";
     vicinae.url = "github:vicinaehq/vicinae";
+    f-sy-h = {
+      url = "github:z-shell/F-Sy-H";
+      flake = false;
+    };
   };
 
   outputs =
