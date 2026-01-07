@@ -15,15 +15,15 @@ in {
     dotfiles = lib.mkOption {
       type = lib.types.path;
       apply = toString;
-      default = "${builtins.toString ./.}/config";
-      example = "${builtins.toString ./.}/config";
+      default = "${toString ./.}/config";
+      example = "${toString ./.}/config";
       description = "Location of dotfiles";
     };
     apps = lib.mkOption {
       type = lib.types.path;
       apply = toString;
-      default = "${builtins.toString ./.}/apps";
-      example = "${builtins.toString ./.}/apps";
+      default = "${toString ./.}/apps";
+      example = "${toString ./.}/apps";
       description = "Location of applications";
     };
   };
