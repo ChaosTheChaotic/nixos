@@ -3,7 +3,7 @@
 screenshot \- capture images of the screen on Wayland
 .SH SYNOPSIS
 .B screenshot
-[\fB\-c\fR] [\fB\-s\fR] [\fB\-n\fR] [\fB\-d\fR [\fIdirectory\fR]]
+[\fB\-c\fR] [\fB\-o\fR] [\fB\-s\fR] [\fB\-n\fR] [\fB\-d\fR [\fIdirectory\fR]]
 .br
 .B screenshot \-h
 .SH DESCRIPTION
@@ -16,7 +16,7 @@ designed to capture the screen on Wayland compositors.
 .PP
 By default, the script prompts the user to select a specific area using
 .MR slurp 1 .
-If no output destination (\fB\-c\fR or \fB\-d\fR) is specified, the script 
+If no output destination (\fB\-c\fR, \fB\-o\fR, or \fB\-d\fR) is specified, the script 
 will exit with an error.
 .SH OPTIONS
 .TP
@@ -26,6 +26,10 @@ Print the help message and exit.
 .B \-c
 Write the captured screenshot to the system clipboard using
 .MR wl-copy 1 .
+.TP
+.B \-o
+Write raw image data to standard output (stdout). This allows piping the
+image data to other commands for further processing.
 .TP
 .B \-s
 Screenshot all active outputs (full screen). This bypasses the region 
@@ -55,14 +59,20 @@ Failure due to missing output arguments or internal command errors.
 .B screenshot -c
 Select a region and copy it to the clipboard.
 .TP
+.B screenshot -o | convert - -resize 50% small.png
+Select a region, output to stdout, and pipe to ImageMagick's convert for resizing.
+.TP
+.B screenshot -os
+Capture all screens and write raw image data to stdout.
+.TP
 .B screenshot -sn
 Capture all screens and send a desktop notification upon completion.
 .TP
 .B screenshot -d ~/Pictures/Work
 Select a region and save the file to the specified work directory.
 .TP
-.B screenshot -cd
-Save a region capture to both the clipboard and the default Screenshots folder.
+.B screenshot -cod
+Save a region capture to clipboard, stdout, and the default Screenshots folder.
 .SH SEE ALSO
 .MR grim 1 ,
 .MR slurp 1 ,

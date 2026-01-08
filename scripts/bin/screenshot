@@ -8,17 +8,19 @@ Screenshots the screen
 Options
   -h Prints this help message
   -c Writes to clipboard with wl-copy
+  -o Writes raw image data to stdout
   -s Screenshots all outputs (default behavior of grim)
   -n Notify the user (requires notify-send)
   -d Writes to either a specified directory or to ~/Screenshots and does not write to clipboard
 
-If neither -c or -d are specified then the program will exit with error
+If neither -c, -o or -d are specified then the program will exit with error
 EOF
 
 clip=false
 full=false
 noti=false
 fs=false
+stdout=false
 od="$HOME/Screenshots"
 
 parse_opts() {
@@ -28,6 +30,9 @@ parse_opts() {
     case "$opt" in
       c)
 	clip=true
+	;;
+      o)
+	stdout=true
 	;;
       s)
 	full=true
@@ -69,8 +74,11 @@ notify_usr() {
   !($full) && body="${body} the selected area"
   !(test $status -eq 0) && body="${body} and have it"
   (($clip) && ($fs)) && body="${body} saved to clipboard and $od"
-  ($clip) && !($fs) && body="${body} saved to clipboard"
-  ($fs) && !($clip) && body="${body} saved to $od"
+  ($clip) && !($fs) && !($stdout) && body="${body} saved to clipboard"
+  ($stdout) && body="${body} written to stdout"
+  ($fs) && !($clip) && !($stdout) && body="${body} saved to $od"
+  (($fs) && ($stdout)) && body="${body} saved to $od and written to stdout"
+  (($clip) && ($stdout)) && body="${body} saved to clipboard and written to stdout"
 
   notify-send "$title" "$body"
 }
@@ -79,7 +87,7 @@ take_scr() {
   local cmd="grim"
   local sts=0
 
-  (!($clip) && !($fs)) && echo "No output specified (use -c for clipboard or -d for file)" && exit 1
+  (!($clip) && !($fs) && !($stdout)) && echo "No output specified (use -c for clipboard, -o for stdout, or -d for file)" && exit 1
   if !($full); then
     geometry=$(slurp 2>&1)
     local slurp_exit=$?
@@ -96,12 +104,20 @@ take_scr() {
     cmd="${cmd} -g \"$geometry\""
   fi
   
-  if (($fs) && ($clip)); then
+  if (($fs) && ($clip) && !($stdout)); then
     cmd="${cmd} - | tee \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\" | wl-copy -t image/png"
-  elif (($fs) && !($clip)); then
+  elif (($fs) && ($stdout) && !($clip)); then
+    cmd="${cmd} - | tee \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\""
+  elif (($clip) && ($stdout) && !($fs)); then
+    cmd="${cmd} - | tee >(wl-copy -t image/png)"
+  elif (($fs) && ($clip) && ($stdout)); then
+    cmd="${cmd} - | tee \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\" | tee >(wl-copy -t image/png)"
+  elif (($fs) && !($clip) && !($stdout)); then
     cmd="${cmd} \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\""
-  elif (($clip) && !($fs)); then
+  elif (($clip) && !($fs) && !($stdout)); then
     cmd="${cmd} - | wl-copy -t image/png"
+  elif (($stdout) && !($fs) && !($clip)); then
+    cmd="${cmd} -"
   fi
   
   eval $cmd
