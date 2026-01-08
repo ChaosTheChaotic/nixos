@@ -1,69 +1,98 @@
 #!/usr/bin/env bash
 
+source "$UTIL_SCRIPT_DIR/check_installed.sh"
+source "$UTIL_SCRIPT_DIR/nums.sh"
+source "$UTIL_SCRIPT_DIR/err.sh"
+
 step=5
+min_brightness=5
+max_brightness=100
 
 print_help() {
-  echo "Usage: brightness [OPTION] [AMOUNT]"
-  echo "Args:"
-  echo "--get		   Get the brightness"
-  echo "--inc [AMOUNT] 	   Increase the brightness by the next arg or 5 if none provided"
-  echo "--dec [AMOUNT] 	   Decrease the brightness by the next arg or 5 if none provided"
-  echo "--set AMOUNT	   Set the brightness to the second arg"
-  echo "-h, --help	   Show this menu"
+  cat <<EOF
+Usage: brightness [OPTION] [AMOUNT]
+Control screen brightness.
+
+Options:
+  --get           Get current brightness percentage
+  --inc [AMOUNT]  Increase brightness by AMOUNT (default: $step)
+  --dec [AMOUNT]  Decrease brightness by AMOUNT (default: $step)
+  --set AMOUNT    Set brightness to AMOUNT (${min_brightness}-${max_brightness})
+  -h, --help      Show this help message
+EOF
 }
 
 get_brightness() {
+  check_installed "brightnessctl"
+  check_installed "cut"
+  check_installed "tr"
+
   brightnessctl -m | cut -d, -f4 | tr -d '%'
 }
 
 change_brightness() {
-  local p=$1
+  local delta=$1
   local cur new
 
   cur=$(get_brightness)
-  new=$((cur + p))
+  new=$((cur + delta))
 
-  ((new < 5)) && new=5
-  ((new > 100)) && new=100
+  ((new < min_brightness)) && new=$min_brightness
+  ((new > max_brightness)) && new=$max_brightness
 
   brightnessctl set "${new}%"
+  info "Brightness set to ${new}%"
 }
 
-case $1 in
+validate_amount() {
+  local amount="$1"
+  if ! is_num "$amount"; then
+    fatal "Error: '$amount' is not a valid number"
+    return 1
+  fi
+  return 0
+}
+
+case "${1:-}" in
   "--get")
     get_brightness
     ;;
   "--inc")
-    amt=${2:-$step}
-    if [[ ! "$amt" =~ ^([0-9]|[1-9]|[0-9]|100)$ ]]; then
-      echo "Error: --inc requires a numeric value (0-100)"
+    amt="${2:-$step}"
+    if ! validate_amount "$amt"; then
       exit 1
     fi
     change_brightness "$amt"
     ;;
   "--dec")
-    amt=${2:-$step}
-    if [[ ! "$amt" =~ ^([0-9]|[1-9]|[0-9]|100)$ ]]; then
-      echo "Error: --inc requires a numeric value (0-100)"
+    amt="${2:-$step}"
+    if ! validate_amount "$amt"; then
       exit 1
     fi
     change_brightness "-$amt"
     ;;
   "--set")
-    if [[ ! "$2" =~ ^([0-9]|[1-9][0-9]|100)$ ]]; then
-      echo "Error: --set requires a numeric value (0-100)"
+    if [ -z "$2" ]; then
+      fatal "Error: --set requires a value"
+      exit 1
+    fi
+    if ! validate_amount "$2"; then
       exit 1
     fi
     val=$2
-    ((val < 5)) && val=5
-    ((val > 100)) && val=100
+    ((val < min_brightness)) && val=$min_brightness
+    ((val > max_brightness)) && val=$max_brightness
     brightnessctl set "${val}%"
+    info "Brightness set to ${val}%"
     ;;
   "-h" | "--help")
     print_help
     ;;
   *)
+    if [ -n "$1" ]; then
+      warn "Unknown option: $1"
+    fi
     print_help
-    echo -e "\n\nCurrent brightness: $(get_brightness)"
+    echo -e "\nCurrent brightness: $(get_brightness)%"
     ;;
 esac

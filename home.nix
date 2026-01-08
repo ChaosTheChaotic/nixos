@@ -35,7 +35,10 @@ in {
     home.username = "chaos";
     home.homeDirectory = "/home/chaos";
 
-    home.sessionVariables = {
+    home.sessionVariables = let
+      NIX_HOME_BASE = "${config.home.homeDirectory}/nixos-cfg";
+      SCRIPT_BASE_DIR = "${NIX_HOME_BASE}/scripts";
+    in {
       GSK_RENDERER = "ngl";
       GDK_BACKEND = "wayland";
       LAYER_SHELL_ENABLE = "1";
@@ -52,6 +55,10 @@ in {
 	libunwind.out
       ];
       XDG_DATA_DIRS = "${config.apps}:$XDG_DATA_DIRS";
+      UTIL_SCRIPT_DIR = "${SCRIPT_BASE_DIR}/util";
+      BIN_SCRIPT_DIR = "${SCRIPT_BASE_DIR}/bin";
+      WALLPAPER_DIR = "${NIX_HOME_BASE}/wallpapers";
+      NIX_CFG_DIR = "${NIX_HOME_BASE}";
     };
 
     home.sessionPath = [

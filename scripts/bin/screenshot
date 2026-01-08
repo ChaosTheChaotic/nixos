@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
 
-read -d '' -r USAGE <<- EOF
+source "$UTIL_SCRIPT_DIR/err.sh"
+source "$UTIL_SCRIPT_DIR/check_installed.sh"
+
+read -d '' -r USAGE <<-EOF
 Usage: screenshot [flags]
+Capture screenshots
 
-Screenshots the screen
+Options:
+  -h  Show this help message
+  -c  Write to clipboard with wl-copy
+  -o  Write raw image data to stdout
+  -s  Screenshot all outputs (default: select area)
+  -n  Notify the user (requires notify-send)
+  -d [DIR]  Write to specified directory or ~/Screenshots
 
-Options
-  -h Prints this help message
-  -c Writes to clipboard with wl-copy
-  -o Writes raw image data to stdout
-  -s Screenshots all outputs (default behavior of grim)
-  -n Notify the user (requires notify-send)
-  -d Writes to either a specified directory or to ~/Screenshots and does not write to clipboard
-
-If neither -c, -o or -d are specified then the program will exit with error
+At least one of -c, -o, or -d must be specified.
 EOF
 
 clip=false
@@ -24,107 +26,193 @@ stdout=false
 od="$HOME/Screenshots"
 
 parse_opts() {
-  test "$#" -eq 0 && echo "$USAGE" && exit 0
   local OPTIND OPTARG opt
-  while getopts 'hcsnd' opt; do
+
+  while getopts 'hcosnd:' opt; do
     case "$opt" in
       c)
-	clip=true
-	;;
+        clip=true
+        ;;
       o)
-	stdout=true
-	;;
+        stdout=true
+        ;;
       s)
-	full=true
-	;;
+        full=true
+        ;;
       n)
-	noti=true
-	;;
+        noti=true
+        ;;
       d)
-	fs=true
-	eval nxtopt=\${$OPTIND}
-	if [[ -n $nxtopt && $nxtopt != -* ]]; then
-	  ((OPTIND++))
-	  od=$nxtopt
-	fi
-	;;
-      h|*)
-	echo "$USAGE"
-	exit 0
-	;;
+        fs=true
+        od="${OPTARG:-$HOME/Screenshots}"
+        ;;
+      h)
+        echo "$USAGE"
+        exit 0
+        ;;
+      *)
+        echo "$USAGE" >&2
+        exit 1
+        ;;
     esac
   done
-  ($fs) && mkdir -p "$od"
+
+  if $fs; then
+    mkdir -p "$od" || {
+      fatal "Failed to create directory: $od"
+      exit 1
+    }
+  fi
 }
 
 notify_usr() {
   local status=$1
-  local title="Screenshot taken"
-  local body="Screenshot of"
+  local title body
 
-  if [ $status -eq 2 ]; then
-    title="Screenshot cancelled"
-    body="The screenshot was cancelled by the user"
-    notify-send "$title" "$body"
-    return
+  case $status in
+    0)
+      title="Screenshot taken"
+      body="Screenshot "
+      ;;
+    1)
+      title="Screenshot failed"
+      body="Failed to take screenshot "
+      ;;
+    2)
+      title="Screenshot cancelled"
+      body="Screenshot was cancelled"
+      notify-send -u low "$title" "$body"
+      return
+      ;;
+  esac
+
+  if $full; then
+    body="${body}of all outputs"
+  else
+    body="${body}of selected area"
   fi
 
-  !(test $status -eq 0) && title="Failed to screenshot" && body="Failed to take a screenshot of"
-  ($full) && body="${body} all wayland outputs"
-  !($full) && body="${body} the selected area"
-  !(test $status -eq 0) && body="${body} and have it"
-  (($clip) && ($fs)) && body="${body} saved to clipboard and $od"
-  ($clip) && !($fs) && !($stdout) && body="${body} saved to clipboard"
-  ($stdout) && body="${body} written to stdout"
-  ($fs) && !($clip) && !($stdout) && body="${body} saved to $od"
-  (($fs) && ($stdout)) && body="${body} saved to $od and written to stdout"
-  (($clip) && ($stdout)) && body="${body} saved to clipboard and written to stdout"
+  local outputs=""
+  if $clip && $fs && $stdout; then
+    outputs="(clipboard, file, stdout)"
+  elif $clip && $fs; then
+    outputs="(clipboard & file)"
+  elif $clip && $stdout; then
+    outputs="(clipboard & stdout)"
+  elif $fs && $stdout; then
+    outputs="(file & stdout)"
+  elif $clip; then
+    outputs="(clipboard)"
+  elif $fs; then
+    outputs="(file)"
+  elif $stdout; then
+    outputs="(stdout)"
+  fi
 
-  notify-send "$title" "$body"
+  body="${body} ${outputs}"
+  notify-send -u low "$title" "$body"
 }
 
 take_scr() {
   local cmd="grim"
-  local sts=0
+  local geometry=""
 
-  (!($clip) && !($fs) && !($stdout)) && echo "No output specified (use -c for clipboard, -o for stdout, or -d for file)" && exit 1
-  if !($full); then
+  if ! $full; then
     geometry=$(slurp 2>&1)
     local slurp_exit=$?
-    
+
     if [ $slurp_exit -eq 1 ]; then
-      ($noti) && notify_usr 2
+      $noti && notify_usr 2
       exit 0
     elif [ $slurp_exit -ne 0 ]; then
-      echo "Error running slurp: $geometry" >&2
-      ($noti) && notify_usr 1
+      fatal "Error running slurp: $geometry"
+      $noti && notify_usr 1
       exit 1
     fi
-    
-    cmd="${cmd} -g \"$geometry\""
   fi
-  
-  if (($fs) && ($clip) && !($stdout)); then
-    cmd="${cmd} - | tee \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\" | wl-copy -t image/png"
-  elif (($fs) && ($stdout) && !($clip)); then
-    cmd="${cmd} - | tee \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\""
-  elif (($clip) && ($stdout) && !($fs)); then
-    cmd="${cmd} - | tee >(wl-copy -t image/png)"
-  elif (($fs) && ($clip) && ($stdout)); then
-    cmd="${cmd} - | tee \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\" | tee >(wl-copy -t image/png)"
-  elif (($fs) && !($clip) && !($stdout)); then
-    cmd="${cmd} \"$od/Screenshot-$(date +"%y-%m-%d_%H-%M-%S").png\""
-  elif (($clip) && !($fs) && !($stdout)); then
-    cmd="${cmd} - | wl-copy -t image/png"
-  elif (($stdout) && !($fs) && !($clip)); then
-    cmd="${cmd} -"
+
+  local filename="$od/Screenshot-$(date +"%Y-%m-%d_%H-%M-%S").png"
+
+  if $stdout && $clip && $fs; then
+    # All three outputs
+    if $full; then
+      grim - | tee "$filename" | tee >(wl-copy -t image/png) >/dev/null
+    else
+      grim -g "$geometry" - | tee "$filename" | tee >(wl-copy -t image/png) >/dev/null
+    fi
+  elif $stdout && $clip; then
+    # stdout and clipboard
+    if $full; then
+      grim - | tee >(wl-copy -t image/png) >/dev/null
+    else
+      grim -g "$geometry" - | tee >(wl-copy -t image/png) >/dev/null
+    fi
+  elif $stdout && $fs; then
+    # stdout and file
+    if $full; then
+      grim - | tee "$filename" >/dev/null
+    else
+      grim -g "$geometry" - | tee "$filename" >/dev/null
+    fi
+  elif $clip && $fs; then
+    # clipboard and file
+    if $full; then
+      grim - | tee "$filename" | wl-copy -t image/png
+    else
+      grim -g "$geometry" - | tee "$filename" | wl-copy -t image/png
+    fi
+  elif $stdout; then
+    # stdout only
+    if $full; then
+      grim -
+    else
+      grim -g "$geometry" -
+    fi
+  elif $clip; then
+    # clipboard only
+    if $full; then
+      grim - | wl-copy -t image/png
+    else
+      grim -g "$geometry" - | wl-copy -t image/png
+    fi
+  elif $fs; then
+    # file only
+    if $full; then
+      grim "$filename"
+    else
+      grim -g "$geometry" "$filename"
+    fi
   fi
-  
-  eval $cmd
-  sts=$?
-  
-  ($noti) && notify_usr $sts
+
+  return $?
 }
 
 parse_opts "$@"
-take_scr
+
+if ! $clip && ! $fs && ! $stdout; then
+  fatal "No output specified (use -c for clipboard, -o for stdout, or -d for file)"
+  echo "$USAGE" >&2
+  exit 1
+fi
+
+check_installed "grim"
+
+if ! $full; then
+  check_installed "slurp"
+fi
+
+if $clip; then
+  check_installed "wl-copy"
+fi
+
+if $noti; then
+  check_installed "notify-send"
+fi
+
+if take_scr; then
+  $noti && notify_usr 0
+  exit 0
+else
+  $noti && notify_usr 1
+  exit 1
+fi

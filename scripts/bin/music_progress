@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# This script isnt my shell script however is very slightly modified for my system
+
 player="adiman"
 
 status=$(playerctl -p "$player" status 2>/dev/null)
@@ -11,7 +13,7 @@ fi
 
 pos=$(playerctl -p "$player" position 2>/dev/null | cut -d '.' -f1)
 length=$(playerctl -p "$player" metadata mpris:length 2>/dev/null | cut -d '.' -f1)
-length=$(( length / 1000000 ))  # convert microseconds to seconds
+length=$((length / 1000000)) # convert microseconds to seconds
 
 if [[ -z "$pos" || -z "$length" || "$length" -eq 0 ]]; then
   echo "[ -------------------- ] --:--"
@@ -19,14 +21,12 @@ if [[ -z "$pos" || -z "$length" || "$length" -eq 0 ]]; then
 fi
 
 bar_length=20
-progress=$(( pos * bar_length / length ))
+progress=$((pos * bar_length / length))
 
 bar=""
-for ((i=0; i<bar_length; i++)); do
-  if (( i < progress )); then
-   bar+="▓"
-
-
+for ((i = 0; i < bar_length; i++)); do
+  if ((i < progress)); then
+    bar+="▓"
 
   else
     bar+="-"
@@ -34,8 +34,8 @@ for ((i=0; i<bar_length; i++)); do
 done
 
 format_time() {
-  local m=$(( $1 / 60 ))
-  local s=$(( $1 % 60 ))
+  local m=$(($1 / 60))
+  local s=$(($1 % 60))
   printf "%02d:%02d" "$m" "$s"
 }
 

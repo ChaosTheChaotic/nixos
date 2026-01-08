@@ -460,6 +460,9 @@ return {
 	{
 		"goolord/alpha-nvim",
 		config = function()
+			local nixenv = os.getenv("NIX_CFG_DIR")
+			local base
+			if nixenv == nil then base = "~/.config" else base = nixenv .. "/config" end
 			local alpha = require("alpha")
 			local dashboard = require("alpha.themes.dashboard")
 			dashboard.section.header.val = {
@@ -480,7 +483,7 @@ return {
 				dashboard.button("m", "󱁤  Mason", ":Mason<CR>"),
 				dashboard.button("g", "  LazyGit", ":LazyGit<CR>"),
 				--dashboard.button("c", "  Configuration", ":e ~/.config/nvim/lua/plugins/lazyass.lua<CR>"),
-				dashboard.button("c", "  Configuration", ":e ~/nixos-cfg/config/nvim/lua/plugins/lazyass.lua<CR>"),
+				dashboard.button("c", "  Configuration", ":e " .. base .. "/nvim/lua/plugins/lazyass.lua<CR>"),
 				dashboard.button("q", "󰈆  Quit Neovim", ":qa<CR>"),
 			}
 			alpha.setup(dashboard.config)

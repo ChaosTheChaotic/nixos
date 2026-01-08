@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+
+source "$UTIL_SCRIPT_DIR/err.sh"
+source "$UTIL_SCRIPT_DIR/check_installed.sh"
+
+read -d '' -r USAGE <<-EOF
+Usage: ocr [flags]
+Uses OCR on an area of the screen
+
+Options:
+  -h  Show this help message
+  -c  Write output to clipboard (requires wl-copy)
+  -d  [DIR] Write output to specified directory or ~/OCR
+  -n  Show output in notification
+  -o  Write output to stdout
+  -s  Suppress status notifications
+
+At least one of -c, -o, -d, or -n must be specified.
+EOF
+
+clip=false
+status=true
+notif=false
+fs=false
+stdout=false
+od="$HOME/OCR"
+
+parse_opts() {
+  local OPTIND OPTARG opt
+
+  while getopts 'hcd:nso' opt; do
+    case "$opt" in
+      c)
+        clip=true
+        ;;
+      d)
+        fs=true
+        od="${OPTARG:-$HOME/OCR}"
+        ;;
+      n)
+        notif=true
+        ;;
+      s)
+        status=false
+        ;;
+      o)
+        stdout=true
+        ;;
+      h)
+        echo "$USAGE"
+        exit 0
+        ;;
+      *)
+        echo "$USAGE" >&2
+        exit 1
+        ;;
+    esac
+  done
+}
+
+parse_opts "$@"
+
+if ! $clip && ! $fs && ! $notif && ! $stdout; then
+  fatal "Error: You must specify at least one of -c, -o, -d, or -n"
+  echo "$USAGE" >&2
+  exit 1
+fi
+
+# Check dependencies early
+check_installed "tesseract"
+
+if $clip; then
+  check_installed "wl-copy"
+fi
+
+if $notif || ($status && ($fs || $clip)); then
+  check_installed "notify-send"
+fi
+
+if $fs; then
+  mkdir -p "$od" || {
+    fatal "Failed to create directory: $od"
+    exit 1
+  }
+fi
+
+ocr_text=$(screenshot -o 2>/dev/null | tesseract - - 2>/dev/null)
+
+if [ $? -ne 0 ] || [ -z "$ocr_text" ]; then
+  if $status; then
+    notify-send -u critical "OCR" "Failed to capture or recognize text"
+  fi
+  fatal "OCR failed - no text recognized or capture failed"
+  exit 1
+fi
+
+if $fs; then
+  filename="$od/ocr_$(date +%Y%m%d_%H%M%S).txt"
+  echo "$ocr_text" >"$filename"
+  if $status; then
+    notify-send -u low "OCR" "Text saved to $(basename "$filename")"
+  fi
+fi
+
+if $clip; then
+  echo "$ocr_text" | wl-copy
+  if $status; then
+    notify-send -u low "OCR" "Text copied to clipboard"
+  fi
+fi
+
+if $notif; then
+  # Truncate text for notification
+  if [ ${#ocr_text} -gt 100 ]; then
+    notify_text="${ocr_text:0:97}..."
+  else
+    notify_text="$ocr_text"
+  fi
+  notify-send "OCR Text" "$notify_text"
+fi
+
+if $stdout; then
+  echo "$ocr_text"
+fi

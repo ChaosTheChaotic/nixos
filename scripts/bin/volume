@@ -1,26 +1,31 @@
 #!/usr/bin/env bash
 
+source "$UTIL_SCRIPT_DIR/check_installed.sh"
+source "$UTIL_SCRIPT_DIR/nums.sh"
+source "$UTIL_SCRIPT_DIR/err.sh"
+
 step=5
 
 print_help() {
-  echo "Usage: volume [OPTIONS] [VALUE]"
-  echo "Args:"
-  echo "--get		   Get the current volume"
-  echo "--inc [VALUE]  	   Increase volume by [VALUE] (default: 5)"
-  echo "--dec [VALUE]  	   Decrease volume by [VALUE] (default: 5)"
-  echo "--set [VALUE]	   Set the volume to VALUE (0-100)"
-  echo "--mute	       	   Toggles the mute status"
-  echo "--get-mic      	   Get the microphone volume"
-  echo "--inc-mic [VALUE]  Increase mic volume by [VALUE] (default: 5)"
-  echo "--dec-mic [VALUE]  Decrease mic volume by [VALUE] (default: 5)"
-  echo "-h, --help	   Show this help menu"
+  cat <<EOF
+Usage: volume [OPTIONS] [VALUE]
+Control audio volume.
+
+Options:
+  --get           Get current volume percentage
+  --inc [VALUE]   Increase volume by VALUE (default: $step)
+  --dec [VALUE]   Decrease volume by VALUE (default: $step)
+  --set VALUE     Set volume to VALUE (0-150)
+  --mute          Toggle mute status
+  --get-mic       Get microphone volume
+  --inc-mic [VALUE] Increase mic volume by VALUE (default: $step)
+  --dec-mic [VALUE] Decrease mic volume by VALUE (default: $step)
+  -h, --help      Show this help message
+EOF
 }
 
-is_num() { [[ "$1" =~ ^[0-9]+$ ]]; }
-
 get_vol() {
-  vol=$(pamixer --get-volume)
-  echo "$vol"
+  pamixer --get-volume
 }
 
 inc_vol() {
@@ -28,7 +33,7 @@ inc_vol() {
   if [ "$(pamixer --get-mute)" == "true" ]; then
     pamixer -u
   fi
-  pamixer -i "$amount" --allow-boost --set-limit 150
+  pamixer -i "$amount" --allow-boost
 }
 
 dec_vol() {
@@ -40,24 +45,11 @@ dec_vol() {
 }
 
 toggle_mute() {
-  if [ "$(pamixer --get-mute)" == "false" ]; then
-    pamixer -m
-  elif [ "$(pamixer --get-mute)" == "true" ]; then
-    pamixer -u
-  fi
-}
-
-toggle_mic() {
-  if [ "$(pamixer --default-source --get-mute)" == "false" ]; then
-    pamixer --default-source -m
-  elif [ "$(pamixer --default-source --get-mute)" == "true" ]; then
-    pamixer -u --default-source
-  fi
+  pamixer -t
 }
 
 get_mic_vol() {
-  vol=$(pamixer --default-source --get-volume)
-  echo "$vol"
+  pamixer --default-source --get-volume
 }
 
 inc_mic_vol() {
@@ -76,24 +68,89 @@ dec_mic_vol() {
   pamixer --default-source -d "$amount"
 }
 
-case $1 in
-  "--get")     pamixer --get-volume ;;
-  "--inc")     is_num "$2" || [[ -z "$2" ]] && inc_vol "${2:-$step}" || echo "Error: Not a number" ;;
-  "--dec")     is_num "$2" || [[ -z "$2" ]] && dec_vol "${2:-$step}" || echo "Error: Not a number" ;;
+validate_volume() {
+  local vol="$1"
+  if ! is_num "$vol"; then
+    fatal "Error: '$vol' is not a valid number"
+    return 1
+  fi
+  if ((vol > 150)); then
+    warn "Warning: Volume $vol exceeds typical maximum of 150%"
+  fi
+  return 0
+}
+
+check_installed "pamixer"
+
+case "${1:-}" in
+  "--get")
+    get_vol
+    ;;
+  "--inc")
+    amt="${2:-$step}"
+    if ! validate_volume "$amt"; then
+      exit 1
+    fi
+    inc_vol "$amt"
+    info "Volume increased by ${amt}%"
+    ;;
+  "--dec")
+    amt="${2:-$step}"
+    if ! validate_volume "$amt"; then
+      exit 1
+    fi
+    dec_vol "$amt"
+    info "Volume decreased by ${amt}%"
+    ;;
   "--set")
-      if [[ -n "$2" ]] && is_num "$2"; then
-          pamixer --set-volume "$2"
-      else
-          echo "Error: Not a valid %"
-      fi
-      ;;
-  "--mute")    pamixer -t ;;
-  "--get-mic") pamixer --default-source --get-volume ;;
-  "--inc-mic") is_num "$2" || [[ -z "$2" ]] && inc_mic_vol "${2:-$step}" || echo "Error: Not a number" ;;
-  "--dec-mic") is_num "$2" || [[ -z "$2" ]] && dec_mic_vol "${2:-$step}" || echo "Error: Not a number" ;;
-  "-h"|"--help") print_help ;;
-  *)
+    if [ -z "$2" ]; then
+      fatal "Error: --set requires a value"
+      exit 1
+    fi
+    if ! validate_volume "$2"; then
+      exit 1
+    fi
+    pamixer --set-volume "$2"
+    info "Volume set to ${2}%"
+    ;;
+  "--mute")
+    toggle_mute
+    if [ "$(pamixer --get-mute)" == "true" ]; then
+      info "Audio muted"
+    else
+      info "Audio unmuted"
+    fi
+    ;;
+  "--get-mic")
+    get_mic_vol
+    ;;
+  "--inc-mic")
+    amt="${2:-$step}"
+    if ! validate_volume "$amt"; then
+      exit 1
+    fi
+    inc_mic_vol "$amt"
+    info "Microphone volume increased by ${amt}%"
+    ;;
+  "--dec-mic")
+    amt="${2:-$step}"
+    if ! validate_volume "$amt"; then
+      exit 1
+    fi
+    dec_mic_vol "$amt"
+    info "Microphone volume decreased by ${amt}%"
+    ;;
+  "-h" | "--help")
     print_help
-    echo -e "\n\nCurrent volume: $(get_vol)"
+    ;;
+  *)
+    if [ -n "$1" ]; then
+      warn "Unknown option: $1"
+    fi
+    print_help
+    echo -e "\nCurrent volume: $(get_vol)%"
+    if [ "$(pamixer --get-mute)" == "true" ]; then
+      echo "Status: MUTED"
+    fi
     ;;
 esac

@@ -35,7 +35,12 @@ local cfg = {
 }
 
 if vim.fn.filereadable("/etc/NIXOS") == 1 then
-  cfg.lockfile = vim.fn.expand("~/nixos-cfg/config/nvim/lazy-lock.json")
+  local nixbase = os.getenv("NIX_CFG_DIR")
+  if nixbase then
+      cfg.lockfile = nixbase .. "/config/nvim/lazy-lock.json"
+  else
+    vim.notify("NIX_CFG_DIR is not defined in nixos installation; cannot find the nvim lazy lock, using default", vim.log.levels.WARN)
+  end
 end
 
 -- Setup lazy.nvim
