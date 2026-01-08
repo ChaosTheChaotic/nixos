@@ -119,6 +119,7 @@ in {
       equibop
       inputs.ashell.packages.${pkgs.system}.default
       inputs.vicinae.packages.${pkgs.system}.default
+      tesseract
     ];
     home.stateVersion = "25.11";
 
