@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+source "$NIX_CFG_DIR/check_installed.sh"
+
+check_installed "hyprlock"
+
+$NIX_CFG_DIR/config/hypr/hyprscripts/hyprlock-run/panels && hyprlock

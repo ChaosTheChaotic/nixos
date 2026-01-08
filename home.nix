@@ -127,6 +127,7 @@ in {
       inputs.ashell.packages.${pkgs.system}.default
       inputs.vicinae.packages.${pkgs.system}.default
       tesseract
+      imagemagick
     ];
     home.stateVersion = "25.11";
 
