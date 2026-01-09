@@ -60,6 +60,7 @@ in
     inputs.lobster.packages.${pkgs.system}.lobster
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
     android-tools
+    asahi-bless
   ];
 
   fonts.packages = [ extraFonts ];
