@@ -1,0 +1,81 @@
+.TH OCR 1 "1970-1-1" "v1.0" "Custom Scripts Manual"
+.SH NAME
+OCR \- Performs optical character recognition on a screen region and outputs the text
+.SH SYNOPSIS
+.B ocr
+[\fB\-c\fR] [\fB\-d\fR [\fIdirectory\fR]] [\fB\-n\fR] [\fB\-o\fR] [\fB\-s\fR] [\fB\-h\fR]
+.SH DESCRIPTION
+.B ocr
+is a wrapper script that captures a screen region using
+.MR screenshot 1
+and performs OCR using
+.MR tesseract 1 .
+.PP
+The script requires at least one output option (\fB-c\fR, \fB-o\fR, \fB-d\fR, or \fB-n\fR) to be specified.
+By default, status notifications are shown for operations unless suppressed with
+.BR \-s .
+.SH OPTIONS
+.TP
+.B \-h
+Print the help message and exit.
+.TP
+.B \-c
+Write the recognized text to the system clipboard using
+.MR wl-copy 1 .
+.TP
+.B \-d [\fIdirectory\fR]
+Save the recognized text to a file. If a
+.I directory
+is provided, the file is saved there. Otherwise, it defaults to
+.IR ~/OCR .
+Files are named using the timestamp format:
+.IR ocr_YYYYMMDD_HHMMSS.txt .
+.TP
+.B \-n
+Show the recognized text in a desktop notification using
+.MR notify-send 1 .
+Text longer than 100 characters will be truncated.
+.TP
+.B \-o
+Write the recognized text to stdout.
+.TP
+.B \-s
+Suppress status notifications (success/failure messages). Note that this does not affect the
+.B \-n
+option, which shows the actual OCR output.
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+Failure due to missing output arguments, missing dependencies, or OCR errors.
+.SH EXAMPLES
+.TP
+.B ocr -c -o
+Select a screen region, copy text to clipboard, and output to stdout.
+.TP
+.B ocr -d ~/Documents/OCR
+Select a screen region and save the text to the specified directory.
+.TP
+.B ocr -n -s
+Select a screen region and show the text in a notification without status messages.
+.TP
+.B ocr -c -d
+Select a screen region, copy text to clipboard, and save to default OCR directory.
+.TP
+.B ocr -o | wc -w
+Select a screen region, output text to stdout, and count the words.
+.SH SEE ALSO
+.MR screenshot 1 ,
+.MR tesseract 1 ,
+.MR wl-copy 1 ,
+.MR notify-send 1
+.SH NOTES
+The script depends on the
+.B screenshot
+utility for screen capture, which itself uses
+.MR grim 1
+and
+.MR slurp 1
+on Wayland compositors.
