@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+source "$UTIL_SCRIPT_DIR/check_installed.sh"
+
+check_installed "asahi-bless"
+
+sudo asahi-bless -n --set-boot-macos
