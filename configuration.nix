@@ -61,6 +61,7 @@ in
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
     android-tools
     asahi-bless
+    muvm
   ];
 
   fonts.packages = [ extraFonts ];
