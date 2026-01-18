@@ -62,6 +62,7 @@ in
     android-tools
     asahi-bless
     muvm
+    nvimpager
   ];
 
   fonts.packages = [ extraFonts ];
