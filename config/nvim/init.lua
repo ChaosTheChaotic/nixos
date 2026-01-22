@@ -54,3 +54,21 @@ vim.api.nvim_create_user_command("SetTheme", function(opts) -- NEW command
 end, { nargs = 1 })
 
 vim.keymap.set("n", "<leader>tt", toggle_theme, { noremap = true, silent = true, desc = "Toggle color theme" })
+
+local function better_goto_definition()
+	local has_lsp = #vim.lsp.get_clients({ bufnr = 0 }) > 0
+	
+	if has_lsp then
+		-- Try LSP go-to-definition
+		local success, _ = pcall(vim.lsp.buf.definition)
+		if not success then
+			-- If LSP fails, fall back to normal gf
+			vim.cmd("normal! gf")
+		end
+	else
+		-- No LSP, use normal gf
+		vim.cmd("normal! gf")
+	end
+end
+
+vim.keymap.set("n", "gf", better_goto_definition, { noremap = true, silent = true, desc = "Smart go-to-definition (LSP first)" })
