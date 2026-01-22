@@ -229,8 +229,19 @@ in
       "wheel"
       "networkmanager"
       "adbusers"
+      "video"
+      "input"
     ];
     shell = pkgs.zsh;
+  };
+
+  programs.light = {
+    enable = true;
+    brightnessKeys = {
+      enable = true;
+      step = 5;
+      minBrightness = 5;
+    };
   };
 
   programs.java.enable = true;
