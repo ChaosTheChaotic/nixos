@@ -202,22 +202,25 @@ in {
       enable = true;
       enableZshIntegration = true;
       settings = {
-	add_newline = false;
+        add_newline = false;
         format = "$username$hostname$directory$git_branch$git_commit$git_status$status$character";
-
-	username = {
-	  style_user = "iris";
-	  format = "[$user]($style) ";
-	};
-
+    
 	status = {
 	  disabled = false;
-	  show_always = true;
-	  symbol = "✔";
-	  success_symbol = "✔";
-	  format = "[$symbol]($style) ";
+	  symbol = "󰅖 "; 
+	  success_symbol = "󰄬 ";
+	  
+	  style = "bold love";
+	  success_style = "bold pine";
+	  
+	  format = "[$symbol$signal_name$maybe_int]($style) ";
+	  
+	  not_executable_symbol = "󱆃 ";
+	  not_found_symbol = "󰍉 ";
+	  sigint_symbol = "󰈑 ";
+	  map_symbol = true;
 	};
-        
+    
         palette = "rose-pine";
         palettes.rose-pine = {
           rose = "#ebbcba";
