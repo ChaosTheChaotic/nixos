@@ -203,7 +203,13 @@ in {
       enableZshIntegration = true;
       settings = {
         add_newline = false;
-        format = "$username$hostname$directory$git_branch$git_commit$git_status$status$character";
+        format = "$username$hostname$directory$git_branch$git_commit$git_status$nix_shell$status$character";
+
+	nix_shell = {
+	  symbol = "󱄅 ";
+	  style = "bold iris"; 
+	  format = "via [$symbol$state]($style) ";
+	};
     
 	status = {
 	  disabled = false;
