@@ -203,7 +203,20 @@ in {
       enableZshIntegration = true;
       settings = {
 	add_newline = false;
-        format = "$username$hostname$directory$git_branch$git_status$status$character";
+        format = "$username$hostname$directory$git_branch$git_commit$git_status$status$character";
+
+	username = {
+	  style_user = "iris";
+	  format = "[$user]($style) ";
+	};
+
+	status = {
+	  disabled = false;
+	  show_always = true;
+	  symbol = "✔";
+	  success_symbol = "✔";
+	  format = "[$symbol]($style) ";
+	};
         
         palette = "rose-pine";
         palettes.rose-pine = {

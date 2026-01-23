@@ -136,7 +136,11 @@ in
   networking.networkmanager.enable = true;
   networking.networkmanager.wifi.backend = "iwd";
 
-  networking.nameservers = [ "1.1.1.1" "8.8.8.8" "9.9.9.9"];
+  networking.nameservers = [
+    "1.1.1.1"
+    "8.8.8.8"
+    "9.9.9.9"
+  ];
   networking.networkmanager.dns = "none";
 
   age.secrets.wg-priv.file = ./secrets/wg-priv.age;
@@ -144,7 +148,12 @@ in
   networking.wg-quick.interfaces = {
     wg0 = {
       address = [ "10.2.0.2/32" ];
-      dns = [ "1.1.1.1" "8.8.8.8" "9.9.9.9" "10.2.0.1" ];
+      dns = [
+        "1.1.1.1"
+        "8.8.8.8"
+        "9.9.9.9"
+        "10.2.0.1"
+      ];
       privateKeyFile = config.age.secrets.wg-priv.path;
       peers = [
         {
@@ -273,7 +282,7 @@ in
   environment.variables = {
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
     C_INCLUDE_PATH = "${pkgs.openssl.dev}/include";
-    PAGER="nvimpager";
+    PAGER = "nvimpager";
   };
 
   documentation = {

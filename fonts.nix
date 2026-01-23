@@ -1,4 +1,8 @@
-{ stdenvNoCC, lib, findutils }:
+{
+  stdenvNoCC,
+  lib,
+  findutils,
+}:
 
 stdenvNoCC.mkDerivation {
   pname = "extra-fonts";
