@@ -166,7 +166,7 @@ in {
       autosuggestion.enable = true;
       oh-my-zsh = {
         enable = true;
-        theme = "xiong-chiamiov-plus";
+	#theme = "xiong-chiamiov-plus";
         plugins = [
           "git"
           "sudo"
@@ -197,6 +197,26 @@ in {
 	fastfetch
       '';
     };
+
+    programs.starship = {
+      enable = true;
+      enableZshIntegration = true;
+      settings = {
+	add_newline = false;
+        format = "$username$hostname$directory$git_branch$git_status$status$character";
+        
+        palette = "rose-pine";
+        palettes.rose-pine = {
+          rose = "#ebbcba";
+          iris = "#c4a7e7";
+          gold = "#f6c177";
+          love = "#eb6f92";
+          pine = "#31748f";
+          foam = "#9ccfd8";
+        };
+      };
+    };
+
     programs.kitty = lib.mkForce {
       enable = true;
       enableGitIntegration = true;
