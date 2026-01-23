@@ -387,6 +387,7 @@ in {
 	    ublock-origin
 	    return-youtube-dislikes
 	    sponsorblock
+	    vimium-c
 	  ];
 	};
       };
