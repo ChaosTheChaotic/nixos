@@ -61,6 +61,8 @@ in
     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
     android-tools
     asahi-bless
+    asahi-btsync
+    asahi-wifisync
     muvm
     nvimpager
   ];
@@ -76,10 +78,18 @@ in
     ./hardware-configuration.nix
   ];
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    extra-substituters = [
+      "https://nixos-apple-silicon.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "nixos-apple-silicon.cachix.org-1:8psDu5SA5dAD7qA0zMy5UT292TxeEPzIz8VVEr2Js20="
+    ];
+  };
 
   #hardware.asahi.peripheralFirmwareDirectory = ./firmware;
   hardware.asahi = {
