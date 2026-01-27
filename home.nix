@@ -1,14 +1,14 @@
 { config, pkgs, lib, inputs, ... }:
 
 let
-  equibopVersion = "3.1.6";
+  equibopVersion = "3.1.7";
   
   equibop = pkgs.appimageTools.wrapType2 {
     pname = "Equibop";
     version = equibopVersion;
     src = pkgs.fetchurl {
       url = "https://github.com/Equicord/Equibop/releases/download/v${equibopVersion}/Equibop-${equibopVersion}-arm64.AppImage";
-      sha256 = "sha256:17845c7fbad4c986805b817cfab1d08f5fb87cfd084589831182661d3e363351";
+      sha256 = "sha256-v9Tl6WZ2qTjMzOgxKD6buNG4NrO7u9K4tUVy28/IgRg=";
     };
     #extraPkgs = pkgs: with pkgs; [ ];
     extraWrapperArgs = [ "--add-flags" "--user-agent-os windows" ];
