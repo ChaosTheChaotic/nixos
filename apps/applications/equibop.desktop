@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Equibop
-Exec=Equibop --user-agent-os windows
+Exec=equibop --user-agent-os windows
 Type=Application
 Comment=Vesktop but better and better than discord
 Terminal=false
