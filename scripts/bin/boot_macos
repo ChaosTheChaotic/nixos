@@ -4,4 +4,38 @@ source "$UTIL_SCRIPT_DIR/check_installed.sh"
 
 check_installed "asahi-bless"
 
+REBOOT=false
+SLEEP_TIME=0
+
+if [ $# -gt 0 ]; then
+  case $1 in
+    -R)
+      REBOOT=true
+      if [ -n "$2" ] && [[ "$2" =~ ^[0-9]+$ ]]; then
+        SLEEP_TIME="$2"
+      fi
+      ;;
+    -R*)
+      REBOOT=true
+      # Extract the number from -R<number>
+      if [[ "$1" =~ -R([0-9]+) ]]; then
+        SLEEP_TIME="${BASH_REMATCH[1]}"
+      fi
+      ;;
+    *)
+      echo "Usage: $0 [-R [sleep_time]]"
+      exit 1
+      ;;
+  esac
+fi
+
 sudo asahi-bless -n --set-boot-macos
+
+if [ "$REBOOT" = true ]; then
+  if [ "$SLEEP_TIME" -gt 0 ]; then
+    echo "Will reboot in $SLEEP_TIME seconds..."
+    sleep "$SLEEP_TIME"
+  fi
+  echo "Rebooting now..."
+  sudo reboot
+fi

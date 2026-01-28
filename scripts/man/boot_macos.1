@@ -3,8 +3,25 @@
 boot_macos \- Sets the next boot only to boot into macos using asahi-bless
 .SH SYNOPSIS
 .B boot_macos
+.RB [ \-R\fR[\fIsleep_time\fR]]
 .SH DESCRIPTION
 .B boot_macos
-A simple script which sets only the next boot to macos. Needs sudo permissions to use asahi-bless
+A simple script which sets only the next boot to macos. Needs sudo permissions to use asahi-bless.
+.PP
+The
+.B \-R
+option will reboot the system after setting macOS as the next boot target. An optional
+.I sleep_time
+(in seconds) can be provided to delay the reboot. If no sleep time is specified, the reboot happens immediately.
+.SH EXAMPLES
+.TP
+.B boot_macos
+Set next boot to macOS without rebooting
+.TP
+.B boot_macos -R
+Set next boot to macOS and reboot immediately
+.TP
+.B boot_macos -R10
+Set next boot to macOS and reboot after 10 seconds
 .SH SEE ALSO
 .MR sudo 1
