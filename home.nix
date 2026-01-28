@@ -1,19 +1,6 @@
 { config, pkgs, lib, inputs, ... }:
 
-let
-  equibopVersion = "3.1.7";
-  
-  equibop = pkgs.appimageTools.wrapType2 {
-    pname = "Equibop";
-    version = equibopVersion;
-    src = pkgs.fetchurl {
-      url = "https://github.com/Equicord/Equibop/releases/download/v${equibopVersion}/Equibop-${equibopVersion}-arm64.AppImage";
-      sha256 = "sha256-v9Tl6WZ2qTjMzOgxKD6buNG4NrO7u9K4tUVy28/IgRg=";
-    };
-    #extraPkgs = pkgs: with pkgs; [ ];
-    extraWrapperArgs = [ "--add-flags" "--user-agent-os windows" ];
-  };
-in {
+{
   options = {
     dotfiles = lib.mkOption {
       type = lib.types.path;
@@ -118,6 +105,11 @@ in {
       inputs.vicinae.packages.${pkgs.system}.default
       tesseract
       imagemagick
+      (equibop.overrideAttrs (oldAttrs: {
+        postFixup = oldAttrs.postFixup + ''
+          wrapProgram $out/bin/equibop --add-flags "--user-agent-os windows"
+        '';
+      }))
     ];
     home.stateVersion = "25.11";
 
