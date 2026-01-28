@@ -100,15 +100,23 @@
       cmake-language-server
       lua-language-server
       scrcpy
-      equibop
       inputs.ashell.packages.${pkgs.system}.default
       inputs.vicinae.packages.${pkgs.system}.default
       tesseract
       imagemagick
       (equibop.overrideAttrs (oldAttrs: {
-        postFixup = oldAttrs.postFixup + ''
-          wrapProgram $out/bin/equibop --add-flags "--user-agent-os windows"
-        '';
+	ESBUILD_BINARY_PATH = "${pkgs.esbuild}/bin/esbuild";
+	
+	preBuild = (oldAttrs.preBuild or "") + ''
+	  echo "Patching esbuild version mismatch..."
+    	  chmod -R u+w node_modules/esbuild
+
+    	  find node_modules/esbuild -name "*.js" -exec sed -i 's/"0.27.2"/"${pkgs.esbuild.version}"/g' {} +
+	'';
+
+	postFixup = (oldAttrs.postFixup or "") + ''
+	  wrapProgram $out/bin/equibop --add-flags "--user-agent-os windows"
+	'';
       }))
     ];
     home.stateVersion = "25.11";
