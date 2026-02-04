@@ -90,6 +90,10 @@ in
       "nixos-apple-silicon.cachix.org-1:8psDu5SA5dAD7qA0zMy5UT292TxeEPzIz8VVEr2Js20="
     ];
   };
+  nix.optimise = {
+    automatic = true;
+    dates = ["15:15"];
+  };
 
   #hardware.asahi.peripheralFirmwareDirectory = ./firmware;
   hardware.asahi = {
