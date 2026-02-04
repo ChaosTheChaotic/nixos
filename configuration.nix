@@ -57,8 +57,8 @@ in
     xxd
     go
     ccache
-    inputs.lobster.packages.${pkgs.system}.lobster
-    inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
+    inputs.lobster.packages.${pkgs.stdenv.hostPlatform.system}.lobster
+    inputs.rose-pine-hyprcursor.packages.${pkgs.stdenv.hostPlatform.system}.default
     android-tools
     asahi-bless
     asahi-btsync

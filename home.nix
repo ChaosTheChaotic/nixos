@@ -100,8 +100,8 @@
       cmake-language-server
       lua-language-server
       scrcpy
-      inputs.ashell.packages.${pkgs.system}.default
-      inputs.vicinae.packages.${pkgs.system}.default
+      inputs.ashell.packages.${pkgs.stdenv.hostPlatform.system}.default
+      inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
       tesseract
       imagemagick
       (equibop.overrideAttrs (oldAttrs: {
