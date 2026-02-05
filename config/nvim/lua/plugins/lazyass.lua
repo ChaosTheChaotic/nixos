@@ -129,6 +129,7 @@ return {
 		    "jdtls",
 		    "gopls",
 		    --"kotlin_lsp",
+		    "hyprls",
 		  }
 		  if vim.fn.filereadable("/etc/NIXOS") ~= 1 then
 		    table.insert(lsps, "lua_ls")
@@ -262,6 +263,10 @@ return {
 		name = "gopls",
 		cmd = { "gopls" },
 	      },
+	      hyprlang = {
+		name = "hyprls",
+		cmd = { "hyprls" },
+	      },
 	      --kotlin = {
 	      --  name = "kotlin_lsp",
 	      --  cmd = { "kotlin-lsp" },
@@ -284,6 +289,45 @@ return {
 	                settings = {},
 	            })
 	        end,
+	    })
+
+	    vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+	      pattern = {"*.conf"},
+	      callback = function(ev)
+	        -- Only check files that might be Hyprland configs
+	        local filepath = vim.fn.expand("%:p")
+	        local filename = vim.fn.expand("%:t")
+
+	        -- Check if it's in a hypr directory or named hyprland.conf
+	        if filepath:match("hypr/") or filename == "hyprland.conf" then
+	          -- Check content to be sure
+	          local content = vim.api.nvim_buf_get_lines(ev.buf, 0, 10, false)
+	          local is_hypr = false
+	          for _, line in ipairs(content) do
+	            if line:match("^%s*monitor=") or
+	               line:match("^%s*exec=") or
+	               line:match("^%s*workspace=") or
+	               line:match("^%s*bind=") or
+	               line:match("^%s*source=") then
+	              is_hypr = true
+	              break
+	            end
+	          end
+
+	          if is_hypr then
+	            vim.bo.filetype = "hyprlang"
+
+	            -- Start the hyprls server
+	            vim.lsp.start({
+	              name = "hyprls",
+	              cmd = { "hyprls" },
+	              capabilities = capabilities,
+	              on_attach = on_attach,
+	              root_dir = vim.fs.dirname(ev.file),
+	            })
+	          end
+	        end
+	      end,
 	    })
 
 	    -- Autostart LSP servers based on filetype
@@ -367,6 +411,17 @@ return {
 					"toml",
 					"dart",
 					"java",
+					"xml",
+					"hyprlang",
+					"nix",
+					"vim",
+					"vimdoc",
+					"tsx",
+					"sql",
+					"toml",
+					"go",
+					"json",
+					"bash",
 				},
 				highlight = { enable = true },
 				indent = { enable = true },
@@ -446,7 +501,7 @@ return {
 					lualine_c = { "filename" },
 					lualine_x = {
 						{ "encoding", fmt = string.upper },
-						{ "fileformat", symbols = { unix = "", dos = "", mac = "" } },
+						{ "fileformat", symbols = { unix = "", dos = "", mac = "" } },
 						{ "filetype", icon = { align = "right" } },
 					},
 					lualine_y = { "progress" },
