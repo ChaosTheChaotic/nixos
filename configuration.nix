@@ -67,7 +67,12 @@ in
     nvimpager
   ];
 
-  fonts.packages = [ extraFonts ];
+  fonts.packages = [
+    extraFonts
+    pkgs.nerd-fonts.jetbrains-mono
+    pkgs.nerd-fonts.fira-code
+    pkgs.nerd-fonts.fira-mono
+  ];
 
   nixpkgs.overlays = [
     inputs.nur.overlays.default
@@ -92,7 +97,7 @@ in
   };
   nix.optimise = {
     automatic = true;
-    dates = ["15:15"];
+    dates = [ "15:15" ];
   };
 
   #hardware.asahi.peripheralFirmwareDirectory = ./firmware;
@@ -187,6 +192,21 @@ in
     joinNetworks = [ "8d1c312afa2aad91" ];
   };
 
+  services.kmscon = {
+    enable = true;
+    hwRender = true;
+    fonts = [
+      {
+        name = "JetBrainsMono Nerd Font Mono";
+        package = pkgs.nerd-fonts.jetbrains-mono;
+      }
+      {
+        name = "FiraCode Nerd Font Mono";
+        package = pkgs.nerd-fonts.fira-code;
+      }
+    ];
+  };
+
   hardware.enableRedistributableFirmware = true;
 
   # Set your time zone.
@@ -225,7 +245,7 @@ in
     alsa.support32Bit = true;
     jack.enable = true;
   };
-  
+
   security.rtkit.enable = true;
 
   services.flatpak.enable = true;
@@ -302,8 +322,8 @@ in
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
     C_INCLUDE_PATH = "${pkgs.openssl.dev}/include";
     PAGER = "nvimpager";
-    XDG_DATA_DIRS = [ 
-      "${pkgs.hyprland}/share" 
+    XDG_DATA_DIRS = [
+      "${pkgs.hyprland}/share"
     ];
   };
 
