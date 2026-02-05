@@ -135,7 +135,7 @@
     programs.fastfetch = {
       enable = true;
       settings = {
-
+	
       };
     };
     programs.aria2 = {
