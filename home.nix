@@ -104,6 +104,7 @@
       inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
       tesseract
       imagemagick
+      hyprls
       (equibop.overrideAttrs (oldAttrs: {
 	ESBUILD_BINARY_PATH = "${pkgs.esbuild}/bin/esbuild";
 	

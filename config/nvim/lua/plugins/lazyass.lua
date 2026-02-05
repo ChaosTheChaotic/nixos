@@ -129,7 +129,6 @@ return {
 		    "jdtls",
 		    "gopls",
 		    --"kotlin_lsp",
-		    "hyprls",
 		  }
 		  if vim.fn.filereadable("/etc/NIXOS") ~= 1 then
 		    table.insert(lsps, "lua_ls")
