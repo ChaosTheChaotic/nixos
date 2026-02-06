@@ -825,14 +825,15 @@
           map_symbol = true;
         };
 
-        palette = "rose-pine";
-        palettes.rose-pine = {
-          rose = "#ebbcba";
-          iris = "#c4a7e7";
-          gold = "#f6c177";
+        palette = "rose-pine-moon";
+        palettes.rose-pine-moon = {
+          overlay = "#393552";
           love = "#eb6f92";
-          pine = "#31748f";
+          gold = "#f6c177";
+          rose = "#ea9a97";
+          pine = "#3e8fb0";
           foam = "#9ccfd8";
+          iris = "#c4a7e7";
         };
       };
     };
