@@ -84,6 +84,16 @@ parse_init_opts() {
         VERBOSE=true
         shift
         ;;
+      --)
+        shift
+        while [[ $# -gt 0 ]]; do
+          current_path="$1"
+          local final_name="${name:-$(basename "$current_path")}"
+          PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests"
+          shift
+        done
+        break
+        ;;
       *)
         # Check if its a path
         if [[ "$1" != -* ]]; then
@@ -181,16 +191,21 @@ parse_conf() {
 
   [[ ! -f "$file" ]] && fatal "No CMakeLists.txt found at $path" "1"
 
+  if ! grep -q '@DEPS_START@' "$file" || ! grep -q '@DEPS_END@' "$file"; then
+    fatal "CMakeLists.txt missing dependency markers" "1"
+  fi
+
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --add)
         local dep="$2"
         # Check if dep exists as a whole word between the tags
-        if grep -qFw "${dep}" "$file"; then
+        local dep_escaped=$(printf '%s\n' "$dep" | sed 's/[\/&]/\\&/g')
+        if awk "/@DEPS_START@/,/@DEPS_END@/" "$file" | grep -q "^[[:space:]]*${dep}[[:space:]]*$"; then
           echo "Dependency '$dep' already exists in $path"
         else
-          sedi "s/@DEPS_START@/@DEPS_START@\\
-	  ${dep}/" "$file"
+          # Add with proper indentation
+          sedi "/@DEPS_START@/a\    ${dep}" "$file"
           echo "Added '$dep' to $path"
         fi
         shift 2
@@ -216,6 +231,16 @@ create_project_struct() {
     mkdir -p "${path}/src/private"
 
     [[ $is_lib == true ]] && mkdir -p "${path}/include"
+
+    if [[ -f "${path}/CMakeLists.txt" ]]; then
+      if [[ ! -s "${path}/CMakeLists.txt" ]]; then
+        echo "Warning: CMakeLists.txt exists but is empty. Overwriting." >&2
+      else
+        read -p "CMakeLists.txt already exists at $path. Overwrite? [y/N]: " -n 1 -r
+        echo
+        [[ ! $REPLY =~ ^[Yy]$ ]] && continue
+      fi
+    fi
 
     touch "${path}/CMakeLists.txt"
 
