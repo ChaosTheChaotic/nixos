@@ -1,58 +1,434 @@
 #!/usr/bin/env bash
 
-source "$UTIL_SCRIPT_DIR/err.sh"
+source "$UTIL_SCRIPT_DIR/err.sh" || fatal() {
+  echo "Error: $1"
+  exit "${2:-1}"
+} # Just incase of this being used elsewhere
 
+# Defaults
 VERBOSE=false
-LIB=true
-BIN=true
+DEFAULT_LIB=true
+DEFAULT_BIN=true
+DEFAULT_CONF=false
+DEFAULT_CC=false
 
-declare -A PROJ_NAMES
+declare -A PROJ_INFO
 
 print_help() {
-  echo "This is a placeholder help menu"
+  echo "Usage: $0 <mode> [options]"
+  echo ""
+  echo "Modes:"
+  echo "  init, initialize, new    Create a new project structure"
+  echo "  conf, configure          Manage dependencies for an existing project"
+  echo ""
+  echo "Init Options:"
+  echo "  -v, --verbose            Enable verbose output"
+  echo "  <path> [path-options]"
+  echo "    -n, --name NAME        Custom project name"
+  echo "    -l, --lib              Mark as library"
+  echo "    -b, --no-bin           Disable binary"
+  echo "    -c, --config           Generate configure script"
+  echo "    --cc                   Build compile commands"
+  echo ""
+  echo "Conf Options:"
+  echo "  <path>                   Path to project root"
+  echo "    --add <dep>            Add a dependency to the 'deps' interface"
+  echo "    --remove <dep>         Remove a dependency from the 'deps' interface"
 }
 
-parse_opts() {
+parse_init_opts() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -h|--help)
-	print_help
-	exit 0
-	;;
-      -v|--verbose)
-	VERBOSE=true
-	shift
-	;;
-      -l|--lib)
-	LIB=true
-	shift
-	;;
-      -b|--no-bin)
-	BIN=false
-	shift
-	;;
-      -n|--name)
-	fatal "$1 must come after a project path" "2"
-	;;
+      -v | --verbose)
+        VERBOSE=true
+        shift
+        ;;
+      -n | --name | -l | --lib | -b | --no-bin | -c | --config | --cc)
+        fatal "$1 must come after a project path" "1"
+        ;;
       -*)
-	fatal "$1 is not an option"
-	print_help
-	exit 1
-	;;
+        echo "$1 is not an option" >&2
+        print_help
+        exit 1
+        ;;
       *)
-	if [[ "$2" == "-n" || "$2" == "--name" ]]; then
-	  if [[ -z "$3" ]];
-	    fatal "$2 requires a name arg"
-	shift
-	;;
+        local path="$1"
+        shift
+        local name="$(basename "$path")"
+        local is_lib=$DEFAULT_LIB
+        local is_bin=$DEFAULT_BIN
+        local has_conf=$DEFAULT_CONF
+        local has_cc=$DEFAULT_CC
+
+        while [[ "$1" == -* ]]; do
+          case "$1" in
+            -n | --name)
+              [[ -z "$2" || "$2" == -* ]] && fatal "$1 requires a name arg" "1"
+              name="$2"
+              shift 2
+              ;;
+            -l | --lib)
+              is_lib=true
+              shift
+              ;;
+            -b | --no-bin)
+              is_bin=false
+              shift
+              ;;
+            -c | --config)
+              has_conf=true
+              shift
+              ;;
+            --cc)
+              has_cc=true
+              shift
+              ;;
+            *) break ;;
+          esac
+        done
+        PROJ_INFO["$path"]="$name|$is_lib|$is_bin|$has_conf|$has_cc"
+        ;;
+    esac
+  done
+}
+
+parse_conf() {
+  local path="$1"
+  [[ -z "$path" ]] && fatal "Conf mode requires a project path" "1"
+  shift
+
+  local file="${path}/CMakeLists.txt"
+  [[ ! -f "$file" ]] && fatal "No CMakeLists.txt found at $path" "1"
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --add)
+        local dep="$2"
+        [[ -z "$dep" ]] && fatal "--add requires a dependency name" "1"
+        if grep -qE "target_link_libraries\(deps INTERFACE.*[[:space:]]${dep}([[:space:]]|$)" "$file"; then
+          echo "Dependency '$dep' already exists in $path"
+        else
+          sed -i "/target_link_libraries(deps INTERFACE/ s/$/ ${dep}/" "$file"
+          echo "Added '$dep' to $path"
+        fi
+        shift 2
+        ;;
+      --remove)
+        local dep="$2"
+        [[ -z "$dep" ]] && fatal "--remove requires a dependency name" "1"
+        sed -i "s/[[:space:]]${dep}\([[:space:]]\|$\)/\1/g" "$file"
+        echo "Removed '$dep' from $path"
+        shift 2
+        ;;
+      *) shift ;;
     esac
   done
 }
 
 create_project_struct() {
-  for proj in "${PROJ_NAMES[@]}"; do
-    mkdir -p "${proj}/src"
+  for path in "${!PROJ_INFO[@]}"; do
+    IFS='|' read -r name is_lib is_bin has_conf has_cc <<<"${PROJ_INFO[$path]}"
+
+    [[ $VERBOSE == true ]] && echo "Processing $name at $path [Lib: $is_lib, Bin: $is_bin, Conf: $has_conf, CC: $has_cc]"
+
+    mkdir -p "${path}/src/private"
+
+    [[ $is_lib == true ]] && mkdir -p "${path}/include"
+
+    touch "${path}/CMakeLists.txt"
+
+    if [[ "$has_conf" == true ]]; then
+      touch "${path}/configure"
+      chmod +x "${path}/configure"
+    fi
   done
 }
 
-parse_opts "$@"
+write_cmakelists() {
+  for path in "${!PROJ_INFO[@]}"; do
+    IFS='|' read -r name is_lib is_bin has_conf has_cc <<<"${PROJ_INFO["$path"]}"
+    local file="${path}/CMakeLists.txt"
+
+    [[ $VERBOSE == true ]] && echo "Writing CMakeLists for $path"
+
+    cat <<EOF >"$file"
+cmake_minimum_required(VERSION 3.10)
+project($name VERSION 1.0 LANGUAGES C)
+
+option(USE_CCACHE "Try to use ccache for faster builds" OFF)
+option(USE_LTO "Use linktime optimizations if available" ON)
+option(MARCH_NATIVE "Build library optimized for native arch" OFF)
+option(DO_INSTALL "Try to install library after it is build" OFF)
+
+add_library(settings INTERFACE)
+add_library(deps INTERFACE)
+
+target_include_directories(settings INTERFACE 
+    $<BUILD_INTERFACE:\${CMAKE_CURRENT_SOURCE_DIR}/src/private>
+)
+
+target_link_libraries(deps INTERFACE)
+
+find_program(CCACHE_PROGRAM ccache)
+if(USE_CCACHE AND CCACHE_PROGRAM)
+  set(CMAKE_C_COMPILER_LAUNCHER "\${CCACHE_PROGRAM}")
+  set(CMAKE_CXX_COMPILER_LAUNCHER "\${CCACHE_PROGRAM}")
+  message(STATUS "ccache is found and is being used")
+elseif(USE_CCACHE)
+  message(WARNING "ccache is enabled but not found.")
+endif()
+
+
+if(MSVC)
+  target_compile_options(settings INTERFACE /W4)
+else()
+  # GCC / Clang
+  target_compile_options(settings INTERFACE -Wall -Wextra -Wpedantic)
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  if(MSVC)
+    target_compile_options(settings INTERFACE /O2 /Ob2 /Oi /DNDEBUG)
+  else()
+    target_compile_options(settings INTERFACE -O3 -DNDEBUG)
+  endif()
+endif()
+
+if(MARCH_NATIVE)
+  if(MSVC)
+    message(WARNING "MARCH_NATIVE is not supported by MSVC logic directly. Ignoring to prevent errors.")
+  else()
+    target_compile_options(settings INTERFACE -march=native -mtune=native)
+    message(STATUS "Native architecture optimization enabled")
+  endif()
+endif()
+
+set(ENABLE_LTO_ON_TARGETS FALSE)
+if(USE_LTO)
+  include(CheckIPOSupported)
+  check_ipo_supported(RESULT ltos OUTPUT ltoerr)
+  if(ltos)
+    set(ENABLE_LTO_ON_TARGETS TRUE)
+    message(STATUS "LTO enabled and supported")
+  else()
+    message(STATUS "LTO enabled but not supported: \${ltoerr}")
+  endif()
+endif()
+
+file(GLOB_RECURSE SOURCES "src/*.c")
+
+EOF
+
+    if [[ "$has_cc" == true ]]; then
+      cat <<EOF >>"${file}"
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+EOF
+    fi
+
+    cat <<EOF >>"${file}"
+if(DO_INSTALL)
+  include(GNUInstallDirs)
+endif()
+
+EOF
+
+    if [[ "$is_lib" == true ]]; then
+      cat <<EOF >>"${file}"
+option(BUILD_SHARED "Build a shared library for the system" ON)
+option(BUILD_STATIC "Build a static library for the system" ON)
+
+if(BUILD_SHARED)
+  add_library(${name} SHARED \${SOURCES})
+  target_link_libraries(${name} PRIVATE settings deps)
+  
+  target_include_directories(${name} PUBLIC 
+      \$<BUILD_INTERFACE:\${CMAKE_CURRENT_SOURCE_DIR}/include>
+      \$<INSTALL_INTERFACE:include>
+  )
+  
+  if(ENABLE_LTO_ON_TARGETS)
+    set_target_properties(${name} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+  endif()
+
+  if(DO_INSTALL)
+    install(TARGETS ${name}
+        EXPORT ${name}Targets
+        LIBRARY DESTINATION \${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION \${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION \${CMAKE_INSTALL_BINDIR}
+    )
+  endif()
+endif()
+
+if(BUILD_STATIC)
+  set(STATIC_TARGET "${name}_static")
+  if(NOT BUILD_SHARED)
+    set(STATIC_TARGET "${name}")
+  endif()
+
+  add_library(\${STATIC_TARGET} STATIC \${SOURCES})
+  target_link_libraries(\${STATIC_TARGET} PRIVATE settings deps)
+  target_include_directories(\${STATIC_TARGET} PUBLIC 
+      \$<BUILD_INTERFACE:\${CMAKE_CURRENT_SOURCE_DIR}/include>
+      \$<INSTALL_INTERFACE:include>
+  )
+  
+  set_target_properties(\${STATIC_TARGET} PROPERTIES OUTPUT_NAME "${name}")
+
+  if(ENABLE_LTO_ON_TARGETS)
+    set_target_properties(\${STATIC_TARGET} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+  endif()
+
+  if(DO_INSTALL)
+    install(TARGETS \${STATIC_TARGET}
+        EXPORT ${name}Targets
+        ARCHIVE DESTINATION \${CMAKE_INSTALL_LIBDIR}
+    )
+  endif()
+endif()
+
+if(DO_INSTALL)
+  install(DIRECTORY include/ DESTINATION \${CMAKE_INSTALL_INCLUDEDIR})
+endif()
+
+EOF
+    fi
+
+    if [[ "$is_bin" == true ]]; then
+      cat <<EOF >>"${file}"
+add_executable(${name}_bin \${SOURCES})
+target_link_libraries(${name}_bin PRIVATE settings deps)
+
+if(ENABLE_LTO_ON_TARGETS)
+  set_target_properties(${name}_bin PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+
+if(DO_INSTALL)
+  install(TARGETS ${name}_bin
+      RUNTIME DESTINATION \${CMAKE_INSTALL_BINDIR}
+  )
+endif()
+
+EOF
+    fi
+  done
+}
+
+write_configure() {
+  for path in "${!PROJ_INFO[@]}"; do
+    IFS='|' read -r name is_lib is_bin has_conf has_cc <<<"${PROJ_INFO["$path"]}"
+
+    if [[ "$has_conf" == true ]]; then
+      [[ $VERBOSE == true ]] && echo "Writing configure script for: $path"
+      local file="${path}/configure"
+
+      cat <<EOF >"$file"
+#!/usr/bin/env bash
+
+# Generated configure wrapper for $name
+set -euo pipefail
+
+SRC_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
+BUILD_DIR="\${BUILD_DIR:-"\$SRC_DIR/build"}"
+GEN=""
+CLEAN=false
+CMAKE_EXTRA_ARGS=()
+
+show_help() {
+    cat <<EOH
+Configure script for $name
+
+Usage: \$0 [OPTIONS] -- [CMAKE_OPTIONS]
+
+Options:
+  -h, --help            Show this help message
+  -b, --build-dir DIR   Set build directory (default: ./build)
+  -c, --clean           Clean the build dir if it already exists
+  -g, --generator GEN   Specify CMake generator (e.g., Ninja, Unix Makefiles)
+  --no-ninja            Don't use Ninja even if available
+
+CMake Options (can be passed after --):
+  -DUSE_CCACHE=[ON|OFF]    (Default: OFF)
+  -DUSE_LTO=[ON|OFF]       (Default: ON)
+  -DMARCH_NATIVE=[ON|OFF]  (Default: OFF)
+  -DDO_INSTALL=[ON|OFF]    (Default: OFF)
+  -DCMAKE_BUILD_TYPE=[Release|Debug]
+EOH
+}
+
+if ! command -v cmake &>/dev/null; then
+    echo "Error: cmake is not installed."
+    exit 1
+fi
+
+while [[ \$# -gt 0 ]]; do
+    case \$1 in
+        -h|--help)      show_help; exit 0 ;;
+        -b|--build-dir) BUILD_DIR="\$2"; shift 2 ;;
+        -c|--clean)     CLEAN=true; shift ;;
+        -g|--generator) GEN="\$2"; shift 2 ;;
+        --no-ninja)     GEN="Unix Makefiles"; shift ;;
+        --)             shift; CMAKE_EXTRA_ARGS+=("\$@"); break ;;
+        -D*)            CMAKE_EXTRA_ARGS+=("\$1"); shift ;;
+        *)              echo "Unknown option: \$1"; show_help; exit 1 ;;
+    esac
+done
+
+if [[ "\$CLEAN" == true && -d "\$BUILD_DIR" ]]; then
+    echo "Cleaning build directory: \$BUILD_DIR"
+    rm -rf "\$BUILD_DIR"
+fi
+
+if [[ -z "\$GEN" ]] && command -v ninja &>/dev/null; then
+    GEN="Ninja"
+fi
+
+CMAKE_CMD=("cmake" "-S" "\$SRC_DIR" "-B" "\$BUILD_DIR")
+[[ -n "\$GEN" ]] && CMAKE_CMD+=("-G" "\$GEN")
+[[ \${#CMAKE_EXTRA_ARGS[@]} -gt 0 ]] && CMAKE_CMD+=("\${CMAKE_EXTRA_ARGS[@]}")
+
+echo "=== Configuring $name ==="
+echo "Build Dir: \$BUILD_DIR"
+echo "Generator: \${GEN:-Default}"
+echo "Command:   \${CMAKE_CMD[*]}"
+echo "========================"
+
+if "\${CMAKE_CMD[@]}"; then
+    echo "Configuration successful. Run 'cmake --build \$BUILD_DIR' to compile."
+else
+    exit 1
+fi
+EOF
+    fi
+  done
+}
+
+if [[ $# -lt 1 ]]; then
+  print_help
+  exit 0
+fi
+
+MODE="$1"
+shift
+
+case "$MODE" in
+  init | initialize | new)
+    parse_init_opts "$@"
+    create_project_struct
+    write_cmakelists
+    write_configure
+    ;;
+  conf | configure)
+    parse_conf "$@"
+    ;;
+  -h | --help)
+    print_help
+    exit 0
+    ;;
+  *)
+    echo "Unknown mode: $MODE"
+    print_help
+    exit 1
+    ;;
+esac
