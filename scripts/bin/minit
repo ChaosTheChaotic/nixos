@@ -28,6 +28,7 @@ DEFAULT_CC=false
 DEFAULT_C=true
 DEFAULT_CXX=false
 DEFAULT_GIT=true
+DEFAULT_TESTS=false
 
 declare -A PROJ_INFO
 
@@ -57,6 +58,7 @@ print_help() {
   echo "    --cxx		   Use CXX as well"
   echo "    --no-c		   Disable use of C entirely"
   echo "    --no-git		   Do not git init and generate other git files"
+  echo "    --tests		   Enable tests for the project (you must configure your own testing library)"
   echo ""
   echo "Conf Options:"
   echo "  <path>                   Path to project root"
@@ -74,6 +76,7 @@ parse_init_opts() {
   local has_c=$DEFAULT_C
   local has_cxx=$DEFAULT_CXX
   local has_git=$DEFAULT_GIT
+  local has_tests=$DEFAULT_TESTS
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -87,7 +90,7 @@ parse_init_opts() {
           # If path pending, process it first
           if [[ -n "$current_path" ]]; then
             local final_name="${name:-$(basename "$current_path")}"
-            PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git"
+            PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests"
 
             # Reset options for next path
             name=""
@@ -98,6 +101,7 @@ parse_init_opts() {
             has_c=$DEFAULT_C
             has_cxx=$DEFAULT_CXX
             has_git=$DEFAULT_GIT
+            has_tests=$DEFAULT_TESTS
           fi
 
           current_path="$1"
@@ -141,6 +145,11 @@ parse_init_opts() {
               has_git=false
               shift
               ;;
+            --tests)
+              has_tests=true
+              echo "Tests selected, know that you must configure your own testing library"
+              shift
+              ;;
             -*)
               echo "$1 is not a valid option for path '$current_path'" >&2
               print_help
@@ -157,7 +166,7 @@ parse_init_opts() {
   # Process last path if only one
   if [[ -n "$current_path" ]]; then
     local final_name="${name:-$(basename "$current_path")}"
-    PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git"
+    PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests"
   elif [[ ${#PROJ_INFO[@]} -eq 0 ]]; then
     echo "Error: No path specified. Usage: $0 <mode> <path> [options]" >&2
     print_help
@@ -200,9 +209,9 @@ parse_conf() {
 
 create_project_struct() {
   for path in "${!PROJ_INFO[@]}"; do
-    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git <<<"${PROJ_INFO[$path]}"
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests <<<"${PROJ_INFO[$path]}"
 
-    [[ $VERBOSE == true ]] && echo "Processing $name at $path [Lib: $is_lib, Bin: $is_bin, Conf: $has_conf, CC: $has_cc, Git: $has_git]"
+    [[ $VERBOSE == true ]] && echo "Processing $name at $path [Lib: $is_lib, Bin: $is_bin, Conf: $has_conf, CC: $has_cc, Git: $has_git, Tests: $has_tests]"
 
     mkdir -p "${path}/src/private"
 
@@ -279,6 +288,10 @@ lib/
 build/
 .env
 EOF
+    fi
+    if [[ $has_tests == true ]]; then
+      mkdir "${path}/tests"
+      touch "${path}/tests/CMakeLists.txt"
     fi
   done
 }
@@ -464,18 +477,80 @@ endif()
 
 EOF
     fi
+    if [[ "$has_tests" == true ]]; then
+      cat <<-EOF >>"${file}"
+enable_testing()
+include(CTest)
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
+
+EOF
+      cat <<-EOF >>"${path}/tests/CMakeLists.txt"
+function(add_${name}_test TEST_NAME)
+  add_executable(\${TEST_NAME} \${ARGN})
+  target_link_libraries(\${TEST_NAME}
+    \${deps}
+    \${settings}
+  )
+
+  target_include_directories(\${TEST_NAME} PRIVATE 
+    \${CMOCKA_INCLUDE_DIRS}
+    \${CMAKE_CURRENT_SOURCE_DIR}/../src
+  )
+
+  add_test(NAME \${TEST_NAME} COMMAND \${TEST_NAME})
+endfunction()
+
+EOF
+    fi
   done
 }
 
 write_configure() {
   for path in "${!PROJ_INFO[@]}"; do
-    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c <<<"${PROJ_INFO[$path]}"
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests <<<"${PROJ_INFO[$path]}"
 
     if [[ "$has_conf" == true ]]; then
       [[ $VERBOSE == true ]] && echo "Writing configure script for: $path"
       local file="${path}/configure"
 
-      cat <<-EOF >"$file"
+      # Read options from CMakeLists.txt to generate help
+      local cmake_options=""
+      local cmake_file="${path}/CMakeLists.txt"
+
+      if [[ -f "$cmake_file" ]]; then
+        while IFS= read -r line; do
+          # Match option() commands and extract name, description, default
+          if [[ "$line" =~ option\ *\(([^[:space:]]+)[[:space:]]+\"([^\"]+)\"[[:space:]]+([^[:space:]]+)\) ]]; then
+            local opt_name="${BASH_REMATCH[1]}"
+            local opt_desc="${BASH_REMATCH[2]}"
+            local opt_default="${BASH_REMATCH[3]}"
+            cmake_options+="  -D${opt_name}=[ON|OFF]    ${opt_desc} (default: ${opt_default})"$'\n'
+          elif [[ "$line" =~ option\ *\(([^[:space:]]+)[[:space:]]+\"([^\"]+)\"\) ]]; then
+            local opt_name="${BASH_REMATCH[1]}"
+            local opt_desc="${BASH_REMATCH[2]}"
+            cmake_options+="  -D${opt_name}=[ON|OFF]    ${opt_desc}"$'\n'
+          fi
+        done <"$cmake_file"
+      else
+        # Fallback to default options if CMakeLists.txt doesn't exist yet
+        cmake_options="  -DUSE_CCACHE=[ON|OFF]    Try to use ccache for faster builds (default: OFF)"$'\n'
+        cmake_options+="  -DUSE_LTO=[ON|OFF]       Use linktime optimizations if available (default: ON)"$'\n'
+        cmake_options+="  -DMARCH_NATIVE=[ON|OFF]  Build library optimized for native arch (default: OFF)"$'\n'
+        cmake_options+="  -DDO_INSTALL=[ON|OFF]    Try to install library after it is build (default: OFF)"$'\n'
+
+        # Add library-specific options if it's a library
+        if [[ "$is_lib" == true ]]; then
+          cmake_options+="  -DBUILD_SHARED=[ON|OFF]    Build a shared library for the system (default: ON)"$'\n'
+          cmake_options+="  -DBUILD_STATIC=[ON|OFF]    Build a static library for the system (default: ON)"$'\n'
+        fi
+      fi
+
+      # Build dynamic help text
+      local help_text
+      help_text=$(
+        cat <<-EOF
 #!/usr/bin/env bash
 
 # Generated configure wrapper for $name
@@ -501,11 +576,8 @@ Options:
   --no-ninja            Don't use Ninja even if available
 
 CMake Options (can be passed after --):
-  -DUSE_CCACHE=[ON|OFF]    (Default: OFF)
-  -DUSE_LTO=[ON|OFF]       (Default: ON)
-  -DMARCH_NATIVE=[ON|OFF]  (Default: OFF)
-  -DDO_INSTALL=[ON|OFF]    (Default: OFF)
   -DCMAKE_BUILD_TYPE=[Release|Debug]
+$(echo -n "$cmake_options")
 EOH
 }
 
@@ -552,6 +624,10 @@ else
     exit 1
 fi
 EOF
+      )
+
+      echo "$help_text" >"$file"
+      chmod +x "$file"
     fi
   done
 }
