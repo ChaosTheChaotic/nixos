@@ -16,10 +16,17 @@ fi
 
 function fatal() {
   local msg="$1"
-  printf "${Red}[FATAL]: %s${Reset}" "$msg"
+  local ex=""
+  local bex="${3:-}" # Some function to run before exit (if any)
+
+  [[ "$2" =~ ^[0-9]+$ ]] && ex="$2"
+
+  printf "${Red}[FATAL]: %s${Reset}\n" "$msg"
   if $HAS_NOTIFY_SEND; then
     notify-send --urgency=critical "[FATAL]" "$msg"
   fi
+  [[ $(type -t "$bex") == "function" ]] && $bex
+  [[ -n "$ex" ]] && exit "$ex"
 }
 
 function warn() {

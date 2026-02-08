@@ -73,8 +73,7 @@ case "${1:-}" in
     ;;
   "--set")
     if [ -z "$2" ]; then
-      fatal "Error: --set requires a value"
-      exit 1
+      fatal "Error: --set requires a value" "1"
     fi
     if ! validate_amount "$2"; then
       exit 1

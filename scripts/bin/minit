@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+source "$UTIL_SCRIPT_DIR/err.sh"
+
+VERBOSE=false
+LIB=true
+BIN=true
+
+declare -A PROJ_NAMES
+
+print_help() {
+  echo "This is a placeholder help menu"
+}
+
+parse_opts() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help)
+	print_help
+	exit 0
+	;;
+      -v|--verbose)
+	VERBOSE=true
+	shift
+	;;
+      -l|--lib)
+	LIB=true
+	shift
+	;;
+      -b|--no-bin)
+	BIN=false
+	shift
+	;;
+      -n|--name)
+	fatal "$1 must come after a project path" "2"
+	;;
+      -*)
+	fatal "$1 is not an option"
+	print_help
+	exit 1
+	;;
+      *)
+	if [[ "$2" == "-n" || "$2" == "--name" ]]; then
+	  if [[ -z "$3" ]];
+	    fatal "$2 requires a name arg"
+	shift
+	;;
+    esac
+  done
+}
+
+create_project_struct() {
+  for proj in "${PROJ_NAMES[@]}"; do
+    mkdir -p "${proj}/src"
+  done
+}
+
+parse_opts "$@"

@@ -79,8 +79,7 @@ fi
 
 if $fs; then
   mkdir -p "$od" || {
-    fatal "Failed to create directory: $od"
-    exit 1
+    fatal "Failed to create directory: $od" "1"
   }
 fi
 
@@ -90,8 +89,7 @@ if [ $? -ne 0 ] || [ -z "$ocr_text" ]; then
   if $status; then
     notify-send -u critical "OCR" "Failed to capture or recognize text"
   fi
-  fatal "OCR failed - no text recognized or capture failed"
-  exit 1
+  fatal "OCR failed - no text recognized or capture failed" "1"
 fi
 
 if $fs; then

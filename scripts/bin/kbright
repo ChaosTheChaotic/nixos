@@ -7,27 +7,23 @@ source "$UTIL_SCRIPT_DIR/nums.sh"
 TARGET="/sys/class/leds/kbd_backlight/brightness"
 
 if [[ ! -e "$TARGET" ]]; then
-  fatal "Target file $TARGET does not exist"
-  exit 1
+  fatal "Target file $TARGET does not exist" "1"
 fi
 
 # Display brightness on no arg
 if [[ -z "$1" ]]; then
   if [[ ! -r "$TARGET" ]]; then
-    fatal "Cannot read $TARGET. Check permissions."
-    exit 1
+    fatal "Cannot read $TARGET. Check permissions." "1"
   fi
   cat "$TARGET" 2>/dev/null || {
-    fatal "Failed to read brightness value"
-    exit 1
+    fatal "Failed to read brightness value" "1"
   }
   exit 0
 fi
 
 # Check if $1 is unsigned int
 if ! is_num "$1"; then
-  fatal "Error: '$1' is not a valid numeric brightness level."
-  exit 1
+  fatal "Error: '$1' is not a valid numeric brightness level." "1"
 fi
 
 # Check if target is writable (with sudo)
@@ -39,6 +35,5 @@ fi
 if echo "$1" | sudo tee "$TARGET" >/dev/null 2>&1; then
   info "Brightness set to $1"
 else
-  fatal "Failed to set brightness. Check sudo permissions."
-  exit 1
+  fatal "Failed to set brightness. Check sudo permissions." "1"
 fi

@@ -9,7 +9,6 @@ source "$UTIL_SCRIPT_DIR/err.sh"
 
 function check_installed() {
   if ! command -v "$1" &>/dev/null; then
-    fatal "Command $1 not installed"
-    exit 1
+    fatal "Command $1 not installed" "1"
   fi
 }

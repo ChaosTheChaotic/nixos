@@ -59,8 +59,7 @@ parse_opts() {
 
   if $fs; then
     mkdir -p "$od" || {
-      fatal "Failed to create directory: $od"
-      exit 1
+      fatal "Failed to create directory: $od" "1"
     }
   fi
 }
