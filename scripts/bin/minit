@@ -11,6 +11,8 @@ DEFAULT_LIB=true
 DEFAULT_BIN=true
 DEFAULT_CONF=false
 DEFAULT_CC=false
+DEFAULT_C=true
+DEFAULT_CXX=false
 
 declare -A PROJ_INFO
 
@@ -29,6 +31,8 @@ print_help() {
   echo "    -b, --no-bin           Disable binary"
   echo "    -c, --config           Generate configure script"
   echo "    --cc                   Build compile commands"
+  echo "    --cxx		   Use CXX as well"
+  echo "    --no-c		   Disable use of C entirely"
   echo ""
   echo "Conf Options:"
   echo "  <path>                   Path to project root"
@@ -43,9 +47,9 @@ parse_init_opts() {
         VERBOSE=true
         shift
         ;;
-      -n | --name | -l | --lib | -b | --no-bin | -c | --config | --cc)
-        fatal "$1 must come after a project path" "1"
-        ;;
+      -n | --name | -l | --lib | -b | --no-bin | -c | --config | --cc | --cxx | --no-c)
+	fatal "$1 must come after a project path" "1"
+	;;
       -*)
         echo "$1 is not an option" >&2
         print_help
@@ -59,6 +63,8 @@ parse_init_opts() {
         local is_bin=$DEFAULT_BIN
         local has_conf=$DEFAULT_CONF
         local has_cc=$DEFAULT_CC
+	local has_c=$DEFAULT_C
+	local has_cxx=$DEFAULT_CXX
 
         while [[ "$1" == -* ]]; do
           case "$1" in
@@ -83,10 +89,18 @@ parse_init_opts() {
               has_cc=true
               shift
               ;;
+	    --cxx)
+	      has_cxx=true
+	      shift
+	      ;;
+	    --no-c)
+	      has_c=false
+	      shift
+	      ;;
             *) break ;;
           esac
         done
-        PROJ_INFO["$path"]="$name|$is_lib|$is_bin|$has_conf|$has_cc"
+	PROJ_INFO["$path"]="$name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c"
         ;;
     esac
   done
@@ -127,7 +141,7 @@ parse_conf() {
 
 create_project_struct() {
   for path in "${!PROJ_INFO[@]}"; do
-    IFS='|' read -r name is_lib is_bin has_conf has_cc <<<"${PROJ_INFO[$path]}"
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c <<<"${PROJ_INFO[$path]}"
 
     [[ $VERBOSE == true ]] && echo "Processing $name at $path [Lib: $is_lib, Bin: $is_bin, Conf: $has_conf, CC: $has_cc]"
 
@@ -146,14 +160,22 @@ create_project_struct() {
 
 write_cmakelists() {
   for path in "${!PROJ_INFO[@]}"; do
-    IFS='|' read -r name is_lib is_bin has_conf has_cc <<<"${PROJ_INFO["$path"]}"
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c <<<"${PROJ_INFO["$path"]}"
     local file="${path}/CMakeLists.txt"
 
     [[ $VERBOSE == true ]] && echo "Writing CMakeLists for $path"
 
+    local langs=""
+    [[ $has_c == true ]] && langs+=" C"
+    [[ $has_cxx == true ]] && langs+=" CXX"
+
+    local glob_patterns=""
+    [[ $has_c == true ]] && glob_patterns+=" \"src/*.c\""
+    [[ $has_cxx == true ]] && glob_patterns+=" \"src/*.cpp\" \"src/*.cc\" \"src/*.cxx\""
+
     cat <<EOF >"$file"
 cmake_minimum_required(VERSION 3.10)
-project($name VERSION 1.0 LANGUAGES C)
+project($name VERSION 1.0 LANGUAGES$langs)
 
 option(USE_CCACHE "Try to use ccache for faster builds" OFF)
 option(USE_LTO "Use linktime optimizations if available" ON)
@@ -215,7 +237,7 @@ if(USE_LTO)
   endif()
 endif()
 
-file(GLOB_RECURSE SOURCES "src/*.c")
+file(GLOB_RECURSE SOURCES $glob_patterns)
 
 EOF
 
@@ -317,7 +339,7 @@ EOF
 
 write_configure() {
   for path in "${!PROJ_INFO[@]}"; do
-    IFS='|' read -r name is_lib is_bin has_conf has_cc <<<"${PROJ_INFO["$path"]}"
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c <<<"${PROJ_INFO[$path]}"
 
     if [[ "$has_conf" == true ]]; then
       [[ $VERBOSE == true ]] && echo "Writing configure script for: $path"
