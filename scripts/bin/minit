@@ -33,11 +33,14 @@ DEFAULT_TESTS=false
 declare -A PROJ_INFO
 
 sedi() {
-  if [[ "$OSTYPE" == "darwin"* || "$OSTYPE" == *"bsd"* ]]; then
-    sed -i '' "$@"
-  else
-    sed -i "$@"
-  fi
+    case "$(uname -s)" in
+        Darwin*|*BSD*)
+            sed -i '' "$@"
+            ;;
+        *)
+            sed -i "$@"
+            ;;
+    esac
 }
 
 print_help() {
@@ -88,7 +91,7 @@ parse_init_opts() {
         shift
         while [[ $# -gt 0 ]]; do
           current_path="$1"
-          local final_name="${name:-$(basename "$current_path")}"
+          local final_name="${name:-$(basename -- "$current_path")}"
           PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests"
           shift
         done
@@ -99,7 +102,10 @@ parse_init_opts() {
         if [[ "$1" != -* ]]; then
           # If path pending, process it first
           if [[ -n "$current_path" ]]; then
-            local final_name="${name:-$(basename "$current_path")}"
+            if [[ -e "$current_path" && ! -d "$current_path" ]]; then
+              fatal "Path '$current_path' exists as a file, not a directory" "1"
+            fi
+            local final_name="${name:-$(basename -- "$current_path")}"
             PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests"
 
             # Reset options for next path
@@ -175,7 +181,7 @@ parse_init_opts() {
 
   # Process last path if only one
   if [[ -n "$current_path" ]]; then
-    local final_name="${name:-$(basename "$current_path")}"
+    local final_name="${name:-$(basename -- "$current_path")}"
     PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests"
   elif [[ ${#PROJ_INFO[@]} -eq 0 ]]; then
     echo "Error: No path specified. Usage: $0 <mode> <path> [options]" >&2
@@ -198,18 +204,17 @@ parse_conf() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --add)
-        local dep="$2"
-        # Check if dep exists as a whole word between the tags
-        local dep_escaped=$(printf '%s\n' "$dep" | sed 's/[\/&]/\\&/g')
-        if awk "/@DEPS_START@/,/@DEPS_END@/" "$file" | grep -q "^[[:space:]]*${dep}[[:space:]]*$"; then
-          echo "Dependency '$dep' already exists in $path"
-        else
-          # Add with proper indentation
-          sedi "/@DEPS_START@/a\    ${dep}" "$file"
-          echo "Added '$dep' to $path"
-        fi
-        shift 2
-        ;;
+	local dep="$2"
+	local dep_pattern="^[[:space:]]*$(echo "$dep" | sed 's/[][\/.^$*]/\\&/g')[[:space:]]*$"
+
+	if awk "/@DEPS_START@/,/@DEPS_END@/" "$file" | grep -q "$dep_pattern"; then
+	  echo "Dependency '$dep' already exists in $path"
+	else
+	  sedi "/@DEPS_START@/a\    $dep" "$file"
+	  echo "Added '$dep' to $path"
+	fi
+	shift 2
+	;;
 
       --remove)
         local dep="$2"
@@ -224,7 +229,20 @@ parse_conf() {
 
 create_project_struct() {
   for path in "${!PROJ_INFO[@]}"; do
+    local old_ifs=$IFS
     IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests <<<"${PROJ_INFO[$path]}"
+    IFS=$old_ifs
+
+    if [[ -z "$name" ]]; then
+      echo "Error: Project name is empty for path: $path" >&2
+      continue
+    fi
+
+    local parent_dir=$(dirname "$path")
+    if [[ ! -w "$parent_dir" ]]; then
+      echo "Cannot write to parent directory: $parent_dir" "1"
+      continue
+    fi
 
     [[ $VERBOSE == true ]] && echo "Processing $name at $path [Lib: $is_lib, Bin: $is_bin, Conf: $has_conf, CC: $has_cc, Git: $has_git, Tests: $has_tests]"
 
@@ -323,7 +341,9 @@ EOF
 
 write_cmakelists() {
   for path in "${!PROJ_INFO[@]}"; do
-    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c <<<"${PROJ_INFO["$path"]}"
+    local old_ifs=$IFS
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests <<<"${PROJ_INFO["$path"]}"
+    IFS=$old_ifs
     local file="${path}/CMakeLists.txt"
 
     [[ $VERBOSE == true ]] && echo "Writing CMakeLists for $path"
@@ -534,7 +554,9 @@ EOF
 
 write_configure() {
   for path in "${!PROJ_INFO[@]}"; do
+    local old_ifs=$IFS
     IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests <<<"${PROJ_INFO[$path]}"
+    IFS=$old_ifs
 
     if [[ "$has_conf" == true ]]; then
       [[ $VERBOSE == true ]] && echo "Writing configure script for: $path"
@@ -655,6 +677,7 @@ EOF
       chmod +x "$file"
     fi
   done
+  IFS=$old_ifs
 }
 
 if [[ $# -lt 1 ]]; then
@@ -673,6 +696,11 @@ case "$MODE" in
     write_configure
     ;;
   conf | configure)
+    if [[ $# -lt 1 ]]; then
+        echo "Error: No path specified for configure mode" >&2
+        print_help
+        exit 1
+    fi
     parse_conf "$@"
     ;;
   -h | --help)
