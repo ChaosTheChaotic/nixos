@@ -1,9 +1,23 @@
 #!/usr/bin/env bash
 
-source "$UTIL_SCRIPT_DIR/err.sh" || fatal() {
-  echo "Error: $1"
-  exit "${2:-1}"
-} # Just incase of this being used elsewhere
+if [[ -f "$UTIL_SCRIPT_DIR/check_installed.sh" ]]; then
+  source "$UTIL_SCRIPT_DIR/check_installed.sh"
+else
+  check_installed() {
+    if ! command -v "$1" &>/dev/null; then
+      fatal "Command $1 not installed" "1"
+    fi
+  } # Just incase of this being used elsewhere
+fi
+
+if [[ -f "$UTIL_SCRIPT_DIR/err.sh" ]]; then
+  source "$UTIL_SCRIPT_DIR/err.sh"
+else
+  fatal() {
+    echo "Error: $1"
+    exit "${2:-1}"
+  } # Just incase of this being used elsewhere
+fi
 
 # Defaults
 VERBOSE=false
@@ -13,8 +27,17 @@ DEFAULT_CONF=false
 DEFAULT_CC=false
 DEFAULT_C=true
 DEFAULT_CXX=false
+DEFAULT_GIT=true
 
 declare -A PROJ_INFO
+
+sedi() {
+  if [[ "$OSTYPE" == "darwin"* || "$OSTYPE" == *"bsd"* ]]; then
+    sed -i '' "$@"
+  else
+    sed -i "$@"
+  fi
+}
 
 print_help() {
   echo "Usage: $0 <mode> [options]"
@@ -33,6 +56,7 @@ print_help() {
   echo "    --cc                   Build compile commands"
   echo "    --cxx		   Use CXX as well"
   echo "    --no-c		   Disable use of C entirely"
+  echo "    --no-git		   Do not git init and generate other git files"
   echo ""
   echo "Conf Options:"
   echo "  <path>                   Path to project root"
@@ -41,32 +65,48 @@ print_help() {
 }
 
 parse_init_opts() {
+  local current_path=""
+  local name=""
+  local is_lib=$DEFAULT_LIB
+  local is_bin=$DEFAULT_BIN
+  local has_conf=$DEFAULT_CONF
+  local has_cc=$DEFAULT_CC
+  local has_c=$DEFAULT_C
+  local has_cxx=$DEFAULT_CXX
+  local has_git=$DEFAULT_GIT
+
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -v | --verbose)
         VERBOSE=true
         shift
         ;;
-      -n | --name | -l | --lib | -b | --no-bin | -c | --config | --cc | --cxx | --no-c)
-	fatal "$1 must come after a project path" "1"
-	;;
-      -*)
-        echo "$1 is not an option" >&2
-        print_help
-        exit 1
-        ;;
       *)
-        local path="$1"
-        shift
-        local name="$(basename "$path")"
-        local is_lib=$DEFAULT_LIB
-        local is_bin=$DEFAULT_BIN
-        local has_conf=$DEFAULT_CONF
-        local has_cc=$DEFAULT_CC
-	local has_c=$DEFAULT_C
-	local has_cxx=$DEFAULT_CXX
+        # Check if its a path
+        if [[ "$1" != -* ]]; then
+          # If path pending, process it first
+          if [[ -n "$current_path" ]]; then
+            local final_name="${name:-$(basename "$current_path")}"
+            PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git"
 
-        while [[ "$1" == -* ]]; do
+            # Reset options for next path
+            name=""
+            is_lib=$DEFAULT_LIB
+            is_bin=$DEFAULT_BIN
+            has_conf=$DEFAULT_CONF
+            has_cc=$DEFAULT_CC
+            has_c=$DEFAULT_C
+            has_cxx=$DEFAULT_CXX
+            has_git=$DEFAULT_GIT
+          fi
+
+          current_path="$1"
+        else
+          # Must be an opt
+          if [[ -z "$current_path" ]]; then
+            fatal "Options must come after a path. Use: $0 <mode> <path> [options]" "1"
+          fi
+
           case "$1" in
             -n | --name)
               [[ -z "$2" || "$2" == -* ]] && fatal "$1 requires a name arg" "1"
@@ -89,48 +129,67 @@ parse_init_opts() {
               has_cc=true
               shift
               ;;
-	    --cxx)
-	      has_cxx=true
-	      shift
-	      ;;
-	    --no-c)
-	      has_c=false
-	      shift
-	      ;;
-            *) break ;;
+            --cxx)
+              has_cxx=true
+              shift
+              ;;
+            --no-c)
+              has_c=false
+              shift
+              ;;
+            --no-git)
+              has_git=false
+              shift
+              ;;
+            -*)
+              echo "$1 is not a valid option for path '$current_path'" >&2
+              print_help
+              exit 1
+              ;;
           esac
-        done
-	PROJ_INFO["$path"]="$name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c"
+          continue
+        fi
+        shift
         ;;
     esac
   done
+
+  # Process last path if only one
+  if [[ -n "$current_path" ]]; then
+    local final_name="${name:-$(basename "$current_path")}"
+    PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git"
+  elif [[ ${#PROJ_INFO[@]} -eq 0 ]]; then
+    echo "Error: No path specified. Usage: $0 <mode> <path> [options]" >&2
+    print_help
+    exit 1
+  fi
 }
 
 parse_conf() {
   local path="$1"
-  [[ -z "$path" ]] && fatal "Conf mode requires a project path" "1"
   shift
-
   local file="${path}/CMakeLists.txt"
+
   [[ ! -f "$file" ]] && fatal "No CMakeLists.txt found at $path" "1"
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --add)
         local dep="$2"
-        [[ -z "$dep" ]] && fatal "--add requires a dependency name" "1"
-        if grep -qE "target_link_libraries\(deps INTERFACE.*[[:space:]]${dep}([[:space:]]|$)" "$file"; then
+        # Check if dep exists as a whole word between the tags
+        if grep -qFw "${dep}" "$file"; then
           echo "Dependency '$dep' already exists in $path"
         else
-          sed -i "/target_link_libraries(deps INTERFACE/ s/$/ ${dep}/" "$file"
+          sedi "s/@DEPS_START@/@DEPS_START@\\
+	  ${dep}/" "$file"
           echo "Added '$dep' to $path"
         fi
         shift 2
         ;;
+
       --remove)
         local dep="$2"
-        [[ -z "$dep" ]] && fatal "--remove requires a dependency name" "1"
-        sed -i "s/[[:space:]]${dep}\([[:space:]]\|$\)/\1/g" "$file"
+        sedi "/@DEPS_START@/,/@DEPS_END@/ { /^[[:space:]]*${dep}[[:space:]]*$/d; }" "$file"
         echo "Removed '$dep' from $path"
         shift 2
         ;;
@@ -141,9 +200,9 @@ parse_conf() {
 
 create_project_struct() {
   for path in "${!PROJ_INFO[@]}"; do
-    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c <<<"${PROJ_INFO[$path]}"
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git <<<"${PROJ_INFO[$path]}"
 
-    [[ $VERBOSE == true ]] && echo "Processing $name at $path [Lib: $is_lib, Bin: $is_bin, Conf: $has_conf, CC: $has_cc]"
+    [[ $VERBOSE == true ]] && echo "Processing $name at $path [Lib: $is_lib, Bin: $is_bin, Conf: $has_conf, CC: $has_cc, Git: $has_git]"
 
     mkdir -p "${path}/src/private"
 
@@ -154,6 +213,72 @@ create_project_struct() {
     if [[ "$has_conf" == true ]]; then
       touch "${path}/configure"
       chmod +x "${path}/configure"
+    fi
+    if [[ "$has_git" == true ]]; then
+      [[ ! -d "${path}/.git" ]] && check_installed "git" && git init "${path}"
+      touch "${path}/.gitignore"
+      cat <<-EOF >>"${path}/.gitignore"
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# debug information files
+*.dwo
+
+# minit additions
+lib/
+build/
+.env
+EOF
     fi
   done
 }
@@ -173,7 +298,7 @@ write_cmakelists() {
     [[ $has_c == true ]] && glob_patterns+=" \"src/*.c\""
     [[ $has_cxx == true ]] && glob_patterns+=" \"src/*.cpp\" \"src/*.cc\" \"src/*.cxx\""
 
-    cat <<EOF >"$file"
+    cat <<-EOF >"$file"
 cmake_minimum_required(VERSION 3.10)
 project($name VERSION 1.0 LANGUAGES$langs)
 
@@ -189,7 +314,12 @@ target_include_directories(settings INTERFACE
     $<BUILD_INTERFACE:\${CMAKE_CURRENT_SOURCE_DIR}/src/private>
 )
 
-target_link_libraries(deps INTERFACE)
+target_link_libraries(deps INTERFACE 
+    # The following is needed for the script to be able to remove and add dependencies
+    # Do not remove unless you do not plan to use the script again
+    # @DEPS_START@
+    # @DEPS_END@
+)
 
 find_program(CCACHE_PROGRAM ccache)
 if(USE_CCACHE AND CCACHE_PROGRAM)
@@ -237,18 +367,18 @@ if(USE_LTO)
   endif()
 endif()
 
-file(GLOB_RECURSE SOURCES $glob_patterns)
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS $glob_patterns)
 
 EOF
 
     if [[ "$has_cc" == true ]]; then
-      cat <<EOF >>"${file}"
+      cat <<-EOF >>"${file}"
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 EOF
     fi
 
-    cat <<EOF >>"${file}"
+    cat <<-EOF >>"${file}"
 if(DO_INSTALL)
   include(GNUInstallDirs)
 endif()
@@ -256,7 +386,7 @@ endif()
 EOF
 
     if [[ "$is_lib" == true ]]; then
-      cat <<EOF >>"${file}"
+      cat <<-EOF >>"${file}"
 option(BUILD_SHARED "Build a shared library for the system" ON)
 option(BUILD_STATIC "Build a static library for the system" ON)
 
@@ -318,7 +448,7 @@ EOF
     fi
 
     if [[ "$is_bin" == true ]]; then
-      cat <<EOF >>"${file}"
+      cat <<-EOF >>"${file}"
 add_executable(${name}_bin \${SOURCES})
 target_link_libraries(${name}_bin PRIVATE settings deps)
 
@@ -345,7 +475,7 @@ write_configure() {
       [[ $VERBOSE == true ]] && echo "Writing configure script for: $path"
       local file="${path}/configure"
 
-      cat <<EOF >"$file"
+      cat <<-EOF >"$file"
 #!/usr/bin/env bash
 
 # Generated configure wrapper for $name
