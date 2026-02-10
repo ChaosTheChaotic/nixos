@@ -6,28 +6,28 @@ fi
 __COLORS_SH_SOURCED=1
 
 # Regular Colors
-Black='\033[0;30m'
-Red='\033[0;31m'
-Green='\033[0;32m'
-Yellow='\033[0;33m'
-Blue='\033[0;34m'
-Purple='\033[0;35m'
-Cyan='\033[0;36m'
-White='\033[0;37m'
-
+readonly Black='\033[0;30m'
+readonly Red='\033[0;31m'
+readonly Green='\033[0;32m'
+readonly Yellow='\033[0;33m'
+readonly Blue='\033[0;34m'
+readonly Purple='\033[0;35m'
+readonly Cyan='\033[0;36m'
+readonly White='\033[0;37m'
+readonly
 # Bold Colors (often appear as "light" colors in terminals)
-BBlack='\033[1;30m'
-BRed='\033[1;31m'
-BGreen='\033[1;32m'
-BYellow='\033[1;33m'
-BBlue='\033[1;34m'
-BPurple='\033[1;35m'
-BCyan='\033[1;36m'
-BWhite='\033[1;37m'
-
+readonly BBlack='\033[1;30m'
+readonly BRed='\033[1;31m'
+readonly BGreen='\033[1;32m'
+readonly BYellow='\033[1;33m'
+readonly BBlue='\033[1;34m'
+readonly BPurple='\033[1;35m'
+readonly BCyan='\033[1;36m'
+readonly BWhite='\033[1;37m'
+readonly
 # Other Styles
-Underline='\033[4m'
-Inverse='\033[7m'
-
+readonly Underline='\033[4m'
+readonly Inverse='\033[7m'
+readonly
 # Reset variable to return to default terminal color/style
-Reset='\033[0m'
+readonly Reset='\033[0m'
