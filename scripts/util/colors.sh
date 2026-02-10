@@ -14,7 +14,6 @@ readonly Blue='\033[0;34m'
 readonly Purple='\033[0;35m'
 readonly Cyan='\033[0;36m'
 readonly White='\033[0;37m'
-readonly
 # Bold Colors (often appear as "light" colors in terminals)
 readonly BBlack='\033[1;30m'
 readonly BRed='\033[1;31m'
@@ -24,10 +23,8 @@ readonly BBlue='\033[1;34m'
 readonly BPurple='\033[1;35m'
 readonly BCyan='\033[1;36m'
 readonly BWhite='\033[1;37m'
-readonly
 # Other Styles
 readonly Underline='\033[4m'
 readonly Inverse='\033[7m'
-readonly
 # Reset variable to return to default terminal color/style
 readonly Reset='\033[0m'
