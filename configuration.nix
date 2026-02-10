@@ -64,7 +64,7 @@ in
     asahi-btsync
     asahi-wifisync
     muvm
-    nvimpager
+    #nvimpager
   ];
 
   fonts.packages = [
@@ -321,7 +321,7 @@ in
   environment.variables = {
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
     C_INCLUDE_PATH = "${pkgs.openssl.dev}/include";
-    PAGER = "nvimpager";
+    #PAGER = "nvimpager";
     XDG_DATA_DIRS = [
       "${pkgs.hyprland}/share"
     ];
