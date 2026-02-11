@@ -29,6 +29,7 @@ DEFAULT_C=true
 DEFAULT_CXX=false
 DEFAULT_GIT=true
 DEFAULT_TESTS=false
+DEFAULT_PKG=false
 
 declare -A PROJ_INFO
 
@@ -62,6 +63,7 @@ print_help() {
   echo "    --no-c		   Disable use of C entirely"
   echo "    --no-git		   Do not git init and generate other git files"
   echo "    --tests		   Enable tests for the project (you must configure your own testing library)"
+  echo "    --pkg-config           Enable PkgConfig validation for dependencies"
   echo ""
   echo "Conf Options:"
   echo "  <path>                   Path to project root"
@@ -80,6 +82,7 @@ parse_init_opts() {
   local has_cxx=$DEFAULT_CXX
   local has_git=$DEFAULT_GIT
   local has_tests=$DEFAULT_TESTS
+  local has_pkg=$DEFAULT_PKG
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -92,7 +95,7 @@ parse_init_opts() {
         while [[ $# -gt 0 ]]; do
           current_path="$1"
           local final_name="${name:-$(basename -- "$current_path")}"
-          PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests"
+          PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests|$has_pkg"
           shift
         done
         break
@@ -106,7 +109,7 @@ parse_init_opts() {
               fatal "Path '$current_path' exists as a file, not a directory" "1"
             fi
             local final_name="${name:-$(basename -- "$current_path")}"
-            PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests"
+            PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests|$has_pkg"
 
             # Reset options for next path
             name=""
@@ -118,6 +121,7 @@ parse_init_opts() {
             has_cxx=$DEFAULT_CXX
             has_git=$DEFAULT_GIT
             has_tests=$DEFAULT_TESTS
+	    has_pkg=$DEFAULT_PKG
           fi
 
           current_path="$1"
@@ -166,6 +170,10 @@ parse_init_opts() {
               echo "Tests selected, know that you must configure your own testing library"
               shift
               ;;
+	    --pkg-config)
+	      has_pkg=true
+	      shift
+	      ;;
             -*)
               echo "$1 is not a valid option for path '$current_path'" >&2
               print_help
@@ -182,7 +190,7 @@ parse_init_opts() {
   # Process last path if only one
   if [[ -n "$current_path" ]]; then
     local final_name="${name:-$(basename -- "$current_path")}"
-    PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests"
+    PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests|$has_pkg"
   elif [[ ${#PROJ_INFO[@]} -eq 0 ]]; then
     echo "Error: No path specified. Usage: $0 <mode> <path> [options]" >&2
     print_help
@@ -197,6 +205,9 @@ parse_conf() {
 
   [[ ! -f "$file" ]] && fatal "No CMakeLists.txt found at $path" "1"
 
+  local use_pkg=false
+  grep -q "find_package(PkgConfig" "$file" && use_pkg=true
+
   if ! grep -q '@DEPS_START@' "$file" || ! grep -q '@DEPS_END@' "$file"; then
     fatal "CMakeLists.txt missing dependency markers" "1"
   fi
@@ -205,21 +216,31 @@ parse_conf() {
     case "$1" in
       --add)
         local dep="$2"
-        local dep_pattern="^[[:space:]]*$(echo "$dep" | sed 's/[][\/.^$*]/\\&/g')[[:space:]]*$"
-
-        if awk "/@DEPS_START@/,/@DEPS_END@/" "$file" | grep -q "$dep_pattern"; then
-          echo "Dependency '$dep' already exists in $path"
-        else
-          sedi "/@DEPS_START@/a\    $dep" "$file"
-          echo "Added '$dep' to $path"
-        fi
-        shift 2
+	if [[ "$use_pkg" == true ]]; then
+	  check_installed "pkg-config"
+	  if ! pkg-config --exists "$dep"; then
+	    fatal "Dependency '$dep' not found by pkg-config. Install it first." "1"
+	  fi
+	fi
+	if grep -q "PkgConfig::PC_$dep" "$file" || grep -q "    $dep" "$file"; then
+	  echo "Dependency '$dep' already exists."
+	else
+	  if [[ "$use_pkg" == true ]]; then
+	    sedi "/@DEPS_START@/a\\    pkg_check_modules(PC_$dep REQUIRED IMPORTED_TARGET $dep)\\    target_link_libraries(deps INTERFACE PkgConfig::PC_$dep)" "$file"
+	  else
+	    sedi "/@DEPS_START@/a\\    $dep" "$file"
+	  fi
+	  echo "Added '$dep' (PkgConfig: $use_pkg)"
+	fi
+	shift 2
         ;;
 
       --remove)
-        local dep="$2"
-        sedi "/@DEPS_START@/,/@DEPS_END@/ { /^[[:space:]]*${dep}[[:space:]]*$/d; }" "$file"
-        echo "Removed '$dep' from $path"
+	local dep="$2"
+        sedi "/pkg_check_modules(PC_$dep/d" "$file"
+        sedi "/PkgConfig::PC_$dep/d" "$file"
+        sedi "/^[[:space:]]*${dep}[[:space:]]*$/d" "$file"
+	echo "Removed $dep from $file"
         shift 2
         ;;
       *) shift ;;
@@ -244,7 +265,7 @@ create_project_struct() {
       continue
     fi
 
-    [[ $VERBOSE == true ]] && echo "Processing $name at $path [Lib: $is_lib, Bin: $is_bin, Conf: $has_conf, CC: $has_cc, Git: $has_git, Tests: $has_tests]"
+    [[ $VERBOSE == true ]] && echo "Processing $name at $path [Lib: $is_lib, Bin: $is_bin, Conf: $has_conf, CC: $has_cc, Git: $has_git, Tests: $has_tests, PkgConfig: $has_pkg]"
 
     mkdir -p "${path}/src/private"
 
@@ -342,7 +363,7 @@ EOF
 write_cmakelists() {
   for path in "${!PROJ_INFO[@]}"; do
     local old_ifs=$IFS
-    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests <<<"${PROJ_INFO["$path"]}"
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests has_pkg <<<"${PROJ_INFO["$path"]}"
     IFS=$old_ifs
     local file="${path}/CMakeLists.txt"
 
@@ -364,6 +385,8 @@ option(USE_CCACHE "Try to use ccache for faster builds" OFF)
 option(USE_LTO "Use linktime optimizations if available" ON)
 option(MARCH_NATIVE "Build library optimized for native arch" OFF)
 option(DO_INSTALL "Try to install library after it is build" OFF)
+
+$( [[ "$has_pkg" == true ]] && echo "find_package(PkgConfig REQUIRED)" )
 
 add_library(settings INTERFACE)
 add_library(deps INTERFACE)
@@ -555,7 +578,7 @@ EOF
 write_configure() {
   for path in "${!PROJ_INFO[@]}"; do
     local old_ifs=$IFS
-    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests <<<"${PROJ_INFO[$path]}"
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests has_pkg <<<"${PROJ_INFO[$path]}"
     IFS=$old_ifs
 
     if [[ "$has_conf" == true ]]; then
