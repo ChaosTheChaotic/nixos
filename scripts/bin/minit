@@ -31,17 +31,24 @@ DEFAULT_GIT=true
 DEFAULT_TESTS=false
 DEFAULT_PKG=false
 
-declare -A PROJ_INFO
+PROJ_PATHS=()
+PROJ_DATA=()
+
+_add_project() {
+  local path="$1"
+  local data="$2"
+  PROJ_PATHS+=("$path")
+  PROJ_DATA+=("$data")
+}
 
 sedi() {
-  case "$(uname -s)" in
-    Darwin* | *BSD*)
-      sed -i '' "$@"
-      ;;
-    *)
-      sed -i "$@"
-      ;;
-  esac
+  local sed_script="$1"
+  local file="$2"
+  if [[ "$(uname -s)" =~ (Darwin|BSD) ]]; then
+    sed -E -i '' "$sed_script" "$file"
+  else
+    sed -E -i "$sed_script" "$file"
+  fi
 }
 
 print_help() {
@@ -91,111 +98,83 @@ parse_init_opts() {
         VERBOSE=true
         shift
         ;;
-      --)
-        shift
-        while [[ $# -gt 0 ]]; do
-          current_path="$1"
-          local final_name="${name:-$(basename -- "$current_path")}"
-          PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests|$has_pkg"
-          shift
-        done
-        break
+      -n | --name)
+        [[ -z "$2" || "$2" == -* ]] && fatal "$1 requires a name argument" 1
+        name="$2"
+        shift 2
         ;;
-      *)
-        # Check if its a path
-        if [[ "$1" != -* ]]; then
-          # If path pending, process it first
-          if [[ -n "$current_path" ]]; then
-            if [[ -e "$current_path" && ! -d "$current_path" ]]; then
-              fatal "Path '$current_path' exists as a file, not a directory" "1"
-            fi
-            local final_name="${name:-$(basename -- "$current_path")}"
-            PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests|$has_pkg"
-
-            # Reset options for next path
-            name=""
-            is_lib=$DEFAULT_LIB
-            is_bin=$DEFAULT_BIN
-            has_conf=$DEFAULT_CONF
-            has_cc=$DEFAULT_CC
-            has_c=$DEFAULT_C
-            has_cxx=$DEFAULT_CXX
-            has_git=$DEFAULT_GIT
-            has_tests=$DEFAULT_TESTS
-	    has_pkg=$DEFAULT_PKG
-          fi
-
-          current_path="$1"
-        else
-          # Must be an opt
-          if [[ -z "$current_path" ]]; then
-            fatal "Options must come after a path. Use: $0 <mode> <path> [options]" "1"
-          fi
-
-          case "$1" in
-            -n | --name)
-              [[ -z "$2" || "$2" == -* ]] && fatal "$1 requires a name arg" "1"
-              name="$2"
-              shift 2
-              ;;
-            -l | --lib)
-              is_lib=true
-              shift
-              ;;
-            -b | --no-bin)
-              is_bin=false
-              shift
-              ;;
-            -c | --config)
-              has_conf=true
-              shift
-              ;;
-            --cc)
-              has_cc=true
-              shift
-              ;;
-            --cxx)
-              has_cxx=true
-              shift
-              ;;
-            --no-c)
-              has_c=false
-              shift
-              ;;
-            --no-git)
-              has_git=false
-              shift
-              ;;
-            --tests)
-              has_tests=true
-              echo "Tests selected, know that you must configure your own testing library"
-              shift
-              ;;
-	    --pkg-config)
-	      has_pkg=true
-	      shift
-	      ;;
-            -*)
-              echo "$1 is not a valid option for path '$current_path'" >&2
-              print_help
-              exit 1
-              ;;
-          esac
-          continue
+      -l | --lib)
+        is_lib=true
+        shift
+        ;;
+      -b | --no-bin)
+        is_bin=false
+        shift
+        ;;
+      -c | --config)
+        has_conf=true
+        shift
+        ;;
+      --cc)
+        has_cc=true
+        shift
+        ;;
+      --cxx)
+        has_cxx=true
+        shift
+        ;;
+      --no-c)
+        has_c=false
+        shift
+        ;;
+      --no-git)
+        has_git=false
+        shift
+        ;;
+      --tests)
+        has_tests=true
+        shift
+        ;;
+      --pkg-config)
+        has_pkg=true
+        shift
+        ;;
+      --*)
+        echo "Unknown option: $1" >&2
+        print_help
+        exit 1
+        ;;
+      *) # It's a path
+        if [[ -n "$current_path" ]]; then
+          # Save previous project
+          local final_name="${name:-$(basename -- "$current_path")}"
+          _add_project "$current_path" "$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests|$has_pkg"
+          # Reset options for next path
+          name=""
+          is_lib=$DEFAULT_LIB
+          is_bin=$DEFAULT_BIN
+          has_conf=$DEFAULT_CONF
+          has_cc=$DEFAULT_CC
+          has_c=$DEFAULT_C
+          has_cxx=$DEFAULT_CXX
+          has_git=$DEFAULT_GIT
+          has_tests=$DEFAULT_TESTS
+          has_pkg=$DEFAULT_PKG
         fi
+        current_path="$1"
         shift
         ;;
     esac
   done
 
-  # Process last path if only one
+  # Save the last project
   if [[ -n "$current_path" ]]; then
     local final_name="${name:-$(basename -- "$current_path")}"
-    PROJ_INFO["$current_path"]="$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests|$has_pkg"
-  elif [[ ${#PROJ_INFO[@]} -eq 0 ]]; then
-    echo "Error: No path specified. Usage: $0 <mode> <path> [options]" >&2
-    print_help
-    exit 1
+    _add_project "$current_path" "$final_name|$is_lib|$is_bin|$has_conf|$has_cc|$has_cxx|$has_c|$has_git|$has_tests|$has_pkg"
+  fi
+
+  if [[ ${#PROJ_PATHS[@]} -eq 0 ]]; then
+    fatal "No path specified. Usage: $0 init <path> [options]" 1
   fi
 }
 
@@ -204,64 +183,121 @@ parse_conf() {
   shift
   local file="${path}/CMakeLists.txt"
 
-  [[ ! -f "$file" ]] && fatal "No CMakeLists.txt found at $path" "1"
+  [[ ! -f "$file" ]] && fatal "No CMakeLists.txt found at $path" 1
 
+  # Determine if the project uses PkgConfig
   local use_pkg=false
-  grep -q "find_package(PkgConfig" "$file" && use_pkg=true
+  grep -q "^[[:space:]]*find_package[[:space:]]*([[:space:]]*PkgConfig" "$file" && use_pkg=true
 
+  # Determine default visibility based on project type
   local default_vis="private"
-  grep -q "add_library(" "$file" && default_vis="public"
+  grep -q "add_library[[:space:]]*(" "$file" && default_vis="public"
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --add)
         local dep="$2"
         shift 2
-        local visibility=$default_vis
+        local visibility="$default_vis"
         local static_flag=""
 
         while [[ "$1" == --* ]]; do
           case "$1" in
-            --public)  visibility="public"; shift ;;
-            --private) visibility="private"; shift ;;
-            --static)  static_flag="STATIC"; shift ;;
+            --public)
+              visibility="public"
+              shift
+              ;;
+            --private)
+              visibility="private"
+              shift
+              ;;
+            --static)
+              static_flag="STATIC"
+              shift
+              ;;
             *) break ;;
           esac
         done
 
-        local target_marker="@DEPS_START_${visibility^^}@"
+        # Escape dependency name for safe use in regex
+        local dep_escaped
+        dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
 
         if [[ "$use_pkg" == true ]]; then
-          check_installed "pkg-config"
-          if ! pkg-config --exists "$dep"; then
-            fatal "Dependency '$dep' not found by pkg-config. Install it first." "1"
+          # Add pkg_check_modules if not already present
+          local pkg_line="pkg_check_modules(PC_${dep} REQUIRED ${static_flag} IMPORTED_TARGET ${dep})"
+          if ! grep -Fxq "$pkg_line" "$file"; then
+            # Insert after find_package(PkgConfig) or at the end
+            if grep -q "^[[:space:]]*find_package[[:space:]]*([[:space:]]*PkgConfig" "$file"; then
+              cp "$file" "$file.tmp"
+              awk '/^[[:space:]]*find_package[[:space:]]*\([[:space:]]*PkgConfig/ { print; print "'"$pkg_line"'"; next }1' "$file.tmp" >"$file"
+              rm "$file.tmp"
+            else
+              echo "$pkg_line" >>"$file"
+            fi
+            echo "Added pkg_check_modules for $dep"
           fi
-          sedi "/$target_marker/a\\    pkg_check_modules(PC_$dep REQUIRED $static_flag IMPORTED_TARGET $dep)\\    target_link_libraries(deps_$visibility INTERFACE PkgConfig::PC_$dep)" "$file"
-        else
-          if [[ -n "$static_flag" ]]; then
-            sedi "/$target_marker/a\\    target_link_libraries(deps_$visibility INTERFACE -Wl,-Bstatic $dep -Wl,-Bdynamic)" "$file"
+
+          # Add target_link_libraries for the interface library
+          local link_line="target_link_libraries(deps_${visibility} INTERFACE PkgConfig::PC_${dep})"
+          if ! grep -Fxq "$link_line" "$file"; then
+            echo "$link_line" >>"$file"
+            echo "Linked $dep (visibility: $visibility)"
           else
-            sedi "/$target_marker/a\\    target_link_libraries(deps_$visibility INTERFACE $dep)" "$file"
+            echo "Dependency $dep already linked (skipped)"
+          fi
+        else
+          # Plain library linking (no pkg-config)
+          local link_line
+          if [[ -n "$static_flag" ]]; then
+            # Add static linking flags (non‑MSVC only)
+            link_line="if(NOT MSVC)\n  target_link_libraries(deps_${visibility} INTERFACE -Wl,-Bstatic ${dep} -Wl,-Bdynamic)\nelse()\n  target_link_libraries(deps_${visibility} INTERFACE ${dep})\nendif()"
+            # Check if an equivalent line already exists
+            if ! grep -q "target_link_libraries(deps_${visibility} INTERFACE .*${dep_escaped}" "$file"; then
+              printf "%b\n" "$link_line" >>"$file"
+              echo "Linked $dep (visibility: $visibility, static)"
+            fi
+          else
+            link_line="target_link_libraries(deps_${visibility} INTERFACE ${dep})"
+            if ! grep -Fxq "$link_line" "$file"; then
+              echo "$link_line" >>"$file"
+              echo "Linked $dep (visibility: $visibility)"
+            fi
           fi
         fi
-        echo "Added '$dep' (Visibility: $visibility, Static: ${static_flag:-false})"
         ;;
       --remove)
         local dep="$2"
-        sedi "/PC_$dep/d" "$file"
-        sedi "/target_link_libraries(deps_.* INTERFACE .*$dep/d" "$file"
+        shift 2
+        local dep_escaped
+        dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
+
+        # Remove pkg_check_modules line (if any)
+        sedi "/^pkg_check_modules[[:space:]]*(.*PC_${dep_escaped}[[:space:]]*)/d" "$file"
+
+        # Remove target_link_libraries lines for both public and private, regardless of visibility
+        sedi "/^target_link_libraries(deps_public INTERFACE PkgConfig::PC_${dep_escaped})\$/d" "$file"
+        sedi "/^target_link_libraries(deps_private INTERFACE PkgConfig::PC_${dep_escaped})\$/d" "$file"
+        sedi "/^target_link_libraries(deps_public INTERFACE ${dep_escaped})\$/d" "$file"
+        sedi "/^target_link_libraries(deps_private INTERFACE ${dep_escaped})\$/d" "$file"
+
+        sedi "/target_link_libraries(deps_public INTERFACE .*${dep_escaped}/d" "$file"
+        sedi "/target_link_libraries(deps_private INTERFACE .*${dep_escaped}/d" "$file"
+
         echo "Removed $dep"
-        shift 2 ;;
-      *) shift ;;
+        ;;
+      *)
+        shift
+        ;;
     esac
   done
 }
 
 create_project_struct() {
-  for path in "${!PROJ_INFO[@]}"; do
-    local old_ifs=$IFS
-    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests <<<"${PROJ_INFO[$path]}"
-    IFS=$old_ifs
+  local i path name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests has_pkg
+  for i in "${!PROJ_PATHS[@]}"; do
+    path="${PROJ_PATHS[$i]}"
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests has_pkg <<<"${PROJ_DATA[$i]}"
 
     if [[ -z "$name" ]]; then
       echo "Error: Project name is empty for path: $path" >&2
@@ -270,14 +306,13 @@ create_project_struct() {
 
     local parent_dir=$(dirname "$path")
     if [[ ! -w "$parent_dir" ]]; then
-      echo "Cannot write to parent directory: $parent_dir" "1"
+      echo "Cannot write to parent directory: $parent_dir" >&2
       continue
     fi
 
     [[ $VERBOSE == true ]] && echo "Processing $name at $path [Lib: $is_lib, Bin: $is_bin, Conf: $has_conf, CC: $has_cc, Git: $has_git, Tests: $has_tests, PkgConfig: $has_pkg]"
 
     mkdir -p "${path}/src/private"
-
     [[ $is_lib == true ]] && mkdir -p "${path}/include"
 
     if [[ -f "${path}/CMakeLists.txt" ]]; then
@@ -296,6 +331,7 @@ create_project_struct() {
       touch "${path}/configure"
       chmod +x "${path}/configure"
     fi
+
     if [[ "$has_git" == true ]]; then
       [[ ! -d "${path}/.git" ]] && check_installed "git" && git init "${path}"
       touch "${path}/.gitignore"
@@ -362,26 +398,29 @@ build/
 .env
 EOF
     fi
+
     if [[ $has_tests == true ]]; then
-      mkdir "${path}/tests"
+      mkdir -p "${path}/tests"
       touch "${path}/tests/CMakeLists.txt"
     fi
   done
 }
 
 write_cmakelists() {
-  for path in "${!PROJ_INFO[@]}"; do
-    local old_ifs=$IFS
-    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests has_pkg <<<"${PROJ_INFO["$path"]}"
-    IFS=$old_ifs
-    local file="${path}/CMakeLists.txt"
+  local i path name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests has_pkg
+  for i in "${!PROJ_PATHS[@]}"; do
+    path="${PROJ_PATHS[$i]}"
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests has_pkg <<<"${PROJ_DATA[$i]}"
 
     [[ $VERBOSE == true ]] && echo "Writing CMakeLists for $path"
+    local file="${path}/CMakeLists.txt"
 
+    # Language selection
     local langs=""
     [[ $has_c == true ]] && langs+=" C"
     [[ $has_cxx == true ]] && langs+=" CXX"
 
+    # Source glob patterns
     local glob_patterns=""
     [[ $has_c == true ]] && glob_patterns+=" \"src/*.c\""
     [[ $has_cxx == true ]] && glob_patterns+=" \"src/*.cpp\" \"src/*.cc\" \"src/*.cxx\""
@@ -395,29 +434,19 @@ option(USE_LTO "Use linktime optimizations if available" ON)
 option(MARCH_NATIVE "Build library optimized for native arch" OFF)
 option(DO_INSTALL "Try to install library after it is build" OFF)
 
-$( [[ "$has_pkg" == true ]] && echo "find_package(PkgConfig REQUIRED)" )
+$([[ "$has_pkg" == true ]] && echo "find_package(PkgConfig REQUIRED)")
 
 add_library(settings INTERFACE)
 add_library(deps_public INTERFACE)
 add_library(deps_private INTERFACE)
 
 target_include_directories(settings INTERFACE 
-    $<BUILD_INTERFACE:\${CMAKE_CURRENT_SOURCE_DIR}/src/private>
+    \$<BUILD_INTERFACE:\${CMAKE_CURRENT_SOURCE_DIR}/src/private>
 )
 
-target_link_libraries(deps_public INTERFACE 
-    # The following is needed for the script to be able to remove and add dependencies
-    # Do not remove unless you do not plan to use the script again
-    # @DEPS_START_PUBLIC@
-    # @DEPS_END_PUBLIC@
-)
-
-target_link_libraries(deps_private INTERFACE 
-    # The following is needed for the script to be able to remove and add dependencies
-    # Do not remove unless you do not plan to use the script again
-    # @DEPS_START_PRIVATE@
-    # @DEPS_END_PRIVATE@
-)
+# Dependencies are added by the configuration script as separate
+# target_link_libraries(deps_public ...) and target_link_libraries(deps_private ...)
+# lines. Do not remove them manually.
 
 find_program(CCACHE_PROGRAM ccache)
 if(USE_CCACHE AND CCACHE_PROGRAM)
@@ -428,11 +457,9 @@ elseif(USE_CCACHE)
   message(WARNING "ccache is enabled but not found.")
 endif()
 
-
 if(MSVC)
   target_compile_options(settings INTERFACE /W4)
 else()
-  # GCC / Clang
   target_compile_options(settings INTERFACE -Wall -Wextra -Wpedantic)
 endif()
 
@@ -470,13 +497,10 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS $glob_patterns)
 EOF
 
     if [[ "$has_cc" == true ]]; then
-      cat <<-EOF >>"${file}"
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-EOF
+      echo "set(CMAKE_EXPORT_COMPILE_COMMANDS ON)" >>"$file"
     fi
 
-    cat <<-EOF >>"${file}"
+    cat <<-EOF >>"$file"
 if(DO_INSTALL)
   include(GNUInstallDirs)
 endif()
@@ -484,7 +508,7 @@ endif()
 EOF
 
     if [[ "$is_lib" == true ]]; then
-      cat <<-EOF >>"${file}"
+      cat <<-EOF >>"$file"
 option(BUILD_SHARED "Build a shared library for the system" ON)
 option(BUILD_STATIC "Build a static library for the system" ON)
 
@@ -494,16 +518,13 @@ if(BUILD_SHARED)
     PUBLIC deps_public 
     PRIVATE settings deps_private
   )
-  
   target_include_directories(${name} PUBLIC 
       \$<BUILD_INTERFACE:\${CMAKE_CURRENT_SOURCE_DIR}/include>
       \$<INSTALL_INTERFACE:include>
   )
-  
   if(ENABLE_LTO_ON_TARGETS)
     set_target_properties(${name} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
   endif()
-
   if(DO_INSTALL)
     install(TARGETS ${name}
         EXPORT ${name}Targets
@@ -519,23 +540,19 @@ if(BUILD_STATIC)
   if(NOT BUILD_SHARED)
     set(STATIC_TARGET "${name}")
   endif()
-
   add_library(\${STATIC_TARGET} STATIC \${SOURCES})
-  target_link_libraries(${name} 
-    PUBLIC deps_public 
+  target_link_libraries(\${STATIC_TARGET}
+    PUBLIC deps_public
     PRIVATE settings deps_private
   )
   target_include_directories(\${STATIC_TARGET} PUBLIC 
       \$<BUILD_INTERFACE:\${CMAKE_CURRENT_SOURCE_DIR}/include>
       \$<INSTALL_INTERFACE:include>
   )
-  
   set_target_properties(\${STATIC_TARGET} PROPERTIES OUTPUT_NAME "${name}")
-
   if(ENABLE_LTO_ON_TARGETS)
     set_target_properties(\${STATIC_TARGET} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
   endif()
-
   if(DO_INSTALL)
     install(TARGETS \${STATIC_TARGET}
         EXPORT ${name}Targets
@@ -552,17 +569,15 @@ EOF
     fi
 
     if [[ "$is_bin" == true ]]; then
-      cat <<-EOF >>"${file}"
+      cat <<-EOF >>"$file"
 add_executable(${name}_bin \${SOURCES})
 target_link_libraries(${name}_bin 
   PUBLIC deps_public 
   PRIVATE settings deps_private
 )
-
 if(ENABLE_LTO_ON_TARGETS)
   set_target_properties(${name}_bin PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
-
 if(DO_INSTALL)
   install(TARGETS ${name}_bin
       RUNTIME DESTINATION \${CMAKE_INSTALL_BINDIR}
@@ -571,8 +586,9 @@ endif()
 
 EOF
     fi
+
     if [[ "$has_tests" == true ]]; then
-      cat <<-EOF >>"${file}"
+      cat <<-EOF >>"$file"
 enable_testing()
 include(CTest)
 if(BUILD_TESTING)
@@ -580,19 +596,18 @@ if(BUILD_TESTING)
 endif()
 
 EOF
-      cat <<-EOF >>"${path}/tests/CMakeLists.txt"
+      mkdir -p "${path}/tests"
+      cat <<-EOF >"${path}/tests/CMakeLists.txt"
 function(add_${name}_test TEST_NAME)
   add_executable(\${TEST_NAME} \${ARGN})
   target_link_libraries(\${TEST_NAME}
-    \${deps}
-    \${settings}
+    deps_public
+    settings
+    deps_private
   )
-
   target_include_directories(\${TEST_NAME} PRIVATE 
-    \${CMOCKA_INCLUDE_DIRS}
     \${CMAKE_CURRENT_SOURCE_DIR}/../src
   )
-
   add_test(NAME \${TEST_NAME} COMMAND \${TEST_NAME})
 endfunction()
 
@@ -602,53 +617,36 @@ EOF
 }
 
 write_configure() {
-  for path in "${!PROJ_INFO[@]}"; do
-    local old_ifs=$IFS
-    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests has_pkg <<<"${PROJ_INFO[$path]}"
-    IFS=$old_ifs
+  for i in "${!PROJ_PATHS[@]}"; do
+    local path="${PROJ_PATHS[$i]}"
+    IFS='|' read -r name is_lib is_bin has_conf has_cc has_cxx has_c has_git has_tests has_pkg <<<"${PROJ_DATA[$i]}"
 
-    if [[ "$has_conf" == true ]]; then
-      [[ $VERBOSE == true ]] && echo "Writing configure script for: $path"
-      local file="${path}/configure"
+    [[ "$has_conf" != true ]] && continue
+    [[ $VERBOSE == true ]] && echo "Writing configure script for: $path"
 
-      # Read options from CMakeLists.txt to generate help
-      local cmake_options=""
-      local cmake_file="${path}/CMakeLists.txt"
-
-      if [[ -f "$cmake_file" ]]; then
-        while IFS= read -r line; do
-          # Match option() commands and extract name, description, default
-          if [[ "$line" =~ option\ *\(([^[:space:]]+)[[:space:]]+\"([^\"]+)\"[[:space:]]+([^[:space:]]+)\) ]]; then
-            local opt_name="${BASH_REMATCH[1]}"
-            local opt_desc="${BASH_REMATCH[2]}"
-            local opt_default="${BASH_REMATCH[3]}"
-            cmake_options+="  -D${opt_name}=[ON|OFF]    ${opt_desc} (default: ${opt_default})"$'\n'
-          elif [[ "$line" =~ option\ *\(([^[:space:]]+)[[:space:]]+\"([^\"]+)\"\) ]]; then
-            local opt_name="${BASH_REMATCH[1]}"
-            local opt_desc="${BASH_REMATCH[2]}"
-            cmake_options+="  -D${opt_name}=[ON|OFF]    ${opt_desc}"$'\n'
-          fi
-        done <"$cmake_file"
-      else
-        # Fallback to default options if CMakeLists.txt doesn't exist yet
-        cmake_options="  -DUSE_CCACHE=[ON|OFF]    Try to use ccache for faster builds (default: OFF)"$'\n'
-        cmake_options+="  -DUSE_LTO=[ON|OFF]       Use linktime optimizations if available (default: ON)"$'\n'
-        cmake_options+="  -DMARCH_NATIVE=[ON|OFF]  Build library optimized for native arch (default: OFF)"$'\n'
-        cmake_options+="  -DDO_INSTALL=[ON|OFF]    Try to install library after it is build (default: OFF)"$'\n'
-
-        # Add library-specific options if it's a library
-        if [[ "$is_lib" == true ]]; then
-          cmake_options+="  -DBUILD_SHARED=[ON|OFF]    Build a shared library for the system (default: ON)"$'\n'
-          cmake_options+="  -DBUILD_STATIC=[ON|OFF]    Build a static library for the system (default: ON)"$'\n'
+    local file="${path}/configure"
+    # Generate help text from CMakeLists.txt options
+    local cmake_options=""
+    if [[ -f "${path}/CMakeLists.txt" ]]; then
+      while IFS= read -r line; do
+        if [[ "$line" =~ option[[:space:]]*\(([^[:space:]]+)[[:space:]]+\"([^\"]+)\"[[:space:]]+([^[:space:]]+)\) ]]; then
+          cmake_options+="  -D${BASH_REMATCH[1]}=[ON|OFF]    ${BASH_REMATCH[2]} (default: ${BASH_REMATCH[3]})"$'\n'
+        elif [[ "$line" =~ option[[:space:]]*\(([^[:space:]]+)[[:space:]]+\"([^\"]+)\"\) ]]; then
+          cmake_options+="  -D${BASH_REMATCH[1]}=[ON|OFF]    ${BASH_REMATCH[2]}"$'\n'
         fi
-      fi
+      done <"${path}/CMakeLists.txt"
+    else
+      # Fallback
+      cmake_options="  -DUSE_CCACHE=[ON|OFF]    Try to use ccache for faster builds (default: OFF)"$'\n'
+      cmake_options+="  -DUSE_LTO=[ON|OFF]       Use linktime optimizations if available (default: ON)"$'\n'
+      cmake_options+="  -DMARCH_NATIVE=[ON|OFF]  Build library optimized for native arch (default: OFF)"$'\n'
+      cmake_options+="  -DDO_INSTALL=[ON|OFF]    Try to install library after it is build (default: OFF)"$'\n'
+      [[ "$is_lib" == true ]] && cmake_options+="  -DBUILD_SHARED=[ON|OFF]    Build a shared library (default: ON)"$'\n'
+      [[ "$is_lib" == true ]] && cmake_options+="  -DBUILD_STATIC=[ON|OFF]    Build a static library (default: ON)"$'\n'
+    fi
 
-      # Build dynamic help text
-      local help_text
-      help_text=$(
-        cat <<-EOF
+    cat <<-EOF >"$file"
 #!/usr/bin/env bash
-
 # Generated configure wrapper for $name
 set -euo pipefail
 
@@ -678,26 +676,32 @@ EOH
 }
 
 if ! command -v cmake &>/dev/null; then
-    echo "Error: cmake is not installed."
+    echo "Error: cmake is not installed." >&2
     exit 1
 fi
 
 while [[ \$# -gt 0 ]]; do
     case \$1 in
         -h|--help)      show_help; exit 0 ;;
-        -b|--build-dir) BUILD_DIR="\$2"; shift 2 ;;
+	-b|--build-dir)
+	  [[ -z "$2" ]] && echo "Error: -b requires an argument" && exit 1
+	  BUILD_DIR="$2"
+	  shift 2
+	  ;;
         -c|--clean)     CLEAN=true; shift ;;
         -g|--generator) GEN="\$2"; shift 2 ;;
         --no-ninja)     GEN="Unix Makefiles"; shift ;;
         --)             shift; CMAKE_EXTRA_ARGS+=("\$@"); break ;;
         -D*)            CMAKE_EXTRA_ARGS+=("\$1"); shift ;;
-        *)              echo "Unknown option: \$1"; show_help; exit 1 ;;
+        *)              echo "Unknown option: \$1" >&2; show_help; exit 1 ;;
     esac
 done
 
-if [[ "\$CLEAN" == true && -d "\$BUILD_DIR" ]]; then
+if [[ "\$CLEAN" == true && -n "\$BUILD_DIR" && "\$BUILD_DIR" != "/" ]]; then
     echo "Cleaning build directory: \$BUILD_DIR"
     rm -rf "\$BUILD_DIR"
+else
+  echo "Refusing to clean dangerous dir"
 fi
 
 if [[ -z "\$GEN" ]] && command -v ninja &>/dev/null; then
@@ -720,13 +724,8 @@ else
     exit 1
 fi
 EOF
-      )
-
-      echo "$help_text" >"$file"
-      chmod +x "$file"
-    fi
+    chmod +x "$file"
   done
-  IFS=$old_ifs
 }
 
 if [[ $# -lt 1 ]]; then
