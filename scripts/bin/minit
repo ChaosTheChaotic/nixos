@@ -67,7 +67,8 @@ print_help() {
   echo ""
   echo "Conf Options:"
   echo "  <path>                   Path to project root"
-  echo "    --add <dep>            Add a dependency to the 'deps' interface"
+  echo "    --add <dep> [--static] [--public|--private]"
+  echo "				   Add a dependency with specified linkage (defaults: bin: public libs: private)"
   echo "    --remove <dep>         Remove a dependency from the 'deps' interface"
 }
 
@@ -208,41 +209,52 @@ parse_conf() {
   local use_pkg=false
   grep -q "find_package(PkgConfig" "$file" && use_pkg=true
 
-  if ! grep -q '@DEPS_START@' "$file" || ! grep -q '@DEPS_END@' "$file"; then
-    fatal "CMakeLists.txt missing dependency markers" "1"
-  fi
+  local default_vis="private"
+  grep -q "add_library(" "$file" && default_vis="public"
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --add)
         local dep="$2"
-	if [[ "$use_pkg" == true ]]; then
-	  check_installed "pkg-config"
-	  if ! pkg-config --exists "$dep"; then
-	    fatal "Dependency '$dep' not found by pkg-config. Install it first." "1"
-	  fi
-	fi
-	if grep -q "PkgConfig::PC_$dep" "$file" || grep -q "    $dep" "$file"; then
-	  echo "Dependency '$dep' already exists."
-	else
-	  if [[ "$use_pkg" == true ]]; then
-	    sedi "/@DEPS_START@/a\\    pkg_check_modules(PC_$dep REQUIRED IMPORTED_TARGET $dep)\\    target_link_libraries(deps INTERFACE PkgConfig::PC_$dep)" "$file"
-	  else
-	    sedi "/@DEPS_START@/a\\    $dep" "$file"
-	  fi
-	  echo "Added '$dep' (PkgConfig: $use_pkg)"
-	fi
-	shift 2
-        ;;
-
-      --remove)
-	local dep="$2"
-        sedi "/pkg_check_modules(PC_$dep/d" "$file"
-        sedi "/PkgConfig::PC_$dep/d" "$file"
-        sedi "/^[[:space:]]*${dep}[[:space:]]*$/d" "$file"
-	echo "Removed $dep from $file"
         shift 2
+        local visibility=$default_vis
+        local static_flag=""
+
+        while [[ "$1" == --* ]]; do
+          case "$1" in
+            --public)  visibility="public"; shift ;;
+            --private) visibility="private"; shift ;;
+            --static)  static_flag="STATIC"; shift ;;
+            *) break ;;
+          esac
+        done
+
+        local target_marker="@DEPS_START_${visibility^^}@"
+
+        if [[ "$use_pkg" == true ]]; then
+          check_installed "pkg-config"
+          if ! pkg-config --exists "$dep"; then
+            fatal "Dependency '$dep' not found by pkg-config. Install it first." "1" [cite: 39, 40]
+          fi
+        fi
+
+        if grep -q "PC_$dep" "$file" || grep -q "target_link_libraries(deps_$visibility INTERFACE $dep" "$file"; then
+          echo "Dependency '$dep' already exists in $visibility."
+        else
+          if [[ "$use_pkg" == true ]]; then
+            sedi "/$target_marker/a\\    pkg_check_modules(PC_$dep REQUIRED $static_flag IMPORTED_TARGET $dep)\\    target_link_libraries(deps_$visibility INTERFACE PkgConfig::PC_$dep)" "$file"
+          else
+            sedi "/$target_marker/a\\    target_link_libraries(deps_$visibility INTERFACE $dep)" "$file"
+          fi
+          echo "Added '$dep' (Visibility: $visibility, Static: ${static_flag:-false})"
+        fi
         ;;
+      --remove)
+        local dep="$2"
+        sedi "/PC_$dep/d" "$file"
+        sedi "/target_link_libraries(deps_.* INTERFACE .*$dep/d" "$file"
+        echo "Removed $dep from $file"
+        shift 2 ;;
       *) shift ;;
     esac
   done
@@ -389,17 +401,25 @@ option(DO_INSTALL "Try to install library after it is build" OFF)
 $( [[ "$has_pkg" == true ]] && echo "find_package(PkgConfig REQUIRED)" )
 
 add_library(settings INTERFACE)
-add_library(deps INTERFACE)
+add_library(deps_public INTERFACE)
+add_library(deps_private INTERFACE)
 
 target_include_directories(settings INTERFACE 
     $<BUILD_INTERFACE:\${CMAKE_CURRENT_SOURCE_DIR}/src/private>
 )
 
-target_link_libraries(deps INTERFACE 
+target_link_libraries(deps_public INTERFACE 
     # The following is needed for the script to be able to remove and add dependencies
     # Do not remove unless you do not plan to use the script again
-    # @DEPS_START@
-    # @DEPS_END@
+    # @DEPS_START_PUBLIC@
+    # @DEPS_END_PUBLIC@
+)
+
+target_link_libraries(deps_private INTERFACE 
+    # The following is needed for the script to be able to remove and add dependencies
+    # Do not remove unless you do not plan to use the script again
+    # @DEPS_START_PRIVATE@
+    # @DEPS_END_PRIVATE@
 )
 
 find_program(CCACHE_PROGRAM ccache)
@@ -473,7 +493,10 @@ option(BUILD_STATIC "Build a static library for the system" ON)
 
 if(BUILD_SHARED)
   add_library(${name} SHARED \${SOURCES})
-  target_link_libraries(${name} PRIVATE settings deps)
+  target_link_libraries(${name} 
+    PUBLIC deps_public 
+    PRIVATE settings deps_private
+  )
   
   target_include_directories(${name} PUBLIC 
       \$<BUILD_INTERFACE:\${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -501,7 +524,10 @@ if(BUILD_STATIC)
   endif()
 
   add_library(\${STATIC_TARGET} STATIC \${SOURCES})
-  target_link_libraries(\${STATIC_TARGET} PRIVATE settings deps)
+  target_link_libraries(${name} 
+    PUBLIC deps_public 
+    PRIVATE settings deps_private
+  )
   target_include_directories(\${STATIC_TARGET} PUBLIC 
       \$<BUILD_INTERFACE:\${CMAKE_CURRENT_SOURCE_DIR}/include>
       \$<INSTALL_INTERFACE:include>
@@ -531,7 +557,10 @@ EOF
     if [[ "$is_bin" == true ]]; then
       cat <<-EOF >>"${file}"
 add_executable(${name}_bin \${SOURCES})
-target_link_libraries(${name}_bin PRIVATE settings deps)
+target_link_libraries(${name}_bin 
+  PUBLIC deps_public 
+  PRIVATE settings deps_private
+)
 
 if(ENABLE_LTO_ON_TARGETS)
   set_target_properties(${name}_bin PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
