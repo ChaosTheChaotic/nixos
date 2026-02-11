@@ -234,26 +234,23 @@ parse_conf() {
         if [[ "$use_pkg" == true ]]; then
           check_installed "pkg-config"
           if ! pkg-config --exists "$dep"; then
-            fatal "Dependency '$dep' not found by pkg-config. Install it first." "1" [cite: 39, 40]
+            fatal "Dependency '$dep' not found by pkg-config. Install it first." "1"
           fi
-        fi
-
-        if grep -q "PC_$dep" "$file" || grep -q "target_link_libraries(deps_$visibility INTERFACE $dep" "$file"; then
-          echo "Dependency '$dep' already exists in $visibility."
+          sedi "/$target_marker/a\\    pkg_check_modules(PC_$dep REQUIRED $static_flag IMPORTED_TARGET $dep)\\    target_link_libraries(deps_$visibility INTERFACE PkgConfig::PC_$dep)" "$file"
         else
-          if [[ "$use_pkg" == true ]]; then
-            sedi "/$target_marker/a\\    pkg_check_modules(PC_$dep REQUIRED $static_flag IMPORTED_TARGET $dep)\\    target_link_libraries(deps_$visibility INTERFACE PkgConfig::PC_$dep)" "$file"
+          if [[ -n "$static_flag" ]]; then
+            sedi "/$target_marker/a\\    target_link_libraries(deps_$visibility INTERFACE -Wl,-Bstatic $dep -Wl,-Bdynamic)" "$file"
           else
             sedi "/$target_marker/a\\    target_link_libraries(deps_$visibility INTERFACE $dep)" "$file"
           fi
-          echo "Added '$dep' (Visibility: $visibility, Static: ${static_flag:-false})"
         fi
+        echo "Added '$dep' (Visibility: $visibility, Static: ${static_flag:-false})"
         ;;
       --remove)
         local dep="$2"
         sedi "/PC_$dep/d" "$file"
         sedi "/target_link_libraries(deps_.* INTERFACE .*$dep/d" "$file"
-        echo "Removed $dep from $file"
+        echo "Removed $dep"
         shift 2 ;;
       *) shift ;;
     esac
