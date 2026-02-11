@@ -1,4 +1,4 @@
-.TH MINIT 1 "1970-1-1" "v1.0" "Custom Scripts Manual"
+.TH MINIT 1 "2026-02-11" "v1.1" "Custom Scripts Manual"
 .SH NAME
 minit \- CMake project initializer and dependency manager
 .SH SYNOPSIS
@@ -6,151 +6,51 @@ minit \- CMake project initializer and dependency manager
 \fIinit\fR|\fIinitialize\fR|\fInew\fR [\fB\-v\fR] \fIpath\fR [\fIpath\-options\fR]
 .br
 .B minit
-\fIconf\fR|\fIconfigure\fR \fIpath\fR [\fB\-\-add\fR \fIdep\fR] [\fB\-\-remove\fR \fIdep\fR]
+\fIconf\fR|\fIconfigure\fR \fIpath\fR [\fB\-\-add\fR \fIdep\fR [\fB\-\-static\fR] [\fB\-\-public\fR|\fB\-\-private\fR]] [\fB\-\-remove\fR \fIdep\fR]
 .br
 .B minit
 \fB\-h\fR|\fB\-\-help\fR
 .SH DESCRIPTION
 .B minit
-is a utility script for initializing and managing CMake projects. It creates
-structured project directories with customizable CMake configurations, handles
-dependency management through a simple interface, and generates configure
-scripts for building.
-.PP
-The script operates in two primary modes:
-.B init
-(create new projects) and
-.B conf
-(manage existing project dependencies).
+is a utility script for initializing and managing CMake projects. It creates structured project directories and handles dependency management through a unified interface.
+
 .SH INIT MODE
-Creates a new CMake project structure at the specified path with configurable
-options.
+Creates a new CMake project structure.
 .TP
-\fB\-v, \-\-verbose\fR
-Enable verbose output during project creation.
-.TP
-\fB\-n, \-\-name \fINAME\fR
-Set a custom project name (defaults to directory name).
-.TP
-\fB\-l, \-\-lib\fR
-Mark the project as a library (enabled by default).
-.TP
-\fB\-b, \-\-no\-bin\fR
-Disable binary/executable generation (enabled by default).
-.TP
-\fB\-c, \-\-config\fR
-Generate a configure script for the project.
-.TP
-\fB\-\-cc\fR
-Generate compile_commands.json for IDE integration.
-.TP
-\fB\-\-cxx\fR
-Enable C++ support in addition to C.
-.TP
-\fB\-\-no\-c\fR
-Disable C language support.
-.TP
-\fB\-\-no\-git\fR
-Skip git repository initialization and .gitignore generation.
-.TP
-\fB\-\-tests\fR
-Enable test framework structure (requires manual testing library setup).
+\fB\-\-pkg\-config\fR
+Enable PkgConfig validation and tracking for all dependencies added to this project.
+
 .SH CONF MODE
 Manages dependencies for an existing CMake project.
 .TP
-\fB\-\-add \fIdep\fR
-Add a dependency to the 'deps' interface in CMakeLists.txt.
-.TP
-\fB\-\-remove \fIdep\fR
-Remove a dependency from the 'deps' interface.
-.SH FILES CREATED
-When initializing a project,
-.B minit
-creates the following directory structure and files:
-.TP
-.I CMakeLists.txt
-Main CMake configuration with customizable settings.
-.TP
-.I configure
-Optional build configuration script (if \fB\-c\fR specified).
-.TP
-.I src/private/
-Source directory with private headers subdirectory.
-.TP
-.I include/
-Public headers directory (for libraries).
-.TP
-.I tests/
-Test directory (if \fB\-\-tests\fR specified).
-.TP
-.I .gitignore
-Git ignore file (if git enabled).
-.SH CMake OPTIONS
-The generated CMakeLists.txt includes several configurable options:
-.TP
-.B USE_CCACHE
-Enable ccache for faster builds.
-.TP
-.B USE_LTO
-Enable link-time optimization.
-.TP
-.B MARCH_NATIVE
-Optimize for native architecture.
-.TP
-.B DO_INSTALL
-Enable installation targets.
-.TP
-.B BUILD_SHARED/BUILD_STATIC
-Control library type (for library projects).
+\fB\-\-add \fIdep\fR [\fB\-\-static\fR] [\fB\-\-public\fR|\fB\-\-private\fR]
+Add a dependency to the project.
+.RS
+.IP \(bu 4
+\fB\-\-static\fR: Forces static linking. If PkgConfig is used, it adds the \fBSTATIC\fR flag to the module check. If not, it wraps the dependency in linker-specific static flags.
+.IP \(bu 4
+\fB\-\-public\fR: Links the dependency to the \fBdeps_public\fR interface. These are visible to external projects linking against this library. (Default for libraries) .
+.IP \(bu 4
+\fB\-\-private\fR: Links the dependency to the \fBdeps_private\fR interface. These are hidden from external projects. (Default for binaries) .
+.RE
+
 .SH DEPENDENCY MANAGEMENT
-Dependencies are managed through the
-.B deps
-interface target in CMakeLists.txt. Use the
-.B conf
-mode to add or remove dependencies between the
-.B @DEPS_START@
-and
-.B @DEPS_END@
-markers.
+Dependencies are managed via two interface targets in \fICMakeLists.txt\fR: \fBdeps_public\fR and \fBdeps_private\fR.
+.PP
+Use \fBconf\fR mode to insert dependencies between the \fB@DEPS_START_PUBLIC@\fR or \fB@DEPS_START_PRIVATE@\fR markers.
+
 .SH EXAMPLES
-Create a new library project with tests:
+Add a public, static dependency using PkgConfig:
 .RS
 .PP
-minit init ./myproject \-\-tests
+minit conf ./myproject \-\-add zlib \-\-static \-\-public
 .RE
 .PP
-Create a binary-only project with custom name:
+Add a private dependency to a binary:
 .RS
 .PP
-minit init ./project \-\-no\-lib \-\-name "myapp"
+minit conf ./myproject \-\-add "Threads::Threads" \-\-private
 .RE
-.PP
-Add a dependency to existing project:
-.RS
-.PP
-minit conf ./myproject \-\-add "Threads::Threads"
-.RE
-.PP
-Remove a dependency:
-.RS
-.PP
-minit conf ./myproject \-\-remove "Threads::Threads"
-.RE
+
 .SH NOTES
-The script uses portable sed commands compatible with both GNU sed and BSD sed.
-.PP
-When enabling tests, users must manually configure their preferred testing
-library (e.g., Google Test, Catch2) in the generated tests/CMakeLists.txt.
-.PP
-The configure script generated by \fB\-c\fR supports common CMake generators
-(Ninja, Unix Makefiles) and provides a convenient wrapper for build
-configuration.
-.SH SEE ALSO
-.MR cmake 1 ,
-.MR sed 1 ,
-.MR git 1 ,
-.MR bash 1
-.SH BUGS
-The script assumes a POSIX-compliant environment with bash 4.0 or newer.
-Multiple path handling in init mode may have unexpected behavior with complex
-option combinations.
+The script uses portable \fBsed\fR commands compatible with GNU and BSD versions. For static linking without PkgConfig, the script utilizes \fB\-Wl,\-Bstatic\fR flags which may be toolchain-dependent.
