@@ -282,6 +282,11 @@ parse_conf() {
         # Escape the dependency name for safe use in the regex
         dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
 
+        # Check the dep exists
+        if ! grep -qE "PC_${dep_escaped}|target_link_libraries\(deps_(public|private) INTERFACE .*${dep_escaped}" "$file"; then
+          fatal "Dependency $dep not found in the CMakeLists" 2
+        fi
+
         # Remove pkg_check_modules line (escapes literal parentheses)
         sedi "/^[[:space:]]*pkg_check_modules[[:space:]]*\([^)]*PC_${dep_escaped}[^)]*\)/d" "$file"
 
