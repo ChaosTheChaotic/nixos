@@ -221,7 +221,7 @@ parse_conf() {
 
         # Escape dependency name for safe use in regex
         local dep_escaped
-        dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
+	dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
 
         # Check if it is actually a pkg-config lib, or just a system lib
         local is_pkg_lib=false
@@ -282,12 +282,11 @@ parse_conf() {
         dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
 
         # Remove pkg_check_modules line (looser regex for indentation)
-        sedi "/^[[:space:]]*pkg_check_modules[[:space:]]*\(.*PC_${dep_escaped}[[:space:]]*\)/d" "$file"
+	sedi "/^[[:space:]]*pkg_check_modules[[:space:]]*\([^)]*PC_${dep_escaped}[^)]*\)/d" "$file"
 
         # Remove target_link_libraries lines for both public and private
-        # Handles indentation (^[[:space:]]*) and trailing content
-        sedi "/^[[:space:]]*target_link_libraries(deps_public INTERFACE PkgConfig::PC_${dep_escaped})/d" "$file"
-        sedi "/^[[:space:]]*target_link_libraries(deps_private INTERFACE PkgConfig::PC_${dep_escaped})/d" "$file"
+	sedi "/^[[:space:]]*target_link_libraries\(deps_(public|private) INTERFACE PkgConfig::PC_${dep_escaped}\)/d" "$file"
+	sedi "/^[[:space:]]*target_link_libraries\(deps_(public|private) INTERFACE ${dep_escaped}\)/d" "$file"
         
         # Remove plain linking variants
         sedi "/^[[:space:]]*target_link_libraries(deps_public INTERFACE ${dep_escaped})/d" "$file"
