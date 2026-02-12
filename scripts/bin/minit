@@ -221,14 +221,14 @@ parse_conf() {
 
         # Escape dependency name for safe use in regex
         local dep_escaped
-	dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
+        dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
 
         # Check if it is actually a pkg-config lib, or just a system lib
         local is_pkg_lib=false
         if [[ "$use_pkg" == true ]]; then
-           if command -v pkg-config &>/dev/null && pkg-config --exists "$dep"; then
-             is_pkg_lib=true
-           fi
+          if command -v pkg-config &>/dev/null && pkg-config --exists "$dep"; then
+            is_pkg_lib=true
+          fi
         fi
 
         if [[ "$is_pkg_lib" == true ]]; then
@@ -279,22 +279,17 @@ parse_conf() {
         local dep="$2"
         shift 2
         local dep_escaped
+        # Escape the dependency name for safe use in the regex
         dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
 
-        # Remove pkg_check_modules line (looser regex for indentation)
-	sedi "/^[[:space:]]*pkg_check_modules[[:space:]]*\([^)]*PC_${dep_escaped}[^)]*\)/d" "$file"
+        # Remove pkg_check_modules line (escapes literal parentheses)
+        sedi "/^[[:space:]]*pkg_check_modules[[:space:]]*\([^)]*PC_${dep_escaped}[^)]*\)/d" "$file"
 
-        # Remove target_link_libraries lines for both public and private
-	sedi "/^[[:space:]]*target_link_libraries\(deps_(public|private) INTERFACE PkgConfig::PC_${dep_escaped}\)/d" "$file"
-	sedi "/^[[:space:]]*target_link_libraries\(deps_(public|private) INTERFACE ${dep_escaped}\)/d" "$file"
-        
-        # Remove plain linking variants
-        sedi "/^[[:space:]]*target_link_libraries(deps_public INTERFACE ${dep_escaped})/d" "$file"
-        sedi "/^[[:space:]]*target_link_libraries(deps_private INTERFACE ${dep_escaped})/d" "$file"
+        # Remove standard link lines (handles both public/private and PkgConfig targets)
+        sedi "/^[[:space:]]*target_link_libraries\(deps_(public|private) INTERFACE (PkgConfig::PC_)?${dep_escaped}\)/d" "$file"
 
-        # Cleanup static blocks if they exist (simple heuristic)
-        sedi "/target_link_libraries(deps_public INTERFACE .*${dep_escaped}/d" "$file"
-        sedi "/target_link_libraries(deps_private INTERFACE .*${dep_escaped}/d" "$file"
+        # Cleanup static blocks and loose matches (escapes literal parentheses)
+        sedi "/target_link_libraries\(deps_(public|private) INTERFACE .*${dep_escaped}.*\)/d" "$file"
 
         echo "Removed $dep"
         ;;
