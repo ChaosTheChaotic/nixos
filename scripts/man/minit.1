@@ -1,9 +1,9 @@
-.TH MINIT 1 "2026-02-11" "v1.1" "Custom Scripts Manual"
+.TH MINIT 1 "1970-1-1" "v1.0" "Custom Scripts Manual"
 .SH NAME
 minit \- CMake project initializer and dependency manager
 .SH SYNOPSIS
 .B minit
-\fIinit\fR|\fIinitialize\fR|\fInew\fR [\fB\-v\fR] \fIpath\fR [\fIpath\-options\fR]
+\fIinit\fR|\fIinitialize\fR|\fInew\fR [\fB\-v\fR] \fIpath\fR [\fB\-n\fR \fINAME\fR] [\fB\-l\fR] [\fB\-b\fR] [\fB\-c\fR] [\fB\-\-cc\fR] [\fB\-\-cxx\fR] [\fB\-\-no\-c\fR] [\fB\-\-no\-git\fR] [\fB\-\-tests\fR] [\fB\-\-pkg\-config\fR] [\fB\-\-nix\fR]
 .br
 .B minit
 \fIconf\fR|\fIconfigure\fR \fIpath\fR [\fB\-\-add\fR \fIdep\fR [\fB\-\-static\fR] [\fB\-\-public\fR|\fB\-\-private\fR]] [\fB\-\-remove\fR \fIdep\fR]
@@ -12,45 +12,100 @@ minit \- CMake project initializer and dependency manager
 \fB\-h\fR|\fB\-\-help\fR
 .SH DESCRIPTION
 .B minit
-is a utility script for initializing and managing CMake projects. It creates structured project directories and handles dependency management through a unified interface.
-
-.SH INIT MODE
-Creates a new CMake project structure.
+is a utility script for initializing and managing CMake projects. It creates structured project directories, handles dependency management through a unified interface, and optionally supports Nix flake generation.
+.SH INIT OPTIONS
+The following options are available in \fIinit\fR mode:
 .TP
-\fB\-\-pkg\-config\fR
-Enable PkgConfig validation and tracking for all dependencies added to this project.
-
-.SH CONF MODE
-Manages dependencies for an existing CMake project.
+.B \-n, \-\-name \fINAME\fR
+Specify a custom project name. Defaults to the directory name.
 .TP
-\fB\-\-add \fIdep\fR [\fB\-\-static\fR] [\fB\-\-public\fR|\fB\-\-private\fR]
+.B \-l, \-\-lib
+Mark the project as a library. This enables the generation of shared/static targets and an \fIinclude\fR directory.
+.TP
+.B \-b, \-\-no\-bin
+Disable the generation of a binary executable target.
+.TP
+.B \-c, \-\-config
+Generate a \fBconfigure\fR wrapper script. This script provides a standard interface to CMake configuration and build directory management.
+.TP
+.B \-\-cc
+Enable the generation of \fBcompile_commands.json\fR (via \fBCMAKE_EXPORT_COMPILE_COMMANDS\fR).
+.TP
+.B \-\-cxx
+Enable C++ language support (adds CXX to project languages and glob patterns).
+.TP
+.B \-\-no\-c
+Disable C language support.
+.TP
+.B \-\-no\-git
+Do not initialize a git repository or generate \fB.gitignore\fR.
+.TP
+.B \-\-tests
+Enable testing infrastructure. Creates a \fBtests\fR directory, generates a CMake test configuration, and enables CTest.
+.TP
+.B \-\-pkg\-config
+Enable PkgConfig validation. Dependencies added later will be checked via PkgConfig by default.
+.TP
+.B \-\-nix
+Generate \fBflake.nix\fR and \fBpackage.nix\fR files. This allows the project to be built and developed within a Nix environment.
+
+.SH CONF OPTIONS
+The following options are available in \fIconf\fR mode to manage dependencies:
+.TP
+\fB\-\-add \fIdep\fR
 Add a dependency to the project.
 .RS
 .IP \(bu 4
-\fB\-\-static\fR: Forces static linking. If PkgConfig is used, it adds the \fBSTATIC\fR flag to the module check. If not, it wraps the dependency in linker-specific static flags.
+\fB\-\-static\fR: Forces static linking. If PkgConfig is used, it adds the \fBSTATIC\fR flag to the module check. If not, it wraps the dependency in linker-specific static flags (non-MSVC).
 .IP \(bu 4
-\fB\-\-public\fR: Links the dependency to the \fBdeps_public\fR interface. These are visible to external projects linking against this library. (Default for libraries) .
+\fB\-\-public\fR: Links the dependency to the \fBdeps_public\fR interface. (Default for libraries).
 .IP \(bu 4
-\fB\-\-private\fR: Links the dependency to the \fBdeps_private\fR interface. These are hidden from external projects. (Default for binaries) .
+\fB\-\-private\fR: Links the dependency to the \fBdeps_private\fR interface. (Default for binaries).
 .RE
+.TP
+\fB\-\-remove \fIdep\fR
+Remove a dependency from the \fBdeps_public\fR or \fBdeps_private\fR interface and clean up associated PkgConfig checks.
 
 .SH DEPENDENCY MANAGEMENT
 Dependencies are managed via two interface targets in \fICMakeLists.txt\fR: \fBdeps_public\fR and \fBdeps_private\fR.
 .PP
-Use \fBconf\fR mode to insert dependencies between the \fB@DEPS_START_PUBLIC@\fR or \fB@DEPS_START_PRIVATE@\fR markers.
+The \fBconf\fR mode automatically modifies \fICMakeLists.txt\fR using \fBsed\fR to insert:
+.IP 1.
+\fBpkg_check_modules\fR (if PkgConfig is detected/enabled).
+.IP 2.
+\fBtarget_link_libraries\fR for the appropriate interface target.
+.PP
+Manual marker comments (e.g., @DEPS_START@) are not used; the script inserts commands dynamically based on existing file content.
+
+.SH NIX INTEGRATION
+If the project was initialized with \fB\-\-nix\fR (or manually contains a \fBpackage.nix\fR), the \fBconf\fR mode will attempt to keep the Nix expressions in sync.
+.PP
+When adding a dependency via \fB\-\-add\fR:
+.IP \(bu 4
+The script checks if the package exists in \fBnixpkgs\fR (requires \fBnix\fR command).
+.IP \(bu 4
+If found, it adds the package to the \fBbuildInputs\fR list in \fBpackage.nix\fR.
+.PP
+When removing a dependency via \fB\-\-remove\fR, it is removed from \fBpackage.nix\fR.
 
 .SH EXAMPLES
-Add a public, static dependency using PkgConfig:
+Initialize a C++ library with Nix support:
 .RS
 .PP
-minit conf ./myproject \-\-add zlib \-\-static \-\-public
+minit init ./mylib \-\-lib \-\-cxx \-\-nix
 .RE
 .PP
-Add a private dependency to a binary:
+Add a static dependency using PkgConfig:
 .RS
 .PP
-minit conf ./myproject \-\-add "Threads::Threads" \-\-private
+minit conf ./mylib \-\-add zlib \-\-static \-\-public
+.RE
+.PP
+Remove a dependency:
+.RS
+.PP
+minit conf ./mylib \-\-remove zlib
 .RE
 
 .SH NOTES
-The script uses portable \fBsed\fR commands compatible with GNU and BSD versions. For static linking without PkgConfig, the script utilizes \fB\-Wl,\-Bstatic\fR flags which may be toolchain-dependent.
+The script utilizes \fBsed\fR for file manipulation. On macOS/BSD systems, it automatically adjusts for the differences in \fBsed -i\fR syntax.
