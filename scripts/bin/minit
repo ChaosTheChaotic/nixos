@@ -223,10 +223,18 @@ parse_conf() {
         local dep_escaped
         dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
 
+        # Check if it is actually a pkg-config lib, or just a system lib
+        local is_pkg_lib=false
         if [[ "$use_pkg" == true ]]; then
+           if command -v pkg-config &>/dev/null && pkg-config --exists "$dep"; then
+             is_pkg_lib=true
+           fi
+        fi
+
+        if [[ "$is_pkg_lib" == true ]]; then
           # Add pkg_check_modules if not already present
           local pkg_line="pkg_check_modules(PC_${dep} REQUIRED ${static_flag} IMPORTED_TARGET ${dep})"
-          if ! grep -Fxq "$pkg_line" "$file"; then
+          if ! grep -Fq "pkg_check_modules(PC_${dep}" "$file"; then
             # Insert after find_package(PkgConfig) or at the end
             if grep -q "^[[:space:]]*find_package[[:space:]]*([[:space:]]*PkgConfig" "$file"; then
               cp "$file" "$file.tmp"
@@ -240,14 +248,14 @@ parse_conf() {
 
           # Add target_link_libraries for the interface library
           local link_line="target_link_libraries(deps_${visibility} INTERFACE PkgConfig::PC_${dep})"
-          if ! grep -Fxq "$link_line" "$file"; then
+          if ! grep -Fq "PkgConfig::PC_${dep}" "$file"; then
             echo "$link_line" >>"$file"
             echo "Linked $dep (visibility: $visibility)"
           else
             echo "Dependency $dep already linked (skipped)"
           fi
         else
-          # Plain library linking (no pkg-config)
+          # Plain library linking (no pkg-config found, or project doesn't use it)
           local link_line
           if [[ -n "$static_flag" ]]; then
             # Add static linking flags (non‑MSVC only)
@@ -259,7 +267,8 @@ parse_conf() {
             fi
           else
             link_line="target_link_libraries(deps_${visibility} INTERFACE ${dep})"
-            if ! grep -Fxq "$link_line" "$file"; then
+            # We use a looser grep check here to avoid duplicates
+            if ! grep -q "target_link_libraries(deps_${visibility} INTERFACE .*${dep_escaped})" "$file"; then
               echo "$link_line" >>"$file"
               echo "Linked $dep (visibility: $visibility)"
             fi
@@ -272,15 +281,19 @@ parse_conf() {
         local dep_escaped
         dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
 
-        # Remove pkg_check_modules line (if any)
-        sedi "/^pkg_check_modules[[:space:]]*(.*PC_${dep_escaped}[[:space:]]*)/d" "$file"
+        # Remove pkg_check_modules line (looser regex for indentation)
+        sedi "/^[[:space:]]*pkg_check_modules[[:space:]]*\(.*PC_${dep_escaped}[[:space:]]*\)/d" "$file"
 
-        # Remove target_link_libraries lines for both public and private, regardless of visibility
-        sedi "/^target_link_libraries(deps_public INTERFACE PkgConfig::PC_${dep_escaped})\$/d" "$file"
-        sedi "/^target_link_libraries(deps_private INTERFACE PkgConfig::PC_${dep_escaped})\$/d" "$file"
-        sedi "/^target_link_libraries(deps_public INTERFACE ${dep_escaped})\$/d" "$file"
-        sedi "/^target_link_libraries(deps_private INTERFACE ${dep_escaped})\$/d" "$file"
+        # Remove target_link_libraries lines for both public and private
+        # Handles indentation (^[[:space:]]*) and trailing content
+        sedi "/^[[:space:]]*target_link_libraries(deps_public INTERFACE PkgConfig::PC_${dep_escaped})/d" "$file"
+        sedi "/^[[:space:]]*target_link_libraries(deps_private INTERFACE PkgConfig::PC_${dep_escaped})/d" "$file"
+        
+        # Remove plain linking variants
+        sedi "/^[[:space:]]*target_link_libraries(deps_public INTERFACE ${dep_escaped})/d" "$file"
+        sedi "/^[[:space:]]*target_link_libraries(deps_private INTERFACE ${dep_escaped})/d" "$file"
 
+        # Cleanup static blocks if they exist (simple heuristic)
         sedi "/target_link_libraries(deps_public INTERFACE .*${dep_escaped}/d" "$file"
         sedi "/target_link_libraries(deps_private INTERFACE .*${dep_escaped}/d" "$file"
 
