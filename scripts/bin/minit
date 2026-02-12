@@ -223,6 +223,13 @@ parse_conf() {
         local dep_escaped
         dep_escaped=$(printf '%s\n' "$dep" | sed 's:[][\/.^$*&]:\\&:g')
 
+        # Remove pkg_check_modules line
+        sedi "/^[[:space:]]*pkg_check_modules[[:space:]]*\([^)]*PC_${dep_escaped}[^)]*\)/d" "$file"
+        # Remove standard link lines
+        sedi "/^[[:space:]]*target_link_libraries\(deps_(public|private) INTERFACE (PkgConfig::PC_)?${dep_escaped}\)/d" "$file"
+        # Cleanup static blocks and loose matches
+        sedi "/target_link_libraries\(deps_(public|private) INTERFACE .*${dep_escaped}.*\)/d" "$file"
+
         # Check if it is actually a pkg-config lib, or just a system lib
         local is_pkg_lib=false
         if [[ "$use_pkg" == true ]]; then
@@ -756,12 +763,20 @@ case "$MODE" in
     write_configure
     ;;
   conf | configure)
-    if [[ $# -lt 1 ]]; then
-      echo "Error: No path specified for configure mode" >&2
-      print_help
-      exit 1
+    conf_path="."
+
+    if [[ $# -gt 0 && "$1" != -* ]]; then
+      conf_path="$1"
+      shift
     fi
-    parse_conf "$@"
+
+    if [[ ! -f "${conf_path}/CMakeLists.txt" ]]; then
+      echo "Error: No CMakeLists.txt found at '$conf_path'" >&2
+      exit 1
+      fatal "No CMakeLists.txt found at '$conf_path'" 1
+    fi
+
+    parse_conf "$conf_path" "$@"
     ;;
   -h | --help)
     print_help
