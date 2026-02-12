@@ -240,7 +240,11 @@ parse_conf() {
 
         if [[ "$is_pkg_lib" == true ]]; then
           # Add pkg_check_modules if not already present
-          local pkg_line="pkg_check_modules(PC_${dep} REQUIRED ${static_flag} IMPORTED_TARGET ${dep})"
+	  local pkg_args="REQUIRED"
+	  [[ -n "$static_flag" ]] && pkg_args+=" ${static_flag}"
+	  pkg_args+=" IMPORTED_TARGET ${dep}"
+
+	  local pkg_line="pkg_check_modules(PC_${dep} ${pkg_args})"
           if ! grep -Fq "pkg_check_modules(PC_${dep}" "$file"; then
             # Insert after find_package(PkgConfig) or at the end
             if grep -q "^[[:space:]]*find_package[[:space:]]*([[:space:]]*PkgConfig" "$file"; then
