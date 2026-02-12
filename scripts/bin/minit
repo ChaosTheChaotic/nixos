@@ -21,7 +21,7 @@ fi
 
 # Defaults
 VERBOSE=false
-DEFAULT_LIB=true
+DEFAULT_LIB=false
 DEFAULT_BIN=true
 DEFAULT_CONF=false
 DEFAULT_CC=false
