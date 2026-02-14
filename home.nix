@@ -131,6 +131,7 @@
           	  wrapProgram $out/bin/equibop --add-flags "--user-agent-os windows"
           	'';
       }))
+      zig
     ];
     home.stateVersion = "25.11";
 
