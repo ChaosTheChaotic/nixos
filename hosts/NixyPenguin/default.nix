@@ -190,7 +190,7 @@ in
 
   programs.zsh.enable = true;
   environment.shells = with pkgs; [ zsh ];
-  
+
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;

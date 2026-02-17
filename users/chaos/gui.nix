@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   config = {
@@ -13,13 +18,13 @@
         package = pkgs.rose-pine-icon-theme;
       };
     };
-    
+
     services.cliphist = {
       enable = true;
       allowImages = true;
     };
     programs.hyprlock.enable = true;
-    
+
     programs.floorp = {
       enable = true;
       profiles.default = {

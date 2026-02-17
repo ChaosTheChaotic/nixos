@@ -41,7 +41,8 @@
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
     home.file.".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
     home.file.".config/ashell".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/ashell";
-    home.file.".config/lobster".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/lobster";
+    home.file.".config/lobster".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/lobster";
 
     home.packages = with pkgs; [
       # Development
@@ -69,7 +70,8 @@
       cmake-language-server
       lua-language-server
       zig
-      
+      hyprls
+
       # Fonts
       nerd-fonts.fira-code
       nerd-fonts.jetbrains-mono
@@ -86,11 +88,17 @@
       libunwind
       qalculate-qt
       hyprpaper
+      libnotify
+      slurp
+      wl-clipboard
+      playerctl
+      sd
+      grim
 
       # Custom Inputs
       inputs.ashell.packages.${pkgs.stdenv.hostPlatform.system}.default
       inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
-      
+
       (equibop.overrideAttrs (oldAttrs: {
         ESBUILD_BINARY_PATH = "${pkgs.esbuild}/bin/esbuild";
         preBuild = (oldAttrs.preBuild or "") + ''
