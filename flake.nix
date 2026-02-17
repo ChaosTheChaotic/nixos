@@ -32,10 +32,6 @@
       home-manager,
       nur,
       agenix,
-      rose-pine-hyprcursor,
-      lobster,
-      ashell,
-      vicinae,
       ...
     }@inputs:
     let
@@ -47,7 +43,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           nixos-apple-silicon.nixosModules.apple-silicon-support
-          ./configuration.nix
+          ./hosts/NixyPenguin/default.nix
           agenix.nixosModules.default
           {
             environment.systemPackages = [ agenix.packages.${csys}.default ];
@@ -57,7 +53,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.chaos = ./home.nix;
+            home-manager.users.chaos = import ./users/chaos/home.nix;
           }
         ];
       };
