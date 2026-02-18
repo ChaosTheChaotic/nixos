@@ -94,6 +94,7 @@
       playerctl
       sd
       grim
+      yt-dlp
 
       # Custom Inputs
       inputs.ashell.packages.${pkgs.stdenv.hostPlatform.system}.default
