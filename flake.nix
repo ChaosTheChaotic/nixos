@@ -22,15 +22,17 @@
       url = "github:z-shell/F-Sy-H";
       flake = false;
     };
+    adiman = {
+      url = "github:ChaosTheChaotic/Adiman/dev";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     {
-      self,
       nixpkgs,
       nixos-apple-silicon,
       home-manager,
-      nur,
       agenix,
       ...
     }@inputs:
