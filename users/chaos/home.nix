@@ -92,7 +92,6 @@
       # Custom Inputs
       inputs.ashell.packages.${pkgs.stdenv.hostPlatform.system}.default
       inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
-      inputs.adiman.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       (equibop.overrideAttrs (oldAttrs: {
         ESBUILD_BINARY_PATH = "${pkgs.esbuild}/bin/esbuild";
