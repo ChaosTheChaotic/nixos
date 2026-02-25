@@ -32,6 +32,7 @@
             sqlite.out
             libunwind.out
           ];
+        XDG_DATA_DIRS = "${config.apps}:$XDG_DATA_DIRS";
         UTIL_SCRIPT_DIR = "${SCRIPT_BASE_DIR}/util";
         BIN_SCRIPT_DIR = "${SCRIPT_BASE_DIR}/bin";
         WALLPAPER_DIR = "${NIX_HOME_BASE}/wallpapers";

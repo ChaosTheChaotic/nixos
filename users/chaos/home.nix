@@ -21,6 +21,13 @@
       example = "${toString ../../config}";
       description = "Location of dotfiles";
     };
+    apps = lib.mkOption {
+      type = lib.types.path;
+      apply = toString;
+      default = "${toString ../../apps}";
+      example = "${toString ../../apps}";
+      description = "Location of applications";
+    };
   };
 
   config = {
