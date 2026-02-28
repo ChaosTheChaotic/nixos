@@ -68,12 +68,29 @@ PanelWindow {
     Rectangle {
       id: titlePill
       Layout.fillHeight: true
-      Layout.preferredWidth: (Hyprland.activeToplevel !== null) ? Math.max(80, Math.min(titleText.contentWidth + 40, 500)) : 0 
+
+      readonly property bool hasWindow: {
+	const toplevel = Hyprland.activeToplevel;
+	if (!toplevel) return false;
+
+	let found = false;
+	for (const window of Hyprland.focusedWorkspace.toplevels.values) {
+	  if (window === toplevel) {
+	    found = true;
+	    break;
+	  }
+	}
+	if (!found) return false;
+
+	return toplevel.workspace?.id === Hyprland.focusedWorkspace?.id;
+      }
+
+      Layout.preferredWidth: hasWindow ? Math.max(80, Math.min(titleText.contentWidth + 40, 500)) : 0 
       color: "#CC232136" 
       radius: 10
       clip: true
 
-      opacity: (Hyprland.activeToplevel !== null) ? 1 : 0 
+      opacity: hasWindow ? 1 : 0 
 
       Behavior on opacity { NumberAnimation { duration: 200 } }
       Behavior on Layout.preferredWidth { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } } 
@@ -87,20 +104,25 @@ PanelWindow {
 	elide: Text.ElideRight
 	horizontalAlignment: Text.AlignHCenter
 
-	property string fullTitle: Hyprland.activeToplevel ? Hyprland.activeToplevel.title : "" 
+	property string fullTitle: titlePill.hasWindow ? Hyprland.activeToplevel.title : ""
 	property int step: 0
-	text: fullTitle.substring(0, step)
+
+	text: (parent.hasWindow && fullTitle !== "") ? fullTitle.substring(0, step) : "" 
 
 	onFullTitleChanged: {
 	  step = 0;
-	  typingTimer.restart();
+	  if (fullTitle !== "") {
+	    typingTimer.restart(); 
+	  } else {
+	    typingTimer.stop(); 
+	  }
 	}
 
 	Timer {
 	  id: typingTimer
-	  interval: 30 //(ms per character)
+	  interval: 30 
 	  repeat: true
-	  running: parent.step < parent.fullTitle.length
+	  running: parent.fullTitle !== "" && parent.step < parent.fullTitle.length
 	  onTriggered: parent.step++
 	}
       }
