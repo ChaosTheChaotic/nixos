@@ -37,7 +37,7 @@
         BIN_SCRIPT_DIR = "${SCRIPT_BASE_DIR}/bin";
         WALLPAPER_DIR = "${NIX_HOME_BASE}/wallpapers";
         NIX_CFG_DIR = "${NIX_HOME_BASE}";
-	QML2_IMPORT_PATH = with pkgs; lib.makeSearchPath "lib/qt-6/qml" [
+	QML_IMPORT_PATH = with pkgs; lib.makeSearchPath "lib/qt-6/qml" [
 	  quickshell
 	  kdePackages.qtdeclarative
 	];

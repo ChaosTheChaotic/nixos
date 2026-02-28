@@ -269,7 +269,7 @@ return {
 	      },
 	      qml = {
 		name = "qmlls",
-		cmd = { "qmlls" },
+		cmd = { "qmlls", "-E" },
 	      },
 	      --kotlin = {
 	      --  name = "kotlin_lsp",

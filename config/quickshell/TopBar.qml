@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -19,173 +21,160 @@ PanelWindow {
     left: 8
     right: 8
   }
-
-  height: 35
+  implicitHeight: 35
   color: "transparent"
 
   RowLayout {
     anchors.fill: parent
     spacing: 12
 
-    // Workspace
+    // Workspaces
     Rectangle {
       Layout.fillHeight: true
       implicitWidth: wsRow.width + 20
-      color: "#232136"
+      color: "#CC232136"
       radius: 10
-      border.color: "#393552"
-      border.width: 2
-
       Row {
         id: wsRow
         anchors.centerIn: parent
         spacing: 8
-
         Repeater {
           model: Hyprland.workspaces
-
           Rectangle {
-            id: workspacePill
+            required property var modelData 
             property bool isActive: Hyprland.focusedWorkspace?.id === modelData.id
-            
             readonly property var cchars: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"]
             property string displayChar: modelData.name <= 10 ? cchars[modelData.name - 1] : modelData.name
-
             width: isActive ? 34 : 24 
             height: 24
             radius: 12
             color: isActive ? "#c4a7e7" : "#6e6a86" 
-
             Behavior on width { NumberAnimation { duration: 250; easing.type: Easing.OutQuint } }
-            Behavior on color { ColorAnimation { duration: 200 } }
-
             Text {
               anchors.centerIn: parent
               text: parent.displayChar
               color: parent.isActive ? "#232136" : "#e0def4"
-              font.bold: true
               font.pixelSize: 12
-            }
-
-            MouseArea {
-              anchors.fill: parent
-              cursorShape: Qt.PointingHandCursor
-              onClicked: modelData.focus() 
+              font.bold: true
             }
           }
         }
       }
     }
 
-    // Window Title
+    Item { Layout.fillWidth: true } // Spacer
+
+    // Window title
     Rectangle {
-      id: titleIsland
+      id: titlePill
       Layout.fillHeight: true
-      Layout.fillWidth: true
-      color: "#232136"
+
+      implicitWidth: Math.max(80, Math.min(titleText.contentWidth + 40, 500))
+
+      color: "#CC232136"
       radius: 10
-      border.color: "#393552"
-      border.width: 2
-      visible: windowTitle.text !== ""
+      visible: Hyprland.activeToplevel !== null
+      clip: true
 
       Text {
-        id: windowTitle
-        anchors.centerIn: parent
-        width: parent.width - 20
-        text: Hyprland.focusedWindow?.title ?? ""
-        horizontalAlignment: Text.AlignHCenter
-        color: "#e0def4"
-        font.pixelSize: 13
-        font.bold: true
-        elide: Text.ElideRight
+	id: titleText
+	anchors.centerIn: parent
+
+	text: Hyprland.activeToplevel?.title || ""
+	color: "#e0def4"
+	font.pixelSize: 13
+
+	width: Math.min(parent.width - 20, 480) 
+
+	elide: Text.ElideRight
+	horizontalAlignment: Text.AlignHCenter
       }
     }
 
-    // Music and Clock
+    Item { Layout.fillWidth: true } // Spacer
+
+    // Music
     Rectangle {
-      Layout.alignment: Qt.AlignRight | Qt.AlignTop
       Layout.fillHeight: true
-      implicitWidth: musicRow.width + 20
-      color: "#232136"
+      implicitWidth: musicRow.width + 24
+      color: "#CC232136"
       radius: 10
-      border.color: "#393552"
-      border.width: 2
 
       RowLayout {
         id: musicRow
         anchors.centerIn: parent
-        spacing: 15
+        spacing: 10
 
-        // Cava
-        Text {
-          id: cavaOutput
-          color: "#ea9a97"
-          font.family: "Monospace" 
-          font.pixelSize: 14
+        Row {
+          id: visualizer
+          spacing: 2
+          Layout.alignment: Qt.AlignVCenter
           
+          property var barValues: [0, 0, 0, 0, 0, 0]
+          
+          Repeater {
+            model: 6
+            Rectangle {
+              width: 3
+	      required property int index
+              // Scale the 0-100 cava value to a 2-16px height
+              height: 2 + (visualizer.barValues[index] / 100) * 14
+              radius: 1
+              color: "#ea9a97"
+              anchors.verticalCenter: parent.verticalCenter
+              
+              Behavior on height {
+                NumberAnimation { duration: 80; easing.type: Easing.OutQuad }
+              }
+            }
+          }
+
           Process {
-            command: ["sh", "-c", "CONF=$(mktemp); printf '[output]\\nmethod = raw\\ndata_format = ascii\\nascii_max_range = 7\\nbars = 8' > $CONF; cava -p $CONF"]
+            command: ["sh", "-c", `printf "[general]\\nbars=6\\nsensitivity=60\\n[output]\\nmethod=raw\\ndata_format=ascii\\nascii_max_range=100\\n[smoothing]\\nintegral=80\\ngravity=100" | cava -p /dev/stdin`]
             running: true
-            stdout: Process.Read
-            onStdoutChanged: cavaOutput.text = stdout.trim()
+            stdout: SplitParser {
+              onRead: data => {
+                const parts = data.trim().split(';');
+                if (parts.length >= 6) {
+                  let newValues = [];
+                  for (let i = 0; i < 6; i++) newValues.push(parseInt(parts[i]) || 0);
+                  visualizer.barValues = newValues;
+                }
+              }
+            }
           }
         }
 
-        // MPRIS
-	Text {
-	  id: mprisText
-	  property var activePlayer: Mpris.players.length > 0 ? Mpris.players[0] : null
-
-	  function updateMetadata() {
-	    if (activePlayer) {
-	      text = "  " + (activePlayer.trackArtist || "Unknown") + 
-	      " - " + (activePlayer.trackTitle || "Unknown");
-	    } else {
-	      text = "  No Media";
-	    }
-	  }
-
-	  Connections {
-	    target: Mpris
-	    function onPlayersChanged() { 
-	      mprisText.updateMetadata(); 
-	    }
-	  }
-
-	  Connections {
-	    target: mprisText.activePlayer
-	    enabled: mprisText.activePlayer !== null
-	    function onTrackArtistChanged() { mprisText.updateMetadata(); }
-	    function onTrackTitleChanged() { mprisText.updateMetadata(); }
-	  }
-
-	  color: "#f6c177"
-	  font.pixelSize: 13
-	  elide: Text.ElideRight
-	  Layout.maximumWidth: titleIsland.visible ? 200 : 400
-
-	  Component.onCompleted: updateMetadata()
-	}
-
-        // Date and Time
+	// Mpris
         Text {
-          id: clock
-          color: "#3e8fb0"
-          font.pixelSize: 13
-          font.bold: true
+          property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
+          text: (activePlayer ? " " : "󰝛 ") + 
+                (activePlayer ? (activePlayer.trackArtist || "Unknown") + " - " + (activePlayer.trackTitle || "Unknown") : "No Media")
           
-          function updateTime() {
-            clock.text = Qt.formatDateTime(new Date(), "ddd d MMM  hh:mm:ss")
-          }
-
-          Timer {
-            interval: 1000
-            running: true
-            repeat: true
-            onTriggered: clock.updateTime()
-          }
-          Component.onCompleted: clock.updateTime()
+          color: "#f6c177"
+          font.pixelSize: 12
+          font.family: "JetBrainsMono Nerd Font"
+          elide: Text.ElideRight
+          Layout.maximumWidth: 180
         }
+      }
+    }
+
+    // Clock
+    Rectangle {
+      Layout.fillHeight: true
+      implicitWidth: clock.contentWidth + 24
+      color: "#CC232136"
+      radius: 10
+      Text {
+        id: clock
+        anchors.centerIn: parent
+        color: "#3e8fb0"
+        font.pixelSize: 13
+        font.bold: true
+        function updateTime() { text = Qt.formatDateTime(new Date(), "ddd d MMM hh:mm:ss") }
+        Timer { interval: 1000; running: true; repeat: true; onTriggered: clock.updateTime() }
+        Component.onCompleted: updateTime()
       }
     }
   }
