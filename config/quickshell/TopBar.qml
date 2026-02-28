@@ -66,28 +66,43 @@ PanelWindow {
 
     // Window title
     Rectangle {
-      id: titlePill 
+      id: titlePill
       Layout.fillHeight: true
-      
       Layout.preferredWidth: (Hyprland.activeToplevel !== null) ? Math.max(80, Math.min(titleText.contentWidth + 40, 500)) : 0 
-      color: "#CC232136"
+      color: "#CC232136" 
       radius: 10
       clip: true
-      
+
       opacity: (Hyprland.activeToplevel !== null) ? 1 : 0 
-      
+
       Behavior on opacity { NumberAnimation { duration: 200 } }
       Behavior on Layout.preferredWidth { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } } 
 
       Text {
-        id: titleText
-        anchors.centerIn: parent
-        text: Hyprland.activeToplevel ? Hyprland.activeToplevel.title : "" 
-        color: "#e0def4"
-        font.pixelSize: 13
-        width: Math.min(parent.width - 20, 480) 
-        elide: Text.ElideRight
-        horizontalAlignment: Text.AlignHCenter
+	id: titleText
+	anchors.centerIn: parent
+	color: "#e0def4" 
+	font.pixelSize: 13
+	width: Math.min(parent.width - 20, 480) 
+	elide: Text.ElideRight
+	horizontalAlignment: Text.AlignHCenter
+
+	property string fullTitle: Hyprland.activeToplevel ? Hyprland.activeToplevel.title : "" 
+	property int step: 0
+	text: fullTitle.substring(0, step)
+
+	onFullTitleChanged: {
+	  step = 0;
+	  typingTimer.restart();
+	}
+
+	Timer {
+	  id: typingTimer
+	  interval: 30 //(ms per character)
+	  repeat: true
+	  running: parent.step < parent.fullTitle.length
+	  onTriggered: parent.step++
+	}
       }
     }
 
@@ -177,7 +192,7 @@ PanelWindow {
         font.pixelSize: 13
         font.bold: true
         function updateTime() { text = Qt.formatDateTime(new Date(), "ddd d MMM hh:mm:ss") }
-        Timer { interval: 1000; running: true; repeat: true; onTriggered: clock.updateTime() } 
+        Timer { interval: 500; running: true; repeat: true; onTriggered: clock.updateTime() } 
         Component.onCompleted: updateTime()
       }
     }
