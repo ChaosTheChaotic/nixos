@@ -31,34 +31,45 @@ PanelWindow {
     // Workspaces
     Rectangle {
       Layout.fillHeight: true
-      implicitWidth: wsRow.width + 20
-      color: "#CC232136"
-      radius: 10
-      Row {
-        id: wsRow
-        anchors.centerIn: parent
-        spacing: 8
-        Repeater {
-          model: Hyprland.workspaces
-          Rectangle {
-            required property var modelData 
-            property bool isActive: Hyprland.focusedWorkspace?.id === modelData.id
-            readonly property var cchars: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"]
-            property string displayChar: modelData.name <= 10 ? cchars[modelData.name - 1] : modelData.name
-            width: isActive ? 34 : 24
-            height: 24
-            radius: 12
-            color: isActive ? "#c4a7e7" : "#6e6a86" 
-            Behavior on width { NumberAnimation { duration: 250; easing.type: Easing.OutQuint } } 
-            Text {
-              anchors.centerIn: parent
-              text: parent.displayChar
-              color: parent.isActive ? "#232136" : "#e0def4" 
-              font.pixelSize: 12
-              font.bold: true
-            }
-          }
-        }
+      // Adjust the base width of the pill here
+      implicitWidth: 200 
+      color: "#CC232136" 
+      radius: 18
+
+      RowLayout {
+	id: wsRow
+	anchors.fill: parent
+	anchors.margins: 4
+	spacing: 2
+
+	Repeater {
+	  model: Hyprland.workspaces
+	  Rectangle {
+	    required property var modelData 
+	    property bool isActive: Hyprland.focusedWorkspace?.id === modelData.id 
+	    readonly property var cchars: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"] 
+	    property string displayChar: modelData.name <= 10 ? cchars[modelData.name - 1] : modelData.name 
+
+	    Layout.fillWidth: true 
+	    Layout.fillHeight: true
+	    radius: 18
+
+	    color: isActive ? "#c4a7e7" : "transparent" 
+
+	    Behavior on color { ColorAnimation { duration: 250; easing.type: Easing.OutQuint } } 
+
+	    Text {
+	      anchors.centerIn: parent
+	      text: parent.displayChar
+	      color: parent.isActive ? "#232136" : "#e0def4" 
+
+	      Behavior on color { ColorAnimation { duration: 250; easing.type: Easing.OutQuint } } 
+
+	      font.pixelSize: 12
+	      font.bold: true
+	    }
+	  }
+	}
       }
     }
 
@@ -87,7 +98,7 @@ PanelWindow {
 
       Layout.preferredWidth: hasWindow ? Math.max(80, Math.min(titleText.contentWidth + 40, 500)) : 0 
       color: "#CC232136" 
-      radius: 10
+      radius: 18
       clip: true
 
       opacity: hasWindow ? 1 : 0 
@@ -139,7 +150,7 @@ PanelWindow {
       Layout.preferredWidth: hasPlayer ? (musicRow.width + 24) : 0 
       
       color: "#CC232136"
-      radius: 10
+      radius: 18
       clip: true
       
       opacity: hasPlayer ? 1 : 0 
@@ -206,7 +217,7 @@ PanelWindow {
       Layout.fillHeight: true
       implicitWidth: clock.contentWidth + 24
       color: "#CC232136"
-      radius: 10
+      radius: 18
       Text {
         id: clock
         anchors.centerIn: parent
