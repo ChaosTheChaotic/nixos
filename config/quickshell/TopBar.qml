@@ -31,8 +31,7 @@ PanelWindow {
     // Workspaces
     Rectangle {
       Layout.fillHeight: true
-      // Adjust the base width of the pill here
-      implicitWidth: 200 
+      implicitWidth: wsRow.implicitWidth + 8 
       color: "#CC232136" 
       radius: 18
 
@@ -50,7 +49,7 @@ PanelWindow {
 	    readonly property var cchars: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"] 
 	    property string displayChar: modelData.name <= 10 ? cchars[modelData.name - 1] : modelData.name 
 
-	    Layout.fillWidth: true 
+	    Layout.preferredWidth: 45 
 	    Layout.fillHeight: true
 	    radius: 18
 
