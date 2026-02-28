@@ -120,7 +120,7 @@ PanelWindow {
 
 	Timer {
 	  id: typingTimer
-	  interval: 30 
+	  interval: 10 
 	  repeat: true
 	  running: parent.fullTitle !== "" && parent.step < parent.fullTitle.length
 	  onTriggered: parent.step++
