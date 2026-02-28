@@ -40,7 +40,7 @@
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
     home.file.".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
-    home.file.".config/ashell".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/ashell";
+    home.file.".config/quickshell".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
     home.file.".config/lobster".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/lobster";
 
@@ -71,6 +71,7 @@
       lua-language-server
       zig
       hyprls
+      kdePackages.qtdeclarative
 
       # Fonts
       nerd-fonts.fira-code
@@ -95,9 +96,9 @@
       sd
       grim
       yt-dlp
+      quickshell
 
       # Custom Inputs
-      inputs.ashell.packages.${pkgs.stdenv.hostPlatform.system}.default
       inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       (equibop.overrideAttrs (oldAttrs: {

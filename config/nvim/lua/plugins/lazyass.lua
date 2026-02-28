@@ -128,6 +128,7 @@ return {
 		    --"cmake",
 		    "jdtls",
 		    "gopls",
+		    --"qmlls",
 		    --"kotlin_lsp",
 		  }
 		  if vim.fn.filereadable("/etc/NIXOS") ~= 1 then
@@ -265,6 +266,10 @@ return {
 	      hyprlang = {
 		name = "hyprls",
 		cmd = { "hyprls" },
+	      },
+	      qml = {
+		name = "qmlls",
+		cmd = { "qmlls" },
 	      },
 	      --kotlin = {
 	      --  name = "kotlin_lsp",
@@ -421,6 +426,7 @@ return {
 					"go",
 					"json",
 					"bash",
+					"qmljs",
 				},
 				highlight = { enable = true },
 				indent = { enable = true },
