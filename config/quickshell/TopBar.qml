@@ -99,6 +99,7 @@ PanelWindow {
       implicitWidth: musicRow.width + 24
       color: "#CC232136"
       radius: 10
+      visible: Mpris.players.values.length > 0
 
       RowLayout {
         id: musicRow
@@ -149,7 +150,7 @@ PanelWindow {
         Text {
           property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
           text: (activePlayer ? " " : "󰝛 ") + 
-                (activePlayer ? (activePlayer.trackArtist || "Unknown") + " - " + (activePlayer.trackTitle || "Unknown") : "No Media")
+                (activePlayer ? (activePlayer.trackTitle || "Unknown") + " - " + (activePlayer.trackArtist || "Unknown") : "No Media")
           
           color: "#f6c177"
           font.pixelSize: 12
