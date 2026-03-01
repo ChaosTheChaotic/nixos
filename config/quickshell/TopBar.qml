@@ -21,7 +21,7 @@ PanelWindow {
     left: 8
     right: 8
   }
-  implicitHeight: 35
+  implicitHeight: 30
   color: "transparent"
 
   RowLayout {
@@ -33,12 +33,11 @@ PanelWindow {
       Layout.fillHeight: true
       implicitWidth: wsRow.implicitWidth + 8 
       color: "#CC232136" 
-      radius: 18
+      radius: root.height / 2
 
       RowLayout {
 	id: wsRow
 	anchors.fill: parent
-	anchors.margins: 4
 	spacing: 2
 
 	Repeater {
@@ -51,7 +50,7 @@ PanelWindow {
 
 	    Layout.preferredWidth: 45 
 	    Layout.fillHeight: true
-	    radius: 18
+	    radius: root.height / 2
 
 	    color: isActive ? "#c4a7e7" : "transparent" 
 
@@ -97,7 +96,7 @@ PanelWindow {
 
       Layout.preferredWidth: hasWindow ? Math.max(80, Math.min(titleText.contentWidth + 40, 500)) : 0 
       color: "#CC232136" 
-      radius: 18
+      radius: root.height / 2
       clip: true
 
       opacity: hasWindow ? 1 : 0 
@@ -149,7 +148,7 @@ PanelWindow {
       Layout.preferredWidth: hasPlayer ? (musicRow.width + 24) : 0 
       
       color: "#CC232136"
-      radius: 18
+      radius: root.height / 2
       clip: true
       
       opacity: hasPlayer ? 1 : 0 
@@ -216,7 +215,7 @@ PanelWindow {
       Layout.fillHeight: true
       implicitWidth: clock.contentWidth + 24
       color: "#CC232136"
-      radius: 18
+      radius: root.height / 2
       Text {
         id: clock
         anchors.centerIn: parent
