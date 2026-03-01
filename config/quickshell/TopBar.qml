@@ -164,7 +164,13 @@ PanelWindow {
       MouseArea {
 	anchors.fill: parent
 	cursorShape: Qt.PointingHandCursor
-	onClicked: musicPopup.visible = !musicPopup.visible
+	onClicked: {
+	  if (!musicPopup.visible) {
+	    musicPopup.visible = true;
+	  } else {
+	    closeTimer.start();
+	  }
+	}
       }
 
       RowLayout {
@@ -237,6 +243,11 @@ PanelWindow {
 	// Inherit the player context from your Mpris check
 	property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null 
 
+	Timer {
+	  id: closeTimer
+	  interval: 250
+	  onTriggered: musicPopup.visible = false
+	}
 	Rectangle {
 	  id: popupContent
 	  implicitWidth: 360
@@ -245,10 +256,12 @@ PanelWindow {
 	  radius: 12
 	  clip: true
 
+	  readonly property bool isClosing: closeTimer.running
+
 	  // Intro animations
-	  opacity: musicPopup.visible ? 1 : 0
-	  scale: musicPopup.visible ? 1 : 0.95
-	  y: musicPopup.visible ? 10 : -20
+	  opacity: (musicPopup.visible && !isClosing) ? 1 : 0
+	  scale: (musicPopup.visible && !isClosing) ? 1 : 0.95
+	  y: (musicPopup.visible && !isClosing) ? 10 : -20
 	  Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 	  Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
 	  Behavior on y { 
