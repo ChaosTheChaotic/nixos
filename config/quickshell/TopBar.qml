@@ -217,7 +217,7 @@ PanelWindow {
           id: musicText
           property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null 
           text: (activePlayer ? " " : "󰝛 ") + 
-                (activePlayer ? (activePlayer.trackArtist || "Unknown") + " - " + (activePlayer.trackTitle || "Unknown") : "")
+                (activePlayer ? (activePlayer.trackTitle || "Unknown") + " - " + (activePlayer.trackArtist || "Unknown") : "")
           color: "#f6c177"
           font.pixelSize: 12
           font.family: "JetBrainsMono Nerd Font"
