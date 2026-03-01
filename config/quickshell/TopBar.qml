@@ -66,6 +66,11 @@ PanelWindow {
 	      font.pixelSize: 12
 	      font.bold: true
 	    }
+	    MouseArea {
+	      anchors.fill: parent
+	      cursorShape: Qt.PointingHandCursor
+	      onClicked: Hyprland.dispatch("workspace " + parent.modelData.id)
+	    }
 	  }
 	}
       }
