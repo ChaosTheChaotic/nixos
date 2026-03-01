@@ -67,6 +67,7 @@
         background_blur = 5;
         cursor_trail = 1;
         font_family = "JetBrains Mono Nerd Font";
+	font_size = 8;
         bold_font = "auto";
         italic_font = "auto";
         bold_italic_font = "auto";
