@@ -17,21 +17,21 @@ PanelWindow {
   }
 
   margins {
-    top: 8
-    left: 8
-    right: 8
+    top: 4
+    left: 4
+    right: 4
   }
-  implicitHeight: 30
+  implicitHeight: 24
   color: "transparent"
 
   RowLayout {
     anchors.fill: parent
-    spacing: 12
+    spacing: 8
 
     // Workspaces
     Rectangle {
       Layout.fillHeight: true
-      implicitWidth: wsRow.implicitWidth + 8 
+      implicitWidth: wsRow.implicitWidth + 4
       color: "#CC232136" 
       radius: root.height / 2
 
@@ -48,7 +48,7 @@ PanelWindow {
 	    readonly property var cchars: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"] 
 	    property string displayChar: modelData.name <= 10 ? cchars[modelData.name - 1] : modelData.name 
 
-	    Layout.preferredWidth: 45 
+	    Layout.preferredWidth: 35 
 	    Layout.fillHeight: true
 	    radius: root.height / 2
 
@@ -63,7 +63,7 @@ PanelWindow {
 
 	      Behavior on color { ColorAnimation { duration: 250; easing.type: Easing.OutQuint } } 
 
-	      font.pixelSize: 12
+	      font.pixelSize: 11
 	      font.bold: true
 	    }
 	    MouseArea {
@@ -113,7 +113,7 @@ PanelWindow {
 	id: titleText
 	anchors.centerIn: parent
 	color: "#e0def4" 
-	font.pixelSize: 13
+	font.pixelSize: 12
 	width: Math.min(parent.width - 20, 480) 
 	elide: Text.ElideRight
 	horizontalAlignment: Text.AlignHCenter
@@ -150,7 +150,7 @@ PanelWindow {
       Layout.fillHeight: true
       
       property bool hasPlayer: Mpris.players.values.length > 0
-      Layout.preferredWidth: hasPlayer ? (musicRow.width + 24) : 0 
+      Layout.preferredWidth: hasPlayer ? (musicRow.width + 16) : 0 
       
       color: "#CC232136"
       radius: root.height / 2
@@ -234,7 +234,7 @@ PanelWindow {
 	  item: musicPill
 	  edges: Edges.Bottom
 	  gravity: Edges.Bottom
-	  margins.top: 16
+	  margins.top: 8
 	}
 
 	implicitWidth: 360
@@ -277,7 +277,7 @@ PanelWindow {
 
 	  RowLayout {
 	    anchors.fill: parent
-	    anchors.margins: 16
+	    anchors.margins: 8
 	    spacing: 16
 
 	    // Album Art
@@ -444,14 +444,14 @@ PanelWindow {
     // Clock
     Rectangle {
       Layout.fillHeight: true
-      implicitWidth: clock.contentWidth + 24
+      implicitWidth: clock.contentWidth + 16
       color: "#CC232136"
       radius: root.height / 2
       Text {
         id: clock
         anchors.centerIn: parent
         color: "#3e8fb0" 
-        font.pixelSize: 13
+        font.pixelSize: 12
         font.bold: true
         function updateTime() { text = Qt.formatDateTime(new Date(), "ddd d MMM hh:mm:ss") }
         Timer { interval: 500; running: true; repeat: true; onTriggered: clock.updateTime() } 
