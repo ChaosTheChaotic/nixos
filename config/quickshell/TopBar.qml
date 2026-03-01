@@ -161,6 +161,12 @@ PanelWindow {
       Behavior on opacity { NumberAnimation { duration: 250 } }
       Behavior on Layout.preferredWidth { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } } 
 
+      MouseArea {
+	anchors.fill: parent
+	cursorShape: Qt.PointingHandCursor
+	onClicked: musicPopup.visible = !musicPopup.visible
+      }
+
       RowLayout {
         id: musicRow
         anchors.centerIn: parent
@@ -212,6 +218,209 @@ PanelWindow {
           elide: Text.ElideRight
           Layout.maximumWidth: 180 
         }
+      }
+      PopupWindow {
+	id: musicPopup
+	visible: false
+	color: "transparent"
+
+	anchor {
+	  item: musicPill
+	  edges: Edges.Bottom
+	  gravity: Edges.Bottom
+	  margins.top: 16
+	}
+
+	implicitWidth: 360
+	implicitHeight: 140
+
+	// Inherit the player context from your Mpris check
+	property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null 
+
+	Rectangle {
+	  id: popupContent
+	  implicitWidth: 360
+	  implicitHeight: 140
+	  color: "#CC232136" 
+	  radius: 12
+	  clip: true
+
+	  // Intro animations
+	  opacity: musicPopup.visible ? 1 : 0
+	  scale: musicPopup.visible ? 1 : 0.95
+	  Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+	  Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+
+	  Timer {
+	    interval: 500
+	    repeat: true
+	    running: musicPopup.visible && musicPopup.activePlayer && musicPopup.activePlayer.playbackState === MprisPlaybackState.Playing
+	    onTriggered: musicPopup.activePlayer.positionChanged()
+	  }
+
+	  RowLayout {
+	    anchors.fill: parent
+	    anchors.margins: 16
+	    spacing: 16
+
+	    // Album Art
+	    Rectangle {
+	      Layout.preferredWidth: 100
+	      Layout.preferredHeight: 100
+	      Layout.alignment: Qt.AlignVCenter
+	      radius: 8
+	      clip: true
+	      color: "#393552" 
+
+	      Image {
+		anchors.fill: parent
+		source: musicPopup.activePlayer ? musicPopup.activePlayer.trackArtUrl : ""
+		fillMode: Image.PreserveAspectCrop
+		asynchronous: true
+	      }
+	    }
+
+	    // Song Info & Controls
+	    ColumnLayout {
+	      Layout.fillWidth: true
+	      Layout.fillHeight: true
+	      spacing: 4
+
+	      Text {
+		text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackTitle || "Unknown Title") : "No Title"
+		color: "#e0def4" 
+		font.pixelSize: 16
+		font.bold: true
+		elide: Text.ElideRight
+		Layout.fillWidth: true
+	      }
+
+	      Text {
+		text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackArtist || "Unknown Artist") : "No Artist"
+		color: "#908caa"
+		font.pixelSize: 13
+		elide: Text.ElideRight
+		Layout.fillWidth: true
+	      }
+
+	      Text {
+		text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackAlbum || "Unknown Album") : "No Album"
+		color: "#6e6a86"
+		font.pixelSize: 12
+		elide: Text.ElideRight
+		Layout.fillWidth: true
+	      }
+
+	      Item { Layout.fillHeight: true } 
+
+	      // Seekbar
+	      RowLayout {
+		Layout.fillWidth: true
+		spacing: 8
+
+		function formatTime(secondsIn) {
+		  if (!secondsIn) return "0:00";
+		  let seconds = Math.floor(secondsIn);
+		  let m = Math.floor(seconds / 60);
+		  let s = seconds % 60;
+		  return m + ":" + (s < 10 ? "0" : "") + s;
+		}
+
+		Text {
+		  text: parent.formatTime(musicPopup.activePlayer ? musicPopup.activePlayer.position : 0)
+		  color: "#908caa"
+		  font.pixelSize: 10
+		}
+
+		Rectangle {
+		  Layout.fillWidth: true
+		  implicitHeight: 4
+		  radius: 2
+		  color: "#393552"
+
+		  Rectangle {
+		    height: parent.height
+		    radius: 2
+		    color: "#c4a7e7" 
+		    width: {
+		      if (!musicPopup.activePlayer || !musicPopup.activePlayer.length) return 0;
+		      return (musicPopup.activePlayer.position / musicPopup.activePlayer.length) * parent.width;
+		    }
+		  }
+		  MouseArea {
+		    anchors.fill: parent
+		    cursorShape: Qt.PointingHandCursor
+		    onClicked: (mouse) => {
+		      if (musicPopup.activePlayer && musicPopup.activePlayer.length) {
+			let clickRatio = mouse.x / width;
+			musicPopup.activePlayer.position = clickRatio * musicPopup.activePlayer.length;
+		      }
+		    }
+		  }
+		}
+
+		Text {
+		  text: parent.formatTime(musicPopup.activePlayer ? musicPopup.activePlayer.length : 0)
+		  color: "#908caa"
+		  font.pixelSize: 10
+		}
+	      }
+
+	      // Playback Controls
+	      RowLayout {
+		Layout.fillWidth: true
+		Layout.alignment: Qt.AlignHCenter
+		spacing: 20
+
+		// Previous
+		Text {
+		  text: "󰒮"
+		  color: prevArea.containsMouse ? "#c4a7e7" : "#e0def4" 
+		  font.family: "JetBrainsMono Nerd Font" 
+		  font.pixelSize: 20
+		  MouseArea {
+		    id: prevArea
+		    anchors.fill: parent
+		    hoverEnabled: true
+		    cursorShape: Qt.PointingHandCursor
+		    onClicked: if (musicPopup.activePlayer) musicPopup.activePlayer.previous()
+		  }
+		}
+
+		// Play / Pause
+		Text {
+		  property bool isPlaying: musicPopup.activePlayer ? musicPopup.activePlayer.playbackState === MprisPlaybackState.Playing : false
+		  text: isPlaying ? "󰏤" : "󰐊"
+		  color: playArea.containsMouse ? "#c4a7e7" : "#e0def4" 
+		  font.family: "JetBrainsMono Nerd Font" 
+		  font.pixelSize: 24
+		  MouseArea {
+		    id: playArea
+		    anchors.fill: parent
+		    hoverEnabled: true
+		    cursorShape: Qt.PointingHandCursor
+		    onClicked: if (musicPopup.activePlayer) musicPopup.activePlayer.togglePlaying()
+		  }
+		}
+
+		// Next
+		Text {
+		  text: "󰒭"
+		  color: nextArea.containsMouse ? "#c4a7e7" : "#e0def4" 
+		  font.family: "JetBrainsMono Nerd Font" 
+		  font.pixelSize: 20
+		  MouseArea {
+		    id: nextArea
+		    anchors.fill: parent
+		    hoverEnabled: true
+		    cursorShape: Qt.PointingHandCursor
+		    onClicked: if (musicPopup.activePlayer) musicPopup.activePlayer.next()
+		  }
+		}
+	      }
+	    }
+	  }
+	}
       }
     }
 
