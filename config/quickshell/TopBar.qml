@@ -232,7 +232,7 @@ PanelWindow {
 	}
 
 	implicitWidth: 360
-	implicitHeight: 140
+	implicitHeight: 160
 
 	// Inherit the player context from your Mpris check
 	property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null 
@@ -248,8 +248,12 @@ PanelWindow {
 	  // Intro animations
 	  opacity: musicPopup.visible ? 1 : 0
 	  scale: musicPopup.visible ? 1 : 0.95
+	  y: musicPopup.visible ? 10 : -20
 	  Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 	  Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+	  Behavior on y { 
+	    NumberAnimation { duration: 250; easing.type: Easing.OutCubic } 
+	  }
 
 	  Timer {
 	    interval: 500
