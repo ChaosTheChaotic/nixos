@@ -96,7 +96,6 @@
       sd
       grim
       yt-dlp
-      quickshell
 
       # Custom Inputs
       inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
@@ -113,5 +112,8 @@
         '';
       }))
     ];
+  programs.quickshell = {
+    enable = true;
+  };
   };
 }
