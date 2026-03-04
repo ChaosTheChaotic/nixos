@@ -29,7 +29,6 @@ in
     unp
     cmake
     ffmpeg
-    upower
     wireguard-tools
     usbutils
     glib-networking
@@ -156,6 +155,10 @@ in
   services.zerotierone = {
     enable = true;
     joinNetworks = [ "8d1c312afa2aad91" ];
+  };
+
+  services.upower = {
+    enable = true;
   };
 
   services.kmscon = {
