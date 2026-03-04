@@ -96,6 +96,8 @@
       sd
       grim
       yt-dlp
+      kdePackages.networkmanager-qt
+      kdePackages.bluez-qt
 
       # Custom Inputs
       inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
@@ -112,8 +114,8 @@
         '';
       }))
     ];
-  programs.quickshell = {
-    enable = true;
-  };
+    programs.quickshell = {
+      enable = true;
+    };
   };
 }
