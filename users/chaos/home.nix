@@ -96,7 +96,6 @@
       sd
       grim
       yt-dlp
-      kdePackages.networkmanager-qt
       kdePackages.bluez-qt
 
       # Custom Inputs

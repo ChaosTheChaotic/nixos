@@ -40,7 +40,6 @@
 	QML_IMPORT_PATH = with pkgs; lib.makeSearchPath "lib/qt-6/qml" [
 	  quickshell
 	  kdePackages.qtdeclarative
-	  kdePackages.networkmanager-qt
 	  kdePackages.bluez-qt
 	];
       };
