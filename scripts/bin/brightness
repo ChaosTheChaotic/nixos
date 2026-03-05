@@ -5,7 +5,7 @@ source "$UTIL_SCRIPT_DIR/nums.sh"
 source "$UTIL_SCRIPT_DIR/err.sh"
 
 step=5
-min_brightness=5
+min_brightness=0
 max_brightness=100
 
 print_help() {
