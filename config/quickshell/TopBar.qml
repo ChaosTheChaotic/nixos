@@ -231,6 +231,14 @@ PanelWindow {
         visible: false
         color: "transparent"
 
+	HyprlandFocusGrab {
+	  active: musicPopup.visible
+	  windows: [musicPopup]
+	  onCleared: {
+	    closeTimer.start()
+	  }
+	}
+
         anchor {
           item: musicPill
           edges: Edges.Bottom
@@ -540,6 +548,14 @@ PanelWindow {
         id: netPopup
         visible: false
         color: "transparent"
+
+	HyprlandFocusGrab {
+	  active: netPopup.visible
+	  windows: [netPopup]
+	  onCleared: {
+	    netCloseTimer.start()
+	  }
+	}
 
         anchor {
           item: netPill
