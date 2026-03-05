@@ -87,9 +87,9 @@ PanelWindow {
 
       readonly property bool hasWindow: {
         const toplevel = Hyprland.activeToplevel;
-        if (!toplevel) return false;
+        if (!toplevel || !Hyprland.focusedWorkspace) return false;
         let found = false;
-        for (const window of Hyprland.focusedWorkspace.toplevels.values) {
+	for (const window of Hyprland.focusedWorkspace.toplevels?.values ?? []) {
           if (window === toplevel) {
             found = true;
             break;
@@ -119,7 +119,7 @@ PanelWindow {
         elide: Text.ElideRight
         horizontalAlignment: Text.AlignHCenter
 
-        property string fullTitle: titlePill.hasWindow ? Hyprland.activeToplevel.title : ""
+	property string fullTitle: (titlePill.hasWindow && Hyprland.activeToplevel) ? Hyprland.activeToplevel.title : ""
         property int step: 0
 
         text: (parent.hasWindow && fullTitle !== "") ? fullTitle.substring(0, step) : "" 
