@@ -1088,7 +1088,7 @@ PanelWindow {
 	  }
 	}
 
-        // Bluetooth Component
+	// Bluetooth Component
 	Component {
 	  id: bluetoothComponent
 
@@ -1100,16 +1100,41 @@ PanelWindow {
 	      id: bluetoothModel
 	    }
 
+	    // Sorts the model without destroying elements to prevent UI flickering
+	    function sortModel() {
+	      let insertIdx = 0;
+
+	      // Move paired and connected devices to the very top
+	      for (let i = 0; i < bluetoothModel.count; ++i) {
+		if (bluetoothModel.get(i).paired && bluetoothModel.get(i).connected) {
+		  if (i > insertIdx) {
+		    bluetoothModel.move(i, insertIdx, 1);
+		  }
+		  insertIdx++;
+		}
+	      }
+
+	      // Move paired (but disconnected) devices next
+	      for (let i = insertIdx; i < bluetoothModel.count; ++i) {
+		if (bluetoothModel.get(i).paired && !bluetoothModel.get(i).connected) {
+		  if (i > insertIdx) {
+		    bluetoothModel.move(i, insertIdx, 1);
+		  }
+		  insertIdx++;
+		}
+	      }
+	    }
+
 	    function addDevice(device) {
 	      // Ignore devices without names to keep the list clean
 	      if (!device.name) return;
-
 	      bluetoothModel.append({
 		address: device.address,
 		name: device.name,
 		connected: device.connected,
 		paired: device.paired
 	      });
+	      sortModel();
 	    }
 
 	    function updateDevice(device) {
@@ -1121,6 +1146,7 @@ PanelWindow {
 		    connected: device.connected,
 		    paired: device.paired
 		  });
+		  sortModel();
 		  break;
 		}
 	      }
@@ -1174,6 +1200,10 @@ PanelWindow {
 	      model: bluetoothModel
 	      spacing: 6
 	      clip: true
+
+	      // Enables smooth visual transitions when items are moved by sortModel()
+	      add: Transition { NumberAnimation { properties: "y"; duration: 200 } }
+	      move: Transition { NumberAnimation { properties: "y"; duration: 200 } }
 
 	      delegate: Rectangle {
 		required property var model
