@@ -730,7 +730,7 @@ PanelWindow {
           }
         }
 
-        // Wi‑Fi Component
+	// Wi‑Fi Component
 	Component {
 	  id: wifiComponent
 
@@ -748,6 +748,46 @@ PanelWindow {
 	    // Set of SSIDs that have a saved connection profile
 	    property var savedSsids: new Set()
 
+	    // Sorts the model: Active > Known > Others
+	    function sortWifiModel() {
+	      let insertIdx = 0;
+
+	      // Move Active connection to the top
+	      for (let i = 0; i < wifiModel.count; ++i) {
+		if (wifiModel.get(i).active) {
+		  if (i > insertIdx) wifiModel.move(i, insertIdx, 1);
+		  insertIdx++;
+		}
+	      }
+
+	      // Move Known (saved) networks next
+	      for (let i = insertIdx; i < wifiModel.count; ++i) {
+		if (wifiModel.get(i).isKnown && !wifiModel.get(i).active) {
+		  if (i > insertIdx) wifiModel.move(i, insertIdx, 1);
+		  insertIdx++;
+		}
+	      }
+	    }
+
+	    // Updates existing entry or adds new one to prevent flickering and duplicates
+	    function addOrUpdateWifi(ssid, security, signal, active) {
+	      let found = false;
+	      let isKnown = wifiRoot.savedSsids.has(ssid);
+
+	      for (let i = 0; i < wifiModel.count; i++) {
+		if (wifiModel.get(i).ssid === ssid) {
+		  wifiModel.set(i, { ssid, security, signal, active, isKnown, seen: true });
+		  found = true;
+		  break;
+		}
+	      }
+
+	      if (!found) {
+		wifiModel.append({ ssid, security, signal, active, isKnown, seen: true });
+	      }
+	      sortWifiModel();
+	    }
+
 	    // Timer to refresh both scan and saved connections
 	    Timer {
 	      interval: 5000
@@ -763,7 +803,6 @@ PanelWindow {
 	      }
 	    }
 
-	    // Fetch saved Wi‑Fi connections from nmcli
 	    function fetchSavedConnections() {
 	      savedConnsProc.running = true;
 	    }
@@ -780,19 +819,19 @@ PanelWindow {
 	      }
 	      onRunningChanged: {
 		if (!running) {
-		  // After fetching, update the model's isKnown flags
 		  for (let i = 0; i < wifiModel.count; i++) {
 		    let ssid = wifiModel.get(i).ssid;
 		    let known = wifiRoot.savedSsids.has(ssid);
 		    wifiModel.setProperty(i, "isKnown", known);
 		  }
+		  sortWifiModel();
 		}
 	      }
 	    }
 
-	    // Scan for available networks
 	    function updateWifiList() {
-	      wifiModel.clear();
+	      // Mark all current items as not seen to identify stale networks later
+	      for (let i = 0; i < wifiModel.count; i++) wifiModel.setProperty(i, "seen", false);
 	      wifiListProc.running = true;
 	    }
 
@@ -808,20 +847,21 @@ PanelWindow {
 		    const security = parts[1] === "" ? "--" : parts[1];
 		    const signal = parseInt(parts[2]) || 0;
 		    const active = parts[3] === "yes";
-		    // isKnown will be set later by fetchSavedConnections
-		    wifiModel.append({ ssid, security, signal, active, isKnown: false });
+		    wifiRoot.addOrUpdateWifi(ssid, security, signal, active);
 		  }
 		}
 	      }
 	      onRunningChanged: {
 		if (!running) {
-		  // After scan, refresh saved connections (which will update isKnown)
+		  // Remove any networks that were not found in the latest scan
+		  for (let i = wifiModel.count - 1; i >= 0; i--) {
+		    if (!wifiModel.get(i).seen) wifiModel.remove(i);
+		  }
 		  wifiRoot.fetchSavedConnections();
 		}
 	      }
 	    }
 
-	    // Get Wi‑Fi interface name for disconnection
 	    property string wifiInterface: ""
 	    Process {
 	      id: ifaceProc
@@ -840,6 +880,10 @@ PanelWindow {
 	      clip: true
 	      visible: !wifiRoot.passwordVisible
 
+	      // Smooth transitions when networks change order
+	      add: Transition { NumberAnimation { properties: "y"; duration: 200 } }
+	      move: Transition { NumberAnimation { properties: "y"; duration: 200 } }
+
 	      delegate: Rectangle {
 		required property var model
 		width: ListView.view.width
@@ -854,7 +898,6 @@ PanelWindow {
 		  anchors.rightMargin: 10
 		  spacing: 8
 
-		  // Signal strength icon
 		  Text {
 		    text: {
 		      if (model.signal >= 80) return "󰤨"
@@ -868,7 +911,6 @@ PanelWindow {
 		    font.pixelSize: 14
 		  }
 
-		  // SSID
 		  Text {
 		    text: model.ssid || "<hidden>"
 		    color: "#e0def4"
@@ -878,40 +920,25 @@ PanelWindow {
 		    Layout.fillWidth: true
 		  }
 
-		  // Security / known status
 		  Row {
 		    spacing: 4
-		    // Lock/unlock icon for security
 		    Text {
 		      text: {
 			if (model.security === "--") return ""
 			else if (model.isKnown) return ""
 			else return ""
 		      }
-		      color: {
-			if (model.security === "--") return "#9ccfd8"
-			else if (!model.isKnown) return "#eb6f92"
-			else return "transparent"
-		      }
+		      color: (model.security === "--") ? "#9ccfd8" : "#eb6f92"
 		      font.family: "JetBrainsMono Nerd Font"
 		      font.pixelSize: 12
 		      visible: text !== ""
 		    }
-		    // Known indicator (checkmark for known networks, even if secured)
 		    Text {
-		      text: model.isKnown ? "" : ""
+		      text: (model.isKnown || model.active) ? "" : ""
 		      color: "#9ccfd8"
 		      font.family: "JetBrainsMono Nerd Font"
 		      font.pixelSize: 14
-		      visible: model.isKnown
-		    }
-		    // Connected checkmark (if active)
-		    Text {
-		      text: model.active ? "" : ""
-		      color: "#9ccfd8"
-		      font.family: "JetBrainsMono Nerd Font"
-		      font.pixelSize: 14
-		      visible: model.active && !model.isKnown // avoid duplicate if both known and active
+		      visible: (model.isKnown || model.active)
 		    }
 		  }
 		}
@@ -923,17 +950,11 @@ PanelWindow {
 		  cursorShape: Qt.PointingHandCursor
 		  onClicked: {
 		    if (model.active) {
-		      // Disconnect from current Wi‑Fi
 		      if (wifiRoot.wifiInterface) {
 			disconnectProc.command = ["nmcli", "device", "disconnect", wifiRoot.wifiInterface];
 			disconnectProc.running = true;
 		      }
-		    } else if (model.security === "--") {
-		      // Open network – connect directly
-		      connectProc.command = ["nmcli", "device", "wifi", "connect", model.ssid];
-		      connectProc.running = true;
 		    } else {
-		      // Secured network – attempt direct connection
 		      wifiRoot.lastAttemptSsid = model.ssid;
 		      wifiRoot.lastAttemptSecurity = model.security;
 		      connectProc.command = ["nmcli", "device", "wifi", "connect", model.ssid];
@@ -944,42 +965,25 @@ PanelWindow {
 	      }
 	    }
 
-	    // Disconnect process
 	    Process {
 	      id: disconnectProc
-	      onRunningChanged: {
-		if (!running) {
-		  wifiRoot.updateWifiList();
-		  wifiRoot.fetchSavedConnections();
-		}
-	      }
+	      onRunningChanged: if (!running) wifiRoot.updateWifiList();
 	    }
 
-	    // Connect process (for known/open networks)
 	    Process {
 	      id: connectProc
-
-	      onRunningChanged: {
-		if (!running) {
-		  wifiRoot.updateWifiList();
-		  wifiRoot.fetchSavedConnections();
-		}
-	      }
-
+	      onRunningChanged: if (!running) wifiRoot.updateWifiList();
 	      onExited: (exitCode) => {
 		if (exitCode !== 0 && wifiRoot.lastAttemptSecurity && wifiRoot.lastAttemptSecurity !== "--") {
-		  // Connection failed for a secured network – show password dialog
 		  wifiRoot.passwordVisible = true;
 		  wifiRoot.pendingSsid = wifiRoot.lastAttemptSsid;
 		  wifiRoot.pendingSecurity = wifiRoot.lastAttemptSecurity;
 		}
-		// Reset last attempt properties
 		wifiRoot.lastAttemptSsid = "";
 		wifiRoot.lastAttemptSecurity = "";
 	      }
 	    }
 
-	    // Password overlay (unchanged)
 	    Rectangle {
 	      anchors.fill: parent
 	      color: "#CC232136"
@@ -1034,21 +1038,11 @@ PanelWindow {
 		    implicitHeight: 28
 		    radius: 6
 		    color: "#eb6f92"
-
-		    Text {
-		      anchors.centerIn: parent
-		      text: "Cancel"
-		      color: "#e0def4"
-		      font.pixelSize: 12
-		    }
-
+		    Text { anchors.centerIn: parent; text: "Cancel"; color: "#e0def4"; font.pixelSize: 12 }
 		    MouseArea {
 		      anchors.fill: parent
 		      cursorShape: Qt.PointingHandCursor
-		      onClicked: {
-			wifiRoot.passwordVisible = false
-			passwordInput.text = ""
-		      }
+		      onClicked: { wifiRoot.passwordVisible = false; passwordInput.text = ""; }
 		    }
 		  }
 
@@ -1057,15 +1051,7 @@ PanelWindow {
 		    implicitHeight: 28
 		    radius: 6
 		    color: "#9ccfd8"
-
-		    Text {
-		      anchors.centerIn: parent
-		      text: "Connect"
-		      color: "#232136"
-		      font.pixelSize: 12
-		      font.bold: true
-		    }
-
+		    Text { anchors.centerIn: parent; text: "Connect"; color: "#232136"; font.pixelSize: 12; font.bold: true }
 		    MouseArea {
 		      anchors.fill: parent
 		      cursorShape: Qt.PointingHandCursor
@@ -1076,7 +1062,6 @@ PanelWindow {
 	      }
 	    }
 
-	    // Connect with password (for unknown secured networks)
 	    function connectWithPassword() {
 	      if (pendingSsid && passwordInput.text) {
 		connectProc.command = ["nmcli", "device", "wifi", "connect", pendingSsid, "password", passwordInput.text];
@@ -1102,6 +1087,7 @@ PanelWindow {
 
 	    // Sorts the model without destroying elements to prevent UI flickering
 	    function sortModel() {
+	      if (!bluetoothModel) return;
 	      let insertIdx = 0;
 
 	      // Move paired and connected devices to the very top
@@ -1126,6 +1112,7 @@ PanelWindow {
 	    }
 
 	    function addDevice(device) {
+	      if (!bluetoothModel || !device.name) return;
 	      // Ignore devices without names to keep the list clean
 	      if (!device.name) return;
 	      bluetoothModel.append({
@@ -1162,23 +1149,19 @@ PanelWindow {
 	    }
 
 	    // Initial population and signal connections
-	    Component.onCompleted: {
-	      // Add all existing devices (both paired and unpaired)
-	      for (const device of BluezQt.Manager.devices) {
-		addDevice(device);
+	    Connections {
+	      target: BluezQt.Manager
+
+	      function onDeviceAdded(device) { 
+		bluetoothRoot.addDevice(device); 
 	      }
 
-	      // Connect to BluezQt signals
-	      BluezQt.Manager.deviceAdded.connect(device => {
-		addDevice(device);
-	      });
+	      function onDeviceRemoved(device) { 
+		if (bluetoothModel) bluetoothRoot.removeDevice(device.address); 
+	      }
 
-	      BluezQt.Manager.deviceRemoved.connect(device => {
-		removeDevice(device.address);
-	      });
-
-	      BluezQt.Manager.deviceChanged.connect(device => {
-		// Check if already in model
+	      function onDeviceChanged(device) {
+		if (!bluetoothModel) return;
 		let found = false;
 		for (let i = 0; i < bluetoothModel.count; ++i) {
 		  if (bluetoothModel.get(i).address === device.address) {
@@ -1186,12 +1169,15 @@ PanelWindow {
 		    break;
 		  }
 		}
-		if (found) {
-		  updateDevice(device);
-		} else {
-		  addDevice(device);
-		}
-	      });
+		if (found) bluetoothRoot.updateDevice(device);
+		else bluetoothRoot.addDevice(device);
+	      }
+	    }
+
+	    Component.onCompleted: {
+	      for (const device of BluezQt.Manager.devices) {
+		addDevice(device);
+	      }
 	    }
 
 	    // List view for Bluetooth devices
