@@ -1279,7 +1279,8 @@ PanelWindow {
 		      if (dev.address === model.address) {
 			if (!model.paired) {
 			  // Pair unknown device
-			  dev.pair();
+			  dev.trusted = true;
+			  dev.connectToDevice();
 			} else {
 			  // Connect/Disconnect paired device
 			  if (model.connected) {
