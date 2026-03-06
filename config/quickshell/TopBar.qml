@@ -1095,19 +1095,21 @@ PanelWindow {
 	  Item {
 	    id: bluetoothRoot
 
-	    // ListModel with roles for address, name, connected status
+	    // ListModel with roles for address, name, connected status, and paired status
 	    ListModel {
 	      id: bluetoothModel
 	    }
 
 	    function addDevice(device) {
-	      if (device.paired) {
-		bluetoothModel.append({
-		  address: device.address,
-		  name: device.name,
-		  connected: device.connected
-		});
-	      }
+	      // Ignore devices without names to keep the list clean
+	      if (!device.name) return;
+
+	      bluetoothModel.append({
+		address: device.address,
+		name: device.name,
+		connected: device.connected,
+		paired: device.paired
+	      });
 	    }
 
 	    function updateDevice(device) {
@@ -1116,7 +1118,8 @@ PanelWindow {
 		  bluetoothModel.set(i, {
 		    address: device.address,
 		    name: device.name,
-		    connected: device.connected
+		    connected: device.connected,
+		    paired: device.paired
 		  });
 		  break;
 		}
@@ -1134,14 +1137,14 @@ PanelWindow {
 
 	    // Initial population and signal connections
 	    Component.onCompleted: {
-	      // Add all existing paired devices
+	      // Add all existing devices (both paired and unpaired)
 	      for (const device of BluezQt.Manager.devices) {
 		addDevice(device);
 	      }
 
 	      // Connect to BluezQt signals
 	      BluezQt.Manager.deviceAdded.connect(device => {
-		if (device.paired) addDevice(device);
+		addDevice(device);
 	      });
 
 	      BluezQt.Manager.deviceRemoved.connect(device => {
@@ -1149,24 +1152,18 @@ PanelWindow {
 	      });
 
 	      BluezQt.Manager.deviceChanged.connect(device => {
-		// If the device is paired, update or add it; otherwise ensure it's removed
-		if (device.paired) {
-		  // Check if already in model
-		  let found = false;
-		  for (let i = 0; i < bluetoothModel.count; ++i) {
-		    if (bluetoothModel.get(i).address === device.address) {
-		      found = true;
-		      break;
-		    }
+		// Check if already in model
+		let found = false;
+		for (let i = 0; i < bluetoothModel.count; ++i) {
+		  if (bluetoothModel.get(i).address === device.address) {
+		    found = true;
+		    break;
 		  }
-		  if (found) {
-		    updateDevice(device);
-		  } else {
-		    addDevice(device);
-		  }
+		}
+		if (found) {
+		  updateDevice(device);
 		} else {
-		  // If not paired, remove from model
-		  removeDevice(device.address);
+		  addDevice(device);
 		}
 	      });
 	    }
@@ -1195,7 +1192,7 @@ PanelWindow {
 		  // Bluetooth icon
 		  Text {
 		    text: "󰂱"
-		    color: model.connected ? "#9ccfd8" : "#e0def4"
+		    color: model.connected ? "#9ccfd8" : (model.paired ? "#e0def4" : "#6e6a86")
 		    font.family: "JetBrainsMono Nerd Font"
 		    font.pixelSize: 14
 		  }
@@ -1203,56 +1200,101 @@ PanelWindow {
 		  // Device name
 		  Text {
 		    text: model.name
-		    color: "#e0def4"
+		    color: model.paired ? "#e0def4" : "#908caa"
 		    font.pixelSize: 13
 		    font.bold: model.connected
 		    elide: Text.ElideRight
 		    Layout.fillWidth: true
 		  }
 
-		  // Status indicator (connected / not connected)
+		  // Status indicator (connected / not connected / link)
 		  Text {
-		    text: model.connected ? "" : "󰌑"
+		    text: model.paired ? (model.connected ? "" : "") : ""
 		    color: model.connected ? "#9ccfd8" : "#c4a7e7"
 		    font.family: "JetBrainsMono Nerd Font"
 		    font.pixelSize: 14
+		  }
+
+		  // Unpair Button (only visible for paired devices)
+		  Rectangle {
+		    visible: model.paired
+		    implicitWidth: 24
+		    implicitHeight: 24
+		    radius: 4
+		    color: unpairMouse.containsMouse ? "#eb6f92" : "transparent"
+
+		    Text {
+		      anchors.centerIn: parent
+		      text: "󰆴" // Trash icon for unpair
+		      color: unpairMouse.containsMouse ? "#232136" : "#eb6f92"
+		      font.family: "JetBrainsMono Nerd Font"
+		      font.pixelSize: 14
+		    }
+
+		    MouseArea {
+		      id: unpairMouse
+		      anchors.fill: parent
+		      hoverEnabled: true
+		      cursorShape: Qt.PointingHandCursor
+		      onClicked: {
+			const devices = BluezQt.Manager.devices;
+			for (const dev of devices) {
+			  if (dev.address === model.address) {
+			    if (BluezQt.Manager.usableAdapter) {
+			      BluezQt.Manager.usableAdapter.removeDevice(dev);
+			    }
+			    break;
+			  }
+			}
+		      }
+		    }
 		  }
 		}
 
 		MouseArea {
 		  id: mouseArea
 		  anchors.fill: parent
+		  anchors.rightMargin: model.paired ? 32 : 0 // Prevent overlap with unpair button
 		  hoverEnabled: true
 		  cursorShape: Qt.PointingHandCursor
 		  onClicked: {
-		    // Toggle connection using BluezQt
 		    const devices = BluezQt.Manager.devices;
 		    for (const dev of devices) {
 		      if (dev.address === model.address) {
-			if (model.connected) {
-			  dev.disconnectFromDevice();
+			if (!model.paired) {
+			  // Pair unknown device
+			  dev.pair();
 			} else {
-			  dev.connectToDevice();
+			  // Connect/Disconnect paired device
+			  if (model.connected) {
+			    dev.disconnectFromDevice();
+			  } else {
+			    dev.connectToDevice();
+			  }
 			}
 			break;
 		      }
 		    }
-		    updateBluetoothList()
 		  }
 		}
 	      }
 	    }
 
 	    function updateBluetoothList() {
+	      // Trigger Discovery on refresh
+	      const adapter = BluezQt.Manager.usableAdapter;
+	      if (adapter) {
+		if (adapter.discovering) {
+		  adapter.stopDiscovery();
+		} else {
+		  adapter.startDiscovery();
+		}
+	      }
+
+	      // Re-populate list
 	      bluetoothModel.clear();
 	      for (const device of BluezQt.Manager.devices) {
-		if (device.paired) {
-		  bluetoothModel.append({
-		    address: device.address,
-		    name: device.name,
-		    connected: device.connected
-		  });
-		}
+		addDevice(device);
 	      }
 	    }
 	  }
