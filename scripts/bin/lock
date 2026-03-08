@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$NIX_CFG_DIR/check_installed.sh"
+source "$UTIL_SCRIPT_DIR/check_installed.sh"
 
 check_installed "hyprlock"
 

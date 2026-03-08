@@ -25,7 +25,6 @@ PanelWindow {
   }
   implicitHeight: 24
   color: "transparent"
-  visible: Hyprland.focusedWorkspace ? !Hyprland.focusedWorkspace.hasFullscreen : true
 
   RowLayout {
     anchors.fill: parent
@@ -1582,7 +1581,7 @@ PanelWindow {
 		implicitWidth: 40; implicitHeight: 40; radius: 20; color: pwrLkMa.containsMouse ? "#9ccfd8" : "#393552"
 		Behavior on color { ColorAnimation { duration: 150 } }
 		Text { anchors.centerIn: parent; text: ""; color: pwrLkMa.containsMouse ? "#232136" : "#9ccfd8"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 18; Behavior on color { ColorAnimation { duration: 150 } } }
-		MouseArea { id: pwrLkMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { sysPopup.visible = false; Hyprland.dispatch("exec loginctl lock-session") } }
+		MouseArea { id: pwrLkMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { sysPopup.visible = false; Hyprland.dispatch("lock") } }
 	      }
 	      // Exit Hyprland
 	      Rectangle {
