@@ -25,6 +25,7 @@ PanelWindow {
   }
   implicitHeight: 24
   color: "transparent"
+  visible: Hyprland.focusedWorkspace ? !Hyprland.focusedWorkspace.hasFullscreen : true
 
   RowLayout {
     anchors.fill: parent
@@ -494,241 +495,246 @@ PanelWindow {
       radius: root.height / 2
 
       MouseArea {
-        anchors.fill: parent
-        cursorShape: Qt.PointingHandCursor
-        onClicked: {
-          if (!netPopup.visible) {
-            netPopup.visible = true;
-          } else {
-            netCloseTimer.start();
-          }
-        }
+	anchors.fill: parent
+	cursorShape: Qt.PointingHandCursor
+	onClicked: {
+	  if (!netPopup.visible) {
+	    netPopup.visible = true;
+	  } else {
+	    netCloseTimer.start();
+	  }
+	}
       }
 
       RowLayout {
-        id: netRow
-        anchors.centerIn: parent
-        spacing: 8
+	id: netRow
+	anchors.centerIn: parent
+	spacing: 8
 
-        // Wi‑Fi status icon (polled)
-        Text {
-          id: wifiText
-          property bool isWifiOn: false
-          text: isWifiOn ? "󰖩" : "󰖪"
-          color: isWifiOn ? "#9ccfd8" : "#6e6a86"
-          font.family: "JetBrainsMono Nerd Font"
-          font.pixelSize: 14
+	// Wi‑Fi status icon (polled sadly cuz i gave up)
+	Text {
+	  id: wifiText
+	  property bool isWifiOn: false
+	  text: isWifiOn ? "󰖩" : "󰖪"
+	  color: isWifiOn ? "#9ccfd8" : "#6e6a86"
+	  font.family: "JetBrainsMono Nerd Font"
+	  font.pixelSize: 14
 
-          Timer {
-            interval: 2000
-            running: true
-            repeat: true
-            onTriggered: wifiStatusProc.running = true
-          }
+	  Behavior on color { ColorAnimation { duration: 250; easing.type: Easing.OutCubic } }
 
-          Process {
-            id: wifiStatusProc
-            command: ["nmcli", "radio", "wifi"]
-            stdout: SplitParser {
-              onRead: data => wifiText.isWifiOn = data.trim() === "enabled"
-            }
-          }
-          Component.onCompleted: wifiStatusProc.running = true
-        }
+	  Timer {
+	    interval: 2000
+	    running: true
+	    repeat: true
+	    onTriggered: wifiStatusProc.running = true
+	  }
 
-        // Bluetooth status icon (from BluezQt)
-        Text {
-          text: BluezQt.Manager.bluetoothOperational ? "󰂯" : "󰂲"
-          color: BluezQt.Manager.bluetoothOperational ? "#c4a7e7" : "#6e6a86"
-          font.family: "JetBrainsMono Nerd Font"
-          font.pixelSize: 14
-        }
+	  Process {
+	    id: wifiStatusProc
+	    command: ["nmcli", "radio", "wifi"]
+	    stdout: SplitParser {
+	      onRead: data => wifiText.isWifiOn = data.trim() === "enabled"
+	    }
+	  }
+	  Component.onCompleted: wifiStatusProc.running = true
+	}
+
+	// Bluetooth status icon
+	Text {
+	  text: BluezQt.Manager.bluetoothOperational ? "󰂯" : "󰂲"
+	  color: BluezQt.Manager.bluetoothOperational ? "#c4a7e7" : "#6e6a86"
+	  font.family: "JetBrainsMono Nerd Font"
+	  font.pixelSize: 14
+
+	  Behavior on color { ColorAnimation { duration: 250; easing.type: Easing.OutCubic } }
+	}
       }
 
       PopupWindow {
-        id: netPopup
-        visible: false
-        color: "transparent"
+	id: netPopup
+	visible: false
+	color: "transparent"
 
-        HyprlandFocusGrab {
-          active: netPopup.visible
-          windows: [netPopup]
-          onCleared: netCloseTimer.start()
-        }
+	HyprlandFocusGrab {
+	  active: netPopup.visible
+	  windows: [netPopup]
+	  onCleared: netCloseTimer.start()
+	}
 
-        anchor {
-          item: netPill
-          edges: Edges.Bottom
-          gravity: Edges.Bottom
-          margins.top: 8
-        }
+	anchor {
+	  item: netPill
+	  edges: Edges.Bottom
+	  gravity: Edges.Bottom
+	  margins.top: 8
+	}
 
-        implicitWidth: 420
-        implicitHeight: 500
+	implicitWidth: 420
+	implicitHeight: 500
 
-        Timer {
-          id: netCloseTimer
-          interval: 250
-          onTriggered: netPopup.visible = false
-        }
+	Timer {
+	  id: netCloseTimer
+	  interval: 250
+	  onTriggered: netPopup.visible = false
+	}
 
-        // Active tab
-        property string activeTab: "wifi"
+	// Active tab
+	property string activeTab: "wifi"
 
-        Rectangle {
-          id: netPopupContent
-          anchors.fill: parent
-          color: "#CC232136"
-          radius: 12
-          clip: true
+	Rectangle {
+	  id: netPopupContent
+	  anchors.fill: parent
+	  color: "#CC232136"
+	  radius: 12
+	  clip: true
 
-          readonly property bool isClosing: netCloseTimer.running
+	  readonly property bool isClosing: netCloseTimer.running
 
-          opacity: (netPopup.visible && !isClosing) ? 1 : 0
-          scale: (netPopup.visible && !isClosing) ? 1 : 0.95
-          y: (netPopup.visible && !isClosing) ? 10 : -20
+	  opacity: (netPopup.visible && !isClosing) ? 1 : 0
+	  scale: (netPopup.visible && !isClosing) ? 1 : 0.95
+	  y: (netPopup.visible && !isClosing) ? 10 : -20
 
-          Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
-          Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
-          Behavior on y { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
+	  Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+	  Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+	  Behavior on y { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
 
-          ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: 12
-            spacing: 12
+	  ColumnLayout {
+	    anchors.fill: parent
+	    anchors.margins: 12
+	    spacing: 12
 
-            // Tab bar with icons and refresh button
-            RowLayout {
-              Layout.fillWidth: true
-              spacing: 8
+	    // Animated Icon-Only Tab Bar
+	    RowLayout {
+	      Layout.fillWidth: true
+	      spacing: 8
 
-              // Wi‑Fi tab
-              Rectangle {
-                Layout.fillWidth: true
-                implicitHeight: 32
-                radius: 8
-                color: netPopup.activeTab === "wifi" ? "#c4a7e7" : "#393552"
-                Behavior on color { ColorAnimation { duration: 150 } }
+	      // Segmented Control Switcher
+	      Rectangle {
+		Layout.fillWidth: true
+		implicitHeight: 36
+		radius: 18
+		color: "#393552"
 
-                RowLayout {
-                  anchors.centerIn: parent
-                  spacing: 4
+		RowLayout {
+		  anchors.fill: parent
+		  spacing: 4
 
-                  Text {
-                    text: "󰖩"
-                    color: netPopup.activeTab === "wifi" ? "#232136" : "#e0def4"
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 14
-                  }
-                  Text {
-                    text: "Wi‑Fi"
-                    color: netPopup.activeTab === "wifi" ? "#232136" : "#e0def4"
-                    font.bold: true
-                    font.pixelSize: 13
-                  }
-                }
+		  // Wi‑Fi Icon Tab
+		  Rectangle {
+		    Layout.fillWidth: true
+		    Layout.fillHeight: true
+		    radius: 18
+		    color: netPopup.activeTab === "wifi" ? "#c4a7e7" : "transparent"
+		    Behavior on color { ColorAnimation { duration: 250; easing.type: Easing.OutCubic } }
 
-                MouseArea {
-                  anchors.fill: parent
-                  cursorShape: Qt.PointingHandCursor
-                  onClicked: netPopup.activeTab = "wifi"
-                }
-              }
+		    Text {
+		      anchors.centerIn: parent
+		      text: "󰖩"
+		      color: netPopup.activeTab === "wifi" ? "#232136" : "#e0def4"
+		      font.family: "JetBrainsMono Nerd Font"
+		      font.pixelSize: 16
+		      Behavior on color { ColorAnimation { duration: 250 } }
+		    }
 
-              // Bluetooth tab
-              Rectangle {
-                Layout.fillWidth: true
-                implicitHeight: 32
-                radius: 8
-                color: netPopup.activeTab === "bluetooth" ? "#c4a7e7" : "#393552"
-                Behavior on color { ColorAnimation { duration: 150 } }
+		    MouseArea {
+		      anchors.fill: parent
+		      cursorShape: Qt.PointingHandCursor
+		      onClicked: netPopup.activeTab = "wifi"
+		    }
+		  }
 
-                RowLayout {
-                  anchors.centerIn: parent
-                  spacing: 4
+		  // Bluetooth Icon Tab
+		  Rectangle {
+		    Layout.fillWidth: true
+		    Layout.fillHeight: true
+		    radius: 18
+		    color: netPopup.activeTab === "bluetooth" ? "#c4a7e7" : "transparent"
+		    Behavior on color { ColorAnimation { duration: 250; easing.type: Easing.OutCubic } }
 
-                  Text {
-                    text: "󰂯"
-                    color: netPopup.activeTab === "bluetooth" ? "#232136" : "#e0def4"
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 14
-                  }
-                  Text {
-                    text: "Bluetooth"
-                    color: netPopup.activeTab === "bluetooth" ? "#232136" : "#e0def4"
-                    font.bold: true
-                    font.pixelSize: 13
-                  }
-                }
+		    Text {
+		      anchors.centerIn: parent
+		      text: "󰂯"
+		      color: netPopup.activeTab === "bluetooth" ? "#232136" : "#e0def4"
+		      font.family: "JetBrainsMono Nerd Font"
+		      font.pixelSize: 16
+		      Behavior on color { ColorAnimation { duration: 250 } }
+		    }
 
-                MouseArea {
-                  anchors.fill: parent
-                  cursorShape: Qt.PointingHandCursor
-                  onClicked: netPopup.activeTab = "bluetooth"
-                }
-              }
+		    MouseArea {
+		      anchors.fill: parent
+		      cursorShape: Qt.PointingHandCursor
+		      onClicked: netPopup.activeTab = "bluetooth"
+		    }
+		  }
+		}
+	      }
 
-              // Refresh button
-              Rectangle {
-                implicitWidth: 32
-                implicitHeight: 32
-                radius: 8
-                color: refreshMouse.containsMouse ? "#403d4d" : "transparent"
-                Behavior on color { ColorAnimation { duration: 100 } }
+	      // Animated Refresh button
+	      Rectangle {
+		implicitWidth: 36
+		implicitHeight: 36
+		radius: 18
+		color: refreshMouse.containsMouse ? "#403d4d" : "transparent"
+		Behavior on color { ColorAnimation { duration: 150 } }
 
-                Text {
-                  anchors.centerIn: parent
-                  text: ""
-                  color: "#e0def4"
-                  font.family: "JetBrainsMono Nerd Font"
-                  font.pixelSize: 16
-                }
+		Text {
+		  anchors.centerIn: parent
+		  text: ""
+		  color: "#e0def4"
+		  font.family: "JetBrainsMono Nerd Font"
+		  font.pixelSize: 16
 
-                MouseArea {
-                  id: refreshMouse
-                  anchors.fill: parent
-                  hoverEnabled: true
-                  cursorShape: Qt.PointingHandCursor
-                  onClicked: {
-                    if (netPopup.activeTab === "wifi") {
-                      // Trigger a Wi‑Fi rescan and update list
-                      scanProc.running = true;
-                    } else {
-                      // Just refresh Bluetooth list
-                      if (tabLoader.item && tabLoader.item.updateBluetoothList)
-                        tabLoader.item.updateBluetoothList();
-                    }
-                  }
-                }
+		  // Spin animation while scanning
+		  RotationAnimation on rotation {
+		    loops: Animation.Infinite
+		    from: 0
+		    to: 360
+		    duration: 1000
+		    running: (netPopup.activeTab === "wifi" && scanProc.running) || 
+		    (netPopup.activeTab === "bluetooth" && BluezQt.Manager.usableAdapter && BluezQt.Manager.usableAdapter.discovering)
+		  }
+		}
 
-                // Background rescan process for Wi‑Fi
-                Process {
-                  id: scanProc
-                  command: ["nmcli", "device", "wifi", "rescan"]
-                  onRunningChanged: {
-                    if (!running) {
-                      // After rescan completes, update the list
-                      if (tabLoader.item && tabLoader.item.updateWifiList)
-                        tabLoader.item.updateWifiList();
-                    }
-                  }
-                }
-              }
-            }
+		MouseArea {
+		  id: refreshMouse
+		  anchors.fill: parent
+		  hoverEnabled: true
+		  cursorShape: Qt.PointingHandCursor
+		  onClicked: {
+		    if (netPopup.activeTab === "wifi") {
+		      scanProc.running = true;
+		    } else {
+		      if (tabLoader.item && tabLoader.item.updateBluetoothList)
+		      tabLoader.item.updateBluetoothList();
+		    }
+		  }
+		}
 
-            // Content area (handled by Loader)
-            Item {
-              Layout.fillWidth: true
-              Layout.fillHeight: true
+		Process {
+		  id: scanProc
+		  command: ["nmcli", "device", "wifi", "rescan"]
+		  onRunningChanged: {
+		    if (!running) {
+		      if (tabLoader.item && tabLoader.item.updateWifiList)
+		      tabLoader.item.updateWifiList();
+		    }
+		  }
+		}
+	      }
+	    }
 
-              Loader {
-                id: tabLoader
-                anchors.fill: parent
-                sourceComponent: netPopup.activeTab === "wifi" ? wifiComponent : bluetoothComponent
-              }
-            }
-          }
-        }
+	    // Content area
+	    Item {
+	      Layout.fillWidth: true
+	      Layout.fillHeight: true
+
+	      Loader {
+		id: tabLoader
+		anchors.fill: parent
+		sourceComponent: netPopup.activeTab === "wifi" ? wifiComponent : bluetoothComponent
+	      }
+	    }
+	  }
+	}
 
 	// Wi‑Fi Component
 	Component {
@@ -744,23 +750,16 @@ PanelWindow {
 	    property string pendingSecurity: ""
 	    property string lastAttemptSsid: ""
 	    property string lastAttemptSecurity: ""
-
-	    // Set of SSIDs that have a saved connection profile
 	    property var savedSsids: new Set()
 
-	    // Sorts the model: Active > Known > Others
 	    function sortWifiModel() {
 	      let insertIdx = 0;
-
-	      // Move Active connection to the top
 	      for (let i = 0; i < wifiModel.count; ++i) {
 		if (wifiModel.get(i).active) {
 		  if (i > insertIdx) wifiModel.move(i, insertIdx, 1);
 		  insertIdx++;
 		}
 	      }
-
-	      // Move Known (saved) networks next
 	      for (let i = insertIdx; i < wifiModel.count; ++i) {
 		if (wifiModel.get(i).isKnown && !wifiModel.get(i).active) {
 		  if (i > insertIdx) wifiModel.move(i, insertIdx, 1);
@@ -769,7 +768,6 @@ PanelWindow {
 	      }
 	    }
 
-	    // Updates existing entry or adds new one to prevent flickering and duplicates
 	    function addOrUpdateWifi(ssid, security, signal, active) {
 	      let found = false;
 	      let isKnown = wifiRoot.savedSsids.has(ssid);
@@ -788,7 +786,6 @@ PanelWindow {
 	      sortWifiModel();
 	    }
 
-	    // Timer to refresh both scan and saved connections
 	    Timer {
 	      interval: 5000
 	      running: netPopup.visible && netPopup.activeTab === "wifi"
@@ -824,13 +821,12 @@ PanelWindow {
 		    let known = wifiRoot.savedSsids.has(ssid);
 		    wifiModel.setProperty(i, "isKnown", known);
 		  }
-		  sortWifiModel();
+		  wifiRoot.sortWifiModel();
 		}
 	      }
 	    }
 
 	    function updateWifiList() {
-	      // Mark all current items as not seen to identify stale networks later
 	      for (let i = 0; i < wifiModel.count; i++) wifiModel.setProperty(i, "seen", false);
 	      wifiListProc.running = true;
 	    }
@@ -853,7 +849,6 @@ PanelWindow {
 	      }
 	      onRunningChanged: {
 		if (!running) {
-		  // Remove any networks that were not found in the latest scan
 		  for (let i = wifiModel.count - 1; i >= 0; i--) {
 		    if (!wifiModel.get(i).seen) wifiModel.remove(i);
 		  }
@@ -880,9 +875,8 @@ PanelWindow {
 	      clip: true
 	      visible: !wifiRoot.passwordVisible
 
-	      // Smooth transitions when networks change order
-	      add: Transition { NumberAnimation { properties: "y"; duration: 200 } }
-	      move: Transition { NumberAnimation { properties: "y"; duration: 200 } }
+	      add: Transition { NumberAnimation { properties: "y"; duration: 250; easing.type: Easing.OutCubic } }
+	      move: Transition { NumberAnimation { properties: "y"; duration: 250; easing.type: Easing.OutCubic } }
 
 	      delegate: Rectangle {
 		required property var model
@@ -890,7 +884,7 @@ PanelWindow {
 		implicitHeight: 40
 		radius: 8
 		color: mouseArea.containsMouse ? "#403d4d" : "transparent"
-		Behavior on color { ColorAnimation { duration: 100 } }
+		Behavior on color { ColorAnimation { duration: 150 } }
 
 		RowLayout {
 		  anchors.fill: parent
@@ -984,42 +978,47 @@ PanelWindow {
 	      }
 	    }
 
+	    // Animated Password Screen
 	    Rectangle {
 	      anchors.fill: parent
 	      color: "#CC232136"
 	      radius: 8
 	      visible: wifiRoot.passwordVisible
 	      opacity: visible ? 1 : 0
-	      Behavior on opacity { NumberAnimation { duration: 200 } }
+	      scale: visible ? 1 : 0.95
+	      Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+	      Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
 	      z: 1
 
 	      ColumnLayout {
 		anchors.centerIn: parent
 		width: parent.width - 40
-		spacing: 12
+		spacing: 16
 
 		Text {
-		  text: "Connect to " + wifiRoot.pendingSsid
+		  text: wifiRoot.pendingSsid
 		  color: "#e0def4"
-		  font.pixelSize: 14
+		  font.pixelSize: 16
 		  font.bold: true
 		  elide: Text.ElideRight
+		  horizontalAlignment: Text.AlignHCenter
 		  Layout.fillWidth: true
 		}
 
 		Rectangle {
 		  Layout.fillWidth: true
-		  implicitHeight: 30
+		  implicitHeight: 36
 		  color: "#393552"
-		  radius: 6
+		  radius: 18
 		  border.width: 1
-		  border.color: "#6e6a86"
+		  border.color: passwordInput.focus ? "#c4a7e7" : "transparent"
+		  Behavior on border.color { ColorAnimation { duration: 150 } }
 
 		  TextInput {
 		    id: passwordInput
 		    anchors.fill: parent
-		    anchors.leftMargin: 8
-		    anchors.rightMargin: 8
+		    anchors.leftMargin: 12
+		    anchors.rightMargin: 12
 		    verticalAlignment: TextInput.AlignVCenter
 		    color: "#e0def4"
 		    font.pixelSize: 13
@@ -1029,31 +1028,55 @@ PanelWindow {
 		  }
 		}
 
+		// Icon-based Connect/Cancel Buttons
 		RowLayout {
 		  Layout.alignment: Qt.AlignHCenter
-		  spacing: 20
+		  spacing: 24
 
 		  Rectangle {
-		    implicitWidth: 80
-		    implicitHeight: 28
-		    radius: 6
-		    color: "#eb6f92"
-		    Text { anchors.centerIn: parent; text: "Cancel"; color: "#e0def4"; font.pixelSize: 12 }
+		    implicitWidth: 44
+		    implicitHeight: 44
+		    radius: 22
+		    color: cancelMouse.containsMouse ? "#eb6f92" : "#393552"
+		    Behavior on color { ColorAnimation { duration: 150 } }
+
+		    Text { 
+		      anchors.centerIn: parent
+		      text: "" 
+		      color: cancelMouse.containsMouse ? "#232136" : "#eb6f92"
+		      font.pixelSize: 20
+		      font.family: "JetBrainsMono Nerd Font"
+		      Behavior on color { ColorAnimation { duration: 150 } }
+		    }
 		    MouseArea {
+		      id: cancelMouse
 		      anchors.fill: parent
+		      hoverEnabled: true
 		      cursorShape: Qt.PointingHandCursor
 		      onClicked: { wifiRoot.passwordVisible = false; passwordInput.text = ""; }
 		    }
 		  }
 
 		  Rectangle {
-		    implicitWidth: 80
-		    implicitHeight: 28
-		    radius: 6
-		    color: "#9ccfd8"
-		    Text { anchors.centerIn: parent; text: "Connect"; color: "#232136"; font.pixelSize: 12; font.bold: true }
+		    implicitWidth: 44
+		    implicitHeight: 44
+		    radius: 22
+		    color: connectMouse.containsMouse ? "#9ccfd8" : "#393552"
+		    Behavior on color { ColorAnimation { duration: 150 } }
+
+		    Text { 
+		      anchors.centerIn: parent
+		      text: "󰄬" 
+		      color: connectMouse.containsMouse ? "#232136" : "#9ccfd8"
+		      font.pixelSize: 20
+		      font.family: "JetBrainsMono Nerd Font"
+		      font.bold: true 
+		      Behavior on color { ColorAnimation { duration: 150 } }
+		    }
 		    MouseArea {
+		      id: connectMouse
 		      anchors.fill: parent
+		      hoverEnabled: true
 		      cursorShape: Qt.PointingHandCursor
 		      onClicked: wifiRoot.connectWithPassword()
 		    }
@@ -1080,32 +1103,22 @@ PanelWindow {
 	  Item {
 	    id: bluetoothRoot
 
-	    // ListModel with roles for address, name, connected status, and paired status
-	    ListModel {
-	      id: bluetoothModel
-	    }
+	    ListModel { id: bluetoothModel }
 
-	    // Sorts the model without destroying elements to prevent UI flickering
 	    function sortModel() {
 	      if (!bluetoothModel) return;
 	      let insertIdx = 0;
 
-	      // Move paired and connected devices to the very top
 	      for (let i = 0; i < bluetoothModel.count; ++i) {
 		if (bluetoothModel.get(i).paired && bluetoothModel.get(i).connected) {
-		  if (i > insertIdx) {
-		    bluetoothModel.move(i, insertIdx, 1);
-		  }
+		  if (i > insertIdx) bluetoothModel.move(i, insertIdx, 1);
 		  insertIdx++;
 		}
 	      }
 
-	      // Move paired (but disconnected) devices next
 	      for (let i = insertIdx; i < bluetoothModel.count; ++i) {
 		if (bluetoothModel.get(i).paired && !bluetoothModel.get(i).connected) {
-		  if (i > insertIdx) {
-		    bluetoothModel.move(i, insertIdx, 1);
-		  }
+		  if (i > insertIdx) bluetoothModel.move(i, insertIdx, 1);
 		  insertIdx++;
 		}
 	      }
@@ -1113,8 +1126,6 @@ PanelWindow {
 
 	    function addDevice(device) {
 	      if (!bluetoothModel || !device.name) return;
-	      // Ignore devices without names to keep the list clean
-	      if (!device.name) return;
 	      bluetoothModel.append({
 		address: device.address,
 		name: device.name,
@@ -1148,18 +1159,10 @@ PanelWindow {
 	      }
 	    }
 
-	    // Initial population and signal connections
 	    Connections {
 	      target: BluezQt.Manager
-
-	      function onDeviceAdded(device) { 
-		bluetoothRoot.addDevice(device); 
-	      }
-
-	      function onDeviceRemoved(device) { 
-		if (bluetoothModel) bluetoothRoot.removeDevice(device.address); 
-	      }
-
+	      function onDeviceAdded(device) { bluetoothRoot.addDevice(device); }
+	      function onDeviceRemoved(device) { if (bluetoothModel) bluetoothRoot.removeDevice(device.address); }
 	      function onDeviceChanged(device) {
 		if (!bluetoothModel) return;
 		let found = false;
@@ -1175,21 +1178,17 @@ PanelWindow {
 	    }
 
 	    Component.onCompleted: {
-	      for (const device of BluezQt.Manager.devices) {
-		addDevice(device);
-	      }
+	      for (const device of BluezQt.Manager.devices) addDevice(device);
 	    }
 
-	    // List view for Bluetooth devices
 	    ListView {
 	      anchors.fill: parent
 	      model: bluetoothModel
 	      spacing: 6
 	      clip: true
 
-	      // Enables smooth visual transitions when items are moved by sortModel()
-	      add: Transition { NumberAnimation { properties: "y"; duration: 200 } }
-	      move: Transition { NumberAnimation { properties: "y"; duration: 200 } }
+	      add: Transition { NumberAnimation { properties: "y"; duration: 250; easing.type: Easing.OutCubic } }
+	      move: Transition { NumberAnimation { properties: "y"; duration: 250; easing.type: Easing.OutCubic } }
 
 	      delegate: Rectangle {
 		required property var model
@@ -1197,7 +1196,7 @@ PanelWindow {
 		implicitHeight: 40
 		radius: 8
 		color: mouseArea.containsMouse ? "#403d4d" : "transparent"
-		Behavior on color { ColorAnimation { duration: 100 } }
+		Behavior on color { ColorAnimation { duration: 150 } }
 
 		RowLayout {
 		  anchors.fill: parent
@@ -1205,7 +1204,6 @@ PanelWindow {
 		  anchors.rightMargin: 10
 		  spacing: 8
 
-		  // Bluetooth icon
 		  Text {
 		    text: "󰂱"
 		    color: model.connected ? "#9ccfd8" : (model.paired ? "#e0def4" : "#6e6a86")
@@ -1213,7 +1211,6 @@ PanelWindow {
 		    font.pixelSize: 14
 		  }
 
-		  // Device name
 		  Text {
 		    text: model.name
 		    color: model.paired ? "#e0def4" : "#908caa"
@@ -1223,7 +1220,6 @@ PanelWindow {
 		    Layout.fillWidth: true
 		  }
 
-		  // Status indicator (connected / not connected / link)
 		  Text {
 		    text: model.paired ? (model.connected ? "" : "") : ""
 		    color: model.connected ? "#9ccfd8" : "#c4a7e7"
@@ -1231,17 +1227,17 @@ PanelWindow {
 		    font.pixelSize: 14
 		  }
 
-		  // Unpair Button (only visible for paired devices)
 		  Rectangle {
 		    visible: model.paired
-		    implicitWidth: 24
-		    implicitHeight: 24
-		    radius: 4
+		    implicitWidth: 28
+		    implicitHeight: 28
+		    radius: 14
 		    color: unpairMouse.containsMouse ? "#eb6f92" : "transparent"
+		    Behavior on color { ColorAnimation { duration: 150 } }
 
 		    Text {
 		      anchors.centerIn: parent
-		      text: "󰆴" // Trash icon for unpair
+		      text: "󰆴"
 		      color: unpairMouse.containsMouse ? "#232136" : "#eb6f92"
 		      font.family: "JetBrainsMono Nerd Font"
 		      font.pixelSize: 14
@@ -1256,9 +1252,7 @@ PanelWindow {
 			const devices = BluezQt.Manager.devices;
 			for (const dev of devices) {
 			  if (dev.address === model.address) {
-			    if (BluezQt.Manager.usableAdapter) {
-			      BluezQt.Manager.usableAdapter.removeDevice(dev);
-			    }
+			    if (BluezQt.Manager.usableAdapter) BluezQt.Manager.usableAdapter.removeDevice(dev);
 			    break;
 			  }
 			}
@@ -1270,7 +1264,7 @@ PanelWindow {
 		MouseArea {
 		  id: mouseArea
 		  anchors.fill: parent
-		  anchors.rightMargin: model.paired ? 32 : 0 // Prevent overlap with unpair button
+		  anchors.rightMargin: model.paired ? 32 : 0
 		  hoverEnabled: true
 		  cursorShape: Qt.PointingHandCursor
 		  onClicked: {
@@ -1278,16 +1272,11 @@ PanelWindow {
 		    for (const dev of devices) {
 		      if (dev.address === model.address) {
 			if (!model.paired) {
-			  // Pair unknown device
 			  dev.trusted = true;
 			  dev.connectToDevice();
 			} else {
-			  // Connect/Disconnect paired device
-			  if (model.connected) {
-			    dev.disconnectFromDevice();
-			  } else {
-			    dev.connectToDevice();
-			  }
+			  if (model.connected) dev.disconnectFromDevice();
+			  else dev.connectToDevice();
 			}
 			break;
 		      }
@@ -1298,35 +1287,26 @@ PanelWindow {
 	    }
 
 	    function updateBluetoothList() {
-	      // Trigger Discovery on refresh
 	      const adapter = BluezQt.Manager.usableAdapter;
 	      if (adapter) {
-		if (adapter.discovering) {
-		  adapter.stopDiscovery();
-		} else {
-		  adapter.startDiscovery();
-		}
+		if (adapter.discovering) adapter.stopDiscovery();
+		else adapter.startDiscovery();
 	      }
-
-	      // Re-populate list
 	      bluetoothModel.clear();
-	      for (const device of BluezQt.Manager.devices) {
-		addDevice(device);
-	      }
+	      for (const device of BluezQt.Manager.devices) addDevice(device);
 	    }
 	  }
 	}
       }
 
-      // Toggle processes (remain unchanged)
       Process {
-        id: wifiToggleProc
-        command: ["sh", "-c", "nmcli radio wifi $(nmcli radio wifi | grep -q 'enabled' && echo 'off' || echo 'on')"]
+	id: wifiToggleProc
+	command: ["sh", "-c", "nmcli radio wifi $(nmcli radio wifi | grep -q 'enabled' && echo 'off' || echo 'on')"]
       }
 
       Process {
-        id: btToggleProc
-        command: ["sh", "-c", BluezQt.Manager.bluetoothOperational ? "rfkill block bluetooth" : "rfkill unblock bluetooth"]
+	id: btToggleProc
+	command: ["sh", "-c", BluezQt.Manager.bluetoothOperational ? "rfkill block bluetooth" : "rfkill unblock bluetooth"]
       }
     }
 
