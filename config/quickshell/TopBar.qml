@@ -1436,7 +1436,7 @@ PanelWindow {
 	    prev_total=\$total
 
 	    read ram ram_max <<< \$(free -m | awk '/Mem:/ {print \$3, \$2}')
-	    disk=\$(df -h / | awk '\$NF=="/" {print \$5}' | tr -d '%')
+	    disk=\$(df / --block-size=1 | awk 'NR==2 {printf "%d%%\n", ($3/$2)*100}')
 	    temp=\$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo 0)
 
 	    rx_new=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/rx_bytes 2>/dev/null || echo 0)
