@@ -1328,5 +1328,273 @@ PanelWindow {
         Component.onCompleted: updateTime()
       }
     }
+    // System Menu
+    Rectangle {
+      id: sysPill
+      Layout.fillHeight: true
+      implicitWidth: sysRow.implicitWidth + 16
+      color: "#CC232136"
+      radius: root.height / 2
+
+      MouseArea {
+	anchors.fill: parent
+	cursorShape: Qt.PointingHandCursor
+	onClicked: {
+	  if (!sysPopup.visible) {
+	    sysPopup.visible = true;
+	  } else {
+	    sysCloseTimer.start();
+	  }
+	}
+      }
+
+      RowLayout {
+	id: sysRow
+	anchors.centerIn: parent
+	spacing: 6
+	Text {
+	  text: ""
+	  color: "#9ccfd8"
+	  font.family: "JetBrainsMono Nerd Font"
+	  font.pixelSize: 14
+	}
+      }
+
+      PopupWindow {
+	id: sysPopup
+	visible: false
+	color: "transparent"
+
+	HyprlandFocusGrab {
+	  active: sysPopup.visible
+	  windows: [sysPopup]
+	  onCleared: sysCloseTimer.start()
+	}
+
+	anchor {
+	  item: sysPill
+	  edges: Edges.Bottom
+	  gravity: Edges.Bottom
+	  margins.top: 8
+	}
+
+	implicitWidth: 320
+	implicitHeight: 330
+
+	Timer {
+	  id: sysCloseTimer
+	  interval: 250
+	  onTriggered: sysPopup.visible = false
+	}
+
+	Rectangle {
+	  id: sysPopupContent
+	  anchors.fill: parent
+	  color: "#CC232136"
+	  radius: 12
+	  clip: true
+
+	  readonly property bool isClosing: sysCloseTimer.running
+	  opacity: (sysPopup.visible && !isClosing) ? 1 : 0
+	  scale: (sysPopup.visible && !isClosing) ? 1 : 0.95
+	  y: (sysPopup.visible && !isClosing) ? 10 : -20
+	  Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+	  Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+	  Behavior on y { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
+
+	  property real cpuUsage: 0
+	  property real ramUsage: 0
+	  property real ramMax: 1
+	  property real diskUsage: 0
+	  property real sysTemp: 0
+	  property real netRx: 0
+	  property real netTx: 0
+
+	  function formatBytes(bytes) {
+	    if (bytes === 0) return "0 B/s";
+	    const k = 1024;
+	    const sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
+	    const i = Math.floor(Math.log(bytes) / Math.log(k));
+	    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+	  }
+
+	  Process {
+	    running: sysPopup.visible
+	    command: ["bash", "-c", `
+	    read cpu user nice system idle iowait irq softirq steal guest guest_nice < /proc/stat
+	    prev_idle=\$idle
+	    prev_total=\$((user+nice+system+idle+iowait+irq+softirq+steal))
+	    rx_old=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/rx_bytes 2>/dev/null || echo 0)
+	    tx_old=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/tx_bytes 2>/dev/null || echo 0)
+	    while true; do
+	    sleep 2
+	    read cpu user nice system idle iowait irq softirq steal guest guest_nice < /proc/stat
+	    total=\$((user+nice+system+idle+iowait+irq+softirq+steal))
+	    diff_idle=\$((idle - prev_idle))
+	    diff_total=\$((total - prev_total))
+	    cpu_usage=\$((100 * (diff_total - diff_idle) / diff_total))
+	    prev_idle=\$idle
+	    prev_total=\$total
+
+	    read ram ram_max <<< \$(free -m | awk '/Mem:/ {print \$3, \$2}')
+	    disk=\$(df -h / | awk '\$NF=="/" {print \$5}' | tr -d '%')
+	    temp=\$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo 0)
+
+	    rx_new=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/rx_bytes 2>/dev/null || echo 0)
+	    tx_new=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/tx_bytes 2>/dev/null || echo 0)
+	    rx_rate=\$(((rx_new - rx_old) / 2))
+	    tx_rate=\$(((tx_new - tx_old) / 2))
+	    rx_old=\$rx_new; tx_old=\$tx_new
+
+	    echo "{\\"cpu\\":\${cpu_usage:-0}, \\"ram\\":\${ram:-0}, \\"ram_max\\":\${ram_max:-1}, \\"disk\\":\${disk:-0}, \\"temp\\":\${temp:-0}, \\"rx\\":\${rx_rate:-0}, \\"tx\\":\${tx_rate:-0}}"
+	    done
+	    `]
+	    stdout: SplitParser {
+	      onRead: data => {
+		try {
+		  let j = JSON.parse(data);
+		  sysPopupContent.cpuUsage = j.cpu;
+		  sysPopupContent.ramUsage = j.ram;
+		  sysPopupContent.ramMax = j.ram_max;
+		  sysPopupContent.diskUsage = j.disk;
+		  sysPopupContent.sysTemp = j.temp / 1000;
+		  sysPopupContent.netRx = j.rx;
+		  sysPopupContent.netTx = j.tx;
+		} catch(e) {}
+	      }
+	    }
+	    Component.onCompleted: running = true
+	  }
+
+	  ColumnLayout {
+	    anchors.fill: parent
+	    anchors.margins: 16
+	    spacing: 16
+
+	    // CPU
+	    RowLayout {
+	      Layout.fillWidth: true
+	      spacing: 12
+	      Text { text: ""; color: "#eb6f92"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 16; Layout.preferredWidth: 20 }
+	      Rectangle {
+		Layout.fillWidth: true; implicitHeight: 8; radius: 4; color: "#393552"
+		Rectangle {
+		  height: parent.height; width: parent.width * (sysPopupContent.cpuUsage / 100); radius: 4; color: "#eb6f92"
+		  Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.OutCubic } }
+		}
+	      }
+	      Text { text: sysPopupContent.cpuUsage + "%"; color: "#e0def4"; font.pixelSize: 12; Layout.preferredWidth: 50; horizontalAlignment: Text.AlignRight }
+	    }
+
+	    // RAM
+	    RowLayout {
+	      Layout.fillWidth: true
+	      spacing: 12
+	      Text { text: ""; color: "#f6c177"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 16; Layout.preferredWidth: 20 }
+	      Rectangle {
+		Layout.fillWidth: true; implicitHeight: 8; radius: 4; color: "#393552"
+		Rectangle {
+		  height: parent.height; width: parent.width * (sysPopupContent.ramUsage / sysPopupContent.ramMax); radius: 4; color: "#f6c177"
+		  Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.OutCubic } }
+		}
+	      }
+	      Text { text: Math.round((sysPopupContent.ramUsage / sysPopupContent.ramMax) * 100) + "%"; color: "#e0def4"; font.pixelSize: 12; Layout.preferredWidth: 50; horizontalAlignment: Text.AlignRight }
+	    }
+
+	    // Disk
+	    RowLayout {
+	      Layout.fillWidth: true
+	      spacing: 12
+	      Text { text: ""; color: "#c4a7e7"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 16; Layout.preferredWidth: 20 }
+	      Rectangle {
+		Layout.fillWidth: true; implicitHeight: 8; radius: 4; color: "#393552"
+		Rectangle {
+		  height: parent.height; width: parent.width * (sysPopupContent.diskUsage / 100); radius: 4; color: "#c4a7e7"
+		  Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.OutCubic } }
+		}
+	      }
+	      Text { text: sysPopupContent.diskUsage + "%"; color: "#e0def4"; font.pixelSize: 12; Layout.preferredWidth: 50; horizontalAlignment: Text.AlignRight }
+	    }
+
+	    Item { Layout.fillHeight: true }
+
+	    // Temp & Network Row
+	    RowLayout {
+	      Layout.fillWidth: true
+	      spacing: 16
+
+	      RowLayout {
+		spacing: 8
+		Text { text: ""; color: "#ea9a97"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 18 }
+		Text { text: Math.round(sysPopupContent.sysTemp) + "°C"; color: "#e0def4"; font.pixelSize: 13; font.bold: true }
+	      }
+
+	      Item { Layout.fillWidth: true }
+
+	      ColumnLayout {
+		spacing: 4
+		RowLayout {
+		  spacing: 6
+		  Text { text: "󰁅"; color: "#9ccfd8"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 14 }
+		  Text { text: sysPopupContent.formatBytes(sysPopupContent.netRx); color: "#e0def4"; font.pixelSize: 12; Layout.preferredWidth: 65; horizontalAlignment: Text.AlignRight }
+		}
+		RowLayout {
+		  spacing: 6
+		  Text { text: "󰁝"; color: "#eb6f92"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 14 }
+		  Text { text: sysPopupContent.formatBytes(sysPopupContent.netTx); color: "#e0def4"; font.pixelSize: 12; Layout.preferredWidth: 65; horizontalAlignment: Text.AlignRight }
+		}
+	      }
+	    }
+
+	    Item { Layout.fillHeight: true }
+	    Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: "#393552" } // Divider
+	    Item { Layout.fillHeight: true }
+
+	    // Power Actions Row
+	    RowLayout {
+	      Layout.fillWidth: true
+	      Layout.alignment: Qt.AlignHCenter
+	      spacing: 16
+
+	      // Shutdown
+	      Rectangle {
+		implicitWidth: 40; implicitHeight: 40; radius: 20; color: pwrOffMa.containsMouse ? "#eb6f92" : "#393552"
+		Behavior on color { ColorAnimation { duration: 150 } }
+		Text { anchors.centerIn: parent; text: ""; color: pwrOffMa.containsMouse ? "#232136" : "#eb6f92"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 18; Behavior on color { ColorAnimation { duration: 150 } } }
+		MouseArea { id: pwrOffMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { sysPopup.visible = false; Hyprland.dispatch("exec systemctl poweroff") } }
+	      }
+	      // Restart
+	      Rectangle {
+		implicitWidth: 40; implicitHeight: 40; radius: 20; color: pwrReMa.containsMouse ? "#f6c177" : "#393552"
+		Behavior on color { ColorAnimation { duration: 150 } }
+		Text { anchors.centerIn: parent; text: ""; color: pwrReMa.containsMouse ? "#232136" : "#f6c177"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 18; Behavior on color { ColorAnimation { duration: 150 } } }
+		MouseArea { id: pwrReMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { sysPopup.visible = false; Hyprland.dispatch("exec systemctl reboot") } }
+	      }
+	      // Sleep
+	      Rectangle {
+		implicitWidth: 40; implicitHeight: 40; radius: 20; color: pwrSlMa.containsMouse ? "#c4a7e7" : "#393552"
+		Behavior on color { ColorAnimation { duration: 150 } }
+		Text { anchors.centerIn: parent; text: "󰤄"; color: pwrSlMa.containsMouse ? "#232136" : "#c4a7e7"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 18; Behavior on color { ColorAnimation { duration: 150 } } }
+		MouseArea { id: pwrSlMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { sysPopup.visible = false; Hyprland.dispatch("exec systemctl suspend") } }
+	      }
+	      // Lock
+	      Rectangle {
+		implicitWidth: 40; implicitHeight: 40; radius: 20; color: pwrLkMa.containsMouse ? "#9ccfd8" : "#393552"
+		Behavior on color { ColorAnimation { duration: 150 } }
+		Text { anchors.centerIn: parent; text: ""; color: pwrLkMa.containsMouse ? "#232136" : "#9ccfd8"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 18; Behavior on color { ColorAnimation { duration: 150 } } }
+		MouseArea { id: pwrLkMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { sysPopup.visible = false; Hyprland.dispatch("exec loginctl lock-session") } }
+	      }
+	      // Exit Hyprland
+	      Rectangle {
+		implicitWidth: 40; implicitHeight: 40; radius: 20; color: pwrExMa.containsMouse ? "#ea9a97" : "#393552"
+		Behavior on color { ColorAnimation { duration: 150 } }
+		Text { anchors.centerIn: parent; text: "󰗽"; color: pwrExMa.containsMouse ? "#232136" : "#ea9a97"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 18; Behavior on color { ColorAnimation { duration: 150 } } }
+		MouseArea { id: pwrExMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { sysPopup.visible = false; Hyprland.dispatch("exit") } }
+	      }
+	    }
+	  }
+	}
+      }
+    }
   }
 }
