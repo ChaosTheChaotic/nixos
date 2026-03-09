@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import Quickshell.Services.Mpris
 import Quickshell.Io
 import Quickshell.Services.UPower
+import Quickshell.Services.Pipewire
 import org.kde.bluezqt as BluezQt
 
 PanelWindow {
@@ -485,36 +486,26 @@ PanelWindow {
       color: "#CC232136"
       radius: root.height / 2
 
-      property real volume: 0
-      property bool muted: false
 
-      Process {
-	id: volProc
-	running: true
-	command: ["sh", "-c", "wpctl get-volume @DEFAULT_AUDIO_SINK@"]
-	stdout: SplitParser {
-	  onRead: data => {
-	    const parts = data.trim().split(" ");
-	    if (parts.length >= 2) {
-	      volumePill.volume = parseFloat(parts[1]);
-	      volumePill.muted = data.includes("[MUTED]");
-	    }
-	  }
-	}
+      PwObjectTracker {
+	objects: [Pipewire.defaultAudioSink]
       }
 
-      Timer { interval: 1000; running: true; repeat: true; onTriggered: volProc.running = true }
+      property real volume: Pipewire.defaultAudioSink?.audio?.volume ?? 0
+      property bool muted: Pipewire.defaultAudioSink?.audio?.muted ?? false
 
       RowLayout {
 	id: volumeRow
 	anchors.centerIn: parent
 	spacing: 6
+
 	Text {
-	  text: volumePill.muted ? "󰝟" : (volumePill.volume >= 0.66 ? "󰕾" : (volumePill.volume >= 0.33 ? "󰖀" : "󰕿"))
+	  text: volumePill.muted ? "󰝟" : (volumePill.volume >= 0.7 ? "󰕾" : (volumePill.volume >= 0.3 ? "󰖀" : "󰕿"))
 	  color: volumePill.muted ? "#6e6a86" : "#c4a7e7"
 	  font.family: "JetBrainsMono Nerd Font"
 	  font.pixelSize: 14
 	}
+
 	Text {
 	  text: Math.round(volumePill.volume * 100) + "%"
 	  color: "#e0def4"
@@ -522,7 +513,7 @@ PanelWindow {
 	  font.bold: true
 	}
       }
-    }
+}
 
     // Battery
     Rectangle {
