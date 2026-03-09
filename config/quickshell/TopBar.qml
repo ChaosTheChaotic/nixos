@@ -478,6 +478,52 @@ PanelWindow {
       }
     }
 
+    Rectangle {
+      id: volumePill
+      Layout.fillHeight: true
+      implicitWidth: volumeRow.implicitWidth + 16
+      color: "#CC232136"
+      radius: root.height / 2
+
+      property real volume: 0
+      property bool muted: false
+
+      Process {
+	id: volProc
+	running: true
+	command: ["sh", "-c", "wpctl get-volume @DEFAULT_AUDIO_SINK@"]
+	stdout: SplitParser {
+	  onRead: data => {
+	    const parts = data.trim().split(" ");
+	    if (parts.length >= 2) {
+	      volumePill.volume = parseFloat(parts[1]);
+	      volumePill.muted = data.includes("[MUTED]");
+	    }
+	  }
+	}
+      }
+
+      Timer { interval: 1000; running: true; repeat: true; onTriggered: volProc.running = true }
+
+      RowLayout {
+	id: volumeRow
+	anchors.centerIn: parent
+	spacing: 6
+	Text {
+	  text: volumePill.muted ? "󰝟" : (volumePill.volume >= 0.66 ? "󰕾" : (volumePill.volume >= 0.33 ? "󰖀" : "󰕿"))
+	  color: volumePill.muted ? "#6e6a86" : "#c4a7e7"
+	  font.family: "JetBrainsMono Nerd Font"
+	  font.pixelSize: 14
+	}
+	Text {
+	  text: Math.round(volumePill.volume * 100) + "%"
+	  color: "#e0def4"
+	  font.pixelSize: 12
+	  font.bold: true
+	}
+      }
+    }
+
     // Battery
     Rectangle {
       id: batteryPill
@@ -1802,7 +1848,7 @@ PanelWindow {
 		  text: "Up: " + sysPopupContent.sysUptime
 		  color: "#e0def4"
 		  font.pixelSize: 13
-		  font.bold: true
+		  font.bold: false
 		  elide: Text.ElideRight
 		  Layout.fillWidth: true
 		}
@@ -1822,7 +1868,7 @@ PanelWindow {
 		  text: Math.round(sysPopupContent.sysTemp) + "°C"
 		  color: "#e0def4"
 		  font.pixelSize: 13
-		  font.bold: true
+		  font.bold: false
 		  Layout.fillWidth: true
 		}
 	      }
