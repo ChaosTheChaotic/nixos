@@ -1311,20 +1311,242 @@ PanelWindow {
 
     // Clock
     Rectangle {
+      id: clockPill
       Layout.fillHeight: true
       implicitWidth: clock.contentWidth + 16
       color: "#CC232136"
       radius: root.height / 2
 
+      MouseArea {
+	anchors.fill: parent
+	cursorShape: Qt.PointingHandCursor
+	onClicked: {
+	  if (!calPopup.visible) {
+	    calPopup.displayedDate = new Date();
+	    calPopup.updateCalendar();
+	    calPopup.visible = true;
+	  } else {
+	    calCloseTimer.start();
+	  }
+	}
+      }
+
       Text {
-        id: clock
-        anchors.centerIn: parent
-        color: "#3e8fb0"
-        font.pixelSize: 12
-        font.bold: true
-        function updateTime() { text = Qt.formatDateTime(new Date(), "ddd d MMM hh:mm:ss") }
-        Timer { interval: 500; running: true; repeat: true; onTriggered: clock.updateTime() }
-        Component.onCompleted: updateTime()
+	id: clock
+	anchors.centerIn: parent
+	color: "#3e8fb0"
+	font.pixelSize: 12
+	font.bold: true
+	function updateTime() { text = Qt.formatDateTime(new Date(), "ddd d MMM hh:mm:ss") }
+	Timer { interval: 500; running: true; repeat: true; onTriggered: clock.updateTime() }
+	Component.onCompleted: updateTime()
+      }
+
+      PopupWindow {
+	id: calPopup
+	visible: false
+	color: "transparent"
+
+	HyprlandFocusGrab {
+	  active: calPopup.visible
+	  windows: [calPopup]
+	  onCleared: calCloseTimer.start()
+	}
+
+	anchor {
+	  item: clockPill
+	  edges: Edges.Bottom
+	  gravity: Edges.Bottom
+	  margins.top: 8
+	}
+
+	implicitWidth: 300
+	implicitHeight: 330
+
+	Timer {
+	  id: calCloseTimer
+	  interval: 250
+	  onTriggered: calPopup.visible = false
+	}
+
+	// Calendar Logic
+	property var displayedDate: new Date()
+	property var selectedDate: new Date()
+	property var daysModel: []
+
+	function updateCalendar() {
+	  let d = new Date(displayedDate.getFullYear(), displayedDate.getMonth(), 1);
+	  let firstDay = d.getDay();
+	  let daysInMonth = new Date(displayedDate.getFullYear(), displayedDate.getMonth() + 1, 0).getDate();
+	  let daysInPrevMonth = new Date(displayedDate.getFullYear(), displayedDate.getMonth(), 0).getDate();
+
+	  let today = new Date();
+	  let arr = [];
+
+	  // Previous Month Fillers
+	  for (let i = firstDay - 1; i >= 0; i--) {
+	    let date = new Date(displayedDate.getFullYear(), displayedDate.getMonth() - 1, daysInPrevMonth - i);
+	    arr.push({ day: daysInPrevMonth - i, isCurrent: false, isToday: false, date: date });
+	  }
+
+	  // Current Month
+	  for (let i = 1; i <= daysInMonth; i++) {
+	    let date = new Date(displayedDate.getFullYear(), displayedDate.getMonth(), i);
+	    let isToday = (i === today.getDate() && 
+	    displayedDate.getMonth() === today.getMonth() && 
+	    displayedDate.getFullYear() === today.getFullYear());
+	    arr.push({ day: i, isCurrent: true, isToday: isToday, date: date });
+	  }
+
+	  // Next Month Fillers
+	  let remaining = 42 - arr.length;
+	  for (let i = 1; i <= remaining; i++) {
+	    let date = new Date(displayedDate.getFullYear(), displayedDate.getMonth() + 1, i);
+	    arr.push({ day: i, isCurrent: false, isToday: false, date: date });
+	  }
+	  daysModel = arr;
+	}
+
+	Rectangle {
+	  id: calPopupContent
+	  anchors.fill: parent
+	  color: "#CC232136"
+	  radius: 12
+	  clip: true
+
+	  readonly property bool isClosing: calCloseTimer.running
+	  opacity: (calPopup.visible && !isClosing) ? 1 : 0
+	  scale: (calPopup.visible && !isClosing) ? 1 : 0.95
+	  y: (calPopup.visible && !isClosing) ? 10 : -20
+
+	  Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+	  Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+	  Behavior on y { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
+
+	  ColumnLayout {
+	    anchors.fill: parent
+	    anchors.margins: 16
+	    spacing: 16
+
+	    // Month/Year Navigation Header
+	    RowLayout {
+	      Layout.fillWidth: true
+
+	      Text {
+		text: ""
+		color: prevMonthMa.containsMouse ? "#c4a7e7" : "#908caa"
+		font.family: "JetBrainsMono Nerd Font"
+		font.pixelSize: 16
+		Behavior on color { ColorAnimation { duration: 150 } }
+
+		MouseArea {
+		  id: prevMonthMa
+		  anchors.fill: parent
+		  hoverEnabled: true
+		  cursorShape: Qt.PointingHandCursor
+		  onClicked: {
+		    calPopup.displayedDate = new Date(calPopup.displayedDate.getFullYear(), calPopup.displayedDate.getMonth() - 1, 1);
+		    calPopup.updateCalendar();
+		  }
+		}
+	      }
+
+	      Text {
+		text: Qt.formatDateTime(calPopup.displayedDate, "MMMM yyyy")
+		color: "#e0def4"
+		font.pixelSize: 15
+		font.bold: true
+		horizontalAlignment: Text.AlignHCenter
+		Layout.fillWidth: true
+	      }
+
+	      Text {
+		text: ""
+		color: nextMonthMa.containsMouse ? "#c4a7e7" : "#908caa"
+		font.family: "JetBrainsMono Nerd Font"
+		font.pixelSize: 16
+		Behavior on color { ColorAnimation { duration: 150 } }
+
+		MouseArea {
+		  id: nextMonthMa
+		  anchors.fill: parent
+		  hoverEnabled: true
+		  cursorShape: Qt.PointingHandCursor
+		  onClicked: {
+		    calPopup.displayedDate = new Date(calPopup.displayedDate.getFullYear(), calPopup.displayedDate.getMonth() + 1, 1);
+		    calPopup.updateCalendar();
+		  }
+		}
+	      }
+	    }
+
+	    // Calendar Grid
+	    GridLayout {
+	      columns: 7
+	      Layout.fillWidth: true
+	      columnSpacing: 4
+	      rowSpacing: 8
+
+	      // Day of Week Labels
+	      Repeater {
+		model: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+		Text {
+		  required property string modelData
+		  text: modelData
+		  color: "#908caa"
+		  font.pixelSize: 12
+		  font.bold: true
+		  horizontalAlignment: Text.AlignHCenter
+		  Layout.fillWidth: true
+		}
+	      }
+
+	      // Days Grid
+	      Repeater {
+		model: calPopup.daysModel
+
+		Item {
+		  required property var modelData
+		  readonly property bool isToday: modelData.isToday 
+		  readonly property bool isSelected: modelData.date.getTime() === calPopup.selectedDate.getTime()
+
+		  Layout.fillWidth: true
+		  Layout.preferredHeight: width 
+
+		  Rectangle {
+		    anchors.centerIn: parent
+		    width: 30  
+		    height: 30
+		    radius: 15
+
+		    color: parent.isSelected ? "#ebbcba" : (parent.isToday ? "#9ccfd8" : "transparent")
+
+		    Text {
+		      anchors.centerIn: parent
+		      text: parent.parent.modelData.day
+
+		      color: (parent.parent.isToday || parent.parent.isSelected) ? "#232136" : (parent.parent.modelData.isCurrent ? "#e0def4" : "#6e6a86")
+
+		      font.pixelSize: 13
+		      font.bold: parent.parent.isToday || parent.parent.isSelected
+		    }
+		  }
+
+		  MouseArea {
+		    anchors.fill: parent
+		    cursorShape: Qt.PointingHandCursor
+		    onClicked: {
+		      let d = new Date(parent.modelData.date);
+		      d.setHours(0,0,0,0);
+		      calPopup.selectedDate = d;
+		    }
+		  }
+		}
+	      }
+	    }
+	    Item { Layout.fillHeight: true } // Bottom spacer
+	  }
+	}
       }
     }
     // System Menu
