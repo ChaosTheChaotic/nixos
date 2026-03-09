@@ -1436,7 +1436,7 @@ PanelWindow {
 	    prev_total=\$total
 
 	    read ram ram_max <<< \$(free -m | awk '/Mem:/ {print \$3, \$2}')
-	    disk=\$(df / --block-size=1 | awk 'NR==2 {printf "%d%%\n", ($3/$2)*100}')
+	    disk=\$(df / | awk 'NR==2 {printf \"%d\\n\", (\$3/\$2)*100}')
 	    temp=\$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo 0)
 
 	    rx_new=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/rx_bytes 2>/dev/null || echo 0)
@@ -1517,32 +1517,70 @@ PanelWindow {
 
 	    Item { Layout.fillHeight: true }
 
-	    // Temp & Network Row
+	    // Stats Row
 	    RowLayout {
 	      Layout.fillWidth: true
 	      spacing: 16
 
-	      RowLayout {
-		spacing: 8
-		Text { text: ""; color: "#ea9a97"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 18 }
-		Text { text: Math.round(sysPopupContent.sysTemp) + "°C"; color: "#e0def4"; font.pixelSize: 13; font.bold: true }
+	      ColumnLayout {
+		spacing: 12 
+
+		// Temperature
+		RowLayout {
+		  spacing: 8
+		  Text { 
+		    text: ""; 
+		    color: "#ea9a97"; 
+		    font.family: "JetBrainsMono Nerd Font"; 
+		    font.pixelSize: 18 
+		  }
+		  Text {
+		    text: Math.round(sysPopupContent.sysTemp) + "°C"
+		    color: "#e0def4"
+		    font.pixelSize: 13
+		    font.bold: true
+		  }
+		}
+
+		// Network Stats
+		ColumnLayout {
+		  spacing: 4
+		  RowLayout {
+		    spacing: 6
+		    Text { 
+		      text: "󰁅"; 
+		      color: "#9ccfd8"; 
+		      font.family: "JetBrainsMono Nerd Font"; 
+		      font.pixelSize: 14 
+		    }
+		    Text {
+		      text: sysPopupContent.formatBytes(sysPopupContent.netRx)
+		      color: "#e0def4"
+		      font.pixelSize: 12
+		      Layout.preferredWidth: 65
+		      horizontalAlignment: Text.AlignLeft
+		    }
+		  }
+		  RowLayout {
+		    spacing: 6
+		    Text { 
+		      text: "󰁝"; 
+		      color: "#eb6f92"; 
+		      font.family: "JetBrainsMono Nerd Font"; 
+		      font.pixelSize: 14 
+		    }
+		    Text {
+		      text: sysPopupContent.formatBytes(sysPopupContent.netTx)
+		      color: "#e0def4"
+		      font.pixelSize: 12
+		      Layout.preferredWidth: 65
+		      horizontalAlignment: Text.AlignLeft
+		    }
+		  }
+		}
 	      }
 
 	      Item { Layout.fillWidth: true }
-
-	      ColumnLayout {
-		spacing: 4
-		RowLayout {
-		  spacing: 6
-		  Text { text: "󰁅"; color: "#9ccfd8"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 14 }
-		  Text { text: sysPopupContent.formatBytes(sysPopupContent.netRx); color: "#e0def4"; font.pixelSize: 12; Layout.preferredWidth: 65; horizontalAlignment: Text.AlignRight }
-		}
-		RowLayout {
-		  spacing: 6
-		  Text { text: "󰁝"; color: "#eb6f92"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 14 }
-		  Text { text: sysPopupContent.formatBytes(sysPopupContent.netTx); color: "#e0def4"; font.pixelSize: 12; Layout.preferredWidth: 65; horizontalAlignment: Text.AlignRight }
-		}
-	      }
 	    }
 
 	    Item { Layout.fillHeight: true }
