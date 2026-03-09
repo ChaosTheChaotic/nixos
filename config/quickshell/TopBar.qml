@@ -1600,7 +1600,7 @@ PanelWindow {
 	}
 
 	implicitWidth: 320
-	implicitHeight: 330
+	implicitHeight: 380
 
 	Timer {
 	  id: sysCloseTimer
