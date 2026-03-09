@@ -1667,6 +1667,7 @@ PanelWindow {
 	  property real sysTemp: 0
 	  property real netRx: 0
 	  property real netTx: 0
+	  property string sysUptime: "0h 0m"
 
 	  function formatBytes(bytes) {
 	    if (bytes === 0) return "0 B/s";
@@ -1684,6 +1685,7 @@ PanelWindow {
 	    prev_total=\$((user+nice+system+idle+iowait+irq+softirq+steal))
 	    rx_old=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/rx_bytes 2>/dev/null || echo 0)
 	    tx_old=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/tx_bytes 2>/dev/null || echo 0)
+
 	    while true; do
 	    sleep 2
 	    read cpu user nice system idle iowait irq softirq steal guest guest_nice < /proc/stat
@@ -1695,8 +1697,10 @@ PanelWindow {
 	    prev_total=\$total
 
 	    read ram ram_max <<< \$(free -m | awk '/Mem:/ {print \$3, \$2}')
-	    disk=\$(df / | awk 'NR==2 {printf \"%d\\n\", (\$3/\$2)*100}')
+	    disk=\$(df / | awk 'NR==2 {printf "%d", (\$3/\$2)*100}')
 	    temp=\$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo 0)
+
+	    up_val=\$(awk '{d=int(\$1/86400); h=int((\$1%86400)/3600); m=int((\$1%3600)/60); if(d>0) printf "%dd %dh", d, h; else printf "%dh %dm", h, m}' /proc/uptime)
 
 	    rx_new=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/rx_bytes 2>/dev/null || echo 0)
 	    tx_new=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/tx_bytes 2>/dev/null || echo 0)
@@ -1704,7 +1708,7 @@ PanelWindow {
 	    tx_rate=\$(((tx_new - tx_old) / 2))
 	    rx_old=\$rx_new; tx_old=\$tx_new
 
-	    echo "{\\"cpu\\":\${cpu_usage:-0}, \\"ram\\":\${ram:-0}, \\"ram_max\\":\${ram_max:-1}, \\"disk\\":\${disk:-0}, \\"temp\\":\${temp:-0}, \\"rx\\":\${rx_rate:-0}, \\"tx\\":\${tx_rate:-0}}"
+	    printf '{"cpu":%s, "ram":%s, "ram_max":%s, "disk":%s, "temp":%s, "rx":%s, "tx":%s, "uptime":"%s"}\\n' "\${cpu_usage:-0}" "\${ram:-0}" "\${ram_max:-1}" "\${disk:-0}" "\${temp:-0}" "\${rx_rate:-0}" "\${tx_rate:-0}" "\${up_val}"
 	    done
 	    `]
 	    stdout: SplitParser {
@@ -1718,7 +1722,8 @@ PanelWindow {
 		  sysPopupContent.sysTemp = j.temp / 1000;
 		  sysPopupContent.netRx = j.rx;
 		  sysPopupContent.netTx = j.tx;
-		} catch(e) {}
+		  sysPopupContent.sysUptime = j.uptime || "0h 0m";
+		} catch(e) { console.error("Stats JSON parse error: ", e, " Data:", data) }
 	      }
 	    }
 	    Component.onCompleted: running = true
@@ -1763,7 +1768,7 @@ PanelWindow {
 	    RowLayout {
 	      Layout.fillWidth: true
 	      spacing: 12
-	      Text { text: ""; color: "#c4a7e7"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 16; Layout.preferredWidth: 20 }
+	      Text { text: "󰋊"; color: "#c4a7e7"; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 16; Layout.preferredWidth: 20 }
 	      Rectangle {
 		Layout.fillWidth: true; implicitHeight: 8; radius: 4; color: "#393552"
 		Rectangle {
@@ -1776,70 +1781,87 @@ PanelWindow {
 
 	    Item { Layout.fillHeight: true }
 
-	    // Stats Row
-	    RowLayout {
+	    // Stats
+	    GridLayout {
 	      Layout.fillWidth: true
-	      spacing: 16
+	      columns: 2
+	      columnSpacing: 16
+	      rowSpacing: 12
 
-	      ColumnLayout {
-		spacing: 12 
-
-		// Temperature
-		RowLayout {
-		  spacing: 8
-		  Text { 
-		    text: ""; 
-		    color: "#ea9a97"; 
-		    font.family: "JetBrainsMono Nerd Font"; 
-		    font.pixelSize: 18 
-		  }
-		  Text {
-		    text: Math.round(sysPopupContent.sysTemp) + "°C"
-		    color: "#e0def4"
-		    font.pixelSize: 13
-		    font.bold: true
-		  }
+	      // Uptime
+	      RowLayout {
+		spacing: 8
+		Layout.fillWidth: true
+		Text {
+		  text: "󰔚"
+		  color: "#f6c177"
+		  font.family: "JetBrainsMono Nerd Font"
+		  font.pixelSize: 18
 		}
-
-		// Network Stats
-		ColumnLayout {
-		  spacing: 4
-		  RowLayout {
-		    spacing: 6
-		    Text { 
-		      text: "󰁅"; 
-		      color: "#9ccfd8"; 
-		      font.family: "JetBrainsMono Nerd Font"; 
-		      font.pixelSize: 14 
-		    }
-		    Text {
-		      text: sysPopupContent.formatBytes(sysPopupContent.netRx)
-		      color: "#e0def4"
-		      font.pixelSize: 12
-		      Layout.preferredWidth: 65
-		      horizontalAlignment: Text.AlignLeft
-		    }
-		  }
-		  RowLayout {
-		    spacing: 6
-		    Text { 
-		      text: "󰁝"; 
-		      color: "#eb6f92"; 
-		      font.family: "JetBrainsMono Nerd Font"; 
-		      font.pixelSize: 14 
-		    }
-		    Text {
-		      text: sysPopupContent.formatBytes(sysPopupContent.netTx)
-		      color: "#e0def4"
-		      font.pixelSize: 12
-		      Layout.preferredWidth: 65
-		      horizontalAlignment: Text.AlignLeft
-		    }
-		  }
+		Text {
+		  text: "Up: " + sysPopupContent.sysUptime
+		  color: "#e0def4"
+		  font.pixelSize: 13
+		  font.bold: true
+		  elide: Text.ElideRight
+		  Layout.fillWidth: true
 		}
 	      }
 
-	      Item { Layout.fillWidth: true }
+	      // Temperature
+	      RowLayout {
+		spacing: 8
+		Layout.fillWidth: true
+		Text {
+		  text: ""
+		  color: "#ea9a97"
+		  font.family: "JetBrainsMono Nerd Font"
+		  font.pixelSize: 18
+		}
+		Text {
+		  text: Math.round(sysPopupContent.sysTemp) + "°C"
+		  color: "#e0def4"
+		  font.pixelSize: 13
+		  font.bold: true
+		  Layout.fillWidth: true
+		}
+	      }
+
+	      // Download speed
+	      RowLayout {
+		spacing: 8
+		Layout.fillWidth: true
+		Text {
+		  text: "󰁅"
+		  color: "#9ccfd8"
+		  font.family: "JetBrainsMono Nerd Font"
+		  font.pixelSize: 16
+		}
+		Text {
+		  text: sysPopupContent.formatBytes(sysPopupContent.netRx)
+		  color: "#e0def4"
+		  font.pixelSize: 12
+		  Layout.fillWidth: true
+		}
+	      }
+
+	      // Upload speed
+	      RowLayout {
+		spacing: 8
+		Layout.fillWidth: true
+		Text {
+		  text: "󰁝"
+		  color: "#eb6f92"
+		  font.family: "JetBrainsMono Nerd Font"
+		  font.pixelSize: 16
+		}
+		Text {
+		  text: sysPopupContent.formatBytes(sysPopupContent.netTx)
+		  color: "#e0def4"
+		  font.pixelSize: 12
+		  Layout.fillWidth: true
+		}
+	      }
 	    }
 
 	    Item { Layout.fillHeight: true }
