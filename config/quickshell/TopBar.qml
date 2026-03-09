@@ -228,216 +228,253 @@ PanelWindow {
       }
 
       PopupWindow {
-        id: musicPopup
-        visible: false
-        color: "transparent"
+	id: musicPopup
+	visible: false
+	color: "transparent"
 
-        HyprlandFocusGrab {
-          active: musicPopup.visible
-          windows: [musicPopup]
-          onCleared: {
-            closeTimer.start()
-          }
-        }
+	HyprlandFocusGrab {
+	  active: musicPopup.visible
+	  windows: [musicPopup]
+	  onCleared: {
+	    closeTimer.start()
+	  }
+	}
 
-        anchor {
-          item: musicPill
-          edges: Edges.Bottom
-          gravity: Edges.Bottom
-          margins.top: 8
-        }
+	anchor {
+	  item: musicPill
+	  edges: Edges.Bottom
+	  gravity: Edges.Bottom
+	  margins.top: 8
+	}
 
-        implicitWidth: 360
-        implicitHeight: 160
+	implicitWidth: 380
+	implicitHeight: 170
 
-        property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
+	property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
 
-        Timer {
-          id: closeTimer
-          interval: 250
-          onTriggered: musicPopup.visible = false
-        }
+	Timer {
+	  id: closeTimer
+	  interval: 250
+	  onTriggered: musicPopup.visible = false
+	}
 
-        Rectangle {
-          id: popupContent
-          implicitWidth: 360
-          implicitHeight: 140
-          color: "#CC232136"
-          radius: 12
-          clip: true
+	Rectangle {
+	  id: popupContent
+	  anchors.fill: parent
+	  color: "#CC232136"
+	  radius: 12
+	  clip: true
 
-          readonly property bool isClosing: closeTimer.running
+	  readonly property bool isClosing: closeTimer.running
 
-          opacity: (musicPopup.visible && !isClosing) ? 1 : 0
-          scale: (musicPopup.visible && !isClosing) ? 1 : 0.95
-          y: (musicPopup.visible && !isClosing) ? 10 : -20
-          Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
-          Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
-          Behavior on y { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
+	  opacity: (musicPopup.visible && !isClosing) ? 1 : 0
+	  scale: (musicPopup.visible && !isClosing) ? 1 : 0.95
+	  y: (musicPopup.visible && !isClosing) ? 10 : -20
+	  Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+	  Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+	  Behavior on y { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
 
-          Timer {
-            interval: 500
-            repeat: true
-            running: musicPopup.visible && musicPopup.activePlayer && musicPopup.activePlayer.playbackState === MprisPlaybackState.Playing
-            onTriggered: musicPopup.activePlayer.positionChanged()
-          }
+	  Timer {
+	    interval: 500
+	    repeat: true
+	    running: musicPopup.visible && musicPopup.activePlayer && musicPopup.activePlayer.playbackState === MprisPlaybackState.Playing
+	    onTriggered: musicPopup.activePlayer.positionChanged()
+	  }
 
-          RowLayout {
-            anchors.fill: parent
-            anchors.margins: 8
-            spacing: 16
+	  RowLayout {
+	    anchors.fill: parent
+	    anchors.margins: 16
+	    spacing: 16
 
-            Rectangle {
-              Layout.preferredWidth: 100
-              Layout.preferredHeight: 100
-              Layout.alignment: Qt.AlignVCenter
-              radius: 8
-              clip: true
-              color: "#393552"
+	    // Album Art
+	    Rectangle {
+	      Layout.preferredWidth: 120
+	      Layout.preferredHeight: 120
+	      Layout.alignment: Qt.AlignVCenter
+	      radius: 8
+	      clip: true
+	      color: "#393552"
 
-              Image {
-                anchors.fill: parent
-                source: musicPopup.activePlayer ? musicPopup.activePlayer.trackArtUrl : ""
-                fillMode: Image.PreserveAspectCrop
-                asynchronous: true
-              }
-            }
+	      Image {
+		anchors.fill: parent
+		source: musicPopup.activePlayer ? musicPopup.activePlayer.trackArtUrl : ""
+		fillMode: Image.PreserveAspectCrop
+		asynchronous: true
+	      }
+	    }
 
-            ColumnLayout {
-              Layout.fillWidth: true
-              Layout.fillHeight: true
-              spacing: 4
+	    ColumnLayout {
+	      Layout.fillWidth: true
+	      Layout.fillHeight: true
+	      spacing: 4
 
-              Text {
-                text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackTitle || "Unknown Title") : "No Title"
-                color: "#e0def4"
-                font.pixelSize: 16
-                font.bold: true
-                elide: Text.ElideRight
-                Layout.fillWidth: true
-              }
+	      Text {
+		text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackTitle || "Unknown Title") : "No Title"
+		color: "#e0def4"
+		font.pixelSize: 16
+		font.bold: true
+		elide: Text.ElideRight
+		Layout.fillWidth: true
+	      }
 
-              Text {
-                text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackArtist || "Unknown Artist") : "No Artist"
-                color: "#908caa"
-                font.pixelSize: 13
-                elide: Text.ElideRight
-                Layout.fillWidth: true
-              }
+	      Text {
+		text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackArtist || "Unknown Artist") : "No Artist"
+		color: "#908caa"
+		font.pixelSize: 13
+		elide: Text.ElideRight
+		Layout.fillWidth: true
+	      }
 
-              Text {
-                text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackAlbum || "Unknown Album") : "No Album"
-                color: "#6e6a86"
-                font.pixelSize: 12
-                elide: Text.ElideRight
-                Layout.fillWidth: true
-              }
+	      Text {
+		text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackAlbum || "Unknown Album") : "No Album"
+		color: "#6e6a86"
+		font.pixelSize: 12
+		elide: Text.ElideRight
+		Layout.fillWidth: true
+	      }
 
-              Item { Layout.fillHeight: true }
+	      Item { Layout.fillHeight: true }
 
-              RowLayout {
-                Layout.fillWidth: true
-                spacing: 8
+	      // Progress Bar
+	      RowLayout {
+		Layout.fillWidth: true
+		spacing: 8
 
-                function formatTime(secondsIn) {
-                  if (!secondsIn) return "0:00";
-                  let seconds = Math.floor(secondsIn);
-                  let m = Math.floor(seconds / 60);
-                  let s = seconds % 60;
-                  return m + ":" + (s < 10 ? "0" : "") + s;
-                }
+		function formatTime(secondsIn) {
+		  if (!secondsIn) return "0:00";
+		  let seconds = Math.floor(secondsIn);
+		  let m = Math.floor(seconds / 60);
+		  let s = seconds % 60;
+		  return m + ":" + (s < 10 ? "0" : "") + s;
+		}
 
-                Text {
-                  text: parent.formatTime(musicPopup.activePlayer ? musicPopup.activePlayer.position : 0)
-                  color: "#908caa"
-                  font.pixelSize: 10
-                }
+		Text {
+		  text: parent.formatTime(musicPopup.activePlayer ? musicPopup.activePlayer.position : 0)
+		  color: "#908caa"
+		  font.pixelSize: 10
+		}
 
-                Rectangle {
-                  Layout.fillWidth: true
-                  implicitHeight: 4
-                  radius: 2
-                  color: "#393552"
+		Rectangle {
+		  Layout.fillWidth: true
+		  implicitHeight: 6
+		  radius: 3
+		  color: "#393552"
 
-                  Rectangle {
-                    height: parent.height
-                    radius: 2
-                    color: "#c4a7e7"
-                    width: {
-                      if (!musicPopup.activePlayer || !musicPopup.activePlayer.length) return 0;
-                      return (musicPopup.activePlayer.position / musicPopup.activePlayer.length) * parent.width;
-                    }
-                  }
-                  MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: (mouse) => {
-                      if (musicPopup.activePlayer && musicPopup.activePlayer.length) {
-                        let clickRatio = mouse.x / width;
-                        musicPopup.activePlayer.position = clickRatio * musicPopup.activePlayer.length;
-                      }
-                    }
-                  }
-                }
+		  Rectangle {
+		    height: parent.height
+		    radius: 3
+		    color: "#c4a7e7"
+		    width: {
+		      if (!musicPopup.activePlayer || !musicPopup.activePlayer.length) return 0;
+		      return (musicPopup.activePlayer.position / musicPopup.activePlayer.length) * parent.width;
+		    }
+		  }
+		  MouseArea {
+		    anchors.fill: parent
+		    cursorShape: Qt.PointingHandCursor
+		    onClicked: (mouse) => {
+		      if (musicPopup.activePlayer && musicPopup.activePlayer.length) {
+			let clickRatio = mouse.x / width;
+			musicPopup.activePlayer.position = clickRatio * musicPopup.activePlayer.length;
+		      }
+		    }
+		  }
+		}
 
-                Text {
-                  text: parent.formatTime(musicPopup.activePlayer ? musicPopup.activePlayer.length : 0)
-                  color: "#908caa"
-                  font.pixelSize: 10
-                }
-              }
+		Text {
+		  text: parent.formatTime(musicPopup.activePlayer ? musicPopup.activePlayer.length : 0)
+		  color: "#908caa"
+		  font.pixelSize: 10
+		}
+	      }
 
-              RowLayout {
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignHCenter
-                spacing: 20
+	      Item { Layout.fillHeight: true }
 
-                Text {
-                  text: "󰒮"
-                  color: prevArea.containsMouse ? "#c4a7e7" : "#e0def4"
-                  font.family: "JetBrainsMono Nerd Font"
-                  font.pixelSize: 20
-                  MouseArea {
-                    id: prevArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: if (musicPopup.activePlayer) musicPopup.activePlayer.previous()
-                  }
-                }
+	      // Media Controls
+	      RowLayout {
+		Layout.fillWidth: true
+		Layout.alignment: Qt.AlignHCenter
+		spacing: 16
 
-                Text {
-                  property bool isPlaying: musicPopup.activePlayer ? musicPopup.activePlayer.playbackState === MprisPlaybackState.Playing : false
-                  text: isPlaying ? "󰏤" : "󰐊"
-                  color: playArea.containsMouse ? "#c4a7e7" : "#e0def4"
-                  font.family: "JetBrainsMono Nerd Font"
-                  font.pixelSize: 24
-                  MouseArea {
-                    id: playArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: if (musicPopup.activePlayer) musicPopup.activePlayer.togglePlaying()
-                  }
-                }
+		// Previous
+		Rectangle {
+		  implicitWidth: 36
+		  implicitHeight: 36
+		  radius: 18
+		  color: prevArea.containsMouse ? "#393552" : "transparent"
+		  Behavior on color { ColorAnimation { duration: 150 } }
 
-                Text {
-                  text: "󰒭"
-                  color: nextArea.containsMouse ? "#c4a7e7" : "#e0def4"
-                  font.family: "JetBrainsMono Nerd Font"
-                  font.pixelSize: 20
-                  MouseArea {
-                    id: nextArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: if (musicPopup.activePlayer) musicPopup.activePlayer.next()
-                  }
-                }
-              }
-            }
-          }
-        }
+		  Text {
+		    anchors.centerIn: parent
+		    text: "󰒮"
+		    color: prevArea.containsMouse ? "#c4a7e7" : "#e0def4"
+		    font.family: "JetBrainsMono Nerd Font"
+		    font.pixelSize: 20
+		    Behavior on color { ColorAnimation { duration: 150 } }
+		  }
+		  MouseArea {
+		    id: prevArea
+		    anchors.fill: parent
+		    hoverEnabled: true
+		    cursorShape: Qt.PointingHandCursor
+		    onClicked: if (musicPopup.activePlayer) musicPopup.activePlayer.previous()
+		  }
+		}
+
+		// Play / Pause
+		Rectangle {
+		  implicitWidth: 44
+		  implicitHeight: 44
+		  radius: 22
+		  property bool isPlaying: musicPopup.activePlayer ? musicPopup.activePlayer.playbackState === MprisPlaybackState.Playing : false
+		  color: playArea.containsMouse ? "#c4a7e7" : "#393552"
+		  Behavior on color { ColorAnimation { duration: 150 } }
+
+		  Text {
+		    anchors.centerIn: parent
+		    text: parent.isPlaying ? "󰏤" : "󰐊"
+		    color: playArea.containsMouse ? "#232136" : "#e0def4"
+		    font.family: "JetBrainsMono Nerd Font"
+		    font.pixelSize: 22
+		    Behavior on color { ColorAnimation { duration: 150 } }
+		  }
+		  MouseArea {
+		    id: playArea
+		    anchors.fill: parent
+		    hoverEnabled: true
+		    cursorShape: Qt.PointingHandCursor
+		    onClicked: if (musicPopup.activePlayer) musicPopup.activePlayer.togglePlaying()
+		  }
+		}
+
+		// Next
+		Rectangle {
+		  implicitWidth: 36
+		  implicitHeight: 36
+		  radius: 18
+		  color: nextArea.containsMouse ? "#393552" : "transparent"
+		  Behavior on color { ColorAnimation { duration: 150 } }
+
+		  Text {
+		    anchors.centerIn: parent
+		    text: "󰒭"
+		    color: nextArea.containsMouse ? "#c4a7e7" : "#e0def4"
+		    font.family: "JetBrainsMono Nerd Font"
+		    font.pixelSize: 20
+		    Behavior on color { ColorAnimation { duration: 150 } }
+		  }
+		  MouseArea {
+		    id: nextArea
+		    anchors.fill: parent
+		    hoverEnabled: true
+		    cursorShape: Qt.PointingHandCursor
+		    onClicked: if (musicPopup.activePlayer) musicPopup.activePlayer.next()
+		  }
+		}
+	      }
+	    }
+	  }
+	}
       }
     }
 
