@@ -1371,16 +1371,6 @@ PanelWindow {
 	  }
 	}
       }
-
-      Process {
-	id: wifiToggleProc
-	command: ["sh", "-c", "nmcli radio wifi $(nmcli radio wifi | grep -q 'enabled' && echo 'off' || echo 'on')"]
-      }
-
-      Process {
-	id: btToggleProc
-	command: ["sh", "-c", BluezQt.Manager.bluetoothOperational ? "rfkill block bluetooth" : "rfkill unblock bluetooth"]
-      }
     }
 
     // Clock
