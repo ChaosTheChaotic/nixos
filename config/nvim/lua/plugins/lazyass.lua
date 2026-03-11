@@ -128,6 +128,7 @@ return {
 		    --"cmake",
 		    "jdtls",
 		    "gopls",
+		    "zls",
 		    --"qmlls",
 		    --"kotlin_lsp",
 		  }
@@ -270,6 +271,16 @@ return {
 	      qml = {
 		name = "qmlls",
 		cmd = { "qmlls", "-E" },
+	      },
+	      zig = {
+		name = "zls",
+		cmd = { "zls" },
+		root_dir = function(fname)
+	  	  return vim.fs.dirname(vim.fs.find({ "build.zig", "zls.json", ".git" }, {
+	  	    upward = true,
+	  	    path = vim.fs.dirname(fname),
+	  	  })[1])
+	  	end,
 	      },
 	      --kotlin = {
 	      --  name = "kotlin_lsp",
@@ -427,6 +438,7 @@ return {
 					"json",
 					"bash",
 					"qmljs",
+					"zig",
 				},
 				highlight = { enable = true },
 				indent = { enable = true },
