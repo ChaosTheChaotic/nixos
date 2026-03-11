@@ -34,7 +34,10 @@ PanelWindow {
     // Workspaces
     Rectangle {
       Layout.fillHeight: true
-      implicitWidth: wsRow.implicitWidth + 4
+      Layout.fillWidth: true
+      Layout.preferredWidth: wsRow.implicitWidth + 4
+      Layout.maximumWidth: Layout.preferredWidth
+      clip: true
       color: "#CC232136"
       radius: root.height / 2
 
@@ -85,6 +88,7 @@ PanelWindow {
     Rectangle {
       id: titlePill
       Layout.fillHeight: true
+      Layout.fillWidth: true
 
       readonly property bool hasWindow: {
         const toplevel = Hyprland.activeToplevel;
@@ -101,7 +105,8 @@ PanelWindow {
         return toplevel.workspace?.id === Hyprland.focusedWorkspace?.id;
       }
 
-      Layout.preferredWidth: hasWindow ? Math.max(80, Math.min(titleText.contentWidth + 40, 500)) : 0
+      Layout.preferredWidth: hasWindow ? Math.max(80, Math.min(titleText.implicitWidth + 40, 500)) : 0
+      Layout.maximumWidth: Layout.preferredWidth
       color: "#CC232136"
       radius: root.height / 2
       clip: true
@@ -116,7 +121,7 @@ PanelWindow {
         anchors.centerIn: parent
         color: "#e0def4"
         font.pixelSize: 12
-        width: Math.min(parent.width - 20, 480)
+	width: Math.min(parent.width - 20, implicitWidth)
         elide: Text.ElideRight
         horizontalAlignment: Text.AlignHCenter
 
@@ -150,9 +155,11 @@ PanelWindow {
     Rectangle {
       id: musicPill
       Layout.fillHeight: true
+      Layout.fillWidth: true
 
       property bool hasPlayer: Mpris.players.values.length > 0
-      Layout.preferredWidth: hasPlayer ? (musicRow.width + 16) : 0
+      Layout.preferredWidth: hasPlayer ? (musicRow.implicitWidth + 16) : 0
+      Layout.maximumWidth: hasPlayer ? Math.min(Layout.preferredWidth, 400) : 0
 
       color: "#CC232136"
       radius: root.height / 2
@@ -177,7 +184,9 @@ PanelWindow {
 
       RowLayout {
         id: musicRow
-        anchors.centerIn: parent
+	anchors.fill: parent
+	anchors.leftMargin: 8
+	anchors.rightMargin: 8
         spacing: 10
 
         Row {
@@ -224,7 +233,6 @@ PanelWindow {
           font.pixelSize: 12
           font.family: "JetBrainsMono Nerd Font"
           elide: Text.ElideRight
-          Layout.maximumWidth: 180
         }
       }
 
@@ -482,7 +490,10 @@ PanelWindow {
     Rectangle {
       id: volumePill
       Layout.fillHeight: true
-      implicitWidth: volumeRow.implicitWidth + 16
+      Layout.fillWidth: true
+      Layout.preferredWidth: volumeRow.implicitWidth + 16
+      Layout.maximumWidth: Layout.preferredWidth
+      clip: true
       color: "#CC232136"
       radius: root.height / 2
 
@@ -519,7 +530,10 @@ PanelWindow {
     Rectangle {
       id: batteryPill
       Layout.fillHeight: true
-      implicitWidth: batteryRow.implicitWidth + 16
+      Layout.fillWidth: true
+      Layout.preferredWidth: batteryRow.implicitWidth + 16
+      Layout.maximumWidth: Layout.preferredWidth
+      clip: true
       color: "#CC232136"
       radius: root.height / 2
 
@@ -563,7 +577,10 @@ PanelWindow {
     Rectangle {
       id: netPill
       Layout.fillHeight: true
-      implicitWidth: netRow.implicitWidth + 16
+      Layout.fillWidth: true
+      Layout.preferredWidth: netRow.implicitWidth + 16
+      Layout.maximumWidth: Layout.preferredWidth
+      clip: true
       color: "#CC232136"
       radius: root.height / 2
 
@@ -1377,7 +1394,10 @@ PanelWindow {
     Rectangle {
       id: clockPill
       Layout.fillHeight: true
-      implicitWidth: clock.contentWidth + 16
+      Layout.fillWidth: true
+      Layout.preferredWidth: clock.contentWidth + 16
+      Layout.maximumWidth: Layout.preferredWidth
+      clip: true
       color: "#CC232136"
       radius: root.height / 2
 
@@ -1617,7 +1637,10 @@ PanelWindow {
     Rectangle {
       id: sysPill
       Layout.fillHeight: true
-      implicitWidth: sysRow.implicitWidth + 16
+      Layout.fillWidth: true
+      Layout.preferredWidth: sysRow.implicitWidth + 16
+      Layout.maximumWidth: Layout.preferredWidth
+      clip: true
       color: "#CC232136"
       radius: root.height / 2
 
