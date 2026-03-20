@@ -21,6 +21,7 @@
       url = "github:z-shell/F-Sy-H";
       flake = false;
     };
+    clogite.url = "github:chaosthechaotic/clogite";
   };
 
   outputs =

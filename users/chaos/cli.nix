@@ -2,7 +2,6 @@
 
 {
   config = {
-    programs.atuin.enable = true;
     programs.bat.enable = true;
 
     programs.fd = {
