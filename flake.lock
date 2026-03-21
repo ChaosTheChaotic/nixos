@@ -21,6 +21,26 @@
         "type": "github"
       }
     },
+    "clogite": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_2",
+        "sqlite-regex": "sqlite-regex",
+        "sqlite-zstd": "sqlite-zstd"
+      },
+      "locked": {
+        "lastModified": 1774051404,
+        "narHash": "sha256-PI+zKDXa3jCTD8SV5wveoYTBQl7FMoyzfaRmH0gIK4k=",
+        "owner": "chaosthechaotic",
+        "repo": "clogite",
+        "rev": "945ebeed2e8389f83372df3091b1c5746649a690",
+        "type": "github"
+      },
+      "original": {
+        "owner": "chaosthechaotic",
+        "repo": "clogite",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -160,7 +180,7 @@
     },
     "lobster": {
       "inputs": {
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs_3",
         "systems": "systems_2"
       },
       "locked": {
@@ -180,7 +200,7 @@
     "nixos-apple-silicon": {
       "inputs": {
         "flake-compat": "flake-compat",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_4"
       },
       "locked": {
         "lastModified": 1773418853,
@@ -214,6 +234,22 @@
     },
     "nixpkgs_2": {
       "locked": {
+        "lastModified": 1773821835,
+        "narHash": "sha256-TJ3lSQtW0E2JrznGVm8hOQGVpXjJyXY2guAxku2O9A4=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "b40629efe5d6ec48dd1efba650c797ddbd39ace0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
         "lastModified": 1703961334,
         "narHash": "sha256-M1mV/Cq+pgjk0rt6VxoyyD+O8cOUiai8t9Q6Yyq4noY=",
         "owner": "nixos",
@@ -228,7 +264,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_3": {
+    "nixpkgs_4": {
       "locked": {
         "lastModified": 1768305791,
         "narHash": "sha256-AIdl6WAn9aymeaH/NvBj0H9qM+XuAuYbGMZaP0zcXAQ=",
@@ -244,7 +280,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_4": {
+    "nixpkgs_5": {
       "locked": {
         "lastModified": 1773821835,
         "narHash": "sha256-TJ3lSQtW0E2JrznGVm8hOQGVpXjJyXY2guAxku2O9A4=",
@@ -260,7 +296,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_5": {
+    "nixpkgs_6": {
       "locked": {
         "lastModified": 1772542754,
         "narHash": "sha256-WGV2hy+VIeQsYXpsLjdr4GvHv5eECMISX1zKLTedhdg=",
@@ -284,11 +320,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1774025645,
-        "narHash": "sha256-JotdqxIxeLhCxwDlciC8nvwABpJF/b5MQd2O16cjd7A=",
+        "lastModified": 1774045840,
+        "narHash": "sha256-yGavUluacOMRhnOZwELTPBb5g5u9jnztahZuP2b56GQ=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "c01705bad7cf4d0c6838e7e46de8d4accc9c2f89",
+        "rev": "dd50c63cc27c14cfa7c46d35f578530e0fb69eb8",
         "type": "github"
       },
       "original": {
@@ -300,11 +336,12 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "clogite": "clogite",
         "f-sy-h": "f-sy-h",
         "home-manager": "home-manager_2",
         "lobster": "lobster",
         "nixos-apple-silicon": "nixos-apple-silicon",
-        "nixpkgs": "nixpkgs_4",
+        "nixpkgs": "nixpkgs_5",
         "nur": "nur",
         "rose-pine-hyprcursor": "rose-pine-hyprcursor",
         "vicinae": "vicinae"
@@ -329,6 +366,38 @@
       "original": {
         "owner": "ndom91",
         "repo": "rose-pine-hyprcursor",
+        "type": "github"
+      }
+    },
+    "sqlite-regex": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1696642011,
+        "narHash": "sha256-BIG7TxnGJDhoHrAfqgIwuboC6RUC2LdwSwpHslXVDXY=",
+        "owner": "asg017",
+        "repo": "sqlite-regex",
+        "rev": "5fe28e3c7a978c621082cfef0ae6dea9a71167ee",
+        "type": "github"
+      },
+      "original": {
+        "owner": "asg017",
+        "repo": "sqlite-regex",
+        "type": "github"
+      }
+    },
+    "sqlite-zstd": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1751274260,
+        "narHash": "sha256-ObV5+g3Yp5EkkekiqTdS8al8/t0MnpTlD36SPHRh11A=",
+        "owner": "phiresky",
+        "repo": "sqlite-zstd",
+        "rev": "212b179a266f0fef68b2eedd1014bb81c4596f2a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "phiresky",
+        "repo": "sqlite-zstd",
         "type": "github"
       }
     },
@@ -427,7 +496,7 @@
     },
     "vicinae": {
       "inputs": {
-        "nixpkgs": "nixpkgs_5",
+        "nixpkgs": "nixpkgs_6",
         "systems": "systems_5"
       },
       "locked": {
