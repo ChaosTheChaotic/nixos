@@ -95,7 +95,7 @@
         man() {
           MANPAGER="sh -c 'sed -u -e \"s/\\x1B\[[0-9;]*m//g;s/.\\x08//g\" | bat -p -lman'" command man "$@"
         }
-	eval "$(clogite init)"
+	zvm_after_init_commands+=('eval "$(clogite init)"')
         fastfetch
       '';
     };
