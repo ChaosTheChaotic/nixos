@@ -9,6 +9,7 @@
   config = {
     gtk = {
       enable = true;
+      gtk4.theme = config.gtk.theme;
       theme = {
         name = "rose-pine-moon";
         package = pkgs.rose-pine-gtk-theme;
