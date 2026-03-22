@@ -28,11 +28,11 @@
         "sqlite-zstd": "sqlite-zstd"
       },
       "locked": {
-        "lastModified": 1774136236,
-        "narHash": "sha256-RSvTuLSBOHqFhnD81cX1KJ/LjWIs9kxlHD1O+8j+rnI=",
+        "lastModified": 1774140778,
+        "narHash": "sha256-IRnQ4x7DXW62WR+E3sqB5f8kOpEMErGfoRcAhFPysPA=",
         "owner": "chaosthechaotic",
         "repo": "clogite",
-        "rev": "e797385df2afaa13f594c740f28eeaa3c26690ee",
+        "rev": "aec03a400459acabdd9207527640064b4c6e4e78",
         "type": "github"
       },
       "original": {
@@ -320,11 +320,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1774135154,
-        "narHash": "sha256-qyhbBEt4z8cVFZgH3uPiKGL+MjfMNM6QEVH4t3n+Yq0=",
+        "lastModified": 1774145197,
+        "narHash": "sha256-QD3zwaA6X4CNKuH3dHPRKdS0N78RULHCrXrbGM9tbs8=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "5b67439abd49b68fdaece3aaff99c88430ac44bb",
+        "rev": "013c89ff1fc34274843fefb8e8616d5459d9ac51",
         "type": "github"
       },
       "original": {
@@ -500,11 +500,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1774007131,
-        "narHash": "sha256-TFprJpX1CcEn3DZpmS2WueCEuBry4/E+Guevi5/f5+M=",
+        "lastModified": 1774140862,
+        "narHash": "sha256-OQC0RntH2eeSGYGnG5C8kdKxnJIi+KYh7usLMoBVYec=",
         "owner": "vicinaehq",
         "repo": "vicinae",
-        "rev": "b4460a35e3f66a36cb260c3130bf6b17ae088e31",
+        "rev": "9076d4cba5bcade305b7e78cd68759ad2b34a5a3",
         "type": "github"
       },
       "original": {
