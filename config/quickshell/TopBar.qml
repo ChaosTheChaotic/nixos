@@ -37,6 +37,7 @@ PanelWindow {
       Layout.fillWidth: true
       Layout.preferredWidth: wsRow.implicitWidth + 4
       Layout.maximumWidth: Layout.preferredWidth
+      Layout.minimumWidth: Layout.preferredWidth
       clip: true
       color: "#CC232136"
       radius: root.height / 2
@@ -89,6 +90,7 @@ PanelWindow {
       id: titlePill
       Layout.fillHeight: true
       Layout.fillWidth: true
+      Layout.minimumWidth: 0
 
       readonly property bool hasWindow: {
         const toplevel = Hyprland.activeToplevel;
@@ -156,6 +158,7 @@ PanelWindow {
       id: musicPill
       Layout.fillHeight: true
       Layout.fillWidth: true
+      Layout.minimumWidth: 0
 
       property bool hasPlayer: Mpris.players.values.length > 0
       Layout.preferredWidth: hasPlayer ? (musicRow.implicitWidth + 16) : 0
@@ -226,6 +229,8 @@ PanelWindow {
 
         Text {
           id: musicText
+	  Layout.fillWidth: true
+	  Layout.minimumWidth: 0
           property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
           text: (activePlayer ? " " : "󰝛 ") +
                 (activePlayer ? (activePlayer.trackTitle || "Unknown") + " - " + (activePlayer.trackArtist || "Unknown") : "")
@@ -493,6 +498,7 @@ PanelWindow {
       Layout.fillWidth: true
       Layout.preferredWidth: volumeRow.implicitWidth + 16
       Layout.maximumWidth: Layout.preferredWidth
+      Layout.minimumWidth: Layout.preferredWidth
       clip: true
       color: "#CC232136"
       radius: root.height / 2
@@ -533,6 +539,7 @@ PanelWindow {
       Layout.fillWidth: true
       Layout.preferredWidth: batteryRow.implicitWidth + 16
       Layout.maximumWidth: Layout.preferredWidth
+      Layout.minimumWidth: Layout.preferredWidth
       clip: true
       color: "#CC232136"
       radius: root.height / 2
@@ -580,6 +587,7 @@ PanelWindow {
       Layout.fillWidth: true
       Layout.preferredWidth: netRow.implicitWidth + 16
       Layout.maximumWidth: Layout.preferredWidth
+      Layout.minimumWidth: Layout.preferredWidth
       clip: true
       color: "#CC232136"
       radius: root.height / 2
@@ -1397,6 +1405,7 @@ PanelWindow {
       Layout.fillWidth: true
       Layout.preferredWidth: clock.contentWidth + 16
       Layout.maximumWidth: Layout.preferredWidth
+      Layout.minimumWidth: Layout.preferredWidth
       clip: true
       color: "#CC232136"
       radius: root.height / 2
@@ -1640,6 +1649,7 @@ PanelWindow {
       Layout.fillWidth: true
       Layout.preferredWidth: sysRow.implicitWidth + 16
       Layout.maximumWidth: Layout.preferredWidth
+      Layout.minimumWidth: Layout.preferredWidth
       clip: true
       color: "#CC232136"
       radius: root.height / 2
