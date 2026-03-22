@@ -455,6 +455,7 @@ dkms.conf
 lib/
 build/
 .env
+.cache/
 EOF
     fi
 
