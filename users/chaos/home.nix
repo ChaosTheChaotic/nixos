@@ -97,6 +97,7 @@
       grim
       yt-dlp
       kdePackages.bluez-qt
+      ani-cli
 
       # Custom Inputs
       inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
