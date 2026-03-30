@@ -70,7 +70,7 @@ PanelWindow {
 
               Behavior on color { ColorAnimation { duration: 250; easing.type: Easing.OutQuint } }
 
-              font.pixelSize: 11
+              font.pixelSize: 16
               font.bold: true
             }
             MouseArea {
