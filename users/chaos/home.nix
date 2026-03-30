@@ -98,6 +98,11 @@
       yt-dlp
       kdePackages.bluez-qt
       ani-cli
+      (balatro.override{
+	src = null;
+	withMods = true;
+	lovely-injector = inputs.lovely-injector.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      })
 
       # Custom Inputs
       inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default

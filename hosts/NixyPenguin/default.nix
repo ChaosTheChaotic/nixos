@@ -61,6 +61,8 @@ in
     inputs.nur.overlays.default
   ];
 
+  nixpkgs.config.allowUnfree = true;
+
   nix.settings = {
     experimental-features = [
       "nix-command"
