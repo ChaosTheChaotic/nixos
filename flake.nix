@@ -22,7 +22,7 @@
       flake = false;
     };
     clogite.url = "github:chaosthechaotic/clogite";
-    lovely-injector.url = "git+https://github.com/ethangreen-dev/lovely-injector";
+    lovely-injector.url = "git+https://github.com/ethangreen-dev/lovely-injector?submodules=1";
   };
 
   outputs =

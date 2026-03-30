@@ -254,6 +254,7 @@
         "url": "https://github.com/ethangreen-dev/lovely-injector"
       },
       "original": {
+        "submodules": true,
         "type": "git",
         "url": "https://github.com/ethangreen-dev/lovely-injector"
       }
@@ -397,11 +398,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1774887559,
-        "narHash": "sha256-pkZcIRY9qgzAUYT/GeXOKIhoWjOytbf4Vf6vXiwks0s=",
+        "lastModified": 1774894862,
+        "narHash": "sha256-RxO8ck6ScEugKKs41osReOTgt7LTFgIKx8HEtw6HyP8=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "647ec5cc6dd6e8bb21bae3c55dd86c35cb8cf3ff",
+        "rev": "81f2a26eaa1d0fd00c2a159ebc1d24b9f5be1067",
         "type": "github"
       },
       "original": {
