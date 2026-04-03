@@ -72,6 +72,9 @@
       zig
       hyprls
       kdePackages.qtdeclarative
+      ruff
+      prettier
+      google-java-format
 
       # Fonts
       nerd-fonts.fira-code

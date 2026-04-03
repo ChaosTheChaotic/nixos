@@ -1,410 +1,245 @@
--- Global diagnostic config (TokyoNight colors will handle styling)
 vim.diagnostic.config({
 	virtual_text = {
-		source = "if_many", -- Only show virtual text if multiple diagnostics
+		source = "if_many",
 		prefix = "●",
 		spacing = 4,
-		update_in_insert = true, -- Enable updates in insert mode
+		update_in_insert = true,
 	},
 	signs = {
-    	  text = {
-    	    [vim.diagnostic.severity.ERROR] = " ",
-    	    [vim.diagnostic.severity.WARN]  = " ",
-    	    [vim.diagnostic.severity.HINT]  = " ",
-    	    [vim.diagnostic.severity.INFO]  = " ",
-    	  },
-    	  numhl = {
-    	    [vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
-    	    [vim.diagnostic.severity.WARN]  = "DiagnosticSignWarn",
-    	    [vim.diagnostic.severity.HINT]  = "DiagnosticSignHint",
-    	    [vim.diagnostic.severity.INFO]  = "DiagnosticSignInfo",
-    	  },
-    	},
+		text = {
+			[vim.diagnostic.severity.ERROR] = " ",
+			[vim.diagnostic.severity.WARN] = " ",
+			[vim.diagnostic.severity.HINT] = " ",
+			[vim.diagnostic.severity.INFO] = " ",
+		},
+		numhl = {
+			[vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+			[vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
+			[vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
+			[vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+		},
+	},
 	update_in_insert = true,
 	underline = true,
 	severity_sort = true,
 })
-vim.keymap.set("i", "<C-e>", vim.diagnostic.open_float, { noremap = true, silent = true })
 
-vim.opt.tabstop = 8
+vim.keymap.set("i", "<C-e>", vim.diagnostic.open_float, { noremap = true, silent = true })
+vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+
+-- Force consistent tab settings across all buffers
+vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
+vim.api.nvim_create_autocmd("BufEnter", {
+	callback = function()
+		vim.opt.tabstop = 2
+		vim.opt.softtabstop = 2
+		vim.opt.shiftwidth = 2
+	end,
+})
+
+-- Keep transparency even after colorscheme changes
+vim.api.nvim_create_autocmd("ColorScheme", {
+	pattern = "*",
+	callback = function()
+		local groups =
+			{ "Normal", "NormalNC", "LineNr", "Folded", "NonText", "SpecialKey", "VertSplit", "SignColumn", "EndOfBuffer" }
+		for _, group in ipairs(groups) do
+			vim.api.nvim_set_hl(0, group, { bg = "NONE", ctermbg = "NONE" })
+		end
+		vim.api.nvim_set_hl(0, "GitSignsCurrentLineBlame", { link = "Comment" })
+	end,
+})
 
 return {
 	{
 		"folke/tokyonight.nvim",
-		lazy = false,
+		lazy = true,
 		priority = 1000,
 		config = function()
 			require("tokyonight").setup({
 				style = "night",
-				transparent = true, -- Changed to true
+				transparent = true,
 				terminal_colors = true,
 			})
-			--vim.cmd([[colorscheme tokyonight]])
-			-- Add transparency to specific groups
-			vim.cmd([[
-	        highlight Normal guibg=NONE ctermbg=NONE
-	        highlight NormalNC guibg=NONE ctermbg=NONE
-	        highlight LineNr guibg=NONE ctermbg=NONE
-	        highlight Folded guibg=NONE ctermbg=NONE
-	        highlight NonText guibg=NONE ctermbg=NONE
-	        highlight SpecialKey guibg=NONE ctermbg=NONE
-	        highlight VertSplit guibg=NONE ctermbg=NONE
-	        highlight SignColumn guibg=NONE ctermbg=NONE
-	        highlight EndOfBuffer guibg=NONE ctermbg=NONE
-	      ]])
 		end,
 	},
 	{
 		"rose-pine/neovim",
-		lazy = true,
+		lazy = false,
 		name = "rose-pine",
 		config = function()
 			require("rose-pine").setup({
 				variant = "moon",
 				dim_inactive_windows = false,
-				enable = {
-					terminal = true,
-				},
-				styles = {
-					transparency = true,
-				},
+				enable = { terminal = true },
+				styles = { transparency = true },
 			})
-			--vim.cmd("colorscheme rose-pine")
-
-			vim.cmd([[
-        highlight Normal guibg=NONE ctermbg=NONE
-        highlight NormalNC guibg=NONE ctermbg=NONE
-        highlight LineNr guibg=NONE ctermbg=NONE
-        highlight Folded guibg=NONE ctermbg=NONE
-        highlight NonText guibg=NONE ctermbg=NONE
-        highlight SpecialKey guibg=NONE ctermbg=NONE
-        highlight VertSplit guibg=NONE ctermbg=NONE
-        highlight SignColumn guibg=NONE ctermbg=NONE
-        highlight EndOfBuffer guibg=NONE ctermbg=NONE
-      ]])
 		end,
 	},
 	{
-	  "hyperb1iss/silkcircuit-nvim",
-	  lazy = true,
-	  priority = 1000,
-	  config = function()
-	    --vim.cmd.colorscheme("silkcircuit")
-	    vim.cmd([[
-	      highlight Normal guibg=NONE ctermbg=NONE
-              highlight NormalNC guibg=NONE ctermbg=NONE
-              highlight LineNr guibg=NONE ctermbg=NONE
-              highlight Folded guibg=NONE ctermbg=NONE
-              highlight NonText guibg=NONE ctermbg=NONE
-              highlight SpecialKey guibg=NONE ctermbg=NONE
-              highlight VertSplit guibg=NONE ctermbg=NONE
-              highlight SignColumn guibg=NONE ctermbg=NONE
-              highlight EndOfBuffer guibg=NONE ctermbg=NONE
-	    ]])
-	  end,
+		"hyperb1iss/silkcircuit-nvim",
+		lazy = true,
+		priority = 1000,
 	},
 
-	-- Package Management
 	{
 		"williamboman/mason.nvim",
 		config = function()
 			require("mason").setup()
 		end,
 	},
+
 	{
-		"williamboman/mason-lspconfig.nvim",
+		"L3MON4D3/LuaSnip",
+		build = "make install_jsregexp",
+	},
+
+	{
+		"neovim/nvim-lspconfig",
+		dependencies = {
+			"williamboman/mason.nvim",
+			"williamboman/mason-lspconfig.nvim",
+			"saghen/blink.cmp",
+			"L3MON4D3/LuaSnip",
+		},
 		config = function()
-		  local lsps = {
-		    --"lua_ls",
-		    "ts_ls",
-		    "pyright",
-		    "bashls",
-		    "rust_analyzer",
-		    "cssls",
-		    "html",
-		    "jsonls",
-		    --"cmake",
-		    "jdtls",
-		    "gopls",
-		    "zls",
-		    --"qmlls",
-		    --"kotlin_lsp",
-		  }
-		  if vim.fn.filereadable("/etc/NIXOS") ~= 1 then
-		    table.insert(lsps, "lua_ls")
-		    table.insert(lsps, "cmake")
-		  end
+			local capabilities = require("blink.cmp").get_lsp_capabilities()
+
+			local mod_dirs = {
+				vim.fn.expand("~/omods"),
+				vim.fn.expand("~/.config/love/Mods"),
+			}
+			local decomlatro_uri = vim.uri_from_fname(vim.fn.expand("~/decomlatro"))
+
+			local on_attach = function(client, bufnr)
+				local opts = { noremap = true, silent = true, buffer = bufnr }
+				vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+				vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, opts)
+				vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, opts)
+				vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, opts)
+
+				-- Add source code to workspace if editing a Balatro mod
+				if client.name == "lua_ls" then
+					local current_file = vim.fs.normalize(vim.api.nvim_buf_get_name(bufnr))
+					if current_file ~= "" then
+						local in_mod = false
+						for _, mod_dir in ipairs(mod_dirs) do
+							if current_file:sub(1, #vim.fs.normalize(mod_dir)) == vim.fs.normalize(mod_dir) then
+								in_mod = true
+								break
+							end
+						end
+						if in_mod then
+							local has_decomlatro = false
+							for _, folder in ipairs(client.workspace_folders or {}) do
+								if folder.uri == decomlatro_uri then
+									has_decomlatro = true
+									break
+								end
+							end
+							if not has_decomlatro then
+								vim.lsp.buf.add_workspace_folder(decomlatro_uri)
+							end
+						end
+					end
+				end
+			end
+
+			local lsps = {
+				"ts_ls",
+				"pyright",
+				"bashls",
+				"rust_analyzer",
+				"cssls",
+				"html",
+				"jsonls",
+				"jdtls",
+				"gopls",
+				"zls",
+			}
+			if vim.fn.filereadable("/etc/NIXOS") ~= 1 then
+				table.insert(lsps, "lua_ls")
+				table.insert(lsps, "cmake")
+			end
+
 			require("mason-lspconfig").setup({
 				ensure_installed = lsps,
-				automatic_installation = true,
+				automatic_enable = true,
 			})
-		end,
-	},
 
-	-- LSP Configuration
-	{
-	  "neovim/nvim-lspconfig",
-	  dependencies = {
-	    "hrsh7th/nvim-cmp",
-	    "hrsh7th/cmp-nvim-lsp",
-	    "hrsh7th/cmp-buffer",
-	    "hrsh7th/cmp-path",
-	    "L3MON4D3/LuaSnip",
-	  },
-	  config = function()
-	    local capabilities = require("cmp_nvim_lsp").default_capabilities()
-	    -- For balatro
-	    local mod_dirs = {
-	      vim.fn.expand("~/omods"),
-	      vim.fn.expand("~/.config/love/Mods"),
-	    }
-	    local decomlatro_uri = vim.uri_from_fname(vim.fn.expand("~/decomlatro"))
+			for _, server in ipairs(lsps) do
+				if vim.lsp.config[server] then
+					vim.lsp.enable(server, {
+						capabilities = capabilities,
+						on_attach = on_attach,
+					})
+				end
+			end
 
-	    -- Enhanced LSP mappings
-	    local on_attach = function(client, bufnr)
-	      local opts = { noremap = true, silent = true, buffer = bufnr }
-	      vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-	      vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-	      vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, opts)
-	      vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, opts)
-	      vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, opts)
-
-	      -- Conditionally add decomlatro to workspace for lua_ls
-	      if client.name == "lua_ls" then
-	        local current_file = vim.api.nvim_buf_get_name(bufnr)
-	        if current_file ~= "" then
-	          current_file = vim.fs.normalize(current_file)
-	          local in_mod = false
-	          for _, mod_dir in ipairs(mod_dirs) do
-	            mod_dir = vim.fs.normalize(mod_dir)
-	            if current_file:sub(1, #mod_dir) == mod_dir then
-	              in_mod = true
-	              break
-	            end
-	          end
-	          if in_mod then
-	            local has_decomlatro = false
-	            for _, folder in ipairs(client.workspace_folders or {}) do
-	              if folder.uri == decomlatro_uri then
-	                has_decomlatro = true
-	                break
-	              end
-	            end
-	            if not has_decomlatro then
-	              vim.lsp.buf.add_workspace_folder(decomlatro_uri)
-	            end
-	          end
-	        end
-	      end
-	    end
-
-	    -- File type to LSP server mapping
-	    local servers = {
-	      lua = {
-	        name = "lua_ls",
-	        cmd = { "lua-language-server" },
-	        settings = {
-	          Lua = {
-	            runtime = { version = "Lua 5.4.8" },
-	            workspace = {
-	              library = vim.api.nvim_get_runtime_file("", true),
-	              checkThirdParty = false,
-	            },
-	            diagnostics = { globals = { "vim" } },
-	            telemetry = { enable = false },
-		    automatic_installation = false,
-	          },
-	        },
-	      },
-	      typescript = {
-	        name = "tsserver",
-	        cmd = { "typescript-language-server", "--stdio" },
-	        settings = {
-	          completions = { completeFunctionCalls = true },
-	          javascript = { preferences = { importModuleSpecifier = "relative" } },
-	          typescript = { preferences = { importModuleSpecifier = "relative" } },
-	        },
-	      },
-	      javascript = {
-	        name = "tsserver",
-	        cmd = { "typescript-language-server", "--stdio" },
-	      },
-	      python = {
-	        name = "pyright",
-	        cmd = { "pyright-langserver", "--stdio" },
-	      },
-	      sh = {
-	        name = "bashls",
-	        cmd = { "bash-language-server", "start" },
-	      },
-	      rust = {
-	        name = "rust_analyzer",
-	        cmd = { "rust-analyzer" },
-	        root_dir = function(fname)
-	          -- Only start rust-analyzer if there's a Cargo.toml file
-	          local cargo = vim.fn.findfile("Cargo.toml", vim.fn.fnamemodify(fname, ":h") .. ";")
-	          return cargo ~= "" and vim.fn.fnamemodify(cargo, ":h") or nil
-	        end,
-	      },
-	      c = {
-	        name = "clangd",
-	        cmd = { "clangd", "--background-index", "--clang-tidy" },
-	      },
-	      cpp = {
-	        name = "clangd",
-	        cmd = { "clangd", "--background-index", "--clang-tidy" },
-	      },
-	      nix = {
-	        name = "nixd",
-	        cmd = { "nixd" },
-	      },
-	      go = {
-		name = "gopls",
-		cmd = { "gopls" },
-	      },
-	      hyprlang = {
-		name = "hyprls",
-		cmd = { "hyprls" },
-	      },
-	      qml = {
-		name = "qmlls",
-		cmd = { "qmlls", "-E" },
-	      },
-	      zig = {
-		name = "zls",
-		cmd = { "zls" },
-		root_dir = function(fname)
-	  	  return vim.fs.dirname(vim.fs.find({ "build.zig", "zls.json", ".git" }, {
-	  	    upward = true,
-	  	    path = vim.fs.dirname(fname),
-	  	  })[1])
-	  	end,
-	      },
-	      --kotlin = {
-	      --  name = "kotlin_lsp",
-	      --  cmd = { "kotlin-lsp" },
-	      --},
-	    }
-
-	    vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
-	        pattern = {"CMakeLists.txt", "*.cmake"},
-	        callback = function(ev)
-	            -- Start cmake-language-server for CMake files
-	            vim.lsp.start({
-	                name = "cmake",
-	                cmd = { "cmake-language-server" },
-	                capabilities = capabilities,
-	                on_attach = on_attach,
-	                root_dir = vim.fs.dirname(vim.fs.find({ "CMakeLists.txt", ".git" }, {
-	                    upward = true,
-	                    path = vim.fs.dirname(ev.file),
-	                })[1] or vim.fn.getcwd()),
-	                settings = {},
-	            })
-	        end,
-	    })
-
-	    vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
-	      pattern = {"*.conf"},
-	      callback = function(ev)
-	        -- Only check files that might be Hyprland configs
-	        local filepath = vim.fn.expand("%:p")
-	        local filename = vim.fn.expand("%:t")
-
-	        -- Check if it's in a hypr directory or named hyprland.conf
-	        if filepath:match("hypr/") or filename == "hyprland.conf" then
-	          -- Check content to be sure
-	          local content = vim.api.nvim_buf_get_lines(ev.buf, 0, 10, false)
-	          local is_hypr = false
-	          for _, line in ipairs(content) do
-	            if line:match("^%s*monitor=") or
-	               line:match("^%s*exec=") or
-	               line:match("^%s*workspace=") or
-	               line:match("^%s*bind=") or
-	               line:match("^%s*source=") then
-	              is_hypr = true
-	              break
-	            end
-	          end
-
-	          if is_hypr then
-	            vim.bo.filetype = "hyprlang"
-
-	            -- Start the hyprls server
-	            vim.lsp.start({
-	              name = "hyprls",
-	              cmd = { "hyprls" },
-	              capabilities = capabilities,
-	              on_attach = on_attach,
-	              root_dir = vim.fs.dirname(ev.file),
-	            })
-	          end
-	        end
-	      end,
-	    })
-
-	    -- Autostart LSP servers based on filetype
-	    vim.api.nvim_create_autocmd("FileType", {
-	      pattern = vim.tbl_keys(servers),
-	      callback = function(ev)
-	        local server = servers[ev.match]
-	        if server then
-	          -- Check if we need a root directory and if it exists
-	          if server.root_dir then
-	            local root = server.root_dir(ev.file)
-	            if not root then
-	              return
-	            end
-	          end
-
-	          -- Start the language server
-	          vim.lsp.start({
-	            name = server.name,
-	            cmd = server.cmd,
-	            capabilities = capabilities,
-	            on_attach = on_attach,
-	            settings = server.settings,
-	            root_dir = server.root_dir and server.root_dir(ev.file) or nil,
-	          })
-	        end
-	      end,
-	    })
-	  end,
-	},
-
-	-- Completion Engine
-	{
-		"hrsh7th/nvim-cmp",
-		config = function()
-			local cmp = require("cmp")
-			cmp.setup({
-				snippet = {
-					expand = function(args)
-						require("luasnip").lsp_expand(args.body)
-					end,
+			vim.lsp.enable("lua_ls", {
+				capabilities = capabilities,
+				on_attach = on_attach,
+				settings = {
+					Lua = {
+						runtime = {
+							version = "LuaJIT",
+							path = {
+								"lua/?.lua",
+								"lua/?/init.lua",
+							},
+						},
+						workspace = {
+							library = {
+								vim.api.nvim_get_runtime_file("", true),
+							},
+							checkThirdParty = false,
+						},
+						diagnostics = { globals = { "vim" } },
+						telemetry = { enable = false },
+						hint = { enable = true },
+					},
 				},
-				mapping = cmp.mapping.preset.insert({
-					["<C-b>"] = cmp.mapping.scroll_docs(-4),
-					["<C-f>"] = cmp.mapping.scroll_docs(4),
-					["<C-Space>"] = cmp.mapping.complete(),
-					["<C-e>"] = cmp.mapping.abort(),
-					["<Tab>"] = cmp.mapping.confirm({ select = true }),
-					["<Up>"] = cmp.mapping.select_prev_item(), -- Arrow navigation
-					["<Down>"] = cmp.mapping.select_next_item(),
-				}),
-				sources = cmp.config.sources({
-					{ name = "nvim_lsp" },
-					{ name = "luasnip" },
-					{ name = "buffer" },
-					{ name = "path" },
-				}),
 			})
+
+			vim.lsp.enable("ts_ls", {
+				capabilities = capabilities,
+				on_attach = on_attach,
+				settings = { completions = { completeFunctionCalls = true } },
+			})
+
+			-- Standalone LSP setups (not managed by Mason)
+			vim.lsp.enable("hyprls", { capabilities = capabilities, on_attach = on_attach })
+			vim.lsp.enable("nixd", { capabilities = capabilities, on_attach = on_attach })
+			vim.lsp.enable("qmlls", { capabilities = capabilities, on_attach = on_attach, cmd = { "qmlls", "-E" } })
 		end,
 	},
 
-	-- Treesitter
+	{
+		"saghen/blink.cmp",
+		lazy = false,
+		version = "v1.*",
+		opts = {
+			keymap = {
+				preset = "default",
+				["<Up>"] = { "select_prev", "fallback" },
+				["<Down>"] = { "select_next", "fallback" },
+				["<Tab>"] = { "select_and_accept", "fallback" },
+			},
+			appearance = {
+				use_nvim_cmp_as_default = true,
+				nerd_font_variant = "mono",
+			},
+			snippets = { preset = "luasnip" },
+			sources = {
+				default = { "lsp", "path", "snippets", "buffer" },
+			},
+			signature = { enabled = true },
+		},
+	},
+
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
@@ -433,10 +268,7 @@ return {
 					"vimdoc",
 					"tsx",
 					"sql",
-					"toml",
 					"go",
-					"json",
-					"bash",
 					"qmljs",
 					"zig",
 				},
@@ -446,19 +278,19 @@ return {
 			})
 		end,
 	},
+
 	{
-	    "mfussenegger/nvim-jdtls",
-	    ft = "java",
-	    config = function()
-	        local config = {
-	            cmd = {'jdtls'},
-	            root_dir = require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'}),
-	        }
-	        require('jdtls').start_or_attach(config)
-	    end
+		"mfussenegger/nvim-jdtls",
+		ft = "java",
+		config = function()
+			local config = {
+				cmd = { "jdtls" },
+				root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew" }),
+			}
+			require("jdtls").start_or_attach(config)
+		end,
 	},
 
-	-- Telescope
 	{
 		"nvim-telescope/telescope.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
@@ -472,7 +304,6 @@ return {
 		end,
 	},
 
-	-- Git Integration
 	{
 		"lewis6991/gitsigns.nvim",
 		config = function()
@@ -490,13 +321,12 @@ return {
 		end,
 	},
 
-	-- Status Line
 	{
 		"nvim-lualine/lualine.nvim",
 		config = function()
 			require("lualine").setup({
 				options = {
-					theme = "tokyonight",
+					theme = "auto",
 					component_separators = { left = "", right = "" },
 					section_separators = { left = "", right = "" },
 					icons_enabled = true,
@@ -505,15 +335,8 @@ return {
 					lualine_a = { "mode" },
 					lualine_b = {
 						{ "branch", icon = "" },
-						{
-							"diff",
-							symbols = { added = " ", modified = " ", removed = " " },
-							colored = false,
-						},
-						{
-							"diagnostics",
-							symbols = { error = " ", warn = " ", info = " ", hint = " " },
-						},
+						{ "diff", symbols = { added = " ", modified = " ", removed = " " }, colored = false },
+						{ "diagnostics", symbols = { error = " ", warn = " ", info = " ", hint = " " } },
 					},
 					lualine_c = { "filename" },
 					lualine_x = {
@@ -528,13 +351,13 @@ return {
 		end,
 	},
 
-	-- Startup Screen
 	{
 		"goolord/alpha-nvim",
 		config = function()
+			-- Detect if running in a Nix flake environment or standard config
 			local nixenv = os.getenv("NIX_CFG_DIR")
-			local base
-			if nixenv == nil then base = "~/.config" else base = nixenv .. "/config" end
+			local base = nixenv == nil and "~/.config" or nixenv .. "/config"
+
 			local alpha = require("alpha")
 			local dashboard = require("alpha.themes.dashboard")
 			dashboard.section.header.val = {
@@ -554,7 +377,6 @@ return {
 				dashboard.button("l", "󰒲  Lazy", ":Lazy<CR>"),
 				dashboard.button("m", "󱁤  Mason", ":Mason<CR>"),
 				dashboard.button("g", "  LazyGit", ":LazyGit<CR>"),
-				--dashboard.button("c", "  Configuration", ":e ~/.config/nvim/lua/plugins/lazyass.lua<CR>"),
 				dashboard.button("c", "  Configuration", ":e " .. base .. "/nvim/lua/plugins/lazyass.lua<CR>"),
 				dashboard.button("q", "󰈆  Quit Neovim", ":qa<CR>"),
 			}
@@ -562,7 +384,6 @@ return {
 		end,
 	},
 
-	-- Auto Pairs
 	{
 		"windwp/nvim-autopairs",
 		event = "InsertEnter",
@@ -575,7 +396,6 @@ return {
 		end,
 	},
 
-	-- Additional Diagnostics
 	{
 		"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
 		config = function()
@@ -589,48 +409,51 @@ return {
 	{
 		"nvim-flutter/flutter-tools.nvim",
 		lazy = false,
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"stevearc/dressing.nvim", -- optional for vim.ui.select
-		},
+		dependencies = { "nvim-lua/plenary.nvim", "stevearc/dressing.nvim" },
 		config = true,
 	},
-	{
-		"nvim-tree/nvim-web-devicons",
-		lazy = true,
-	},
+	{ "nvim-tree/nvim-web-devicons", lazy = true },
 	{
 		"kdheepak/lazygit.nvim",
 		lazy = true,
-		cmd = {
-			"LazyGit",
-			"LazyGitConfig",
-			"LazyGitCurrentFile",
-			"LazyGitFilter",
-			"LazyGitFilterCurrentFile",
+		cmd = { "LazyGit", "LazyGitConfig", "LazyGitCurrentFile", "LazyGitFilter", "LazyGitFilterCurrentFile" },
+		dependencies = { "nvim-lua/plenary.nvim" },
+	},
+	{ "fladson/vim-kitty", ft = "kitty" },
+	{
+		"kylechui/nvim-surround",
+		event = "VeryLazy",
+		config = function()
+			require("nvim-surround").setup()
+		end,
+	},
+	{ "j-hui/fidget.nvim", opts = {} },
+	{
+		"stevearc/conform.nvim",
+		opts = {
+			formatters_by_ft = {
+				lua = { "stylua" },
+				python = { "ruff_format" },
+				rust = { "rustfmt" },
+				javascript = { "prettier" },
+				typescript = { "prettier" },
+				html = { "prettier" },
+				css = { "prettier" },
+				java = { "google-java-format" },
+				c = { "clang-format" },
+				cpp = { "clang-format" },
+				bash = { "shfmt" },
+				zsh = { "shfmt" },
+				sh = { "shfmt" },
+				json = { "jq" },
+				nix = { "nixfmt" },
+				go = { "gofmt" },
+				zig = { "zigfmt" },
+			},
+			formatters = {
+				stylua = { append_args = { "-a", "--indent-type", "Tabs", "--indent-width", "2" } },
+				shfmt = { append_args = { "-ci" } },
+			},
 		},
-		-- optional for floating window border decoration
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
 	},
-	{
-		"fladson/vim-kitty",
-		ft = "kitty",
-	},
-	{
-	    "kylechui/nvim-surround",
-	    event = "VeryLazy",
-	    config = function()
-	        require("nvim-surround").setup({
-	            -- Configuration here, or leave empty to use defaults
-	        })
-	    end
-	},
-	{
-	  "j-hui/fidget.nvim",
-	  opts = {
-	    -- options
-	  },
-	}
 }
