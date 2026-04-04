@@ -39,6 +39,15 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	end,
 })
 
+table.contains = function(t, v)
+	for _, val in ipairs(t) do
+		if val == v then
+			return true
+		end
+	end
+	return false
+end
+
 -- Keep transparency even after colorscheme changes
 vim.api.nvim_create_autocmd("ColorScheme", {
 	pattern = "*",
@@ -94,6 +103,12 @@ return {
 	{
 		"L3MON4D3/LuaSnip",
 		build = "make install_jsregexp",
+		dependencies = {
+			"rafamadriz/friendly-snippets",
+		},
+		config = function()
+			require("luasnip.loaders.from_vscode").lazy_load()
+		end,
 	},
 
 	{
@@ -163,6 +178,7 @@ return {
 			if vim.fn.filereadable("/etc/NIXOS") ~= 1 then
 				table.insert(lsps, "lua_ls")
 				table.insert(lsps, "cmake")
+				table.insert(lsps, "clangd")
 			end
 
 			require("mason-lspconfig").setup({
@@ -179,30 +195,32 @@ return {
 				end
 			end
 
-			vim.lsp.enable("lua_ls", {
-				capabilities = capabilities,
-				on_attach = on_attach,
-				settings = {
-					Lua = {
-						runtime = {
-							version = "LuaJIT",
-							path = {
-								"lua/?.lua",
-								"lua/?/init.lua",
+			if not table.contains(lsps, "lua_ls") then
+				vim.lsp.enable("lua_ls", {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					settings = {
+						Lua = {
+							runtime = {
+								version = "LuaJIT",
+								path = {
+									"lua/?.lua",
+									"lua/?/init.lua",
+								},
 							},
-						},
-						workspace = {
-							library = {
-								vim.api.nvim_get_runtime_file("", true),
+							workspace = {
+								library = {
+									vim.api.nvim_get_runtime_file("", true),
+								},
+								checkThirdParty = false,
 							},
-							checkThirdParty = false,
+							diagnostics = { globals = { "vim" } },
+							telemetry = { enable = false },
+							hint = { enable = true },
 						},
-						diagnostics = { globals = { "vim" } },
-						telemetry = { enable = false },
-						hint = { enable = true },
 					},
-				},
-			})
+				})
+			end
 
 			vim.lsp.enable("ts_ls", {
 				capabilities = capabilities,
@@ -214,6 +232,28 @@ return {
 			vim.lsp.enable("hyprls", { capabilities = capabilities, on_attach = on_attach })
 			vim.lsp.enable("nixd", { capabilities = capabilities, on_attach = on_attach })
 			vim.lsp.enable("qmlls", { capabilities = capabilities, on_attach = on_attach, cmd = { "qmlls", "-E" } })
+			if not table.contains(lsps, "clangd") then
+				vim.lsp.enable("clangd", {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { "clangd", "--background-index", "--clang-tidy" },
+					completions = {
+						completions = true,
+						completeFunctionCalls = true,
+					},
+				})
+			end
+			if not table.contains(lsps, "cmake") then
+				vim.lsp.enable("cmake", {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { "cmake-language-server" },
+					completions = {
+						completions = true,
+						completeFunctionCalls = true,
+					},
+				})
+			end
 		end,
 	},
 
