@@ -75,6 +75,7 @@
       ruff
       prettier
       google-java-format
+			tree-sitter
 
       # Fonts
       nerd-fonts.fira-code
