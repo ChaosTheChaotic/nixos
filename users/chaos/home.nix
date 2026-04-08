@@ -6,6 +6,9 @@
   ...
 }:
 
+let
+  master = inputs.nixpkgs-master.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+in
 {
   imports = [
     ./shell.nix
@@ -40,7 +43,8 @@
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
     home.file.".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
-    home.file.".config/quickshell".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
+    home.file.".config/quickshell".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
     home.file.".config/lobster".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/lobster";
 
@@ -75,7 +79,7 @@
       ruff
       prettier
       google-java-format
-			tree-sitter
+      tree-sitter
 
       # Fonts
       nerd-fonts.fira-code
@@ -99,34 +103,37 @@
       playerctl
       sd
       grim
-      yt-dlp
+      master.yt-dlp
       kdePackages.bluez-qt
       ani-cli
       (balatro.override {
-	src = null;
-	withMods = true;
-	lovely-injector = pkgs.rustPlatform.buildRustPackage rec {
-	  pname = "lovely-injector";
-	  version = "0.9.0";
+        src = null;
+        withMods = true;
+        lovely-injector = pkgs.rustPlatform.buildRustPackage rec {
+          pname = "lovely-injector";
+          version = "0.9.0";
 
-	  src = pkgs.fetchFromGitHub {
-	    owner = "ethangreen-dev";
-	    repo = "lovely-injector";
-	    rev = "v${version}";
-	    hash = "sha256-TzBxyIf7MjzsdFaJLBp2dXWNj5sOXyoMifaaztNIOog=";
-	    fetchSubmodules = true;
-	  };
+          src = pkgs.fetchFromGitHub {
+            owner = "ethangreen-dev";
+            repo = "lovely-injector";
+            rev = "v${version}";
+            hash = "sha256-TzBxyIf7MjzsdFaJLBp2dXWNj5sOXyoMifaaztNIOog=";
+            fetchSubmodules = true;
+          };
 
-	  cargoLock = {
-	    lockFile = "${inputs.lovely-injector}/Cargo.lock";
-	    outputHashes."retour-0.4.0-alpha.2" = "sha256-GtLTjErXJIYXQaOFLfMgXb8N+oyHNXGTBD0UeyvbjrA=";
-	  };
+          cargoLock = {
+            lockFile = "${inputs.lovely-injector}/Cargo.lock";
+            outputHashes."retour-0.4.0-alpha.2" = "sha256-GtLTjErXJIYXQaOFLfMgXb8N+oyHNXGTBD0UeyvbjrA=";
+          };
 
-	  cargoBuildFlags = [ "--package" "lovely-unix" ];
-	  doCheck = false;
-	  env.RUSTC_BOOTSTRAP = 1;
-	  nativeBuildInputs = [ pkgs.cmake ];
-	};
+          cargoBuildFlags = [
+            "--package"
+            "lovely-unix"
+          ];
+          doCheck = false;
+          env.RUSTC_BOOTSTRAP = 1;
+          nativeBuildInputs = [ pkgs.cmake ];
+        };
       })
 
       # Custom Inputs

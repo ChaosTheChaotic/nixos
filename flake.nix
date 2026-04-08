@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixos-apple-silicon.url = "github:nix-community/nixos-apple-silicon";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
