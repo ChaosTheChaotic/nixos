@@ -91,7 +91,7 @@ in
       scrcpy
       tesseract
       imagemagick
-      spotdl
+			#spotdl
       prismlauncher
       kdePackages.kdeconnect-kde
       libunwind
@@ -103,9 +103,12 @@ in
       playerctl
       sd
       grim
-      master.yt-dlp
+			#master.yt-dlp
       kdePackages.bluez-qt
-      ani-cli
+      (ani-cli.override {
+				withMpv = false;
+				withVlc = true;
+			})
       (balatro.override {
         src = null;
         withMods = true;
