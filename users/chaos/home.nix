@@ -79,7 +79,25 @@ in
       ruff
       prettier
       google-java-format
-      tree-sitter
+      (tree-sitter.overrideAttrs (old: rec {
+        version = "0.26.8";
+        src = fetchFromGitHub {
+          owner = "tree-sitter";
+          repo = "tree-sitter";
+          rev = "v${version}";
+          hash = "sha256-fcFEfoALrbpBD6rWogxJ7FNVlvDQgswoX9ylRgko+8Q=";
+        };
+        patches = [ ];
+        cargoDeps = rustPlatform.fetchCargoVendor {
+          inherit src;
+          name = "${old.pname}-${version}-vendor";
+          hash = "sha256-9FeWnWWPUWmMF15Psmul8GxGv2JceHWc2WZPmOr81gw=";
+        };
+        cargoHash = "sha256-9FeWnWWPUWmMF15Psmul8GxGv2JceHWc2WZPmOr81gw=";
+        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
+          rustPlatform.bindgenHook
+        ];
+      }))
 
       # Fonts
       nerd-fonts.fira-code
@@ -91,7 +109,7 @@ in
       scrcpy
       tesseract
       imagemagick
-			#spotdl
+			spotdl
       prismlauncher
       kdePackages.kdeconnect-kde
       libunwind
@@ -103,12 +121,9 @@ in
       playerctl
       sd
       grim
-			#master.yt-dlp
+			master.yt-dlp
       kdePackages.bluez-qt
-      (ani-cli.override {
-				withMpv = false;
-				withVlc = true;
-			})
+      ani-cli
       (balatro.override {
         src = null;
         withMods = true;
