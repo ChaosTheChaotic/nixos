@@ -182,11 +182,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775781825,
-        "narHash": "sha256-L5yKTpR+alrZU2XYYvIxCeCP4LBHU5jhwSj7H1VAavg=",
+        "lastModified": 1776184304,
+        "narHash": "sha256-No6QGBmIv5ChiwKCcbkxjdEQ/RO2ZS1gD7SFy6EZ7rc=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "e35c39fca04fee829cecdf839a50eb9b54d8a701",
+        "rev": "3c7524c68348ef79ce48308e0978611a050089b2",
         "type": "github"
       },
       "original": {
@@ -244,11 +244,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1771870716,
-        "narHash": "sha256-gFrRGrr6jeIpnTSNBmazZL22t5ilbLwyYAX1KCcH06E=",
+        "lastModified": 1775877429,
+        "narHash": "sha256-FBXJvTdF1dJyDqpuJrqFvKNHO8Ti4j3ta/Ds/zqk5Lk=",
         "ref": "refs/heads/master",
-        "rev": "43c5c94eae7b1825d716ee579efeaa7f29e2b39b",
-        "revCount": 362,
+        "rev": "16e61e58f61ec32c059670dfdb8ec5b374deb741",
+        "revCount": 364,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/ethangreen-dev/lovely-injector"
@@ -265,11 +265,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1774264319,
-        "narHash": "sha256-aAsO35YtqIdvBhCIKZ0a+OcC8wB0H1+mAoPKBY0jxeQ=",
+        "lastModified": 1776147994,
+        "narHash": "sha256-c5F8jYiB0fjWsP4j/yeszqszA3laflzDj6/pmoJTeG4=",
         "owner": "nix-community",
         "repo": "nixos-apple-silicon",
-        "rev": "9fe29a63b23005acfcd1324a9e78b6241226cdb1",
+        "rev": "81439a7fb8067ab43641efd79c84607701da1ccd",
         "type": "github"
       },
       "original": {
@@ -296,11 +296,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1775823013,
-        "narHash": "sha256-VWUEpaSnRJqECW0jNjBjiViBw/tWkmt05d1gRx5XYVw=",
+        "lastModified": 1776290008,
+        "narHash": "sha256-7cjIV4hRgQJYFEsNoRbcUvIaEiZZGNsJW6Tp0tc8AMY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "1a66bde6d71ed75075c223ea35dba627cfdd8ddc",
+        "rev": "1332e5e72171ca5f428bbfebc57bae0f66dacd96",
         "type": "github"
       },
       "original": {
@@ -376,11 +376,11 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1775710090,
-        "narHash": "sha256-ar3rofg+awPB8QXDaFJhJ2jJhu+KqN/PRCXeyuXR76E=",
+        "lastModified": 1776169885,
+        "narHash": "sha256-l/iNYDZ4bGOAFQY2q8y5OAfBBtrDAaPuRQqWaFHVRXM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "4c1018dae018162ec878d42fec712642d214fdfa",
+        "rev": "4bd9165a9165d7b5e33ae57f3eecbcb28fb231c9",
         "type": "github"
       },
       "original": {
@@ -414,11 +414,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775823017,
-        "narHash": "sha256-zdX86iuQzEQ2Y+zcu9UMRWLQf9BVeol8kU+nDArQWb0=",
+        "lastModified": 1776288778,
+        "narHash": "sha256-fJPzv8Jc91RoEToYZ4588mO1imNyiDq4ulrUJXr7pIA=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "5d63e73eb4a78d6af150f118d06dd64bda38c373",
+        "rev": "3cc6e021e559b189b74ede016363e5bcf79f603a",
         "type": "github"
       },
       "original": {
@@ -632,11 +632,11 @@
         "systems": "systems_6"
       },
       "locked": {
-        "lastModified": 1775811359,
-        "narHash": "sha256-rdpxY3E/O3c+FN1gXhdemlqH4qVJknewOymNdhmyFMI=",
+        "lastModified": 1775844886,
+        "narHash": "sha256-o9jx6JIzonYliAkAzY8Zpqje3Ve9lyB+N4JujfKVLPc=",
         "owner": "vicinaehq",
         "repo": "vicinae",
-        "rev": "3ca42986ab881bce1130d7c5f7b91d860ad57bea",
+        "rev": "8dea928bfea1da8c05527a3f55fe2e159ebf1c9e",
         "type": "github"
       },
       "original": {

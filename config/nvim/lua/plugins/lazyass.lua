@@ -330,6 +330,7 @@ return {
 							"mason",
 							"lspinfo",
 							"checkhealth",
+							"text",
 						}
 						for _, name in ipairs(ignore_ft) do
 							if ft == name then
