@@ -121,7 +121,7 @@ in
       playerctl
       sd
       grim
-			master.yt-dlp
+			yt-dlp
       kdePackages.bluez-qt
       ani-cli
       (balatro.override {
