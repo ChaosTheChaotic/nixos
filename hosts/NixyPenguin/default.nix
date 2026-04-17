@@ -81,6 +81,10 @@ in
     dates = [ "15:15" ];
   };
 
+  nix.registry.nixpkgs.flake = inputs.nixpkgs;
+  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+  nix.settings.flake-registry = "";
+
   hardware.asahi = {
     peripheralFirmwareDirectory = ../../firmware;
     setupAsahiSound = true;
