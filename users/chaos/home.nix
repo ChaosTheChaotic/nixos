@@ -109,7 +109,7 @@ in
       scrcpy
       tesseract
       imagemagick
-			spotdl
+      spotdl
       prismlauncher
       kdePackages.kdeconnect-kde
       libunwind
@@ -121,9 +121,11 @@ in
       playerctl
       sd
       grim
-			yt-dlp
+      yt-dlp
       kdePackages.bluez-qt
       ani-cli
+      equibop
+			git-filter-repo
       (balatro.override {
         src = null;
         withMods = true;
@@ -157,18 +159,6 @@ in
       # Custom Inputs
       inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
       inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default
-
-      (equibop.overrideAttrs (oldAttrs: {
-        ESBUILD_BINARY_PATH = "${pkgs.esbuild}/bin/esbuild";
-        preBuild = (oldAttrs.preBuild or "") + ''
-          echo "Patching esbuild version mismatch..."
-          chmod -R u+w node_modules/esbuild
-          find node_modules/esbuild -name "*.js" -exec sed -i 's/"0.27.2"/"${pkgs.esbuild.version}"/g' {} +
-        '';
-        postFixup = (oldAttrs.postFixup or "") + ''
-          wrapProgram $out/bin/equibop --add-flags "--user-agent-os windows"
-        '';
-      }))
     ];
     programs.quickshell = {
       enable = true;
