@@ -59,6 +59,20 @@ in
 
   nixpkgs.overlays = [
     inputs.nur.overlays.default
+    (final: prev: let
+      mesaVersion = "26.0.4";
+    in {
+      mesa = prev.mesa.overrideAttrs (oldAttrs: {
+        version = mesaVersion;
+        src = final.fetchFromGitLab {
+          domain = "gitlab.freedesktop.org";
+          owner = "mesa";
+          repo = "mesa";
+          rev = "mesa-${mesaVersion}";
+          hash = "sha256-gsrqhFCxZRrTbA5MMWARrN6lFVp4Q3D5Jz7MDYbXznY=";
+        };
+      });
+    })
   ];
 
   nixpkgs.config.allowUnfree = true;
