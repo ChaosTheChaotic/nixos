@@ -30,6 +30,7 @@
           email = "james.moriaty.ot@gmail.com";
         };
       };
+			lfs.enable = true;
     };
     programs.gh.enable = true;
     programs.uv.enable = true;
