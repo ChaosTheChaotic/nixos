@@ -126,6 +126,7 @@ in
       ani-cli
       equibop
 			git-filter-repo
+			shellcheck
       (balatro.override {
         src = null;
         withMods = true;
