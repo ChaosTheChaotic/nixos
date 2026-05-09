@@ -342,6 +342,18 @@ return {
 				"qmljs",
 				"zig",
 				"diff",
+				"tereix",
+			})
+
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "TSUpdate",
+				callback = function()
+					require("nvim-treesitter.parsers").zimbu = {
+						install_info = {
+							url = "https://github.com/ChaosTheChaotic/tree-sitter-tereix",
+						},
+					}
+				end,
 			})
 
 			vim.api.nvim_create_autocmd("FileType", {
