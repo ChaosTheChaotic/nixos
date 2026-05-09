@@ -258,8 +258,8 @@ return {
 	},
 
 	{
-    "xzbdmw/colorful-menu.nvim",
-		config = function() end
+		"xzbdmw/colorful-menu.nvim",
+		config = function() end,
 	},
 
 	{
@@ -312,7 +312,7 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 		branch = "main",
 		build = ":TSUpdate",
-		lazy = false;
+		lazy = false,
 		config = function()
 			require("nvim-treesitter").install({
 				"c",
@@ -341,42 +341,43 @@ return {
 				"go",
 				"qmljs",
 				"zig",
+				"diff",
 			})
 
 			vim.api.nvim_create_autocmd("FileType", {
 				pattern = "*",
 				callback = function(args)
-						local bufnr = args.buf
-						local ft = vim.bo[bufnr].filetype
+					local bufnr = args.buf
+					local ft = vim.bo[bufnr].filetype
 
-						local ignore_ft = {
-							"alpha",
-							"fidget",
-							"TelescopePrompt",
-							"notify",
-							"lazy",
-							"mason",
-							"lspinfo",
-							"checkhealth",
-							"text",
-						}
-						for _, name in ipairs(ignore_ft) do
-							if ft == name then
-								return
-							end
-						end
-
-						if vim.bo[bufnr].buftype ~= "" then
+					local ignore_ft = {
+						"alpha",
+						"fidget",
+						"TelescopePrompt",
+						"notify",
+						"lazy",
+						"mason",
+						"lspinfo",
+						"checkhealth",
+						"text",
+					}
+					for _, name in ipairs(ignore_ft) do
+						if ft == name then
 							return
 						end
+					end
 
-						local lang = vim.treesitter.language.get_lang(ft) or ft
-						local has_parser = pcall(vim.treesitter.get_parser, bufnr, lang)
+					if vim.bo[bufnr].buftype ~= "" then
+						return
+					end
 
-						if has_parser then
-							vim.treesitter.start(bufnr, lang)
-						end
-					end,
+					local lang = vim.treesitter.language.get_lang(ft) or ft
+					local has_parser = pcall(vim.treesitter.get_parser, bufnr, lang)
+
+					if has_parser then
+						vim.treesitter.start(bufnr, lang)
+					end
+				end,
 			})
 		end,
 	},
