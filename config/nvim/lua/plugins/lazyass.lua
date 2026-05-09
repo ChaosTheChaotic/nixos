@@ -314,6 +314,26 @@ return {
 		build = ":TSUpdate",
 		lazy = false,
 		config = function()
+
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "TSUpdate",
+				callback = function()
+					require("nvim-treesitter.parsers").tereix = {
+						install_info = {
+							url = "https://github.com/ChaosTheChaotic/tree-sitter-tereix",
+							revision = "562a69c9496a20584551f8e85071bf5e2aeff007";
+						},
+					}
+				end,
+			})
+
+			vim.filetype.add({
+				extension = {
+					tx = "tereix",
+					tereix = "tereix",
+				},
+			})
+
 			require("nvim-treesitter").install({
 				"c",
 				"cpp",
@@ -343,17 +363,6 @@ return {
 				"zig",
 				"diff",
 				"tereix",
-			})
-
-			vim.api.nvim_create_autocmd("User", {
-				pattern = "TSUpdate",
-				callback = function()
-					require("nvim-treesitter.parsers").zimbu = {
-						install_info = {
-							url = "https://github.com/ChaosTheChaotic/tree-sitter-tereix",
-						},
-					}
-				end,
 			})
 
 			vim.api.nvim_create_autocmd("FileType", {
