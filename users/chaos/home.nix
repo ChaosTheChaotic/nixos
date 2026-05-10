@@ -160,6 +160,7 @@ in
       # Custom Inputs
       inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
       inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default
+      inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
     programs.quickshell = {
       enable = true;

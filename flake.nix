@@ -23,6 +23,7 @@
       flake = false;
     };
     clogite.url = "github:chaosthechaotic/clogite";
+    tereix.url = "github:chaosthechaotic/tereix";
     lovely-injector.url = "git+https://github.com/ethangreen-dev/lovely-injector?submodules=1";
   };
 

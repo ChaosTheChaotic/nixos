@@ -840,6 +840,7 @@ EOF
 
     cat <<-EOF >>"${path}/package.nix"
   cmakeFlags = [
+    "-DCMAKE_BUILD_TYPE=Release"
     "-DDO_INSTALL=ON"
     "-DUSE_CCACHE=OFF"
     $( [[ "$has_pkg" == true ]] && echo "\"-DPKG_CONFIG=ON\"" )

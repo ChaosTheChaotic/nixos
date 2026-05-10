@@ -392,6 +392,22 @@
     },
     "nixpkgs_7": {
       "locked": {
+        "lastModified": 1777954456,
+        "narHash": "sha256-hGdgeU2Nk87RAuZyYjyDjFL6LK7dAZN5RE9+hrDTkDU=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_8": {
+      "locked": {
         "lastModified": 1772542754,
         "narHash": "sha256-WGV2hy+VIeQsYXpsLjdr4GvHv5eECMISX1zKLTedhdg=",
         "owner": "NixOS",
@@ -440,6 +456,7 @@
         "nixpkgs-master": "nixpkgs-master",
         "nur": "nur",
         "rose-pine-hyprcursor": "rose-pine-hyprcursor",
+        "tereix": "tereix",
         "vicinae": "vicinae"
       }
     },
@@ -608,6 +625,24 @@
         "type": "github"
       }
     },
+    "tereix": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_7"
+      },
+      "locked": {
+        "lastModified": 1778439787,
+        "narHash": "sha256-PVi0LJUlPpWOx0ZH6wuR7Ye8apTTSlWhD+cFVDm0ONg=",
+        "owner": "chaosthechaotic",
+        "repo": "tereix",
+        "rev": "9cf88555cee9af9204d6512f4eb6da32fc5d254e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "chaosthechaotic",
+        "repo": "tereix",
+        "type": "github"
+      }
+    },
     "utils": {
       "inputs": {
         "systems": "systems_5"
@@ -628,7 +663,7 @@
     },
     "vicinae": {
       "inputs": {
-        "nixpkgs": "nixpkgs_7",
+        "nixpkgs": "nixpkgs_8",
         "systems": "systems_6"
       },
       "locked": {
