@@ -114,7 +114,7 @@ in
       kdePackages.kdeconnect-kde
       libunwind
       qalculate-qt
-      hyprpaper
+			wbg
       libnotify
       slurp
       wl-clipboard

@@ -25,3 +25,5 @@
 ["=" "+" "-" "*" "/" "%" "==" "!=" "<" ">" "<=" ">=" "&&" "||" "!" "&" "|" "^" "<<" ">>"] @operator
 ";" @punctuation.delimiter
 "." @punctuation.delimiter
+
+(comment) @comment
