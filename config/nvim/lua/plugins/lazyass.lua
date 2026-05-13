@@ -39,6 +39,13 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	end,
 })
 
+vim.filetype.add({
+	extension = {
+		tx = "tereix",
+		tereix = "tereix",
+	},
+})
+
 table.contains = function(t, v)
 	for _, val in ipairs(t) do
 		if val == v then
@@ -254,6 +261,16 @@ return {
 					},
 				})
 			end
+			vim.lsp.config["tereix"] = {
+				cmd = { "tereix", "--lsp" },
+				filetypes = { "tx", "tereix" },
+				root_markers = { ".git" },
+			}
+
+			vim.lsp.enable("tereix", {
+				capabilities = capabilities,
+				on_attach = on_attach,
+			})
 		end,
 	},
 
@@ -325,13 +342,6 @@ return {
 						},
 					}
 				end,
-			})
-
-			vim.filetype.add({
-				extension = {
-					tx = "tereix",
-					tereix = "tereix",
-				},
 			})
 
 			require("nvim-treesitter").install({
