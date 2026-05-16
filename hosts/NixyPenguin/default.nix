@@ -9,6 +9,7 @@
 let
   customPkgs = pkgs.callPackage ../../pkgs/default.nix { };
   extraFonts = pkgs.callPackage ../../pkgs/fonts.nix { };
+  master = inputs.nixpkgs-master.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   imports = [
@@ -212,6 +213,7 @@ in
       "networkmanager"
       "adbusers"
       "video"
+      "render"
       "input"
     ];
     shell = pkgs.zsh;
@@ -232,13 +234,14 @@ in
     enable = true;
     withUWSM = true;
     xwayland.enable = true;
+		package = master.hyprland;
   };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
+    #extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
   };
 
   programs.kdeconnect.enable = true;
