@@ -228,6 +228,11 @@ in
 
   programs.nix-ld = {
     enable = true;
+		libraries = with pkgs; [
+			zlib
+			openssl
+			stdenv.cc.cc.lib
+		];
   };
 
   programs.hyprland = {

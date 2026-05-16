@@ -1360,7 +1360,7 @@ PanelWindow {
 		}
 
 		MouseArea {
-		  id: mouseArea
+		  id: mouseAreaBt
 		  anchors.fill: parent
 		  anchors.rightMargin: model.paired ? 32 : 0
 		  hoverEnabled: true

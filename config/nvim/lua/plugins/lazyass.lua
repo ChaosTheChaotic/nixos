@@ -130,8 +130,7 @@ return {
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
 			local mod_dirs = {
-				vim.fn.expand("~/omods"),
-				vim.fn.expand("~/.config/love/Mods"),
+				vim.fn.expand("~/.local/share/Balatro/Mods"),
 			}
 			local decomlatro_uri = vim.uri_from_fname(vim.fn.expand("~/decomlatro"))
 
