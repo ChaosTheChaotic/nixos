@@ -1293,7 +1293,7 @@ PanelWindow {
 		width: ListView.view.width
 		implicitHeight: 40
 		radius: 8
-		color: mouseArea.containsMouse ? "#403d4d" : "transparent"
+		color: mouseAreaBt.containsMouse ? "#403d4d" : "transparent"
 		Behavior on color { ColorAnimation { duration: 150 } }
 
 		RowLayout {

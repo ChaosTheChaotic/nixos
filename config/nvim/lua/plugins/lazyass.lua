@@ -372,6 +372,7 @@ return {
 				"zig",
 				"diff",
 				"tereix",
+				"make",
 			})
 
 			vim.api.nvim_create_autocmd("FileType", {
