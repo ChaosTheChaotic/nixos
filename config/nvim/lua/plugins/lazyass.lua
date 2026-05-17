@@ -373,6 +373,9 @@ return {
 				"diff",
 				"tereix",
 				"make",
+				"gitcommit",
+				"meson",
+				"ninja",
 			})
 
 			vim.api.nvim_create_autocmd("FileType", {
