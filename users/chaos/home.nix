@@ -44,10 +44,24 @@ in
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
     home.file.".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
-    home.file.".config/mpd".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/mpd";
     home.file.".config/rmpc".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/rmpc";
     home.file.".config/quickshell".source =
       config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
+    home.file.".config/mpd/mpd.conf".text = ''
+      music_directory    "~/Music"
+      playlist_directory "${config.home.sessionVariables.NIX_CFG_DIR}/config/mpd/playlists"
+      db_file            "${config.home.sessionVariables.NIX_CFG_DIR}/config/mpd/database"
+      pid_file           "${config.home.sessionVariables.NIX_CFG_DIR}/config/mpd/pid"
+      log_file           "/dev/null"
+      state_file         "${config.home.sessionVariables.NIX_CFG_DIR}/config/mpd/state"
+
+      bind_to_address    "${config.home.sessionVariables.NIX_CFG_DIR}/config/mpd/socket"
+
+      audio_output {
+          type           "pipewire"
+          name           "PipeWire Output"
+      }
+    '';
 
     home.packages = with pkgs; [
       # Development
@@ -115,7 +129,7 @@ in
       kdePackages.kdeconnect-kde
       libunwind
       qalculate-qt
-			wbg
+      wbg
       libnotify
       slurp
       wl-clipboard
@@ -126,8 +140,8 @@ in
       kdePackages.bluez-qt
       ani-cli
       equibop
-			git-filter-repo
-			shellcheck
+      git-filter-repo
+      shellcheck
       (balatro.override {
         src = null;
         withMods = true;
