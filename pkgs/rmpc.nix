@@ -126,7 +126,7 @@ pkgs.writeShellApplication {
   
   runtimeInputs = [ mpd-minimal pkgs.rmpc ];
   text = ''
-    SOCKET="$HOME/.config/mpd/socket"
+    SOCKET="$NIX_CFG_DIR/config/mpd/socket"
 		rm -f "$SOCKET"
     mpd --no-daemon &
     MPD_PID=$!

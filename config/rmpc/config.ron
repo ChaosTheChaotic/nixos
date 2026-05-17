@@ -2,7 +2,7 @@
 #![enable(unwrap_newtypes)]
 #![enable(unwrap_variant_newtypes)]
 (
-    address: "~/.config/mpd/socket",
+    address: "$NIX_CFG_DIR/config/mpd/socket",
     password: None,
     theme: None,
     cache_dir: None,
