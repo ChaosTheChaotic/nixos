@@ -370,12 +370,10 @@
                           default: (kind: Text("No Song"), style: (modifiers: "Bold"))),
                   ], align: Center, scroll_speed: 1
               )),
-              "volume": Split(
-                  direction: Horizontal,
+							"volume": Split(
+									direction: Horizontal,
                   panes: [
                       (size: "100%", pane: Pane(Property(content: [(kind: Property(Widget(Volume)), style: (fg: "#c4a7e7"))], align: Right))),
-                      (size: "3", pane: Pane(Property(content: [(kind: Property(Status(Volume)), style: (fg: "#c4a7e7"))], align: Right))),
-                      (size: "1", pane: Pane(Property(content: [(kind: Text("%"), style: (fg: "#c4a7e7"))]))),
                   ]
               ),
               "elapsed_and_bitrate": Pane(Property(
