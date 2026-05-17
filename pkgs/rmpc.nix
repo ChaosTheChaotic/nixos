@@ -1,4 +1,6 @@
-{ pkgs ? import <nixpkgs> {} }:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 
 let
   mpd-minimal = pkgs.gcc14Stdenv.mkDerivation {
@@ -8,8 +10,8 @@ let
     src = pkgs.fetchFromGitHub {
       owner = "MusicPlayerDaemon";
       repo = "MPD";
-      rev = "master"; 
-      hash = "sha256-ehlpqm7RUf/Q3xTqtyJf7BVhjEQq+u76ptxbllzJKFc="; 
+      rev = "master";
+      hash = "sha256-ehlpqm7RUf/Q3xTqtyJf7BVhjEQq+u76ptxbllzJKFc=";
     };
 
     mesonBuildType = "release";
@@ -21,8 +23,23 @@ let
     ];
 
     buildInputs = with pkgs; [
-      liburing dbus zlib boost fmt mpg123 libid3tag libvorbis
-      libsndfile flac opus ffmpeg chromaprint pcre2 icu pipewire alsa-lib
+      liburing
+      dbus
+      zlib
+      boost
+      fmt
+      mpg123
+      libid3tag
+      libvorbis
+      libsndfile
+      flac
+      opus
+      ffmpeg
+      chromaprint
+      pcre2
+      icu
+      pipewire
+      alsa-lib
     ];
 
     mesonFlags = [
@@ -123,25 +140,28 @@ let
 in
 pkgs.writeShellApplication {
   name = "rmpc";
-  
-  runtimeInputs = [ mpd-minimal pkgs.rmpc ];
+
+  runtimeInputs = [
+    mpd-minimal
+    pkgs.rmpc
+  ];
   text = ''
-    SOCKET="$NIX_CFG_DIR/config/mpd/socket"
-		rm -f "$SOCKET"
-    mpd --no-daemon &
-    MPD_PID=$!
+        SOCKET="$NIX_CFG_DIR/config/mpd/socket"
+    		rm -f "$SOCKET"
+        mpd --no-daemon &
+        MPD_PID=$!
 
-    # Ensure mpd is automatically killed when rmpc exits or is interrupted
-    trap 'kill $MPD_PID 2>/dev/null || true' EXIT
+        # Ensure mpd is automatically killed when rmpc exits or is interrupted
+        trap 'kill $MPD_PID 2>/dev/null || true' EXIT
 
-    # Wait until the MPD Unix socket is created
-    for _ in {1..30}; do
-        if [ -S "$SOCKET" ]; then
-            break
-        fi
-        sleep 0.1
-    done
+        # Wait until the MPD Unix socket is created
+        for _ in {1..30}; do
+            if [ -S "$SOCKET" ]; then
+                break
+            fi
+            sleep 0.1
+        done
 
-    ${pkgs.rmpc}/bin/rmpc "$@"
+        ${pkgs.rmpc}/bin/rmpc "$@"
   '';
 }
