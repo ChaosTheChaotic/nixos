@@ -9,7 +9,6 @@
 let
   customPkgs = pkgs.callPackage ../../pkgs/default.nix { };
   extraFonts = pkgs.callPackage ../../pkgs/fonts.nix { };
-  master = inputs.nixpkgs-master.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   imports = [
@@ -74,6 +73,12 @@ in
     extra-trusted-public-keys = [
       "nixos-apple-silicon.cachix.org-1:8psDu5SA5dAD7qA0zMy5UT292TxeEPzIz8VVEr2Js20="
     ];
+    system-features = [
+      "gccarch-apple-m1"
+      "big-parallel"
+      "benchmark"
+    ];
+		flake-registry = "";
   };
 
   nix.optimise = {
@@ -83,7 +88,6 @@ in
 
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
-  nix.settings.flake-registry = "";
 
   hardware.asahi = {
     peripheralFirmwareDirectory = ../../firmware;
@@ -238,7 +242,6 @@ in
     enable = true;
     withUWSM = true;
     xwayland.enable = true;
-		package = master.hyprland;
   };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
