@@ -8,6 +8,7 @@
 
 let
   master = inputs.nixpkgs-master.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  rmpc-custom = pkgs.callPackage ../../pkgs/rmpc.nix { };
 in
 {
   imports = [
@@ -43,6 +44,8 @@ in
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
     home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
     home.file.".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
+    home.file.".config/mpd".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/mpd";
+    home.file.".config/rmpc".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/rmpc";
     home.file.".config/quickshell".source =
       config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
     home.file.".config/lobster".source =
@@ -161,6 +164,7 @@ in
       inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
       inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default
       inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default
+			rmpc-custom
     ];
     programs.quickshell = {
       enable = true;
