@@ -146,23 +146,23 @@ pkgs.writeShellApplication {
     pkgs.rmpc
   ];
   text = ''
-				mkdir -p ~/.local/share/mpd/playlists
-        SOCKET="/tmp/mpd_socket"
-    		rm -f "$SOCKET"
-        mpd --no-daemon &
-        MPD_PID=$!
+    				mkdir -p ~/.local/share/mpd/playlists
+            SOCKET="/tmp/mpd_socket"
+        		rm -f "$SOCKET"
+            mpd --no-daemon &
+            MPD_PID=$!
 
-        # Ensure mpd is automatically killed when rmpc exits or is interrupted
-        trap 'kill $MPD_PID 2>/dev/null || true' EXIT
+            # Ensure mpd is automatically killed when rmpc exits or is interrupted
+            trap 'kill $MPD_PID 2>/dev/null || true' EXIT
 
-        # Wait until the MPD Unix socket is created
-        for _ in {1..30}; do
-            if [ -S "$SOCKET" ]; then
-                break
-            fi
-            sleep 0.1
-        done
+            # Wait until the MPD Unix socket is created
+            for _ in {1..30}; do
+                if [ -S "$SOCKET" ]; then
+                    break
+                fi
+                sleep 0.1
+            done
 
-        ${pkgs.rmpc}/bin/rmpc "$@"
+            ${pkgs.rmpc}/bin/rmpc "$@"
   '';
 }
