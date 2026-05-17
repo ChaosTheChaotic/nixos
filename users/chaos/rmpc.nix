@@ -1,5 +1,4 @@
 {
-  config,
   ...
 }:
 
@@ -7,13 +6,13 @@
   config = {
     home.file.".config/mpd/mpd.conf".text = ''
       music_directory    "~/Music"
-      playlist_directory "${config.home.sessionVariables.NIX_CFG_DIR}/config/mpd/playlists"
-      db_file            "${config.home.sessionVariables.NIX_CFG_DIR}/config/mpd/database"
-      pid_file           "${config.home.sessionVariables.NIX_CFG_DIR}/config/mpd/pid"
+      playlist_directory "~/.local/share/mpd/playlists"
+      db_file            "~/.local/share/mpd/database"
+      pid_file           "~/.local/share/mpd/pid"
       log_file           "/dev/null"
-      state_file         "${config.home.sessionVariables.NIX_CFG_DIR}/config/mpd/state"
+      state_file         "~/.local/share/mpd/state"
 
-      bind_to_address    "${config.home.sessionVariables.NIX_CFG_DIR}/config/mpd/socket"
+      bind_to_address    "/tmp/mpd_socket"
 
       audio_output {
           type           "pipewire"
@@ -25,7 +24,7 @@
       #![enable(unwrap_newtypes)]
       #![enable(unwrap_variant_newtypes)]
       (
-          address: "${config.home.sessionVariables.NIX_CFG_DIR}/config/mpd/socket",
+          address: "/tmp/mpd_socket",
           password: None,
           theme: None,
           cache_dir: None,

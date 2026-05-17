@@ -146,7 +146,8 @@ pkgs.writeShellApplication {
     pkgs.rmpc
   ];
   text = ''
-        SOCKET="$NIX_CFG_DIR/config/mpd/socket"
+				mkdir -p ~/.local/share/mpd/playlists
+        SOCKET="/tmp/mpd_socket"
     		rm -f "$SOCKET"
         mpd --no-daemon &
         MPD_PID=$!
