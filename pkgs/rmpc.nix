@@ -143,26 +143,31 @@ pkgs.writeShellApplication {
 
   runtimeInputs = [
     mpd-minimal
+    pkgs.mpd-mpris
     pkgs.rmpc
   ];
+
   text = ''
-    				mkdir -p ~/.local/share/mpd/playlists
-            SOCKET="/tmp/mpd_socket"
-        		rm -f "$SOCKET"
-            mpd --no-daemon &
-            MPD_PID=$!
+    mkdir -p ~/.local/share/mpd/playlists
+    SOCKET="/tmp/mpd_socket"
+    rm -f "$SOCKET"
 
-            # Ensure mpd is automatically killed when rmpc exits or is interrupted
-            trap 'kill $MPD_PID 2>/dev/null || true' EXIT
+    mpd --no-daemon &
+    MPD_PID=$!
 
-            # Wait until the MPD Unix socket is created
-            for _ in {1..30}; do
-                if [ -S "$SOCKET" ]; then
-                    break
-                fi
-                sleep 0.1
-            done
+    # Wait until the MPD Unix socket is created
+    for _ in {1..30}; do
+        if [ -S "$SOCKET" ]; then
+            break
+        fi
+        sleep 0.1
+    done
 
-            ${pkgs.rmpc}/bin/rmpc "$@"
+    mpd-mpris -network unix -host "$SOCKET" >/dev/null 2>&1 &
+    MPRIS_PID=$!
+
+    trap 'kill $MPD_PID $MPRIS_PID 2>/dev/null || true' EXIT
+
+    ${pkgs.rmpc}/bin/rmpc "$@"
   '';
 }
