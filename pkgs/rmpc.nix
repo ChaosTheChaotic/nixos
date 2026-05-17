@@ -170,5 +170,6 @@ pkgs.writeShellApplication {
     trap 'kill $MPD_PID $MPRIS_PID 2>/dev/null || true' EXIT
 
     ${pkgs.rmpc}/bin/rmpc "$@"
+    rm -f "$SOCKET"
   '';
 }

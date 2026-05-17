@@ -12,6 +12,8 @@
       log_file           "/dev/null"
       state_file         "~/.local/share/mpd/state"
 
+			auto_update "yes"
+
       bind_to_address    "/tmp/mpd_socket"
 
       audio_output {
@@ -47,7 +49,11 @@
                                   "--no-post-overwrites",
                                   "--no-playlist",
                                   "--playlist-items", "1",
-																	"--cookies-from-browser", "firefox:~/.floorp/default",
+																	"--write-subs",
+																	"--sub-langs", "all",
+																	"--embed-subs",
+																	"--cookies-from-browser", "firefox:~/.floorp",
+																	"--extractor-args", "youtube:client=android,web_embedded",
                               ],
                               rewind_to_start_sec: None,
                               keep_state_on_song_change: true,
