@@ -27,7 +27,7 @@
                               address: "/tmp/mpd_socket",
                               password: None,
                               theme: "def",
-                              cache_dir: None,
+                              cache_dir: Some("/tmp/rmpc/cache"),
                               on_song_change: None,
                               volume_step: 5,
                               max_fps: 60,
