@@ -48,8 +48,6 @@ in
     home.file.".config/rmpc".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/rmpc";
     home.file.".config/quickshell".source =
       config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
-    home.file.".config/lobster".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-cfg/config/lobster";
 
     home.packages = with pkgs; [
       # Development

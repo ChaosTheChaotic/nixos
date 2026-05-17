@@ -16,7 +16,6 @@
       url = "github:ndom91/rose-pine-hyprcursor";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    lobster.url = "github:justchokingaround/lobster";
     vicinae.url = "github:vicinaehq/vicinae";
     f-sy-h = {
       url = "github:z-shell/F-Sy-H";
