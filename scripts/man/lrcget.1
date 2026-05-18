@@ -3,11 +3,12 @@
 lrcget \- Fetches track lyrics from the LRCLIB API
 .SH SYNOPSIS
 .B lrcget
-[\fB\-h\fR] [\fB\-m\fR \fImode\fR] \fB\-n\fR \fItrack_name\fR \fB\-a\fR \fIartist_name\fR \fB\-l\fR \fIalbum_name\fR \fB\-d\fR \fIduration\fR [\fB\-o\fR \fIoutput_file\fR]
+[\fB\-h\fR] [\fB\-m\fR \fImode\fR] \fB\-n\fR \fItrack_name\fR \fB\-a\fR \fIartist_name\fR [\fB\-l\fR \fIalbum_name\fR] [\fB\-d\fR \fIduration\fR] [\fB\-o\fR \fIoutput_file\fR]
 .SH DESCRIPTION
 .B lrcget
-is a command-line wrapper script that interfaces with the LRCLIB API to find, format, and extract song lyrics. The script requires both a track name and an artist name to complete a targeted lookup.
+is a command-line wrapper script that interfaces with the LRCLIB API to find, format, and extract song lyrics. The script requires both a track name and an artist name to initialize a query.
 .PP
+If both the album name and precise track duration are provided, the script targets the exact cryptographic signature endpoint (\fB/api/get\fR). If either parameter is omitted, the script automatically switches to the search endpoint (\fB/api/search\fR) and matches against the most relevant result.
 .SH OPTIONS
 .TP
 .B \-h
@@ -33,10 +34,10 @@ The title of the song track to look up (Required).
 The name of the artist or band responsible for the track (Required).
 .TP
 .B \-l \fIalbum_name\fR
-The name of the album associated with the track.
+The name of the album associated with the track (Optional). Required for exact signature lookups.
 .TP
 .B \-d \fIduration\fR
-The precise song duration value represented as an integer of total seconds.
+The precise song duration value represented as an integer of total seconds (Optional). Required for exact signature lookups.
 .TP
 .B \-o \fIoutput_file\fR
 Saves the processed output stream into the designated target file instead of redirecting it to stdout.
@@ -46,7 +47,7 @@ Saves the processed output stream into the designated target file instead of red
 Success.
 .TP
 .B 1
-Failure due to missing metadata, invalid formatting flags, or invalid execution arguments.
+Failure due to missing essential metadata, invalid formatting flags, or invalid execution arguments.
 .TP
 .B 2
 Target search returned no matching items (API 404).
@@ -58,9 +59,9 @@ Network execution issues or arbitrary unexpected HTTP responses.
 The requested track entry exists, but lacks data matching the chosen formatting mode.
 .SH EXAMPLE
 .PP
-.B lrcget \-m fallback \-n "Song" \-a "Artist" \-l "Album" \-d 360 \-o out.lrc
+.B lrcget \-m fallback \-n "Song" \-a "Artist" \-o out.lrc
 .RS
-Queries a hypothetical song for lyrics (synced if not plain) and saves them to a file called out.lrc
+Queries a song using only the track and artist, gracefully falling back to a search query when album and duration details are absent.
 .RE
 .SH SEE ALSO
 .BR curl (1),

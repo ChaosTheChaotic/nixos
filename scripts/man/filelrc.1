@@ -1,4 +1,4 @@
-.TH FILELRC 1 "1970-01-01" "v1.0" "Custom Scripts Manual"
+.TH FILELRC 1 "1970-1-1" "v1.0" "Custom Scripts Manual"
 .SH NAME
 filelrc \- Extracts audio metadata and fetches track lyrics via lrcget
 .SH SYNOPSIS
@@ -8,7 +8,7 @@ filelrc \- Extracts audio metadata and fetches track lyrics via lrcget
 .B filelrc
 is a command-line utility that automates the lyrics lookup process for local audio files. It checks for local dependencies, uses \fBffprobe\fR to parse the targeted media file, and normalizes its internal metadata tags to extract the track name, artist name, album name, and runtime duration.
 .PP
-Once the metadata criteria are validated, it passes these parameters downstream to execute a targeted query using \fBlrcget\fR.
+Once the track name and artist name are validated, it passes all available parameters downstream to \fBlrcget\fR. If album or duration tags are missing from the file, the underlying query automatically downgrades to a broader search query instead of failing.
 .SH OPTIONS
 .TP
 .B \-h
@@ -32,21 +32,21 @@ Saves the processed output stream into the designated target file instead of red
 .SH ARGUMENTS
 .TP
 .I audio_file
-The path to the local audio file containing embedded metadata tags (e.g., title, artist, album) to be parsed.
+The path to the local audio file containing embedded metadata tags to be parsed. Track title and artist tags must be present.
 .SH EXIT STATUS
 .TP
 .B 0
 Success.
 .TP
 .B 1
-Failure due to missing dependencies, unreadable files, missing required embedded metadata tags (title, artist, album, duration), or invalid flags.
+Failure due to missing dependencies, unreadable files, missing required track name or artist tags, or invalid flags.
 .PP
 Note: Exit codes 2, 3, and 4 may be bubbled up directly from the underlying execution of \fBlrcget\fR.
 .SH EXAMPLE
 .PP
 .B filelrc \-m synced \-o song_lyrics.lrc track01.flac
 .RS
-Probes track01.flac for its metadata tags and duration, then passes those variables to lrcget to extract synced lyrics into song_lyrics.lrc.
+Probes track01.flac for metadata, then passes those variables to lrcget to extract synced lyrics into song_lyrics.lrc.
 .RE
 .SH SEE ALSO
 .BR lrcget (1),
