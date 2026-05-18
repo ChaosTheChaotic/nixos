@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+source "$UTIL_SCRIPT_DIR/check_installed.sh"
+source "$UTIL_SCRIPT_DIR/err.sh"
+
+check_installed "ffprobe"
+check_installed "jq"
+
+print_help() {
+    echo "Usage: $0 [opts] <audio_file>"
+    echo ""
+    echo "Opts:"
+    echo "    -h Show this help menu"
+    echo "    -m Specify lyrics mode (json, fallback, synced, plain)"
+    echo "    -o File to output lyrics into"
+}
+
+mode=""
+out_file=""
+
+while getopts 'hm:o:' opt; do
+    case "$opt" in
+        h)
+            print_help
+            exit 0
+            ;;
+        m)
+            mode="$OPTARG"
+            ;;
+        o)
+            if [[ -z "$OPTARG" ]]; then
+                fatal "Please provide a valid out file" "1"
+            fi
+            out_file="$OPTARG"
+            ;;
+        *)
+            fatal "Invalid flag $opt" "1" "print_help"
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+media_file="$1"
+
+if [[ -z "$media_file" ]]; then
+    fatal "Please provide an audio file path" "1" "print_help"
+fi
+
+if [[ ! -f "$media_file" ]]; then
+    fatal "File not found: $media_file" "1"
+fi
+
+probe_json=$(ffprobe -v error -show_entries format=duration:format_tags=title,artist,album -of json "$media_file")
+
+if [[ -z "$probe_json" ]]; then
+    fatal "Failed to probe file or file is invalid" "1"
+fi
+
+normalized_tags=$(jq -r '.format.tags | with_entries(.key |= ascii_lowercase) // empty' <<< "$probe_json")
+
+track_name=$(jq -r '.title // empty' <<< "$normalized_tags")
+artist_name=$(jq -r '.artist // empty' <<< "$normalized_tags")
+album_name=$(jq -r '.album // empty' <<< "$normalized_tags")
+
+raw_duration=$(jq -r '.format.duration // empty' <<< "$probe_json")
+duration=""
+if [[ -n "$raw_duration" ]]; then
+    duration=$(printf "%.0f" "$raw_duration" 2>/dev/null)
+fi
+
+if [[ -z "$track_name" ]]; then
+    fatal "Metadata error: Track name (title) is required but missing from file tags" "1"
+fi
+if [[ -z "$artist_name" ]]; then
+    fatal "Metadata error: Artist name is required but missing from file tags" "1"
+fi
+if [[ -z "$album_name" ]]; then
+    fatal "Metadata error: Album name is required but missing from file tags" "1"
+fi
+if [[ -z "$duration" ]]; then
+    fatal "Metadata error: Duration is required but missing from file format properties" "1"
+fi
+
+cmd_args=(-n "$track_name" -a "$artist_name" -l "$album_name" -d "$duration")
+
+if [[ -n "$mode" ]]; then
+    cmd_args+=(-m "$mode")
+fi
+
+if [[ -n "$out_file" ]]; then
+    cmd_args+=(-o "$out_file")
+fi
+
+lrcget "${cmd_args[@]}"
