@@ -1,0 +1,67 @@
+.TH LRCGET 1 "1970-1-1" "v1.0" "Custom Scripts Manual"
+.SH NAME
+lrcget \- Fetches track lyrics from the LRCLIB API
+.SH SYNOPSIS
+.B lrcget
+[\fB\-h\fR] [\fB\-m\fR \fImode\fR] \fB\-n\fR \fItrack_name\fR \fB\-a\fR \fIartist_name\fR \fB\-l\fR \fIalbum_name\fR \fB\-d\fR \fIduration\fR [\fB\-o\fR \fIoutput_file\fR]
+.SH DESCRIPTION
+.B lrcget
+is a command-line wrapper script that interfaces with the LRCLIB API to find, format, and extract song lyrics. The script requires both a track name and an artist name to complete a targeted lookup.
+.PP
+.SH OPTIONS
+.TP
+.B \-h
+Show the help menu and exit.
+.TP
+.B \-m \fImode\fR
+Specify the parsing structure and format requirements for returned output. Valid targets include:
+.RS
+.IP "\fBjson\fR" 12
+Returns the raw JSON response payload from the API (default).
+.IP "\fBsynced\fR" 12
+Extracts timed LRC-formatted lyrics only.
+.IP "\fBplain\fR" 12
+Extracts plain text lyrics without timestamps.
+.IP "\fBfallback\fR" 12
+Attempts to extract synced lyrics first; if unavailable, falls back to plain text.
+.RE
+.TP
+.B \-n \fItrack_name\fR
+The title of the song track to look up (Required).
+.TP
+.B \-a \fIartist_name\fR
+The name of the artist or band responsible for the track (Required).
+.TP
+.B \-l \fIalbum_name\fR
+The name of the album associated with the track.
+.TP
+.B \-d \fIduration\fR
+The precise song duration value represented as an integer of total seconds.
+.TP
+.B \-o \fIoutput_file\fR
+Saves the processed output stream into the designated target file instead of redirecting it to stdout.
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+Failure due to missing metadata, invalid formatting flags, or invalid execution arguments.
+.TP
+.B 2
+Target search returned no matching items (API 404).
+.TP
+.B 3
+Network execution issues or arbitrary unexpected HTTP responses.
+.TP
+.B 4
+The requested track entry exists, but lacks data matching the chosen formatting mode.
+.SH EXAMPLE
+.PP
+.B lrcget \-m fallback \-n "Song" \-a "Artist" \-l "Album" \-d 360 \-o out.lrc
+.RS
+Queries a hypothetical song for lyrics (synced if not plain) and saves them to a file called out.lrc
+.RE
+.SH SEE ALSO
+.BR curl (1),
+.BR jq (1)

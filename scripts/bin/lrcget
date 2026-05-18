@@ -1,0 +1,185 @@
+#!/usr/bin/env bash
+
+source "$UTIL_SCRIPT_DIR/check_installed.sh"
+source "$UTIL_SCRIPT_DIR/err.sh"
+source "$UTIL_SCRIPT_DIR/nums.sh"
+
+check_empty() {
+	if [[ -z "$1" ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+root_url="https://lrclib.net/api/get?"
+
+out_file=""
+
+track_name=""
+artist_name=""
+album_name=""
+duration=""
+
+readonly JSON=0
+readonly FALLBACK=1
+readonly SYNCED=2
+readonly PLAIN=3
+
+mode=$JSON
+
+print_help() {
+	echo "Usage: $0 [opts]"
+	echo ""
+	echo "Opts:"
+	echo "	-h Show this help menu"
+	echo "	-m Specify if the lyrics should be sent in plain and synced if any {json} or plain used as a {fallback} or just {synced} or just {plain}"
+	echo "	-n Name of the track"
+	echo "	-a Artist name"
+	echo "	-l Album name"
+	echo "	-d Duration in seconds"
+	echo "	-o File to output lyrics into"
+}
+
+parse_mode() {
+	case "$1" in
+		"json")
+			mode=$JSON
+			;;
+		"fallback")
+			mode=$FALLBACK
+			;;
+		"synced")
+			mode=$SYNCED
+			;;
+		"plain")
+			mode=$PLAIN
+			;;
+		*)
+			fatal "Invalid mode $1, please select one of json, fallback, synced or plain" "1" "print_help"
+			;;
+	esac
+}
+
+parse_opts() {
+	local OPTIND OPTARG opt
+
+	while getopts 'hm:n:a:l:d:o:' opt; do
+		case "$opt" in
+			h)
+				print_help
+				exit 0
+				;;
+			m)
+				parse_mode "$OPTARG"
+				;;
+			n)
+				if check_empty "$OPTARG"; then
+					fatal "Please provide a track name" "1"
+				fi
+				track_name="$OPTARG"
+				;;
+			a)
+				if check_empty "$OPTARG"; then
+					fatal "Please provide an artist" "1"
+				fi
+				artist_name="$OPTARG"
+				;;
+			d)
+				if ! is_num "$OPTARG"; then
+					fatal "Please provide a valid duration which should be an integer in seconds for the length of the song" "1"
+				fi
+				duration="$OPTARG"
+				;;
+			l)
+				if check_empty "$OPTARG"; then
+					fatal "Please provide a valid album name" "1"
+				fi
+				album_name="$OPTARG"
+				;;
+			o)
+				if check_empty "$OPTARG"; then
+					fatal "Please provide a valid out file" "1"
+				fi
+				out_file="$OPTARG"
+				;;
+			*)
+				fatal "Invalid flag $opt" "1" "print_help"
+				;;
+		esac
+	done
+}
+
+urlencode() {
+	jq -rn --arg val "$1" '$val | @uri'
+}
+
+construct_url() {
+	local encoded_artist
+	local encoded_track
+	local encoded_album
+	local encoded_duration
+	local url
+
+	encoded_artist=$(urlencode "$artist_name")
+	encoded_track=$(urlencode "$track_name")
+	encoded_album=$(urlencode "$album_name")
+	encoded_duration=$(urlencode "$duration")
+
+	url="$root_url"
+	url+="artist_name=${encoded_artist}&"
+	url+="track_name=${encoded_track}&"
+	url+="album_name=${encoded_album}&"
+	url+="duration=${encoded_duration}"
+
+	echo "$url"
+}
+
+fetch_lrcs() {
+	local url=$1
+	local resp
+	local stat
+
+	resp=$(curl -s -w "\n%{http_code}" "$url")
+	stat=$(tail -n1 <<< "$resp")
+
+	if [[ "$stat" -ne 200 ]]; then
+		if [[ "$stat" -eq 404 ]]; then
+			fatal "No lyrics found for the requested song" "2"
+		fi
+		fatal "Fetching lyrics had exit code ${stat}" "3"
+	fi
+
+	sed '$d' <<< "$resp"
+}
+
+check_installed "jq"
+check_installed "curl"
+
+parse_opts "$@"
+raw_json=$(fetch_lrcs "$(construct_url)")
+parsed=""
+
+case "$mode" in
+	"$JSON")
+		parsed="$raw_json"
+		;;
+	"$SYNCED")
+		parsed=$(jq -r '.syncedLyrics // empty' <<< "$raw_json")
+		check_empty "$parsed" && fatal "No synced lyrics found for this song" "4"
+		;;
+	"$PLAIN")
+		parsed=$(jq -r '.plainLyrics // empty' <<< "$raw_json")
+		check_empty  "$parsed" && fatal "No plain lyrics found for this song" "4"
+		;;
+	"$FALLBACK")
+		parsed=$(jq -r 'if .syncedLyrics != null and .syncedLyrics != "" then .syncedLyrics else .plainLyrics // empty end' <<< "$raw_json")
+		check_empty "$parsed" && fatal "No synced nor plain lyrics found" "4"
+		;;
+esac
+
+if [[ -n "$out_file" ]]; then
+	echo "$parsed" > "$out_file"
+else
+	echo "$parsed"
+fi
