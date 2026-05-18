@@ -56,7 +56,7 @@ if [[ -z "$probe_json" ]]; then
     fatal "Failed to probe file or file is invalid" "1"
 fi
 
-normalized_tags=$(jq -r '.format.tags | with_entries(.key |= ascii_lowercase) // empty' <<< "$probe_json")
+normalized_tags=$(jq -r '.format.tags | with_entries(.key |= ascii_downcase) // empty' <<<"$probe_json")
 
 track_name=$(jq -r '.title // empty' <<< "$normalized_tags")
 artist_name=$(jq -r '.artist // empty' <<< "$normalized_tags")
