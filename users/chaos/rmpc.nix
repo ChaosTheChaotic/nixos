@@ -1,4 +1,5 @@
 {
+	pkgs,
   ...
 }:
 
@@ -30,7 +31,22 @@
                               password: None,
                               theme: "def",
                               cache_dir: Some("/tmp/rmpc/cache"),
-                              on_song_change: None,
+															lyrics_dir: Some("~/.lyrics"),
+															on_song_change: [
+															    "bash", 
+															    "-c", 
+															    "
+															    export PATH=\"${pkgs.ffmpeg}/bin:${pkgs.jq}/bin:${pkgs.curl}/bin:$HOME/.config/rmpc/scripts:$PATH\";
+															    export UTIL_SCRIPT_DIR=\"$HOME/.config/rmpc/scripts/utils\";
+															
+															    LYRIC_PATH=\"$HOME/.lyrics/''${FILE%.*}.lrc\"; 
+															
+															    if [ ! -f \"$LYRIC_PATH\" ]; then 
+															        mkdir -p \"$(dirname \"$LYRIC_PATH\")\";
+															        filelrc -m fallback -o \"$LYRIC_PATH\" \"$HOME/Music/$FILE\"; 
+															    fi
+															    "
+															],
                               volume_step: 5,
                               max_fps: 60,
                               scrolloff: 2,
@@ -217,7 +233,7 @@
                                                               borders: "ALL",
                                                               border_symbols: Inherited(parent: Rounded, top_left: "├", top_right: "┤",),
                                                               border_title: [(kind: Text(" Lyrics "))],
-                                                              border_title_alignment: Right,
+                                                              border_title_alignment: Center,
                                                               pane: Pane(Lyrics)
                                                           ),
                                                       ],
@@ -371,7 +387,7 @@
               }),
           ),
           lyrics: (
-              timestamp: false,
+              timestamp: true,
           ),
           components: {
               "state": Pane(Property(

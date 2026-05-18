@@ -150,6 +150,7 @@ pkgs.writeShellApplication {
   text = ''
     mkdir -p ~/.local/share/mpd/playlists
 		mkdir -p /tmp/rmpc/cache
+		mkdir -p ~/.lyrics
     SOCKET="/tmp/mpd_socket"
     rm -f "$SOCKET"
 
