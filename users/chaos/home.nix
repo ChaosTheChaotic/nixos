@@ -3,12 +3,13 @@
   pkgs,
   lib,
   inputs,
+	cpuArch ? "generic",
   ...
 }:
 
 let
   master = inputs.nixpkgs-master.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-  rmpc-custom = pkgs.callPackage ../../pkgs/rmpc.nix { };
+  rmpc-custom = pkgs.callPackage ../../pkgs/rmpc.nix { inherit cpuArch; };
 in
 {
   imports = [
@@ -80,7 +81,7 @@ in
       prettier
       google-java-format
       (tree-sitter.overrideAttrs (old: rec {
-        version = "0.26.8";
+        version = "0.26.9";
         src = fetchFromGitHub {
           owner = "tree-sitter";
           repo = "tree-sitter";
@@ -97,6 +98,22 @@ in
         nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
           rustPlatform.bindgenHook
         ];
+        NIX_CFLAGS_COMPILE =
+          (old.NIX_CFLAGS_COMPILE or "")
+          + (
+            if cpuArch == "generic" then
+              " -O3"
+            else if pkgs.stdenv.hostPlatform.isAarch64 then
+              " -mcpu=${cpuArch} -O3"
+            else
+              " -march=${cpuArch} -O3"
+          );
+
+        env =
+          (old.env or { })
+          // (lib.optionalAttrs (cpuArch != "generic") {
+            RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
+          });
       }))
 
       # Fonts
@@ -126,6 +143,7 @@ in
       ani-cli
       equibop
       git-filter-repo
+			nix-prefetch-github
       shellcheck
       (balatro.override {
         src = null;
@@ -152,15 +170,54 @@ in
             "lovely-unix"
           ];
           doCheck = false;
-          env.RUSTC_BOOTSTRAP = 1;
+          env = {
+            RUSTC_BOOTSTRAP = "1";
+          }
+          // (lib.optionalAttrs (cpuArch != "generic") {
+            RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
+          });
           nativeBuildInputs = [ pkgs.cmake ];
         };
       })
 
       # Custom Inputs
-      inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
-      inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default
-      inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default
+      (inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
+        NIX_CFLAGS_COMPILE =
+          (oldAttrs.NIX_CFLAGS_COMPILE or "")
+          + (
+            if cpuArch == "generic" then
+              " -O3"
+            else if pkgs.stdenv.hostPlatform.isAarch64 then
+              " -mcpu=${cpuArch} -O3"
+            else
+              " -march=${cpuArch} -O3"
+          );
+      }))
+      (inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
+        env =
+          (oldAttrs.env or { })
+          // (lib.optionalAttrs (cpuArch != "generic") {
+            RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
+          });
+
+        zigBuildTarget = if cpuArch != "generic" then cpuArch else "baseline";
+
+        zigBuildFlags = builtins.filter (flag: !(lib.hasPrefix "-Dcpu=" flag)) (
+          oldAttrs.zigBuildFlags or [ ]
+        );
+      }))
+      (inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
+        NIX_CFLAGS_COMPILE =
+          (oldAttrs.NIX_CFLAGS_COMPILE or "")
+          + (
+            if cpuArch == "generic" then
+              " -O3"
+            else if pkgs.stdenv.hostPlatform.isAarch64 then
+              " -mcpu=${cpuArch} -O3"
+            else
+              " -march=${cpuArch} -O3"
+          );
+      }))
       rmpc-custom
     ];
     programs.quickshell = {

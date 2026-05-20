@@ -1,9 +1,11 @@
 {
   pkgs ? import <nixpkgs> { },
+  cpuArch ? "generic",
 }:
 
 let
-  mpd-minimal = pkgs.gcc14Stdenv.mkDerivation {
+  isAarch64 = pkgs.stdenv.hostPlatform.isAarch64;
+  mpd-minimal = pkgs.stdenv.mkDerivation {
     pname = "mpd-minimal";
     version = "0.25-git";
 
@@ -11,7 +13,7 @@ let
       owner = "MusicPlayerDaemon";
       repo = "MPD";
       rev = "master";
-      hash = "sha256-ehlpqm7RUf/Q3xTqtyJf7BVhjEQq+u76ptxbllzJKFc=";
+      hash = "sha256-vNdkadCK25iypEPadi3XtXDU5XpRwO/Qq6s56vXvTuQ=";
     };
 
     mesonBuildType = "release";
@@ -134,7 +136,19 @@ let
       "-Dnlohmann_json=disabled"
       "-Dsqlite=disabled"
       "-Dzeroconf=disabled"
-    ];
+    ]
+    ++ (pkgs.lib.optionals (cpuArch != "generic") (
+      if isAarch64 then
+        [
+          "-Dc_args=-mcpu=${cpuArch}"
+          "-Dcpp_args=-mcpu=${cpuArch}"
+        ]
+      else
+        [
+          "-Dc_args=-march=${cpuArch}"
+          "-Dcpp_args=-march=${cpuArch}"
+        ]
+    ));
   };
 
 in
@@ -148,29 +162,29 @@ pkgs.writeShellApplication {
   ];
 
   text = ''
-    mkdir -p ~/.local/share/mpd/playlists
-		mkdir -p /tmp/rmpc/cache
-		mkdir -p ~/.lyrics
-    SOCKET="/tmp/mpd_socket"
-    rm -f "$SOCKET"
+        mkdir -p ~/.local/share/mpd/playlists
+    		mkdir -p /tmp/rmpc/cache
+    		mkdir -p ~/.lyrics
+        SOCKET="/tmp/mpd_socket"
+        rm -f "$SOCKET"
 
-    mpd --no-daemon &
-    MPD_PID=$!
+        mpd --no-daemon &
+        MPD_PID=$!
 
-    # Wait until the MPD Unix socket is created
-    for _ in {1..30}; do
-        if [ -S "$SOCKET" ]; then
-            break
-        fi
-        sleep 0.1
-    done
+        # Wait until the MPD Unix socket is created
+        for _ in {1..30}; do
+            if [ -S "$SOCKET" ]; then
+                break
+            fi
+            sleep 0.1
+        done
 
-    mpd-mpris -network unix -host "$SOCKET" >/dev/null 2>&1 &
-    MPRIS_PID=$!
+        mpd-mpris -network unix -host "$SOCKET" >/dev/null 2>&1 &
+        MPRIS_PID=$!
 
-    trap 'kill $MPD_PID $MPRIS_PID 2>/dev/null || true' EXIT
+        trap 'kill $MPD_PID $MPRIS_PID 2>/dev/null || true' EXIT
 
-    ${pkgs.rmpc}/bin/rmpc "$@"
-    rm -f "$SOCKET"
+        ${pkgs.rmpc}/bin/rmpc "$@"
+        rm -f "$SOCKET"
   '';
 }
