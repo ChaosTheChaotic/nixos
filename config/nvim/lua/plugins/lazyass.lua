@@ -275,7 +275,18 @@ return {
 
 	{
 		"xzbdmw/colorful-menu.nvim",
-		config = function() end,
+		config = function()
+			require("colorful-menu").setup()
+
+			local utils = require("colorful-menu.utils")
+			local original = utils.apply_post_processing
+			utils.apply_post_processing = function(ci, item, ls)
+				if item and item.text then
+					item.text = item.text:gsub("%z", "") -- Patch "//" triggering an error
+				end
+				return original(ci, item, ls)
+			end
+		end,
 	},
 
 	{
