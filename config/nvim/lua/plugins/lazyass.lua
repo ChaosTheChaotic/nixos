@@ -262,7 +262,7 @@ return {
 			end
 			vim.lsp.config["tereix"] = {
 				cmd = { "tereix", "--lsp" },
-				filetypes = { "tx", "tereix" },
+				filetypes = { "tereix" },
 				root_markers = { ".git" },
 			}
 
