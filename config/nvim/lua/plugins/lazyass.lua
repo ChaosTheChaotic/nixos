@@ -348,7 +348,7 @@ return {
 					require("nvim-treesitter.parsers").tereix = {
 						install_info = {
 							url = "https://github.com/ChaosTheChaotic/tree-sitter-tereix",
-							revision = "10960bfb10466d5c31efc1249e8a1af03630efd6";
+							branch = 'master';
 						},
 					}
 				end,
