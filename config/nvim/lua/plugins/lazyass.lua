@@ -204,6 +204,8 @@ return {
 			vim.lsp.enable(lsps)
 
 			if not table.contains(lsps, "lua_ls") then
+				-- The only possible way we can be in here is if we are on nixos
+				local hypr_stubs = "/run/current-system/sw/share/hypr/stubs"
 				vim.lsp.config("lua_ls", {
 					capabilities = capabilities,
 					on_attach = on_attach,
@@ -219,10 +221,11 @@ return {
 							workspace = {
 								library = {
 									vim.env.VIMRUNTIME,
+									(vim.fn.isdirectory(hypr_stubs) == 1) and hypr_stubs or nil
 								},
 								checkThirdParty = false,
 							},
-							diagnostics = { globals = { "vim" } },
+							diagnostics = { globals = { "vim", "hl" } },
 							telemetry = { enable = false },
 							hint = { enable = true },
 						},
