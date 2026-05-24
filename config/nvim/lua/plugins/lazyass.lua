@@ -134,39 +134,13 @@ return {
 			}
 			local decomlatro_uri = vim.uri_from_fname(vim.fn.expand("~/decomlatro"))
 
-			local on_attach = function(client, bufnr)
+			local on_attach = function(_, bufnr)
 				local opts = { noremap = true, silent = true, buffer = bufnr }
 				vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 				vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, opts)
 				vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, opts)
 				vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, opts)
-
-				-- Add source code to workspace if editing a Balatro mod
-				if client.name == "lua_ls" then
-					local current_file = vim.fs.normalize(vim.api.nvim_buf_get_name(bufnr))
-					if current_file ~= "" then
-						local in_mod = false
-						for _, mod_dir in ipairs(mod_dirs) do
-							if current_file:sub(1, #vim.fs.normalize(mod_dir)) == vim.fs.normalize(mod_dir) then
-								in_mod = true
-								break
-							end
-						end
-						if in_mod then
-							local has_decomlatro = false
-							for _, folder in ipairs(client.workspace_folders or {}) do
-								if folder.uri == decomlatro_uri then
-									has_decomlatro = true
-									break
-								end
-							end
-							if not has_decomlatro then
-								vim.lsp.buf.add_workspace_folder(decomlatro_uri)
-							end
-						end
-					end
-				end
 			end
 
 			local lsps = {
@@ -263,6 +237,30 @@ return {
 								Lua = { workspace = { library = currLibs } },
 							})
 							client:notify("workspace/didChangeConfiguration", { settings = client.settings })
+						end
+
+						-- Add source code to workspace if editing a Balatro mod
+						local current_file = vim.fs.normalize(vim.api.nvim_buf_get_name(bufnr))
+						if current_file ~= "" then
+							local in_mod = false
+							for _, mod_dir in ipairs(mod_dirs) do
+								if current_file:sub(1, #vim.fs.normalize(mod_dir)) == vim.fs.normalize(mod_dir) then
+									in_mod = true
+									break
+								end
+							end
+							if in_mod then
+								local has_decomlatro = false
+								for _, folder in ipairs(client.workspace_folders or {}) do
+									if folder.uri == decomlatro_uri then
+										has_decomlatro = true
+										break
+									end
+								end
+								if not has_decomlatro then
+									vim.lsp.buf.add_workspace_folder(decomlatro_uri)
+								end
+							end
 						end
 					end,
 					settings = {
