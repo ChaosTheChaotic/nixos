@@ -1,7 +1,7 @@
 ; Keywords
 ["use" "extern" "struct" "union" "enum" "if" "else" "while" "for" "switch" "case" "default" "defer" "ret" "break" "continue" "async" "inline" "static" "threadlocal" "mut"] @keyword
 
-"sizeof" @keyword.operator
+(sizeof_expression (sizeof_token) @keyword.operator)
 
 (use_statement "as" @keyword)
 
