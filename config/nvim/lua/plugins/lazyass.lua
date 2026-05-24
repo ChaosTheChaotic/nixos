@@ -189,20 +189,22 @@ return {
 
 			require("mason-lspconfig").setup({
 				ensure_installed = lsps,
-				automatic_enable = true,
+				handlers = {
+					function(server_name)
+						vim.lsp.enable(server_name)
+					end,
+				},
 			})
 
-			for _, server in ipairs(lsps) do
-				if vim.lsp.config[server] then
-					vim.lsp.enable(server, {
-						capabilities = capabilities,
-						on_attach = on_attach,
-					})
-				end
-			end
+			vim.lsp.config("*", {
+				capabilities = capabilities,
+				on_attach = on_attach,
+			})
+
+			vim.lsp.enable(lsps)
 
 			if not table.contains(lsps, "lua_ls") then
-				vim.lsp.enable("lua_ls", {
+				vim.lsp.config("lua_ls", {
 					capabilities = capabilities,
 					on_attach = on_attach,
 					settings = {
@@ -216,7 +218,7 @@ return {
 							},
 							workspace = {
 								library = {
-									vim.api.nvim_get_runtime_file("", true),
+									vim.env.VIMRUNTIME,
 								},
 								checkThirdParty = false,
 							},
@@ -226,50 +228,63 @@ return {
 						},
 					},
 				})
+
+				vim.lsp.enable("lua_ls")
 			end
 
-			vim.lsp.enable("ts_ls", {
+			vim.lsp.config("ts_ls", {
 				capabilities = capabilities,
 				on_attach = on_attach,
-				settings = { completions = { completeFunctionCalls = true } },
+				settings = {
+					completions = { completeFunctionCalls = true },
+				},
 			})
 
-			-- Standalone LSP setups (not managed by Mason)
-			vim.lsp.enable("hyprls", { capabilities = capabilities, on_attach = on_attach })
-			vim.lsp.enable("nixd", { capabilities = capabilities, on_attach = on_attach })
-			vim.lsp.enable("qmlls", { capabilities = capabilities, on_attach = on_attach, cmd = { "qmlls", "-E" } })
+			vim.lsp.config("hyprls", {
+				capabilities = capabilities,
+				on_attach = on_attach,
+			})
+
+			vim.lsp.config("nixd", {
+				capabilities = capabilities,
+				on_attach = on_attach,
+			})
+
+			vim.lsp.config("qmlls", {
+				capabilities = capabilities,
+				on_attach = on_attach,
+				cmd = { "qmlls", "-E" },
+			})
+
+			vim.lsp.enable({ "ts_ls", "hyprls", "nixd", "qmlls" })
 			if not table.contains(lsps, "clangd") then
-				vim.lsp.enable("clangd", {
+				vim.lsp.config("clangd", {
 					capabilities = capabilities,
 					on_attach = on_attach,
 					cmd = { "clangd", "--background-index", "--clang-tidy" },
-					completions = {
-						completions = true,
-						completeFunctionCalls = true,
-					},
 				})
+				vim.lsp.enable("clangd")
 			end
 			if not table.contains(lsps, "cmake") then
-				vim.lsp.enable("cmake", {
+				vim.lsp.config("cmake", {
 					capabilities = capabilities,
 					on_attach = on_attach,
 					cmd = { "cmake-language-server" },
-					completions = {
-						completions = true,
-						completeFunctionCalls = true,
+					init_options = {
+						buildDirectory = "build",
 					},
 				})
+				vim.lsp.enable("cmake")
 			end
-			vim.lsp.config["tereix"] = {
+			vim.lsp.config("tereix", {
 				cmd = { "tereix", "--lsp" },
 				filetypes = { "tereix" },
 				root_markers = { ".git" },
-			}
-
-			vim.lsp.enable("tereix", {
 				capabilities = capabilities,
 				on_attach = on_attach,
 			})
+
+			vim.lsp.enable("tereix")
 		end,
 	},
 
@@ -341,14 +356,13 @@ return {
 		build = ":TSUpdate",
 		lazy = false,
 		config = function()
-
 			vim.api.nvim_create_autocmd("User", {
 				pattern = "TSUpdate",
 				callback = function()
 					require("nvim-treesitter.parsers").tereix = {
 						install_info = {
 							url = "https://github.com/ChaosTheChaotic/tree-sitter-tereix",
-							branch = 'master';
+							branch = "master",
 						},
 					}
 				end,
