@@ -208,7 +208,63 @@ return {
 				local hypr_stubs = "/run/current-system/sw/share/hypr/stubs"
 				vim.lsp.config("lua_ls", {
 					capabilities = capabilities,
-					on_attach = on_attach,
+					on_attach = function(client, bufnr)
+						if on_attach then
+							on_attach(client, bufnr)
+						end
+
+						local fpth = vim.api.nvim_buf_get_name(bufnr)
+						if fpth == "" then
+							return
+						end
+
+						local dpth = vim.fs.dirname(fpth)
+
+						local hmatch = false
+						local vmatch = false
+						for d in vim.fs.parents(dpth) do
+							local bname = vim.fs.basename(d)
+							if bname == "hypr" or bname == "hyprland" then
+								hmatch = true
+							end
+							if bname == "nvim" or bname == "vim" then
+								vmatch = true
+							end
+						end
+
+						local currLibs = vim.deepcopy(client.settings.Lua.workspace.library or {})
+						local currGlobals = vim.deepcopy(client.settings.Lua.diagnostics.globals or {})
+						local changed = false
+
+						if hmatch and vim.fn.isdirectory(hypr_stubs) == 1 then
+							if not vim.tbl_contains(currLibs, hypr_stubs) then
+								table.insert(currLibs, hypr_stubs)
+								changed = true
+							end
+							if not vim.tbl_contains(currGlobals, "hl") then
+								table.insert(currGlobals, "hl")
+								changed = true
+							end
+						end
+
+						if vmatch then
+							if not vim.tbl_contains(currLibs, vim.env.VIMRUNTIME) then
+								table.insert(currLibs, vim.env.VIMRUNTIME)
+								changed = true
+							end
+							if not vim.tbl_contains(currGlobals, "vim") then
+								table.insert(currGlobals, "vim")
+								changed = true
+							end
+						end
+
+						if changed then
+							client.settings = vim.tbl_deep_extend("force", client.settings, {
+								Lua = { workspace = { library = currLibs } },
+							})
+							client:notify("workspace/didChangeConfiguration", { settings = client.settings })
+						end
+					end,
 					settings = {
 						Lua = {
 							runtime = {
@@ -219,13 +275,10 @@ return {
 								},
 							},
 							workspace = {
-								library = {
-									vim.env.VIMRUNTIME,
-									(vim.fn.isdirectory(hypr_stubs) == 1) and hypr_stubs or nil
-								},
+								library = {},
 								checkThirdParty = false,
 							},
-							diagnostics = { globals = { "vim", "hl" } },
+							diagnostics = { globals = {} },
 							telemetry = { enable = false },
 							hint = { enable = true },
 						},
