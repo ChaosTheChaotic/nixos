@@ -192,11 +192,9 @@ return {
 							return
 						end
 
-						local dpth = vim.fs.dirname(fpth)
-
 						local hmatch = false
 						local vmatch = false
-						for d in vim.fs.parents(dpth) do
+						for d in vim.fs.parents(fpth) do
 							local bname = vim.fs.basename(d)
 							if bname == "hypr" or bname == "hyprland" then
 								hmatch = true
