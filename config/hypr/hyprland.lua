@@ -1,8 +1,8 @@
 hl.monitor({
-    output = "",
-    mode = "preferred",
-    position = "auto",
-    scale = "auto",
+	output = "",
+	mode = "preferred",
+	position = "auto",
+	scale = "auto",
 })
 
 -- Colors
@@ -24,70 +24,70 @@ hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
 
 hl.curve("myBezier", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.05 } } })
 hl.animation({
-    leaf = "windows",
-    enabled = true,
-    speed = 7,
-    bezier = "myBezier",
+	leaf = "windows",
+	enabled = true,
+	speed = 7,
+	bezier = "myBezier",
 })
 hl.animation({
-    leaf = "windowsOut",
-    enabled = true,
-    speed = 7,
-    bezier = "default",
-    style = "popin 80%",
+	leaf = "windowsOut",
+	enabled = true,
+	speed = 7,
+	bezier = "default",
+	style = "popin 80%",
 })
 hl.animation({
-    leaf = "border",
-    enabled = true,
-    speed = 10,
-    bezier = "default",
+	leaf = "border",
+	enabled = true,
+	speed = 10,
+	bezier = "default",
 })
 hl.animation({
-    leaf = "borderangle",
-    enabled = true,
-    speed = 8,
-    bezier = "default",
+	leaf = "borderangle",
+	enabled = true,
+	speed = 8,
+	bezier = "default",
 })
 hl.animation({
-    leaf = "fade",
-    enabled = true,
-    speed = 7,
-    bezier = "default",
+	leaf = "fade",
+	enabled = true,
+	speed = 7,
+	bezier = "default",
 })
 hl.animation({
-    leaf = "workspaces",
-    enabled = true,
-    speed = 6,
-    bezier = "default",
+	leaf = "workspaces",
+	enabled = true,
+	speed = 6,
+	bezier = "default",
 })
 
 hl.layer_rule({
-    name = "vicinae-blur",
-    match = {
-        namespace = "vicinae",
-    },
-    blur = true,
+	name = "vicinae-blur",
+	match = {
+		namespace = "vicinae",
+	},
+	blur = true,
 })
 
 hl.layer_rule({
-    name = "quickshell",
-    match = {
-        namespace = "quickshell",
-    },
-    blur = true,
+	name = "quickshell",
+	match = {
+		namespace = "quickshell",
+	},
+	blur = true,
 })
 
 hl.gesture({
-    fingers = 3,
-    direction = "horizontal",
-    action = "workspace",
+	fingers = 3,
+	direction = "horizontal",
+	action = "workspace",
 })
 
 hl.window_rule({
-    match = {
-        class = "pavucontrol",
-    },
-    float = true,
+	match = {
+		class = "pavucontrol",
+	},
+	float = true,
 })
 
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
@@ -142,98 +142,97 @@ hl.bind(mainMod .. " + CTRL + L", hl.dsp.exec_cmd(lockcmd .. " > /tmp/stupid.log
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag())
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize())
 hl.config({
-    misc = {
-        initial_workspace_tracking = 0,
-        middle_click_paste = false,
-        disable_hyprland_logo = true,
-        vrr = 2,
-        enable_swallow = false,
-        swallow_regex = "^(kitty)$",
-    },
-    xwayland = {
-        enabled = true,
-    },
-    input = {
-        kb_layout = "us",
-        kb_variant = "",
-        kb_model = "",
-        kb_options = "",
-        kb_rules = "",
-        repeat_rate = 50,
-        repeat_delay = 300,
-        follow_mouse = 1,
-        touchpad = {
-            natural_scroll = true,
-            disable_while_typing = false,
-            middle_button_emulation = true,
-            tap_to_click = true,
-            drag_lock = false,
-        },
-        sensitivity = 0, -- -1.0 - 1.0, 0 means false modification.
-    },
-    general = {
-        resize_on_border = true,
-        gaps_in = 4,
-        gaps_out = 8,
-        border_size = 2,
-        col = {
-            active_border = iris,
-            inactive_border = muted,
-        },
-        layout = "dwindle",
-    },
-    decoration = {
-        rounding = 10,
-        --blur = true
-        --blur_size = 6
-        --blur_passes = 1
-        --blur_new_optimizations = on
-        blur = {
-            enabled = true,
-            size = 6,
-            passes = 1,
-            new_optimizations = true,
-        },
-        --drop_shadow = false
-        --shadow_range = 4
-        --shadow_render_power = 3
-        --col.shadow = rgba(1a1a1aee)
-        shadow = {
-            enabled = true,
-            range = 4,
-            render_power = 3,
-            color = "rgba(1a1a1aee)",
-        },
-    },
-    -- This crashes upon boot
-    --render {
-    --  new_render_scheduling = true
-    --}
-    animations = {
-        enabled = true,
-    },
-    dwindle = {
-        preserve_split = true,
-        special_scale_factor = 0.8,
-    },
-    master = {
-        --new_is_master = true
-        new_status = "master",
-    },
-    --layerrule {
-    --    name = vicinae-no-animation
-    --    no_anim = on
-    --    match:namespace = vicinae
-    --}
-    -- Make some windows float
+	misc = {
+		initial_workspace_tracking = 0,
+		middle_click_paste = false,
+		disable_hyprland_logo = true,
+		vrr = 2,
+		enable_swallow = false,
+		swallow_regex = "^(kitty)$",
+	},
+	xwayland = {
+		enabled = true,
+	},
+	input = {
+		kb_layout = "us",
+		kb_variant = "",
+		kb_model = "",
+		kb_options = "",
+		kb_rules = "",
+		repeat_rate = 50,
+		repeat_delay = 300,
+		follow_mouse = 1,
+		touchpad = {
+			natural_scroll = true,
+			disable_while_typing = false,
+			middle_button_emulation = true,
+			tap_to_click = true,
+			drag_lock = false,
+		},
+		sensitivity = 0, -- -1.0 - 1.0, 0 means false modification.
+	},
+	general = {
+		resize_on_border = true,
+		gaps_in = 4,
+		gaps_out = 8,
+		border_size = 2,
+		col = {
+			active_border = iris,
+			inactive_border = muted,
+		},
+		layout = "dwindle",
+	},
+	decoration = {
+		rounding = 10,
+		--blur = true
+		--blur_size = 6
+		--blur_passes = 1
+		--blur_new_optimizations = on
+		blur = {
+			enabled = true,
+			size = 6,
+			passes = 1,
+			new_optimizations = true,
+		},
+		--drop_shadow = false
+		--shadow_range = 4
+		--shadow_render_power = 3
+		--col.shadow = rgba(1a1a1aee)
+		shadow = {
+			enabled = true,
+			range = 4,
+			render_power = 3,
+			color = "rgba(1a1a1aee)",
+		},
+	},
+	-- This crashes upon boot
+	--render {
+	--  new_render_scheduling = true
+	--}
+	animations = {
+		enabled = true,
+	},
+	dwindle = {
+		preserve_split = true,
+		special_scale_factor = 0.8,
+	},
+	master = {
+		--new_is_master = true
+		new_status = "master",
+	},
+	--layerrule {
+	--    name = vicinae-no-animation
+	--    no_anim = on
+	--    match:namespace = vicinae
+	--}
+	-- Make some windows float
 })
 
 hl.on("hyprland.start", function()
-    hl.exec_cmd("wbg -s " .. os.getenv("WALLPAPER_DIR") .. "/hole.png")
-    hl.exec_cmd("vicinae server")
-    hl.exec_cmd("qs")
-    hl.exec_cmd("dunst")
-    hl.exec_cmd(volume .. " --set 0")
-    hl.exec_cmd("sh -c 'sleep 2 && kill -9 $(pgrep .kdeconnectd-wr)'")
+	hl.exec_cmd("wbg -s " .. os.getenv("WALLPAPER_DIR") .. "/hole.png")
+	hl.exec_cmd("vicinae server")
+	hl.exec_cmd("qs")
+	hl.exec_cmd("dunst")
+	hl.exec_cmd(volume .. " --set 0")
+	hl.exec_cmd("sh -c 'sleep 2 && kill -9 $(pgrep .kdeconnectd-wr)'")
 end)
-
