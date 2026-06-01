@@ -174,16 +174,9 @@ in
   services.kmscon = {
     enable = true;
     hwRender = true;
-    fonts = [
-      {
-        name = "JetBrainsMono Nerd Font Mono";
-        package = pkgs.nerd-fonts.jetbrains-mono;
-      }
-      {
-        name = "FiraCode Nerd Font Mono";
-        package = pkgs.nerd-fonts.fira-code;
-      }
-    ];
+    config = {
+      font-name = "JetBrainsMono Nerd Font Mono";
+    };
   };
 
   hardware.enableRedistributableFirmware = true;
