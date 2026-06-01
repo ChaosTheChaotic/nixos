@@ -171,13 +171,13 @@ in
     enable = true;
   };
 
-  services.kmscon = {
-    enable = true;
-    hwRender = true;
-    config = {
-      font-name = "JetBrainsMono Nerd Font Mono";
-    };
-  };
+  #services.kmscon = {
+  #  enable = true;
+  #  hwRender = true;
+  #  config = {
+  #    font-name = "JetBrainsMono Nerd Font Mono";
+  #  };
+  #};
 
   hardware.enableRedistributableFirmware = true;
   time.timeZone = "Europe/London";
@@ -211,6 +211,7 @@ in
       "video"
       "render"
       "input"
+			"seat"
     ];
     shell = pkgs.zsh;
   };
