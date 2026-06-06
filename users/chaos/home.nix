@@ -3,7 +3,7 @@
   pkgs,
   lib,
   inputs,
-	cpuArch ? "generic",
+  cpuArch ? "generic",
   ...
 }:
 
@@ -80,6 +80,7 @@ in
       ruff
       prettier
       google-java-format
+      wf-recorder
       (tree-sitter.overrideAttrs (old: rec {
         version = "0.26.9";
         src = fetchFromGitHub {
@@ -143,7 +144,7 @@ in
       ani-cli
       equibop
       git-filter-repo
-			nix-prefetch-github
+      nix-prefetch-github
       shellcheck
       (balatro.override {
         src = null;
