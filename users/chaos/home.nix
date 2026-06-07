@@ -224,5 +224,11 @@ in
     programs.quickshell = {
       enable = true;
     };
+
+    systemd.user.settings = {
+      Manager = {
+        DefaultLimitNOFILE = "524288";
+      };
+    };
   };
 }

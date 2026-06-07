@@ -191,6 +191,20 @@ in
   };
 
   security.rtkit.enable = true;
+  security.pam.loginLimits = [
+    {
+      domain = "@users";
+      item = "nofile";
+      type = "soft";
+      value = "8192";
+    }
+    {
+      domain = "@users";
+      item = "nofile";
+      type = "hard";
+      value = "8192";
+    }
+  ];
   services.flatpak.enable = true;
   services.openssh.enable = true;
 
@@ -242,7 +256,19 @@ in
 
   xdg.portal = {
     enable = true;
-    #extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-hyprland
+      xdg-desktop-portal-gtk
+    ];
+    config = {
+      common = {
+        default = [
+          "hyprland"
+          "gtk"
+        ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+      };
+    };
   };
 
   programs.kdeconnect.enable = true;
