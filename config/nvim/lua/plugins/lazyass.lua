@@ -663,10 +663,16 @@ return {
 				nix = { "nixfmt" },
 				go = { "gofmt" },
 				zig = { "zigfmt" },
+				tereix = { "tx_fmt" },
 			},
 			formatters = {
 				stylua = { append_args = { "-a", "--indent-type", "Tabs", "--indent-width", "2" } },
 				shfmt = { append_args = { "-ci" } },
+				tx_fmt = {
+					command = "tereix",
+					args = { "fmt", "-w", "$FILENAME" },
+					stdin = false,
+				},
 			},
 		},
 	},
