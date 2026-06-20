@@ -78,7 +78,7 @@ in
       "big-parallel"
       "benchmark"
     ];
-		flake-registry = "";
+    flake-registry = "";
   };
 
   nix.optimise = {
@@ -134,6 +134,7 @@ in
     "1.1.1.1"
     "8.8.8.8"
     "9.9.9.9"
+    "116.202.176.26"
   ];
   networking.networkmanager.dns = "none";
 
@@ -146,6 +147,7 @@ in
         "1.1.1.1"
         "8.8.8.8"
         "9.9.9.9"
+        "116.202.176.26"
         "10.2.0.1"
       ];
       privateKeyFile = config.age.secrets.wg-priv.path;
@@ -225,7 +227,7 @@ in
       "video"
       "render"
       "input"
-			"seat"
+      "seat"
     ];
     shell = pkgs.zsh;
   };
@@ -239,11 +241,11 @@ in
 
   programs.nix-ld = {
     enable = true;
-		libraries = with pkgs; [
-			zlib
-			openssl
-			stdenv.cc.cc.lib
-		];
+    libraries = with pkgs; [
+      zlib
+      openssl
+      stdenv.cc.cc.lib
+    ];
   };
 
   programs.hyprland = {
