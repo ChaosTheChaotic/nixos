@@ -580,11 +580,11 @@
         "tereix-stdlib": "tereix-stdlib"
       },
       "locked": {
-        "lastModified": 1783204668,
-        "narHash": "sha256-WYrDGP0zDVN+YtEpHBDzxXtmwkqM3Fv5dh9bUitSDnA=",
+        "lastModified": 1783205360,
+        "narHash": "sha256-+0iftAKfZzeygw57ufdVCz28wU4ttjebuuHg5DGXDb0=",
         "owner": "chaosthechaotic",
         "repo": "tereix",
-        "rev": "78b7e00033d74704d86bc00aa7bff86ed019bfeb",
+        "rev": "e20fbac1ef0295246df67ed73609d3fdde636d87",
         "type": "github"
       },
       "original": {
