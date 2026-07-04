@@ -277,11 +277,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1783178030,
-        "narHash": "sha256-jonT51WzSsz+XA3GlOD74Bm2af5nKVSrROhjlJ8cZoE=",
+        "lastModified": 1783188634,
+        "narHash": "sha256-kxr58qWG4b7P2MPKcIr2laCh7LsWPUywwmGVhwU9oqs=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "a8e42fa7059852a44b86d72b8c5b6ffb204b5cc1",
+        "rev": "e91a72db6ddebf8c0cce4efa5abe6af633d19dd7",
         "type": "github"
       },
       "original": {
@@ -395,11 +395,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783179140,
-        "narHash": "sha256-1oSR61O/+7ANvhhP28AZtiTguxbVOtdixKHEYG/yomA=",
+        "lastModified": 1783188004,
+        "narHash": "sha256-meZK9hGKSH+dAM15HEPzR9yfGm/0qmUWNBDlHxpWo3A=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "b1c0055fdc7a24866d9e6a1b65df207c7a373095",
+        "rev": "a310512e64406f7dd064dfcf47fbf9d6b52efdb0",
         "type": "github"
       },
       "original": {
@@ -580,11 +580,11 @@
         "tereix-stdlib": "tereix-stdlib"
       },
       "locked": {
-        "lastModified": 1783179793,
-        "narHash": "sha256-TTLajC4J7wCPDYDzbchd95NfJJBT7p8VUtbWv7hcf8k=",
+        "lastModified": 1783189025,
+        "narHash": "sha256-yePW0CcMeQDMVfRu68eic1aeP5PzJ1BPtxIXe+aovJI=",
         "owner": "chaosthechaotic",
         "repo": "tereix",
-        "rev": "fc9cd7b18532f1a7dfd452517ca7c65c644392e7",
+        "rev": "f51ca580db60a7d5ba6cd38e43a9f3fdfd277ed5",
         "type": "github"
       },
       "original": {
