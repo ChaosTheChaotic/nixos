@@ -678,7 +678,7 @@ return {
 	},
 	{
 		"catgoose/nvim-colorizer.lua",
-		event = "BufReadPre",
+		event = { "BufReadPre", "BufNewFile" },
 		opts = {},
 	},
 }
