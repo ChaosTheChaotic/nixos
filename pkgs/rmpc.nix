@@ -13,7 +13,7 @@ let
       owner = "MusicPlayerDaemon";
       repo = "MPD";
       rev = "master";
-      hash = "sha256-ZPN89CKXJwTEL2t4WLUE2iqf6fbSFI0iOv2KPxiTKvA=";
+      hash = "sha256-6P6FuSB1Y4ye86E+zma2eoNoewZA5PqCWpC8sKNPzfk=";
     };
 
     mesonBuildType = "release";
