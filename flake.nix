@@ -35,16 +35,43 @@
       ...
     }@inputs:
     {
-      nixosConfigurations."NixyPenguin" =
+      nixosConfigurations = {
+        "NixyPenguin" =
+          let
+            csys = "aarch64-linux";
+          in
+          nixpkgs.lib.nixosSystem {
+            system = csys;
+            specialArgs = { inherit inputs; };
+            modules = [
+              nixos-apple-silicon.nixosModules.apple-silicon-support
+              ./hosts/NixyPenguin/default.nix
+              agenix.nixosModules.default
+              {
+                environment.systemPackages = [ agenix.packages.${csys}.default ];
+              }
+              home-manager.nixosModules.home-manager
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.extraSpecialArgs = {
+                  inherit inputs;
+                  cpuArch = "apple-m1";
+                };
+                home-manager.users.chaos = import ./users/chaos/home.nix;
+              }
+            ];
+          };
+      };
+      "Nixpad" =
         let
-          csys = "aarch64-linux";
+          csys = "x86_64-linux";
         in
         nixpkgs.lib.nixosSystem {
           system = csys;
           specialArgs = { inherit inputs; };
           modules = [
-            nixos-apple-silicon.nixosModules.apple-silicon-support
-            ./hosts/NixyPenguin/default.nix
+            ./hosts/Nixpad/default.nix
             agenix.nixosModules.default
             {
               environment.systemPackages = [ agenix.packages.${csys}.default ];
@@ -55,7 +82,7 @@
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
                 inherit inputs;
-                cpuArch = "apple-m1";
+                cpuArch = "skylake";
               };
               home-manager.users.chaos = import ./users/chaos/home.nix;
             }
