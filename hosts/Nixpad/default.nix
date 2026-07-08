@@ -122,30 +122,30 @@ in
   ];
   networking.networkmanager.dns = "none";
 
-  #age.secrets.wg-priv.file = ../../secrets/wg-priv.age;
-  #networking.wg-quick.interfaces = {
-  #  wg0 = {
-  #    address = [ "10.2.0.2/32" ];
-  #    dns = [
-  #      "1.1.1.1"
-  #      "8.8.8.8"
-  #      "9.9.9.9"
-  #      "116.202.176.26"
-  #      "10.2.0.1"
-  #    ];
-  #    privateKeyFile = config.age.secrets.wg-priv.path;
-  #    peers = [
-  #      {
-  #        publicKey = "KiCvg9+bh7/ssQDALW3uXSTLaURS3mgZdi/O9CxlFXo=";
-  #        allowedIPs = [
-  #          "0.0.0.0/0"
-  #          "::/0"
-  #        ];
-  #        endpoint = "79.127.254.65:51820";
-  #      }
-  #    ];
-  #  };
-  #};
+  age.secrets.wg-priv-thinker.file = ../../secrets/wg-priv-thinker.age;
+  networking.wg-quick.interfaces = {
+    wg0 = {
+      address = [ "10.2.0.2/32" ];
+      dns = [
+        "1.1.1.1"
+        "8.8.8.8"
+        "9.9.9.9"
+        "116.202.176.26"
+        "10.2.0.1"
+      ];
+      privateKeyFile = config.age.secrets.wg-priv-thinker.path;
+      peers = [
+        {
+          publicKey = "JB84ctFi3l+gxJxr/kwYXlKwLcmqWxuuLBkpE1anmgo=";
+          allowedIPs = [
+            "0.0.0.0/0"
+            "::/0"
+          ];
+          endpoint = "195.242.214.194:51820";
+        }
+      ];
+    };
+  };
 
   services.zerotierone = {
     enable = true;

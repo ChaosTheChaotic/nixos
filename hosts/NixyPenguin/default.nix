@@ -138,7 +138,7 @@ in
   ];
   networking.networkmanager.dns = "none";
 
-  age.secrets.wg-priv.file = ../../secrets/wg-priv.age;
+  age.secrets.wg-priv-asahi.file = ../../secrets/wg-priv-asahi.age;
 
   networking.wg-quick.interfaces = {
     wg0 = {
@@ -150,7 +150,7 @@ in
         "116.202.176.26"
         "10.2.0.1"
       ];
-      privateKeyFile = config.age.secrets.wg-priv.path;
+      privateKeyFile = config.age.secrets.wg-priv-asahi.path;
       peers = [
         {
           publicKey = "KiCvg9+bh7/ssQDALW3uXSTLaURS3mgZdi/O9CxlFXo=";
