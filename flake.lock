@@ -240,6 +240,22 @@
         "url": "https://github.com/ethangreen-dev/lovely-injector"
       }
     },
+    "mpd": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1783515026,
+        "narHash": "sha256-yhqITVvDhyT3kEUINCA2nossM7YDlsFkffpu5Z1bfmE=",
+        "owner": "MusicPlayerDaemon",
+        "repo": "MPD",
+        "rev": "5d058c283e166164f9a852f6fe731ff39568f5e2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MusicPlayerDaemon",
+        "repo": "MPD",
+        "type": "github"
+      }
+    },
     "nixos-apple-silicon": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -277,11 +293,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1783551541,
-        "narHash": "sha256-bAGUBJodaHe0zn/Cr/panluYdRE4X52+ZyK+qmWTxwA=",
+        "lastModified": 1783553145,
+        "narHash": "sha256-/7q72ldwPOGakeW/qzxLCLZfWB8nVoPJiA9IugDiakc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d6464bfafb42c522d33cd18ce166f8221e8164f5",
+        "rev": "7e195ef74e9d6c20f6de82ae153b9f148d6e9c9f",
         "type": "github"
       },
       "original": {
@@ -395,11 +411,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783551996,
-        "narHash": "sha256-zOkwS9A6oyG/cyqAhzUhwHX88cwXiyYDBNIKQAoynsk=",
+        "lastModified": 1783553345,
+        "narHash": "sha256-1yUgBvMuJSnC413L0g6LHEAThzPil4cDYWFZizNthFY=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "7c475df361c3e39dccd3501c319a7ca8a35d3377",
+        "rev": "78d241c8f72aa532cad9823acba7cceca9b20829",
         "type": "github"
       },
       "original": {
@@ -415,6 +431,7 @@
         "f-sy-h": "f-sy-h",
         "home-manager": "home-manager_2",
         "lovely-injector": "lovely-injector",
+        "mpd": "mpd",
         "nixos-apple-silicon": "nixos-apple-silicon",
         "nixpkgs": "nixpkgs_5",
         "nixpkgs-master": "nixpkgs-master",

@@ -9,7 +9,10 @@
 
 let
   master = inputs.nixpkgs-master.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-  rmpc-custom = pkgs.callPackage ../../pkgs/rmpc.nix { inherit cpuArch; };
+  rmpc-custom = pkgs.callPackage ../../pkgs/rmpc.nix {
+    inherit cpuArch;
+    mpdSrc = inputs.mpd;
+  };
 in
 {
   imports = [

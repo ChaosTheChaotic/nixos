@@ -1,6 +1,7 @@
 {
   pkgs ? import <nixpkgs> { },
   cpuArch ? "generic",
+	mpdSrc,
 }:
 
 let
@@ -9,13 +10,7 @@ let
     pname = "mpd-minimal";
     version = "0.25-git";
 
-    src = pkgs.fetchFromGitHub {
-      owner = "MusicPlayerDaemon";
-      repo = "MPD";
-      rev = "master";
-      hash = "sha256-6P6FuSB1Y4ye86E+zma2eoNoewZA5PqCWpC8sKNPzfk=";
-    };
-
+    src = mpdSrc;
     mesonBuildType = "release";
 
     nativeBuildInputs = with pkgs; [
