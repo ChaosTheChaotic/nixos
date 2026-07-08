@@ -90,7 +90,8 @@ in
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 
   hardware.asahi = {
-		peripheralFirmwareDirectory = ../../firmware;
+    enable = true;
+    peripheralFirmwareDirectory = ../../firmware;
     setupAsahiSound = true;
   };
 
