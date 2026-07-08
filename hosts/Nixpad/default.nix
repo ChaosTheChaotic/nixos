@@ -1,7 +1,7 @@
 {
   config,
   pkgs,
-	inputs,
+  inputs,
   ...
 }:
 
@@ -10,9 +10,9 @@ let
   extraFonts = pkgs.callPackage ../../pkgs/fonts.nix { };
 in
 {
-	imports = [
-		./hardware-configuration.nix
-	];
+  imports = [
+    ./hardware-configuration.nix
+  ];
 
   environment.systemPackages = with pkgs; [
     customPkgs.scripts
@@ -52,6 +52,7 @@ in
 
   nixpkgs.overlays = [
     inputs.nur.overlays.default
+		inputs.millennium.overlays.default
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -91,8 +92,8 @@ in
     };
   };
 
-	boot.loader.systemd-boot.enable = true;
-	boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelParams = [
     "zswap.enabled=1"
     "zswap.compressor=zstd"
@@ -105,15 +106,15 @@ in
     DefaultTimeoutStopSec = "10s";
   };
 
-	system.autoUpgrade.enable = false;
-	networking.hostName = "Nixpad";
+  system.autoUpgrade.enable = false;
+  networking.hostName = "Nixpad";
 
-	networking.wireless.iwd = {
-		enable = true;
-		settings.General.EnableNetworkConfiguration = true;
-	};
-	networking.networkmanager.enable = true;
-	networking.networkmanager.wifi.backend = "iwd";
+  networking.wireless.iwd = {
+    enable = true;
+    settings.General.EnableNetworkConfiguration = true;
+  };
+  networking.networkmanager.enable = true;
+  networking.networkmanager.wifi.backend = "iwd";
   networking.nameservers = [
     "1.1.1.1"
     "8.8.8.8"
@@ -213,6 +214,18 @@ in
     enable = true;
     binfmt = true;
   };
+
+  programs.steam = {
+    enable = true;
+    package = pkgs.millennium-steam;
+
+    protontricks.enable = true;
+    extraCompatPackages = with pkgs; [
+      proton-ge-bin
+    ];
+  };
+
+  hardware.graphics.enable32Bit = true;
 
   programs.nix-ld = {
     enable = true;

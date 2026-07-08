@@ -28,6 +28,7 @@
       url = "github:MusicPlayerDaemon/MPD";
       flake = false;
     };
+    millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
   };
 
   outputs =
