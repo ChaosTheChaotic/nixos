@@ -34,7 +34,7 @@
 
   networking.wg-quick.interfaces = wgHelper.mkWgInterface {
     privateKeyPath = config.age.secrets.wg-priv-thinker.path;
-    publicKey = "jB84ctFi3l+gxJxr/kwYXlKwLcmqWxuuLBkpE1anmgo=";
+    publicKey = "JB84ctFi3l+gxJxr/kwYXlKwLcmqWxuuLBkpE1anmgo=";
     endpoint = "195.242.214.194:51820";
   };
 
