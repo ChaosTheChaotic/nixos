@@ -51,7 +51,10 @@
             }:
             nixpkgs.lib.nixosSystem {
               inherit system;
-              specialArgs = { inherit inputs; };
+              specialArgs = {
+                inherit inputs;
+                wgHelper = import ./modules/wireguard.nix;
+              };
               modules = [
                 ./hosts/${hostName}/default.nix
                 agenix.nixosModules.default

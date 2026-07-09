@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  wgHelper,
   ...
 }:
 
@@ -43,28 +44,10 @@
 
   age.secrets.wg-priv-asahi.file = ../../secrets/wg-priv-asahi.age;
 
-  networking.wg-quick.interfaces = {
-    wg0 = {
-      address = [ "10.2.0.2/32" ];
-      dns = [
-        "1.1.1.1"
-        "8.8.8.8"
-        "9.9.9.9"
-        "116.202.176.26"
-        "10.2.0.1"
-      ];
-      privateKeyFile = config.age.secrets.wg-priv-asahi.path;
-      peers = [
-        {
-          publicKey = "KiCvg9+bh7/ssQDALW3uXSTLaURS3mgZdi/O9CxlFXo=";
-          allowedIPs = [
-            "0.0.0.0/0"
-            "::/0"
-          ];
-          endpoint = "79.127.254.65:51820";
-        }
-      ];
-    };
+  networking.wg-quick.interfaces = wgHelper.mkWgInterface {
+    privateKeyPath = config.age.secrets.wg-priv-asahi.path;
+    publicKey = "KiCvg9+bh7/ssQDALW3uXSTLaURS3mgZdi/O9CxlFXo=";
+    endpoint = "79.127.254.65:51820";
   };
 
   system.stateVersion = "25.11";

@@ -2,6 +2,7 @@
   config,
   pkgs,
   inputs,
+  wgHelper,
   ...
 }:
 
@@ -30,28 +31,11 @@
   networking.hostName = "Nixpad";
 
   age.secrets.wg-priv-thinker.file = ../../secrets/wg-priv-thinker.age;
-  networking.wg-quick.interfaces = {
-    wg0 = {
-      address = [ "10.2.0.2/32" ];
-      dns = [
-        "1.1.1.1"
-        "8.8.8.8"
-        "9.9.9.9"
-        "116.202.176.26"
-        "10.2.0.1"
-      ];
-      privateKeyFile = config.age.secrets.wg-priv-thinker.path;
-      peers = [
-        {
-          publicKey = "JB84ctFi3l+gxJxr/kwYXlKwLcmqWxuuLBkpE1anmgo=";
-          allowedIPs = [
-            "0.0.0.0/0"
-            "::/0"
-          ];
-          endpoint = "195.242.214.194:51820";
-        }
-      ];
-    };
+
+  networking.wg-quick.interfaces = wgHelper.mkWgInterface {
+    privateKeyPath = config.age.secrets.wg-priv-thinker.path;
+    publicKey = "jB84ctFi3l+gxJxr/kwYXlKwLcmqWxuuLBkpE1anmgo=";
+    endpoint = "195.242.214.194:51820";
   };
 
   programs.steam = {
