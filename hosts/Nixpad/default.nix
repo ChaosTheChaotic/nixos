@@ -5,123 +5,29 @@
   ...
 }:
 
-let
-  customPkgs = pkgs.callPackage ../../pkgs/default.nix { };
-  extraFonts = pkgs.callPackage ../../pkgs/fonts.nix { };
-in
 {
   imports = [
     ./hardware-configuration.nix
-  ];
-
-  environment.systemPackages = with pkgs; [
-    customPkgs.scripts
-    customPkgs.scriptsManPgs
-    git
-    openssl.dev
-    man-pages
-    man-pages-posix
-    brightnessctl
-    pamixer
-    bluez
-    bluetui
-    unp
-    cmake
-    ffmpeg
-    wireguard-tools
-    usbutils
-    glib-networking
-    gdb
-    gnupg
-    ncdu
-    vlc
-    chafa
-    xxd
-    go
-    ccache
-    inputs.rose-pine-hyprcursor.packages.${pkgs.stdenv.hostPlatform.system}.default
-    android-tools
-  ];
-
-  fonts.packages = [
-    extraFonts
-    pkgs.nerd-fonts.jetbrains-mono
-    pkgs.nerd-fonts.fira-code
-    pkgs.nerd-fonts.fira-mono
+    ../common.nix
   ];
 
   nixpkgs.overlays = [
-    inputs.nur.overlays.default
-		inputs.millennium.overlays.default
+    inputs.millennium.overlays.default
   ];
-
-  nixpkgs.config.allowUnfree = true;
 
   nix.settings = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
     system-features = [
       "gccarch-skylake"
-      "big-parallel"
-      "benchmark"
     ];
-    flake-registry = "";
   };
 
-  nix.optimise = {
-    automatic = true;
-    dates = [ "15:15" ];
-  };
-
-  nix.registry.nixpkgs.flake = inputs.nixpkgs;
-  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
-
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-    settings = {
-      General = {
-        Experimental = true;
-        FastConnectable = false;
-      };
-      Policy = {
-        AutoEnable = true;
-      };
-    };
-  };
-
-  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelParams = [
-    "zswap.enabled=1"
-    "zswap.compressor=zstd"
-    "zswap.zpool=zsmalloc"
-    "zswap.max_pool_percent=25"
-  ];
 
   systemd.settings.Manager = {
-    DefaultTimeoutStartSec = "90s";
     DefaultTimeoutStopSec = "10s";
   };
 
-  system.autoUpgrade.enable = false;
   networking.hostName = "Nixpad";
-
-  networking.wireless.iwd = {
-    enable = true;
-    settings.General.EnableNetworkConfiguration = true;
-  };
-  networking.networkmanager.enable = true;
-  networking.networkmanager.wifi.backend = "iwd";
-  networking.nameservers = [
-    "1.1.1.1"
-    "8.8.8.8"
-    "9.9.9.9"
-    "116.202.176.26"
-  ];
-  networking.networkmanager.dns = "none";
 
   age.secrets.wg-priv-thinker.file = ../../secrets/wg-priv-thinker.age;
   networking.wg-quick.interfaces = {
@@ -148,73 +54,6 @@ in
     };
   };
 
-  services.zerotierone = {
-    enable = true;
-    joinNetworks = [ "8d1c312afa2aad91" ];
-  };
-
-  services.upower = {
-    enable = true;
-  };
-
-  hardware.enableRedistributableFirmware = true;
-  time.timeZone = "Europe/London";
-
-  services.pipewire = {
-    enable = true;
-    pulse.enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    jack.enable = true;
-  };
-
-  security.rtkit.enable = true;
-  security.pam.loginLimits = [
-    {
-      domain = "@users";
-      item = "nofile";
-      type = "soft";
-      value = "8192";
-    }
-    {
-      domain = "@users";
-      item = "nofile";
-      type = "hard";
-      value = "8192";
-    }
-  ];
-  services.flatpak.enable = true;
-  services.openssh.enable = true;
-
-  programs.zsh.enable = true;
-  environment.shells = with pkgs; [ zsh ];
-
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-  };
-
-  users.users.chaos = {
-    isNormalUser = true;
-    extraGroups = [
-      "wheel"
-      "networkmanager"
-      "adbusers"
-      "video"
-      "render"
-      "input"
-      "seat"
-    ];
-    shell = pkgs.zsh;
-  };
-
-  programs.java.enable = true;
-
-  programs.appimage = {
-    enable = true;
-    binfmt = true;
-  };
-
   programs.steam = {
     enable = true;
     package = pkgs.millennium-steam;
@@ -226,53 +65,6 @@ in
   };
 
   hardware.graphics.enable32Bit = true;
-
-  programs.nix-ld = {
-    enable = true;
-    libraries = with pkgs; [
-      zlib
-      openssl
-      stdenv.cc.cc.lib
-    ];
-  };
-
-  programs.hyprland = {
-    enable = true;
-    withUWSM = true;
-    xwayland.enable = true;
-  };
-
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-hyprland
-      xdg-desktop-portal-gtk
-    ];
-    config = {
-      common = {
-        default = [
-          "hyprland"
-          "gtk"
-        ];
-        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
-      };
-    };
-  };
-
-  environment.variables = {
-    PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
-    C_INCLUDE_PATH = "${pkgs.openssl.dev}/include";
-    XDG_DATA_DIRS = [
-      "${pkgs.hyprland}/share"
-    ];
-  };
-
-  documentation = {
-    enable = true;
-    man.enable = true;
-  };
 
   system.stateVersion = "26.05";
 }
