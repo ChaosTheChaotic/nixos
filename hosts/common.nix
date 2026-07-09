@@ -238,5 +238,4 @@ in
     enable = true;
     man.enable = true;
   };
-
 }
