@@ -15,7 +15,14 @@
     asahi-bless
     asahi-btsync
     asahi-wifisync
-    muvm
+    (muvm.override {
+			fex = (pkgs.fex.overrideAttrs (oldAttrs: {
+				nativeBuildInputs = (oldAttrs.nativeBuildInputs or []) ++ [
+					pkgs.python3Packages.packaging
+					pkgs.python3Packages.setuptools
+				];
+			}));
+		})
     #nvimpager
   ];
 

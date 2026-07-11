@@ -29,6 +29,7 @@
       flake = false;
     };
     millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
+    tree-sitter.url = "github:tree-sitter/tree-sitter";
   };
 
   outputs =

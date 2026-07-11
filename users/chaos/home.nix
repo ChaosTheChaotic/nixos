@@ -84,41 +84,6 @@ in
       prettier
       google-java-format
       wf-recorder
-      (tree-sitter.overrideAttrs (old: rec {
-        version = "0.26.9";
-        src = fetchFromGitHub {
-          owner = "tree-sitter";
-          repo = "tree-sitter";
-          rev = "v${version}";
-          hash = "sha256-fcFEfoALrbpBD6rWogxJ7FNVlvDQgswoX9ylRgko+8Q=";
-        };
-        patches = [ ];
-        cargoDeps = rustPlatform.fetchCargoVendor {
-          inherit src;
-          name = "${old.pname}-${version}-vendor";
-          hash = "sha256-9FeWnWWPUWmMF15Psmul8GxGv2JceHWc2WZPmOr81gw=";
-        };
-        cargoHash = "sha256-9FeWnWWPUWmMF15Psmul8GxGv2JceHWc2WZPmOr81gw=";
-        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
-          rustPlatform.bindgenHook
-        ];
-        NIX_CFLAGS_COMPILE =
-          (old.NIX_CFLAGS_COMPILE or "")
-          + (
-            if cpuArch == "generic" then
-              " -O3"
-            else if pkgs.stdenv.hostPlatform.isAarch64 then
-              " -mcpu=${cpuArch} -O3"
-            else
-              " -march=${cpuArch} -O3"
-          );
-
-        env =
-          (old.env or { })
-          // (lib.optionalAttrs (cpuArch != "generic") {
-            RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
-          });
-      }))
 
       # Fonts
       nerd-fonts.fira-code
@@ -196,6 +161,24 @@ in
             else
               " -march=${cpuArch} -O3"
           );
+      }))
+      (inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
+        NIX_CFLAGS_COMPILE =
+          (oldAttrs.NIX_CFLAGS_COMPILE or "")
+          + (
+            if cpuArch == "generic" then
+              " -O3"
+            else if pkgs.stdenv.hostPlatform.isAarch64 then
+              " -mcpu=${cpuArch} -O3"
+            else
+              " -march=${cpuArch} -O3"
+          );
+
+        env =
+          (oldAttrs.env or { })
+          // (lib.optionalAttrs (cpuArch != "generic") {
+            RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
+          });
       }))
       (inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
         env =
