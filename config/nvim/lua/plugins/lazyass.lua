@@ -453,6 +453,9 @@ return {
 				"gitcommit",
 				"meson",
 				"ninja",
+				"zsh",
+				"scss",
+				"gitignore",
 			})
 
 			vim.api.nvim_create_autocmd("FileType", {
