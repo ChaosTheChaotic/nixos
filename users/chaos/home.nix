@@ -95,7 +95,7 @@ in
       scrcpy
       tesseract
       imagemagick
-      spotdl
+      master.spotdl
       prismlauncher
       kdePackages.kdeconnect-kde
       libunwind
@@ -107,10 +107,15 @@ in
       playerctl
       sd
       grim
-      yt-dlp
+      master.yt-dlp
       kdePackages.bluez-qt
-      ani-cli
-      equibop
+      (master.ani-cli.overrideAttrs (oldAttrs: {
+				runtimeInputs = (oldAttrs.runtimeInputs or []) ++ [
+					botan3
+				];
+				src = inputs.ani-cli;
+      }))
+      master.equibop
       git-filter-repo
       nix-prefetch-github
       shellcheck
