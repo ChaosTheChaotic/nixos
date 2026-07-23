@@ -457,7 +457,8 @@ return {
 				"scss",
 				"gitignore",
 				"git_rebase",
-				"git_config"
+				"git_config",
+				"asm",
 			})
 
 			vim.api.nvim_create_autocmd("FileType", {
