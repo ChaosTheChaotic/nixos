@@ -110,15 +110,16 @@ in
       master.yt-dlp
       kdePackages.bluez-qt
       (master.ani-cli.overrideAttrs (oldAttrs: {
-				runtimeInputs = (oldAttrs.runtimeInputs or []) ++ [
-					botan3
-				];
-				src = inputs.ani-cli;
+        runtimeInputs = (oldAttrs.runtimeInputs or [ ]) ++ [
+          botan3
+        ];
+        src = inputs.ani-cli;
       }))
       master.equibop
       git-filter-repo
       nix-prefetch-github
       shellcheck
+      naev
       (balatro.override {
         src = null;
         withMods = true;
