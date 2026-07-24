@@ -444,6 +444,7 @@ return {
 				"vimdoc",
 				"tsx",
 				"sql",
+				"query",
 				"go",
 				"qmljs",
 				"zig",

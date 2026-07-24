@@ -6,6 +6,7 @@
 (use_statement "as" @keyword)
 
 ; Types
+(qualified_identifier (identifier) @type)
 (primitive_type) @type.builtin
 (type (identifier) @type)
 (type "self" @type)
