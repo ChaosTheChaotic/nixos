@@ -24,11 +24,11 @@
     "ani-cli": {
       "flake": false,
       "locked": {
-        "lastModified": 1784821560,
-        "narHash": "sha256-ZV1oZxMmcEEhe3ejFvT+4fAwaxePv5dsb3Xv6AzGx0Y=",
+        "lastModified": 1784857947,
+        "narHash": "sha256-wj7nU6Gej/0wuV3gTc8ATDgxXQ8+aCLXr+bLYXw0gws=",
         "owner": "pystardust",
         "repo": "ani-cli",
-        "rev": "b1223380a2e9fbcd7b4a5f3eed904a0686df83b9",
+        "rev": "34462950036e67154fde2c56af10dbb8925e21ad",
         "type": "github"
       },
       "original": {
@@ -199,11 +199,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784789275,
-        "narHash": "sha256-cgRTWuG+u1tBPhm01JrId2k0Bni09phVJ1Q0BZlRd7M=",
+        "lastModified": 1784877405,
+        "narHash": "sha256-W649GocILahx7Vb/JMx834217+OLKBrq014VmC/8+NM=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "3b0e6bbd65869af1beadf5963a99befc179d209f",
+        "rev": "32de400b6ac9f43042bca706f4a64f6ad08117e8",
         "type": "github"
       },
       "original": {
@@ -264,11 +264,11 @@
       },
       "locked": {
         "dir": "packages/nix",
-        "lastModified": 1784048235,
-        "narHash": "sha256-ar1xg5HFbz6XJ/BAOo37ewfnMcsLHj0/088soIvXKIo=",
+        "lastModified": 1784860807,
+        "narHash": "sha256-nznQFS9H8er9bTwxKG4LSa2D0lGsxIPUqDuWa1rbJkA=",
         "owner": "SteamClientHomebrew",
         "repo": "Millennium",
-        "rev": "df5a3572fd2366b4aa689abd655ee48296ba1afd",
+        "rev": "266e41ea8924c41e51145ae986a9bdf68f9415d9",
         "type": "github"
       },
       "original": {
@@ -476,11 +476,11 @@
     },
     "nixpkgs_7": {
       "locked": {
-        "lastModified": 1784497964,
-        "narHash": "sha256-vlHUuqAcbcH2RKmHbPiuQzbv1pnzzavXnI62RD0bqCU=",
+        "lastModified": 1784796856,
+        "narHash": "sha256-wWFrV5/Qbm+lyt5x20E/bSbfJiGKMo4RCxZV8cl/WZI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "241313f4e8e508cb9b13278c2b0fa25b9ca27163",
+        "rev": "e2587caef70cea85dd97d7daab492899902dbf5d",
         "type": "github"
       },
       "original": {
@@ -530,11 +530,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784824634,
-        "narHash": "sha256-qgiv+WbMLdPjK1roLyTMFB5GYAobVkyesoMU4muh4Ak=",
+        "lastModified": 1784907604,
+        "narHash": "sha256-IPKy7cufE5+g5BZmNKBbOlGShP7OMhJ9DQh2Qg+5dmc=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "b220af8673ae0bdf37e68468bdf01c47551bc3ac",
+        "rev": "f242458fb4dab9908f697a1fed50eabb7a730454",
         "type": "github"
       },
       "original": {
@@ -738,11 +738,11 @@
         "tereix-stdlib": "tereix-stdlib"
       },
       "locked": {
-        "lastModified": 1784758992,
-        "narHash": "sha256-gDUvs6YnYEbyfEI1rph01JQDQTd37kSnZox6qqRHsGw=",
+        "lastModified": 1784908536,
+        "narHash": "sha256-8DkbrTtr/CfYQ1Au5PwMczQR1kNveLlTzQ0DJdP2atQ=",
         "owner": "chaosthechaotic",
         "repo": "tereix",
-        "rev": "023a7eabb9fb472d1d5eed001667148f18fa15cc",
+        "rev": "d71c70ce636a0f49210d49fa5c5b383ae8f1642c",
         "type": "github"
       },
       "original": {
@@ -772,11 +772,11 @@
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
-        "lastModified": 1784583988,
-        "narHash": "sha256-F95dE0lxSOr/Lb+5L1sQlCzX91GqC0uaZbHRAglGvno=",
+        "lastModified": 1784845815,
+        "narHash": "sha256-XJYIuVCr9Exehf69LOXD8l64/pMR8BeX5oh/Ftrk8dw=",
         "owner": "tree-sitter",
         "repo": "tree-sitter",
-        "rev": "0a0e77c375ba24ab8f4a49a389f51850a30a14a1",
+        "rev": "65b5b03c94d8573f6b1a1461e6a90a334b6629c0",
         "type": "github"
       },
       "original": {
@@ -810,11 +810,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1784819467,
-        "narHash": "sha256-4vAwAdN7Z+5x4jLpqjd6oAwSMMDgQ7DrmrWw0mwDxSI=",
+        "lastModified": 1784854232,
+        "narHash": "sha256-e5sudlN1s3gZLdh4xPZmP1GSEQy+I8qyudOpL1L9ADA=",
         "owner": "vicinaehq",
         "repo": "vicinae",
-        "rev": "d3abfbc2afe149d48c9bc3ba95f6689e965891c7",
+        "rev": "97afee7cf3c4e9068a958c2116fcf5aecc9ab499",
         "type": "github"
       },
       "original": {
