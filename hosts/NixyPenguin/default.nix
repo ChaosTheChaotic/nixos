@@ -16,13 +16,16 @@
     asahi-btsync
     asahi-wifisync
     (muvm.override {
-			fex = (pkgs.fex.overrideAttrs (oldAttrs: {
-				nativeBuildInputs = (oldAttrs.nativeBuildInputs or []) ++ [
-					pkgs.python3Packages.packaging
-					pkgs.python3Packages.setuptools
-				];
-			}));
-		})
+      fex = (
+        pkgs.fex.overrideAttrs (oldAttrs: {
+          nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [
+            pkgs.python3Packages.packaging
+            pkgs.python3Packages.setuptools
+          ];
+        })
+      );
+    })
+    (callPackage ../../pkgs/naev/naev.nix {})
     #nvimpager
   ];
 

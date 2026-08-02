@@ -119,7 +119,6 @@ in
       git-filter-repo
       nix-prefetch-github
       shellcheck
-      naev
       (balatro.override {
         src = null;
         withMods = true;
