@@ -85,8 +85,9 @@ stdenv.mkDerivation (finalAttrs: {
         owner = "naev";
         repo = "naev";
         rev = "v${finalAttrs.version}";
-        hash = "sha256-c9xs12SQHNHkIlT1LEKDogpg3sMC7cUH5QPQp7tfs7o=";
+        hash = "sha256-kmY50iqGLuaN+ta4xqYr9YnfuouXDbypriNBm5WMtik=";
         fetchSubmodules = true;
+        fetchLFS = true;
       };
 
   buildInputs = [
