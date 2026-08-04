@@ -159,7 +159,12 @@ stdenv.mkDerivation (finalAttrs: {
     unzip ${nativefiledialog-extended-patch} -d $tmp
     cp -r $tmp/*/* subprojects/nativefiledialog-extended-1.2.1
 	'' + lib.optionalString scalefactorPatch ''
-		sed -i '/window_addFader/,/;/ {
+		sed -i '/window_addFader/ {
+		  :loop
+		  /)[[:space:]]*;/! {
+		    N
+		    b loop
+		  }
 		  /conf\.scalefactor/ {
 		    s/log[[:space:]]*([[:space:]]*1\.[[:space:]]*)/log( 0.1 )/g
 		    s/log[[:space:]]*([[:space:]]*3\.[[:space:]]*)/log( 5.0 )/g
