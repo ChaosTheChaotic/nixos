@@ -25,7 +25,7 @@
         })
       );
     })
-    (callPackage ../../pkgs/naev/naev.nix {})
+    (callPackage ../../pkgs/naev/naev.nix { scalefactorPatch = true; })
     #nvimpager
   ];
 
