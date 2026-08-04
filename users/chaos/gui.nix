@@ -29,6 +29,27 @@
     programs.floorp = {
       enable = true;
       profiles.default = {
+        search = {
+          force = true;
+          default = "SearXNG";
+          engines = {
+            "SearXNG" = {
+              urls = [
+                {
+                  template = "https://priv.au/search";
+                  params = [
+                    {
+                      name = "q";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+              icon = "https://priv.au/favicon.ico";
+              definedAliases = [ "@sx" ];
+            };
+          };
+        };
         extensions = {
           packages = with pkgs.nur.repos.rycee.firefox-addons; [
             ublock-origin
@@ -68,7 +89,7 @@
         background_blur = 5;
         cursor_trail = 1;
         font_family = "JetBrains Mono Nerd Font";
-	font_size = 8;
+        font_size = 8;
         bold_font = "auto";
         italic_font = "auto";
         bold_italic_font = "auto";
