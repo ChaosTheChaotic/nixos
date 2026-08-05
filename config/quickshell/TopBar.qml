@@ -380,7 +380,7 @@ PanelWindow {
 		    color: "#c4a7e7"
 		    width: {
 		      if (!musicPopup.activePlayer || !musicPopup.activePlayer.length) return 0;
-		      return (musicPopup.activePlayer.position / musicPopup.activePlayer.length) * parent.width;
+					return Math.min(1, musicPopup.activePlayer.position / musicPopup.activePlayer.length) * parent.width;
 		    }
 		  }
 		  MouseArea {

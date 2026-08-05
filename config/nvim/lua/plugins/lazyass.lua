@@ -60,7 +60,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 	pattern = "*",
 	callback = function()
 		local groups =
-		{ "Normal", "NormalNC", "LineNr", "Folded", "NonText", "SpecialKey", "VertSplit", "SignColumn", "EndOfBuffer" }
+			{ "Normal", "NormalNC", "LineNr", "Folded", "NonText", "SpecialKey", "VertSplit", "SignColumn", "EndOfBuffer" }
 		for _, group in ipairs(groups) do
 			vim.api.nvim_set_hl(0, group, { bg = "NONE", ctermbg = "NONE" })
 		end
@@ -655,6 +655,7 @@ return {
 			formatters_by_ft = {
 				lua = { "stylua" },
 				python = { "ruff_format" },
+				qml = { "qmlformat" },
 				rust = { "rustfmt" },
 				javascript = { "prettier" },
 				typescript = { "prettier" },
@@ -675,6 +676,10 @@ return {
 			formatters = {
 				stylua = { append_args = { "-a", "--indent-type", "Tabs", "--indent-width", "2" } },
 				shfmt = { append_args = { "-ci" } },
+				qmlformat = {
+					command = "qmlformat",
+					append_args = { "-t", "-n", "--objects-spacing", "--functions-spacing", "--single-line-empty-objects" },
+				},
 				tx_fmt = {
 					command = "tereix",
 					args = { "fmt", "-w", "$FILENAME" },
