@@ -262,7 +262,7 @@ PanelWindow {
 
 					Process {
 						command: ["sh", "-c", `printf "[general]\\nbars=6\\nsensitivity=60\\n[output]\\nmethod=raw\\ndata_format=ascii\\nascii_max_range=100\\n[smoothing]\\nintegral=80\\ngravity=100" | cava -p /dev/stdin`]
-						running: musicPill.opacity > 0
+						running: musicPill.opacity > 0 && Mpris.players.values[0]?.playbackState === MprisPlaybackState.Playing
 
 						stdout: SplitParser {
 							onRead: data => {
@@ -279,8 +279,6 @@ PanelWindow {
 				}
 
 				Text {
-					id: musicText
-
 					property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
 
 					Layout.fillWidth: true
@@ -2487,6 +2485,7 @@ PanelWindow {
 							color: "#393552"
 							implicitHeight: 1
 						} // Divider
+
 
 
 						Item {
