@@ -239,6 +239,16 @@ PanelWindow {
 					Layout.alignment: Qt.AlignVCenter
 					spacing: 2
 
+					Connections {
+						function onPlaybackStateChanged() {
+							if (target && target.playbackState !== MprisPlaybackState.Playing) {
+								visualizer.barValues = [0, 0, 0, 0, 0, 0];
+							}
+						}
+
+						target: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
+					}
+
 					Repeater {
 						model: 6
 
