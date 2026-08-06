@@ -3,10 +3,13 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
 import Quickshell.Services.Notifications
 
 PanelWindow {
 	id: root
+
+	WlrLayershell.layer: WlrLayer.Overlay
 
 	color: "transparent"
 	implicitHeight: mainLayout.implicitHeight
