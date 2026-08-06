@@ -3,6 +3,7 @@ import QtQuick
 
 ShellRoot {
   TopBar {}
+	Notif {}
 
   //Launcher {
   //  id: launcher

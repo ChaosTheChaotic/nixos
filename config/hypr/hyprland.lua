@@ -12,6 +12,7 @@ local mainMod = "SUPER"
 
 local terminal = "kitty"
 local scriptsDir = os.getenv("NIX_CFG_DIR") .. "/scripts/bin"
+local qsDir = os.getenv("NIX_CFG_DIR") .. "/config/quickshell"
 local brightness = scriptsDir .. "/brightness"
 local volume = scriptsDir .. "/volume"
 local ss = scriptsDir .. "/screenshot"
@@ -231,8 +232,7 @@ hl.config({
 hl.on("hyprland.start", function()
 	hl.exec_cmd("wbg -s " .. os.getenv("WALLPAPER_DIR") .. "/hole.png")
 	hl.exec_cmd("vicinae server")
-	hl.exec_cmd("qs")
-	hl.exec_cmd("dunst")
+	hl.exec_cmd("qs -c" .. qsDir)
 	hl.exec_cmd(volume .. " --set 0")
 	hl.exec_cmd("sh -c 'sleep 2 && kill -9 $(pgrep .kdeconnectd-wr)'")
 end)
