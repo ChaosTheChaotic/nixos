@@ -75,7 +75,7 @@ hl.layer_rule({
 	match = {
 		namespace = "quickshell",
 	},
-	blur = true,
+	blur = false,
 })
 
 hl.gesture({
