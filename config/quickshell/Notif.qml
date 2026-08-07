@@ -10,7 +10,6 @@ PanelWindow {
 	id: root
 
 	WlrLayershell.layer: WlrLayer.Overlay
-
 	color: "transparent"
 	implicitHeight: mainLayout.implicitHeight
 	implicitWidth: 380
@@ -70,6 +69,7 @@ PanelWindow {
 			delegate: Rectangle {
 				id: notifCard
 
+				required property int index
 				required property var modelData
 
 				Layout.fillWidth: true
@@ -79,6 +79,34 @@ PanelWindow {
 				clip: true
 				color: "#CC232136"
 				radius: 12
+
+				Timer {
+					id: expireTimer
+
+					interval: {
+						let timeout = notifCard.modelData.expireTimeout;
+						if (timeout > 0)
+							return timeout * 1000;
+						return 5000;
+					}
+
+					running: notifCard.modelData.urgency !== NotificationUrgency.Critical && notifCard.modelData.expireTimeout !== 0
+
+					onTriggered: {
+						notifCard.modelData.expire();
+						notificationModel.remove(index);
+					}
+				}
+
+				MouseArea {
+					anchors.fill: parent
+					cursorShape: Qt.PointingHandCursor
+
+					onClicked: {
+						notifCard.modelData.dismiss();
+						notificationModel.remove(index);
+					}
+				}
 
 				ColumnLayout {
 					id: contentLayout
@@ -107,40 +135,6 @@ PanelWindow {
 							font.family: "JetBrainsMono Nerd Font"
 							font.pixelSize: 11
 							text: notifCard.modelData.appName || "System"
-						}
-
-						Rectangle {
-							color: closeMouse.containsMouse ? "#eb6f92" : "transparent"
-							implicitHeight: 20
-							implicitWidth: 20
-							radius: 10
-
-							Behavior on color {
-								ColorAnimation {
-									duration: 150
-								}
-							}
-
-							Text {
-								anchors.centerIn: parent
-								color: closeMouse.containsMouse ? "#232136" : "#908caa"
-								font.family: "JetBrainsMono Nerd Font"
-								font.pixelSize: 12
-								text: "󰅖"
-							}
-
-							MouseArea {
-								id: closeMouse
-
-								anchors.fill: parent
-								cursorShape: Qt.PointingHandCursor
-								hoverEnabled: true
-
-								onClicked: {
-									notifCard.modelData.dismiss();
-									notificationModel.remove(index);
-								}
-							}
 						}
 					}
 
