@@ -29,15 +29,9 @@ vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
 -- Force consistent tab settings across all buffers
 vim.opt.tabstop = 2
-vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
-vim.api.nvim_create_autocmd("BufEnter", {
-	callback = function()
-		vim.opt.tabstop = 2
-		vim.opt.softtabstop = 2
-		vim.opt.shiftwidth = 2
-	end,
-})
+vim.opt.softtabstop = 0
+vim.opt.expandtab = false
 
 vim.filetype.add({
 	extension = {
