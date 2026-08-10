@@ -20,10 +20,6 @@
       };
     };
 
-    services.cliphist = {
-      enable = true;
-      allowImages = true;
-    };
     programs.hyprlock.enable = true;
 
     programs.floorp = {
