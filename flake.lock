@@ -530,11 +530,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1786296971,
-        "narHash": "sha256-i/L0mDpkn+DR77KVniuNfxxEcdk4D/MGfIon3lg3l+Y=",
+        "lastModified": 1786321462,
+        "narHash": "sha256-owhJCGTjR74tb1EvW36vu9B6edt05DN/Yrqr3HscmBk=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "be872ed694def544d3e2dd006747431cfbcf00b7",
+        "rev": "2ed258d1d5373e084197433bb24b0e0d2391c162",
         "type": "github"
       },
       "original": {
@@ -738,11 +738,11 @@
         "tereix-stdlib": "tereix-stdlib"
       },
       "locked": {
-        "lastModified": 1786233285,
-        "narHash": "sha256-VWJUZJhQkxQdnSuNCSp4xE85wH59sypU5kX+XAQ0y1U=",
+        "lastModified": 1786307202,
+        "narHash": "sha256-e9fgxWWNGIDHg0v0h5yOlGXUo5R0P8+I3/HtkVe6An0=",
         "owner": "chaosthechaotic",
         "repo": "tereix",
-        "rev": "47120db435ea359b27b0d705e1e4e7591052460d",
+        "rev": "900daeebc8e16bdd81bd1320f67cff20fb6f1ba1",
         "type": "github"
       },
       "original": {
@@ -772,11 +772,11 @@
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
-        "lastModified": 1786296530,
-        "narHash": "sha256-BepCGhfZBGHGTzjMnTBrNAb2WDg6hFjKfOWjTxuaHYQ=",
+        "lastModified": 1786308517,
+        "narHash": "sha256-derWn/5I99z1cGcR2ux5Mwzju/2ODQOJ/phd9k+KXKs=",
         "owner": "tree-sitter",
         "repo": "tree-sitter",
-        "rev": "1b916ab754715646ad1098285b5a3afb8226197c",
+        "rev": "543734d2868ef474d97512620f87064058affd55",
         "type": "github"
       },
       "original": {
