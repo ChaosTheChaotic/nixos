@@ -35,7 +35,7 @@
 (use_statement "as" (identifier) @namespace)
 
 ; Variables and parameters
-(variable_declaration (identifier) @variable)
+(declaration_item (identifier) @variable)
 (parameter (identifier) @variable.parameter)
 
 ; Literals
