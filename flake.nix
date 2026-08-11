@@ -31,7 +31,7 @@
     millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
     tree-sitter.url = "github:tree-sitter/tree-sitter";
     ani-cli = {
-      url = "github:pystardust/ani-cli/fix";
+      url = "github:pystardust/ani-cli";
       flake = false;
     };
   };

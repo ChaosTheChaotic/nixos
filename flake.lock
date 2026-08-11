@@ -24,16 +24,15 @@
     "ani-cli": {
       "flake": false,
       "locked": {
-        "lastModified": 1785405979,
-        "narHash": "sha256-cjWsvYb7XnNLqJNy7AKT63QHWUTNiXclfCDCx88Q1OU=",
+        "lastModified": 1786437958,
+        "narHash": "sha256-IOC1q3c9vKUS1pzjXrenjoiThKtICmAGTvebP2ohEqk=",
         "owner": "pystardust",
         "repo": "ani-cli",
-        "rev": "4bec3bbae28416dfee20b21ad0ad0bb84e21d2a2",
+        "rev": "92e9d796d23aef3ae94b52852f9c992e2bce4fe3",
         "type": "github"
       },
       "original": {
         "owner": "pystardust",
-        "ref": "fix",
         "repo": "ani-cli",
         "type": "github"
       }
