@@ -424,6 +424,8 @@ return {
 				"typescript",
 				"javascript",
 				"json",
+				"yaml",
+				"csv",
 				"html",
 				"css",
 				"markdown",
