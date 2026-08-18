@@ -34,6 +34,19 @@
       url = "github:pystardust/ani-cli";
       flake = false;
     };
+    nixcord.url = "github:4evy/nixcord";
+		equi-eval = {
+			url = "git+https://git.nin0.dev/userplugins/eval";
+			flake = false;
+		};
+		equi-venfetch = {
+			url = "git+https://git.nin0.dev/userplugins/venfetch";
+			flake = false;
+		};
+		equi-clientsidebadges = {
+			url = "git+https://git.nin0.dev/userplugins/clientsidebadges";
+			flake = false;
+		};
   };
 
   outputs =

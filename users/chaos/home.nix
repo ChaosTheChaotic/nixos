@@ -20,6 +20,7 @@ in
     ./cli.nix
     ./gui.nix
     ./rmpc.nix
+		./equi/equi.nix
   ];
 
   options = {
@@ -115,7 +116,6 @@ in
         ];
         src = inputs.ani-cli;
       }))
-      master.equibop
       git-filter-repo
       nix-prefetch-github
       shellcheck
