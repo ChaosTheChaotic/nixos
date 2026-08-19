@@ -4,7 +4,7 @@
 }:
 
 {
-  imports = [ inputs.nixcord.homeModules.nixcord ];
+  imports = [ inputs.equi.nixcord.homeModules.nixcord ];
 
   programs.nixcord = {
     enable = true;
@@ -13,12 +13,12 @@
     equibop.enable = true;
 
     userPlugins = {
-      eval = inputs.equi-eval;
-      venfetch = inputs.equi-venfetch;
-      clientsidebadges = inputs.equi-clientsidebadges;
-      gallerymode = inputs.equi-gallerymode;
-      newlinesincommands = inputs.equi-newlinesincommands;
-      inrole = inputs.equi-inrole;
+      eval = inputs.equi.plugins.eval;
+      venfetch = inputs.equi.plugins.venfetch;
+      clientsidebadges = inputs.equi.plugins.clientsidebadges;
+      gallerymode = inputs.equi.plugins.gallerymode;
+      newlinesincommands = inputs.equi.plugins.newlinesincommands;
+      inrole = inputs.equi.plugins.inrole;
       rebuildandrestart = ./plugins/rebuildAndRestart;
     };
 
@@ -263,12 +263,12 @@
     };
     extraConfig.plugins = {
       eval.enable = true;
-      clientsidebadges.enable = true;
       venfetch.enable = true;
-      GalleryMode.enable = true;
-      NewlinesInCommands.enable = true;
       InRole.enable = true;
-      rebuildandrestart.enable = true;
+      clientsidebadges.enable = true;
+      NewlinesInCommands.enable = true;
+      RebuildAndRestart.enable = true;
+      GalleryMode.enable = true;
       Anammox = {
         enable = true;
         dms = true;
