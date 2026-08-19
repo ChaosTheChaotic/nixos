@@ -19,7 +19,21 @@
       rebuildandrestart = ./plugins/rebuildAndRestart;
     };
 
+    quickCss = ''
+			.container__133bf,
+			.privateChannels__35e86,
+			.scroller__99e7c,
+			.tabBody__133bf,
+			.searchBar_e6b769,
+			.peopleColumn__133bf {
+			    background-color: var(--surface) !important;
+			}
+		'';
     config = {
+      useQuickCss = true;
+      themeLinks = [
+        "https://raw.githubusercontent.com/rose-pine/discord/refs/heads/main/dist/rose-pine-moon.css"
+      ];
       enabledThemeLinks = [
         "https://raw.githubusercontent.com/rose-pine/discord/refs/heads/main/dist/rose-pine-moon.css"
       ];
