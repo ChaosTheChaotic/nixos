@@ -16,19 +16,22 @@
       eval = inputs.equi-eval;
       venfetch = inputs.equi-venfetch;
       clientsidebadges = inputs.equi-clientsidebadges;
+      gallerymode = inputs.equi-gallerymode;
+      newlinesincommands = inputs.equi-newlinesincommands;
+      inrole = inputs.equi-inrole;
       rebuildandrestart = ./plugins/rebuildAndRestart;
     };
 
     quickCss = ''
-			.container__133bf,
-			.privateChannels__35e86,
-			.scroller__99e7c,
-			.tabBody__133bf,
-			.searchBar_e6b769,
-			.peopleColumn__133bf {
-			    background-color: var(--surface) !important;
-			}
-		'';
+      .container__133bf,
+      .privateChannels__35e86,
+      .scroller__99e7c,
+      .tabBody__133bf,
+      .searchBar_e6b769,
+      .peopleColumn__133bf {
+          background-color: var(--surface) !important;
+      }
+    '';
     config = {
       useQuickCss = true;
       themeLinks = [
@@ -262,6 +265,9 @@
       eval.enable = true;
       clientsidebadges.enable = true;
       venfetch.enable = true;
+      GalleryMode.enable = true;
+      NewlinesInCommands.enable = true;
+      InRole.enable = true;
       rebuildandrestart.enable = true;
       Anammox = {
         enable = true;
@@ -457,10 +463,6 @@
       };
       messageLoggerEnhanced = {
         autoCheckForUpdates = true;
-      };
-      OCR = {
-        enable = true;
-        engine = 2;
       };
       quoter = {
         userIdentifier = 0;

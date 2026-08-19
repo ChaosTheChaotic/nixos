@@ -112,6 +112,54 @@
         "url": "https://git.nin0.dev/userplugins/eval"
       }
     },
+    "equi-gallerymode": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1785859092,
+        "narHash": "sha256-VY2WSOR2PYY+3ADYXX/jsC2CroJ5BHr7MWCkNixnq/U=",
+        "owner": "Sodroz",
+        "repo": "GalleryMode",
+        "rev": "003ba4ba5df20c3633e7659701e5f3e43d0c2c30",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Sodroz",
+        "repo": "GalleryMode",
+        "type": "github"
+      }
+    },
+    "equi-inrole": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1760696182,
+        "narHash": "sha256-85R3OjBM19kUD3U9Af9sNBBfNJ+cMnCNEL01NK6yLHY=",
+        "ref": "refs/heads/main",
+        "rev": "0c1192d1e92d056f146879b9cd9fe95e4046c4d8",
+        "revCount": 14,
+        "type": "git",
+        "url": "https://git.nin0.dev/userplugins/in-role"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.nin0.dev/userplugins/in-role"
+      }
+    },
+    "equi-newlinesincommands": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1757889653,
+        "narHash": "sha256-oXTYiW24BCpJ9EkeNQ6T3ndgWsdLydtXHDtaUamD5xE=",
+        "owner": "lolsuffocate",
+        "repo": "vc-NewlinesInCommands",
+        "rev": "eba216f3258533f009f4d8c014becaed8714d95f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lolsuffocate",
+        "repo": "vc-NewlinesInCommands",
+        "type": "github"
+      }
+    },
     "equi-venfetch": {
       "flake": false,
       "locked": {
@@ -684,6 +732,9 @@
         "clogite": "clogite",
         "equi-clientsidebadges": "equi-clientsidebadges",
         "equi-eval": "equi-eval",
+        "equi-gallerymode": "equi-gallerymode",
+        "equi-inrole": "equi-inrole",
+        "equi-newlinesincommands": "equi-newlinesincommands",
         "equi-venfetch": "equi-venfetch",
         "f-sy-h": "f-sy-h",
         "home-manager": "home-manager_2",

@@ -47,6 +47,18 @@
       url = "git+https://git.nin0.dev/userplugins/clientsidebadges";
       flake = false;
     };
+    equi-gallerymode = {
+      url = "github:Sodroz/GalleryMode";
+      flake = false;
+    };
+    equi-newlinesincommands = {
+      url = "github:lolsuffocate/vc-NewlinesInCommands";
+      flake = false;
+    };
+    equi-inrole = {
+      url = "git+https://git.nin0.dev/userplugins/in-role";
+      flake = false;
+    };
   };
 
   outputs =
