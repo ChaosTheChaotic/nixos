@@ -129,8 +129,8 @@
         messageClickActions = {
           enable = true;
           enableDoubleClickToEdit = false;
-          doubleClickAction = "EDIT";
-          tripleClickAction = "REACT";
+          doubleClickAction = "REPLY";
+          tripleClickAction = "NONE";
           deferDoubleClickForTriple = true;
         };
         messageColors = {
