@@ -8,7 +8,21 @@
 }:
 
 let
-  master = inputs.nixpkgs-master.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  master = import inputs.nixpkgs-master {
+    system = pkgs.stdenv.hostPlatform.system;
+    config.allowUnfree = true;
+    overlays = [
+      (final: prev: {
+        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+          (python-final: python-prev: {
+            curl-cffi = python-prev.curl-cffi.overridePythonAttrs (oldAttrs: {
+              doCheck = false;
+            });
+          })
+        ];
+      })
+    ];
+  };
   rmpc-custom = pkgs.callPackage ../../pkgs/rmpc.nix {
     inherit cpuArch;
     mpdSrc = inputs.mpd;
@@ -20,7 +34,8 @@ in
     ./cli.nix
     ./gui.nix
     ./rmpc.nix
-		./equi/equi.nix
+    ./equi/equi.nix
+    ../../modules/balatro.nix
   ];
 
   options = {
@@ -119,40 +134,6 @@ in
       git-filter-repo
       nix-prefetch-github
       shellcheck
-      (balatro.override {
-        src = null;
-        withMods = true;
-        lovely-injector = pkgs.rustPlatform.buildRustPackage rec {
-          pname = "lovely-injector";
-          version = "0.9.0";
-
-          src = pkgs.fetchFromGitHub {
-            owner = "ethangreen-dev";
-            repo = "lovely-injector";
-            rev = "v${version}";
-            hash = "sha256-TzBxyIf7MjzsdFaJLBp2dXWNj5sOXyoMifaaztNIOog=";
-            fetchSubmodules = true;
-          };
-
-          cargoLock = {
-            lockFile = "${inputs.lovely-injector}/Cargo.lock";
-            outputHashes."retour-0.4.0-alpha.2" = "sha256-GtLTjErXJIYXQaOFLfMgXb8N+oyHNXGTBD0UeyvbjrA=";
-          };
-
-          cargoBuildFlags = [
-            "--package"
-            "lovely-unix"
-          ];
-          doCheck = false;
-          env = {
-            RUSTC_BOOTSTRAP = "1";
-          }
-          // (lib.optionalAttrs (cpuArch != "generic") {
-            RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
-          });
-          nativeBuildInputs = [ pkgs.cmake ];
-        };
-      })
 
       # Custom Inputs
       (inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
@@ -214,6 +195,45 @@ in
     ];
     programs.quickshell = {
       enable = true;
+    };
+
+    programs.balatro = {
+      enable = true;
+      package = master.balatro;
+      src-path = null;
+      mods = {
+        enable = true;
+        lovely-injector-package = pkgs.rustPlatform.buildRustPackage rec {
+          pname = "lovely-injector";
+          version = "0.9.0";
+
+          src = pkgs.fetchFromGitHub {
+            owner = "ethangreen-dev";
+            repo = "lovely-injector";
+            rev = "v${version}";
+            hash = "sha256-TzBxyIf7MjzsdFaJLBp2dXWNj5sOXyoMifaaztNIOog=";
+            fetchSubmodules = true;
+          };
+
+          cargoLock = {
+            lockFile = "${inputs.lovely-injector}/Cargo.lock";
+            outputHashes."retour-0.4.0-alpha.2" = "sha256-GtLTjErXJIYXQaOFLfMgXb8N+oyHNXGTBD0UeyvbjrA=";
+          };
+
+          cargoBuildFlags = [
+            "--package"
+            "lovely-unix"
+          ];
+          doCheck = false;
+          env = {
+            RUSTC_BOOTSTRAP = "1";
+          }
+          // (lib.optionalAttrs (cpuArch != "generic") {
+            RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
+          });
+          nativeBuildInputs = [ pkgs.cmake ];
+        };
+      };
     };
 
     systemd.user.settings = {

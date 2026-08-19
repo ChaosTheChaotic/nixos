@@ -9,16 +9,20 @@
 let
   cfg = config.programs.balatro;
 
-  balatroPkg = (
-    cfg.package.override {
-      withBridgePatch = cfg.bridgePatch;
-      withLinuxPatch = cfg.linuxPatch;
-      withMods = cfg.mods.enable;
-      love = cfg.love-package;
-      src = cfg.src-path;
-      lovely-injector = cfg.mods.lovely-injector-package;
-    }
-  );
+  basePkg = cfg.package.override {
+    withBridgePatch = cfg.bridgePatch;
+    withLinuxPatch = cfg.linuxPatch;
+    withMods = cfg.mods.enable;
+    love = cfg.love-package;
+    lovely-injector = cfg.mods.lovely-injector-package;
+  };
+  balatroPkg =
+    if cfg.src-path != null then
+      basePkg.overrideAttrs (old: {
+        src = cfg.src-path;
+      })
+    else
+      basePkg;
 
   mkPatchCmd =
     p:
@@ -81,7 +85,12 @@ let
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       ${lib.optionalString cfg.mods.enable ''
-        wrapProgram $out/bin/balatro --set LOVELY_MOD_DIR "${balatroModsDir}"
+        wrapProgram $out/bin/balatro \
+          --run 'export LOVELY_MOD_DIR="''${XDG_DATA_HOME:-$HOME/.local/share}/balatro/nix-mods"' \
+          --run 'mkdir -p "$LOVELY_MOD_DIR"' \
+          --run '${pkgs.findutils}/bin/find "$LOVELY_MOD_DIR" -type l -delete' \
+          --run '${pkgs.coreutils}/bin/cp -rs "${balatroModsDir}/." "$LOVELY_MOD_DIR/" 2>/dev/null || true' \
+          --run '${pkgs.findutils}/bin/find "$LOVELY_MOD_DIR" -type d -exec ${pkgs.coreutils}/bin/chmod u+w {} +'
       ''}
     '';
   };
@@ -209,13 +218,13 @@ in
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
 
-      (lib.mkIf (options ? environment.systemPackages) {
+      (lib.optionalAttrs (options ? environment) {
         environment.systemPackages = [
           installBalatroPkg
         ];
       })
 
-      (lib.mkIf (options ? home.packages) {
+      (lib.optionalAttrs (options ? home) {
         home.packages = [
           installBalatroPkg
         ];
