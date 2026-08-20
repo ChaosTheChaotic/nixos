@@ -35,6 +35,7 @@
       flake = false;
     };
     equi.url = "path:./users/chaos/equi/plugins";
+    balatro.url = "path:./users/chaos/balatro/mods";
   };
 
   outputs =

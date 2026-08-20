@@ -89,7 +89,7 @@ let
           --run 'export LOVELY_MOD_DIR="''${XDG_DATA_HOME:-$HOME/.local/share}/balatro/nix-mods"' \
           --run 'mkdir -p "$LOVELY_MOD_DIR"' \
           --run '${pkgs.findutils}/bin/find "$LOVELY_MOD_DIR" -type l -delete' \
-          --run '${pkgs.coreutils}/bin/cp -rs "${balatroModsDir}/." "$LOVELY_MOD_DIR/" 2>/dev/null || true' \
+          --run '${pkgs.coreutils}/bin/cp -rL --no-preserve=mode,ownership "${balatroModsDir}/." "$LOVELY_MOD_DIR/" 2>/dev/null || true' \
           --run '${pkgs.findutils}/bin/find "$LOVELY_MOD_DIR" -type d -exec ${pkgs.coreutils}/bin/chmod u+w {} +'
       ''}
     '';

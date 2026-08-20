@@ -1,5 +1,487 @@
 {
   "nodes": {
+    "AllJokersChallenge": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1755019189,
+        "narHash": "sha256-1FS+Ul7ELdDcX75/I7+Lcd7dJHsRfOw/OF7mtJah/oY=",
+        "owner": "Sciman101",
+        "repo": "AllJokersChallenge",
+        "rev": "3cbc9146abe11a960685063ab9944a3642a5b659",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Sciman101",
+        "repo": "AllJokersChallenge",
+        "type": "github"
+      }
+    },
+    "Balatro-ColoredSuitTarots": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1740835818,
+        "narHash": "sha256-OXIKic/ZNrVncsWMYOIV/Dkj4mQqFWBrvBGfk1GfGlA=",
+        "owner": "ywssp",
+        "repo": "Balatro-ColoredSuitTarots",
+        "rev": "5cd04f6f5f138572158319c4cc46755cdc7a9b86",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ywssp",
+        "repo": "Balatro-ColoredSuitTarots",
+        "type": "github"
+      }
+    },
+    "Balatro-FortuneTeller": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1772753424,
+        "narHash": "sha256-n9CyExc+1OFhnRStTUVVcYxKiNgvX4bxid+5Wq440rs=",
+        "owner": "liafonx",
+        "repo": "Balatro-FortuneTeller",
+        "rev": "034c48e1758d5f1a5818dfdc97a89413a6c4df47",
+        "type": "github"
+      },
+      "original": {
+        "owner": "liafonx",
+        "repo": "Balatro-FortuneTeller",
+        "type": "github"
+      }
+    },
+    "Balatro-Planet-Card-Cash-Out-Mod": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1737426882,
+        "narHash": "sha256-G2yg9+lJwCtvDZQ31NzlBmkQ/F4fLUO4Igx/c3bpprI=",
+        "owner": "antler5",
+        "repo": "Balatro-Planet-Card-Cash-Out-Mod",
+        "rev": "06072e2e36eeaa2a4213c3cbcfbf2f31c5032436",
+        "type": "github"
+      },
+      "original": {
+        "owner": "antler5",
+        "repo": "Balatro-Planet-Card-Cash-Out-Mod",
+        "type": "github"
+      }
+    },
+    "Balatro-Stickers-Always-Shown": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1745386592,
+        "narHash": "sha256-raCsA7E7JpFjoc6/gGzpRnP7r/3lU9W3rgc9L4BdTT8=",
+        "owner": "SirMaiquis",
+        "repo": "Balatro-Stickers-Always-Shown",
+        "rev": "8bc6d74796aee5e78e817591ea42575099519964",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SirMaiquis",
+        "repo": "Balatro-Stickers-Always-Shown",
+        "type": "github"
+      }
+    },
+    "Balatro-with-Multiverse-Time-Travel": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1754567761,
+        "narHash": "sha256-qG6SVfGJzvocmXwbpD6wdfLmcjn5s7v3qzDB/F/6cy0=",
+        "owner": "Aluminumroadlion",
+        "repo": "5D-Balatro-with-Multiverse-Time-Travel",
+        "rev": "90617c693d36a79924a74001cf2f3b90865b882b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Aluminumroadlion",
+        "repo": "5D-Balatro-with-Multiverse-Time-Travel",
+        "type": "github"
+      }
+    },
+    "BalatroMultiplayer": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786671605,
+        "narHash": "sha256-nsZR3o22bh+rHE4/XltuuNkFIwQENscCVfkj/RvPohE=",
+        "owner": "Balatro-Multiplayer",
+        "repo": "BalatroMultiplayer",
+        "rev": "249d2e15ebae27f1797609b6ba75fcfb116c2be1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Balatro-Multiplayer",
+        "repo": "BalatroMultiplayer",
+        "type": "github"
+      }
+    },
+    "BetterTags": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1747497210,
+        "narHash": "sha256-3+M5KLKyNGPLHmV501AVNubHIkPuTb3jjs6RVJOpecQ=",
+        "owner": "WaffleDevs",
+        "repo": "BetterTags",
+        "rev": "27f06037052d41412bd4d0da3438e84501f912b9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "WaffleDevs",
+        "repo": "BetterTags",
+        "type": "github"
+      }
+    },
+    "Blueprint": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1753476673,
+        "narHash": "sha256-SfLKe7UQh9rZ/OBmVtnPoYncOtATB4LNDN/sGhnLH38=",
+        "owner": "stupxd",
+        "repo": "Blueprint",
+        "rev": "4e18c481834f3fed0c68e7f7ff064393e2e2d8dd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "stupxd",
+        "repo": "Blueprint",
+        "type": "github"
+      }
+    },
+    "Brainstorm": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1735157798,
+        "narHash": "sha256-Pluk6fCQqjcqjiermmPnrbJhkTomAd9tpQ/OQqJFU98=",
+        "owner": "OceanRamen",
+        "repo": "Brainstorm",
+        "rev": "9a8fd6a0b9db081087c3359f7fdb9326e58503f9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "OceanRamen",
+        "repo": "Brainstorm",
+        "type": "github"
+      }
+    },
+    "Cartomancer": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780511309,
+        "narHash": "sha256-F2voDhHFjwnaaN/a3FTc9MQrQ9M5xeFZapQP/HThr/8=",
+        "owner": "stupxd",
+        "repo": "Cartomancer",
+        "rev": "1c4ac70db5ee8937a5b78f61e9b4b2e5de406950",
+        "type": "github"
+      },
+      "original": {
+        "owner": "stupxd",
+        "repo": "Cartomancer",
+        "type": "github"
+      }
+    },
+    "CrystalBall": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782604614,
+        "narHash": "sha256-e8kCUpxySMm99qvn1iaopm2TZ4pxNPCAkdohkltsrJA=",
+        "owner": "DylanMoss1",
+        "repo": "CrystalBall",
+        "rev": "7ac34155583dd0d30ee4be8d85e90e1ff3d674d7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DylanMoss1",
+        "repo": "CrystalBall",
+        "type": "github"
+      }
+    },
+    "DVPreview": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1758915143,
+        "narHash": "sha256-9HEINjWeaEd1COXiKx6ZePBbU3qEhJ47XfYf3Kf8e6E=",
+        "ref": "refs/heads/main",
+        "rev": "9974ae4d3a03b41ab384da0753896a344e4fee14",
+        "revCount": 96,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/DivvyCr/Balatro-Preview"
+      },
+      "original": {
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/DivvyCr/Balatro-Preview"
+      }
+    },
+    "DebugPlus": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786778987,
+        "narHash": "sha256-Od8nUFm1T2yPp47Uc2egUj/2TVQafq98zWxgo8VUbDY=",
+        "owner": "WilsontheWolf",
+        "repo": "DebugPlus",
+        "rev": "00ef27c12c833132ca24a6f5b532f7d026042d57",
+        "type": "github"
+      },
+      "original": {
+        "owner": "WilsontheWolf",
+        "repo": "DebugPlus",
+        "type": "github"
+      }
+    },
+    "Flower-Pot": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1745773453,
+        "narHash": "sha256-oCwTTuLRfeqdzX6+QDtu2jc4IaTwbkCDCiU8WUBEtu4=",
+        "owner": "GauntletGames-2086",
+        "repo": "Flower-Pot",
+        "rev": "b43b9f4d140514048d298d9dfeec4fd71f769a3f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "GauntletGames-2086",
+        "repo": "Flower-Pot",
+        "type": "github"
+      }
+    },
+    "Galdur": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777677624,
+        "narHash": "sha256-qklG9VY+IwIs+ylChqPGNjfij46V4bJWjJW+7Ki5iy4=",
+        "owner": "Eremel",
+        "repo": "Galdur",
+        "rev": "b06e5a928977e9c3c13accf5c377a4a730bcbfeb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Eremel",
+        "repo": "Galdur",
+        "type": "github"
+      }
+    },
+    "HandyBalatro": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1775011564,
+        "narHash": "sha256-7VeTvbNmZy1/4IOPreNQ1wsNt9f8Q95XSNzGScpZn8g=",
+        "owner": "SleepyG11",
+        "repo": "HandyBalatro",
+        "rev": "c65713d42cffdc89a8a7dd972c6bc02e14497210",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SleepyG11",
+        "repo": "HandyBalatro",
+        "type": "github"
+      }
+    },
+    "JokerDisplay": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787083272,
+        "narHash": "sha256-l/TvCz778ngoORsGgzegdxnEn1r9L3CfO7dKkuifhcQ=",
+        "owner": "nh6574",
+        "repo": "JokerDisplay",
+        "rev": "b000063e57c760aab50bdd3d4ffb0fe7c5cb4aca",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nh6574",
+        "repo": "JokerDisplay",
+        "type": "github"
+      }
+    },
+    "JokerSellValue": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1765413196,
+        "narHash": "sha256-vwhg3X84lGl2VURamsrBFTFY5xLYNVpEZxj8jaqsicA=",
+        "owner": "OppositeWolf770",
+        "repo": "JokerSellValue",
+        "rev": "418806fc7554c20ed29266a991e96e3be483a861",
+        "type": "github"
+      },
+      "original": {
+        "owner": "OppositeWolf770",
+        "repo": "JokerSellValue",
+        "type": "github"
+      }
+    },
+    "Malverk": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1785533186,
+        "narHash": "sha256-T2xL6gSS/GPXOiHRTwsbW/S/XksXukZiUT+HYws0qHE=",
+        "owner": "Eremel",
+        "repo": "Malverk",
+        "rev": "90e448c2f8fed58a4952aee42acbfa25898fcb1c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Eremel",
+        "repo": "Malverk",
+        "type": "github"
+      }
+    },
+    "PlayLog": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787156150,
+        "narHash": "sha256-l6U0stC2vJ8ckEYfru7mqyWcjcxty9DtkxFaJeeGtUA=",
+        "owner": "nh6574",
+        "repo": "PlayLog",
+        "rev": "5740c78a293a61b12295ffae733d1456ef265a1f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nh6574",
+        "repo": "PlayLog",
+        "type": "github"
+      }
+    },
+    "Saturn": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1779450904,
+        "narHash": "sha256-BpWrcxHtDEKZ9pRvA6A3D5c6JOWN9Bxlmi3bp+SyOh0=",
+        "owner": "OceanRamen",
+        "repo": "Saturn",
+        "rev": "f74be8305d871af5ecd3467ab6c88591732d8919",
+        "type": "github"
+      },
+      "original": {
+        "owner": "OceanRamen",
+        "repo": "Saturn",
+        "type": "github"
+      }
+    },
+    "Showman": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1770842784,
+        "narHash": "sha256-LdR3QpkIqVKHzP3Q1m0BqLaSFQh5vxBHpKQzY3AL4/g=",
+        "owner": "12problems",
+        "repo": "Showman",
+        "rev": "42673be1b0677cdf1cc88cead17cd11c114d30a0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "12problems",
+        "repo": "Showman",
+        "type": "github"
+      }
+    },
+    "SoulEverything": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1745520365,
+        "narHash": "sha256-yus92tjvYs8mRT9U3XVDrCs9+KC+jvdWODDEBi09rwg=",
+        "owner": "OppositeWolf770",
+        "repo": "SoulEverything",
+        "rev": "38b5bdcc84f29bf8d8f2627da71c38cb0adb0475",
+        "type": "github"
+      },
+      "original": {
+        "owner": "OppositeWolf770",
+        "repo": "SoulEverything",
+        "type": "github"
+      }
+    },
+    "Temperance": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1783303076,
+        "narHash": "sha256-2rMZPQrQwZFXHVUnk7OGQkJZT7eXWuD1EdDo7wRd27Y=",
+        "owner": "luccamargiotta",
+        "repo": "Temperance",
+        "rev": "2a3c3b15d185c1bcdc9402bab87efbcbdedbff8b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "luccamargiotta",
+        "repo": "Temperance",
+        "type": "github"
+      }
+    },
+    "Trance": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786310298,
+        "narHash": "sha256-rwWRqmTYTctRatI2MEUTiWOrxTli/1XtCYIBkhpbsgg=",
+        "owner": "SpectralPack",
+        "repo": "Trance",
+        "rev": "3f86c2e04f1717acc79e0ac0eabc60f5a39085fb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SpectralPack",
+        "repo": "Trance",
+        "type": "github"
+      }
+    },
+    "Troubadour": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1785040900,
+        "narHash": "sha256-Kh5hDBi0xRSARE/Wk1rePqa9qABXOH1omZqm1YaNgHs=",
+        "owner": "Eternalnacho",
+        "repo": "Troubadour",
+        "rev": "4dfb4fe5fba3a1f20c2a759e28a8fc2b497a2ac8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Eternalnacho",
+        "repo": "Troubadour",
+        "type": "github"
+      }
+    },
+    "UnBlind": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1778330989,
+        "narHash": "sha256-XRJcwBClGGzwfjuRrGTtnSViFppwURI1ojrpGMl3OCw=",
+        "owner": "MeraGenio",
+        "repo": "UnBlind",
+        "rev": "43230f432757b7dd4e29311a35977ebd399537a5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MeraGenio",
+        "repo": "UnBlind",
+        "type": "github"
+      }
+    },
+    "Yorick": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777608701,
+        "narHash": "sha256-q9RBn9t+8I0ENSm5Vzr73c5U7ILg+Ozgo6hzQJ6uk1s=",
+        "owner": "Somethingcom515",
+        "repo": "Yorick",
+        "rev": "bd7d6fbd219d4cf8bbb3b19069f2083d31b2af96",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Somethingcom515",
+        "repo": "Yorick",
+        "type": "github"
+      }
+    },
+    "ZokersModMenu": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1750390407,
+        "narHash": "sha256-G5Yi/qTIfrEcMxwFMpsdVz9fnsmpyq2POjwSVAAzilQ=",
+        "owner": "1Zoker",
+        "repo": "ZokersModMenu",
+        "rev": "3fde76e1e67422463c1fd7c9c3f6dddb06da2de6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "1Zoker",
+        "repo": "ZokersModMenu",
+        "type": "github"
+      }
+    },
     "agenix": {
       "inputs": {
         "darwin": "darwin",
@@ -34,6 +516,91 @@
       "original": {
         "owner": "pystardust",
         "repo": "ani-cli",
+        "type": "github"
+      }
+    },
+    "balatro": {
+      "inputs": {
+        "AllJokersChallenge": "AllJokersChallenge",
+        "Balatro-ColoredSuitTarots": "Balatro-ColoredSuitTarots",
+        "Balatro-FortuneTeller": "Balatro-FortuneTeller",
+        "Balatro-Planet-Card-Cash-Out-Mod": "Balatro-Planet-Card-Cash-Out-Mod",
+        "Balatro-Stickers-Always-Shown": "Balatro-Stickers-Always-Shown",
+        "Balatro-with-Multiverse-Time-Travel": "Balatro-with-Multiverse-Time-Travel",
+        "BalatroMultiplayer": "BalatroMultiplayer",
+        "BetterTags": "BetterTags",
+        "Blueprint": "Blueprint",
+        "Brainstorm": "Brainstorm",
+        "Cartomancer": "Cartomancer",
+        "CrystalBall": "CrystalBall",
+        "DVPreview": "DVPreview",
+        "DebugPlus": "DebugPlus",
+        "Flower-Pot": "Flower-Pot",
+        "Galdur": "Galdur",
+        "HandyBalatro": "HandyBalatro",
+        "JokerDisplay": "JokerDisplay",
+        "JokerSellValue": "JokerSellValue",
+        "Malverk": "Malverk",
+        "PlayLog": "PlayLog",
+        "Saturn": "Saturn",
+        "Showman": "Showman",
+        "SoulEverything": "SoulEverything",
+        "Temperance": "Temperance",
+        "Trance": "Trance",
+        "Troubadour": "Troubadour",
+        "UnBlind": "UnBlind",
+        "Yorick": "Yorick",
+        "ZokersModMenu": "ZokersModMenu",
+        "balatro-utils": "balatro-utils",
+        "balatrodarkmode": "balatrodarkmode",
+        "deselect-all-steamodded": "deselect-all-steamodded",
+        "lua_patcher": "lua_patcher",
+        "next-ante-preview": "next-ante-preview",
+        "potatro": "potatro",
+        "smods": "smods",
+        "solatro": "solatro"
+      },
+      "locked": {
+        "path": "./users/chaos/balatro/mods",
+        "type": "path"
+      },
+      "original": {
+        "path": "./users/chaos/balatro/mods",
+        "type": "path"
+      },
+      "parent": []
+    },
+    "balatro-utils": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786899849,
+        "narHash": "sha256-Cqb9SdP3e5mjmRRXqQ2+YJcl+gY+hSx11B2sxC2ZYGw=",
+        "ref": "refs/heads/master",
+        "rev": "9363be0b5c7b92c3cb91f8a97c3c0c62ffa7c1ef",
+        "revCount": 204,
+        "type": "git",
+        "url": "https://codeberg.org/frostice482/balatro-utils"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://codeberg.org/frostice482/balatro-utils"
+      }
+    },
+    "balatrodarkmode": {
+      "flake": false,
+      "locked": {
+        "dir": "balatroDarkMode",
+        "lastModified": 1748983256,
+        "narHash": "sha256-+ra3uUcFYQ4F8AEJlF4wTDCLNlYNnJUK5g8In35nJ7E=",
+        "owner": "CarrotonMan",
+        "repo": "balatrodarkmode",
+        "rev": "ce215f38c3c706f0ac76a63ca85f2ca45f41cc0f",
+        "type": "github"
+      },
+      "original": {
+        "dir": "balatroDarkMode",
+        "owner": "CarrotonMan",
+        "repo": "balatrodarkmode",
         "type": "github"
       }
     },
@@ -93,6 +660,22 @@
         "owner": "lnl7",
         "ref": "master",
         "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
+    "deselect-all-steamodded": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1718025721,
+        "narHash": "sha256-8QLzkSYITfTfSH5r0zDriCgXGOOVMoQTqBUTKkdAxgA=",
+        "owner": "Zei33",
+        "repo": "deselect-all-steamodded",
+        "rev": "ba4d76704f2762367e919bfbf3584ec3fa883053",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Zei33",
+        "repo": "deselect-all-steamodded",
         "type": "github"
       }
     },
@@ -285,11 +868,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787164822,
-        "narHash": "sha256-fgi9dJtceRgxoUm64wAA3Ua+NncQ4cZRGBbNqdg3g9Q=",
+        "lastModified": 1787176219,
+        "narHash": "sha256-djoRr6jBpe35q/0JwAvXpFXg1Ktf+X54NU2RLR7wnHw=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "152b9dcad099ed3d85d4f90152a110dd8b84c73f",
+        "rev": "c53d643b3737e2fcd04e6cb3b3580ef50b2087a0",
         "type": "github"
       },
       "original": {
@@ -357,6 +940,22 @@
         "submodules": true,
         "type": "git",
         "url": "https://github.com/ethangreen-dev/lovely-injector"
+      }
+    },
+    "lua_patcher": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1763012965,
+        "narHash": "sha256-ob23XWuL7baVEoQuunICCS2aAtjuMVuJmQndzj8bK54=",
+        "owner": "Piengineer12",
+        "repo": "lua_patcher",
+        "rev": "3c05a25987897d4985e97a45f03cf33145a3aa00",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Piengineer12",
+        "repo": "lua_patcher",
+        "type": "github"
       }
     },
     "millennium": {
@@ -429,6 +1028,22 @@
         "type": "github"
       }
     },
+    "next-ante-preview": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1757366799,
+        "narHash": "sha256-Rji8YRuUnVFNZM5+glP3st5Gzrq7HVRr4e5ySm6jJfA=",
+        "owner": "DigitalDetective47",
+        "repo": "next-ante-preview",
+        "rev": "86f76df0e33911171f4cf5d5d942562ea212b23c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DigitalDetective47",
+        "repo": "next-ante-preview",
+        "type": "github"
+      }
+    },
     "nixcord": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -437,11 +1052,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1787113873,
-        "narHash": "sha256-zB/az48gyf7re+YxS81Nb0ghDIJ0Kd/rCk83vKVUHxc=",
+        "lastModified": 1787200288,
+        "narHash": "sha256-nSD23etHCdtsZpoySsSLfypOYYJfuyLgQB7TUwBykfA=",
         "owner": "4evy",
         "repo": "nixcord",
-        "rev": "cd8d67d6b4fb646e70725e1dd7dc546bce95da08",
+        "rev": "028af9107309615cfb716778d62645010909706a",
         "type": "github"
       },
       "original": {
@@ -518,11 +1133,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1787173472,
-        "narHash": "sha256-j2YmGiYWet5MkNQoUJrslHP+TKyyfgsRXRUf3/9ASrA=",
+        "lastModified": 1787247998,
+        "narHash": "sha256-xHFejF44+88is+Tw4pf4TWCNNshHJD0cQd/l2O+dqhA=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "53fe9723d8ae9f9edbd1e0b7a03db192d589de82",
+        "rev": "fa10bdff7e2a2813e35f6d6e6b4efdec48934fcb",
         "type": "github"
       },
       "original": {
@@ -678,11 +1293,11 @@
     },
     "nixpkgs_8": {
       "locked": {
-        "lastModified": 1787070829,
-        "narHash": "sha256-vXNVDVtvfiQuXthP0NHPFdNvvMTkGpx0UP8oddIWbNk=",
+        "lastModified": 1787135253,
+        "narHash": "sha256-RD2kNWCG+Bjo6h+JVjWVNntZs2GtRoeY2xHjts/FNkA=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0ae2bc1419c3f345984c2629e72e7a631820fa4d",
+        "rev": "ffb3c9b700e759be2ef13237c9d8f953b32a1e46",
         "type": "github"
       },
       "original": {
@@ -716,11 +1331,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787173562,
-        "narHash": "sha256-2CLxA6Y3w60mDcj+eRjT44PyiZR1Ag4ThiA19N9XhLk=",
+        "lastModified": 1787248339,
+        "narHash": "sha256-jO4kDN0CmOVmR7JZ4VDT0LN093D+QrjqWyzCbjJq43s=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "de7e7cd4fe887926254064e9cbb567d233d7f0ec",
+        "rev": "b48ce6ce7bd80e596280be8c13fa6bcfbf74160d",
         "type": "github"
       },
       "original": {
@@ -729,10 +1344,27 @@
         "type": "github"
       }
     },
+    "potatro": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1729806436,
+        "narHash": "sha256-xfmZ1t2ZLbV7lF71iSQV9Jy6lwBil6BFAD55D58eaL8=",
+        "owner": "balt-dev",
+        "repo": "potatro",
+        "rev": "7a94781f68b148ecd7a43632a4a18e465f3f895b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "balt-dev",
+        "repo": "potatro",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
         "ani-cli": "ani-cli",
+        "balatro": "balatro",
         "clogite": "clogite",
         "equi": "equi",
         "f-sy-h": "f-sy-h",
@@ -790,6 +1422,38 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "smods": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787213867,
+        "narHash": "sha256-v260sk3j05UIwKOQQksWt7buSaPifb3kBT3wWT67CcQ=",
+        "owner": "Steamodded",
+        "repo": "smods",
+        "rev": "6d630df72d60e03cb501223c6790b4b463ea4975",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Steamodded",
+        "repo": "smods",
+        "type": "github"
+      }
+    },
+    "solatro": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1783603121,
+        "narHash": "sha256-Hl43bH2bFRQh4h2HnZ/WjzGvQQuZsmab4zqf9wd5lrI=",
+        "owner": "bryanthaboi",
+        "repo": "solatro",
+        "rev": "c60b5533569c5a4a15f683b389ee1ece020f0008",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bryanthaboi",
+        "repo": "solatro",
         "type": "github"
       }
     },
@@ -975,11 +1639,11 @@
         "nixpkgs": "nixpkgs_9"
       },
       "locked": {
-        "lastModified": 1787042396,
-        "narHash": "sha256-eFEQQHJ1HSwuvLLm+XPahO6h8+hTIM5UGWDHaRa13oE=",
+        "lastModified": 1787208430,
+        "narHash": "sha256-Ejg/JjIaAbMCY4oScKLPnlPwvmmnkRGdrAH/Cv4XBEg=",
         "owner": "tree-sitter",
         "repo": "tree-sitter",
-        "rev": "f235c2f1c39901dc23eb08f35040386250411078",
+        "rev": "fe3fe327e2a9a0e79787d3aafb573aa7b5ca7268",
         "type": "github"
       },
       "original": {
@@ -1051,11 +1715,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1786962391,
-        "narHash": "sha256-Of1YU59mj9BZwQi7lbj/+XGaCs+MTGFCZ12bgcNbEu0=",
+        "lastModified": 1787232541,
+        "narHash": "sha256-Tl++tyDcMn8qFUQB9OmyuPUGWUMCff3wLDqtdysoeJc=",
         "owner": "vicinaehq",
         "repo": "vicinae",
-        "rev": "1f6de859a4142e24e73f7cc8a70df1a6e8d77a0e",
+        "rev": "db651f6c8c6e1b07198ec4cea94206d754db37d2",
         "type": "github"
       },
       "original": {

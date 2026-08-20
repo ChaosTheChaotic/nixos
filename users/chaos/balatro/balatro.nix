@@ -1,16 +1,16 @@
 {
-	pkgs,
-	lib,
-	inputs,
-	cpuArch ? "generic",
-	master,
-	...
+  pkgs,
+  lib,
+  inputs,
+  cpuArch ? "generic",
+  master,
+  ...
 }:
 
 {
-	imports = [
-		../../../modules/balatro.nix
-	];
+  imports = [
+    ../../../modules/balatro.nix
+  ];
 
   programs.balatro = {
     enable = true;
@@ -48,6 +48,36 @@
         });
         nativeBuildInputs = [ pkgs.cmake ];
       };
+      modList =
+        let
+          patchMap = {
+            "BalatroMultiplayer" = [
+              {
+                file = "ui/game/round.lua";
+                regex = "MP\\.UTILS\\.log_mem_debug_messages.*$";
+                replace = "MP.UTILS.log_mem_debug_messages()\n\t\treturn";
+              }
+              {
+                file = "lib/matchmaking.lua";
+                regex = "if not mod\\.disabled and key ~= \"Balatro\" then table\\.insert\\(mod_table, key \\.\\. \"-\" \\.\\. \\(mod\\.version or \"UNK\"\\)\\) end";
+                replace = "if not mod.disabled and key == \"Multiplayer\" then table.insert(mod_table, key .. \"-\" .. (mod.version or \"UNK\")) end";
+              }
+              {
+                file = "core.lua";
+                regex = "MP\\.BANNED_MODS = \\{[^\\}]*\\}";
+                replace = "MP.BANNED_MODS = {}";
+              }
+            ];
+          };
+
+          addPatches = modName: modPath: {
+            path = modPath;
+            name = modName;
+            enabled = true;
+            patches = if patchMap ? ${modName} then patchMap.${modName} else [ ];
+          };
+        in
+        lib.mapAttrsToList addPatches inputs.balatro.mods;
     };
   };
 }

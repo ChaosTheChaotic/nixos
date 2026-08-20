@@ -1,0 +1,489 @@
+[manifest]
+version = "1.0.0"
+priority = 0
+
+[[patches]]
+[patches.module]
+source = "src/strontium/init.lua"
+before = "globals.lua"
+name = "strontium.init"
+load_now = true
+
+[[patches]]
+[patches.module]
+source = "src/strontium/shaders.lua"
+before = "globals.lua"
+name = "strontium.shaders"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/batched_renderer.lua"
+before = "globals.lua"
+name = "strontium.batched_renderer"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/profiler.lua"
+before = "globals.lua"
+name = "strontium.profiler"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/perf.lua"
+before = "globals.lua"
+name = "strontium.perf"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/lib/ProFi.lua"
+before = "globals.lua"
+name = "strontium.lib.ProFi"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/strontium.lua"
+before = "globals.lua"
+name = "strontium.renderer.strontium"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/core.lua"
+before = "globals.lua"
+name = "strontium.renderer.core"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/core/init.lua"
+before = "globals.lua"
+name = "strontium.renderer.core.init"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/core/registry.lua"
+before = "globals.lua"
+name = "strontium.renderer.core.registry"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/core/intents.lua"
+before = "globals.lua"
+name = "strontium.renderer.core.intents"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/core/params.lua"
+before = "globals.lua"
+name = "strontium.renderer.core.params"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/core/frame.lua"
+before = "globals.lua"
+name = "strontium.renderer.core.frame"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/params.lua"
+before = "globals.lua"
+name = "strontium.renderer.params"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/shader.lua"
+before = "globals.lua"
+name = "strontium.renderer.shader"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/ubershader.lua"
+before = "globals.lua"
+name = "strontium.renderer.ubershader"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/instancing/init.lua"
+before = "globals.lua"
+name = "strontium.renderer.instancing"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/instancing/builder.lua"
+before = "globals.lua"
+name = "strontium.renderer.instancing.builder"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/instancing/draw.lua"
+before = "globals.lua"
+name = "strontium.renderer.instancing.draw"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/instancing/shader.lua"
+before = "globals.lua"
+name = "strontium.renderer.instancing.shader"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/base/effects.lua"
+before = "globals.lua"
+name = "strontium.renderer.base.effects"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/base/overlays.lua"
+before = "globals.lua"
+name = "strontium.renderer.base.overlays"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/state.lua"
+before = "globals.lua"
+name = "strontium.renderer.state"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/util.lua"
+before = "globals.lua"
+name = "strontium.renderer.util"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/buffer.lua"
+before = "globals.lua"
+name = "strontium.renderer.buffer"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/api.lua"
+before = "globals.lua"
+name = "strontium.api"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/batch.lua"
+before = "globals.lua"
+name = "strontium.renderer.batch"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/batch/init.lua"
+before = "globals.lua"
+name = "strontium.renderer.batch.init"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/batch/builder.lua"
+before = "globals.lua"
+name = "strontium.renderer.batch.builder"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/batch/draw.lua"
+before = "globals.lua"
+name = "strontium.renderer.batch.draw"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/composer.lua"
+before = "globals.lua"
+name = "strontium.renderer.composer"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/base/stages.lua"
+before = "globals.lua"
+name = "strontium.renderer.base.stages"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/order_map.lua"
+before = "globals.lua"
+name = "strontium.renderer.order_map"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/draw.lua"
+before = "globals.lua"
+name = "strontium.renderer.draw"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/base/adapter.lua"
+before = "globals.lua"
+name = "strontium.renderer.base.adapter"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/renderer/base/definitions.lua"
+before = "globals.lua"
+name = "strontium.renderer.base.definitions"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/debug.lua"
+before = "globals.lua"
+name = "strontium.debug"
+
+# UI Framework modules
+[[patches]]
+[patches.module]
+source = "src/strontium/ui/panel.lua"
+before = "globals.lua"
+name = "strontium.ui.panel"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/ui/panel_manager.lua"
+before = "globals.lua"
+name = "strontium.ui.panel_manager"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/ui/components.lua"
+before = "globals.lua"
+name = "strontium.ui.components"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/ui/perf_graph_panel.lua"
+before = "globals.lua"
+name = "strontium.ui.perf_graph_panel"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/ui/perf_panel.lua"
+before = "globals.lua"
+name = "strontium.ui.perf_panel"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/ui/strontium_panel.lua"
+before = "globals.lua"
+name = "strontium.ui.strontium_panel"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/ui/inspector_panel.lua"
+before = "globals.lua"
+name = "strontium.ui.inspector_panel"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/ui/table_viewer.lua"
+before = "globals.lua"
+name = "strontium.ui.table_viewer"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/ui/effect_lab_panel.lua"
+before = "globals.lua"
+name = "strontium.ui.effect_lab_panel"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/ui/gc_panel.lua"
+before = "globals.lua"
+name = "strontium.ui.gc_panel"
+
+[[patches]]
+[patches.module]
+source = "src/strontium/ui/init.lua"
+before = "globals.lua"
+name = "strontium.ui"
+
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = 'require "challenges"'
+position = "after"
+match_indent = false
+payload = "init_strontium()"
+
+# Draw debug overlay
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "G:draw()"
+position = "after"
+match_indent = true
+payload = "draw_strontium_debug()"
+
+# Handle input
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "function love.keypressed(key)"
+position = "after"
+match_indent = true
+payload = "if handle_strontium_input(key) then return end"
+
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "function love.keypressed(key)"
+position = "before"
+match_indent = false
+payload = """
+function love.textinput(text)
+    if handle_strontium_textinput then
+        handle_strontium_textinput(text)
+    end
+end
+"""
+
+# Handle key release for Ctrl tracking
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "function love.keyreleased(key)"
+position = "after"
+match_indent = true
+payload = "if handle_strontium_keyreleased then handle_strontium_keyreleased(key) end"
+
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "function love.update( dt )"
+position = "after"
+match_indent = true
+payload = "update_strontium_debug(dt)"
+
+# Add mouse wheel handler for inspector scrolling
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "function love.keypressed(key)"
+position = "before"
+match_indent = false
+payload = """
+function love.wheelmoved(x, y)
+    if handle_strontium_wheelmoved then
+        handle_strontium_wheelmoved(x, y)
+    end
+end
+"""
+
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "function love.mousepressed(x, y, button, touch)"
+position = "after"
+match_indent = true
+payload = "if handle_strontium_mousepressed and handle_strontium_mousepressed(x, y, button) then return end"
+
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "function love.mousereleased(x, y, button)"
+position = "after"
+match_indent = true
+payload = "if handle_strontium_mousereleased and handle_strontium_mousereleased(x, y, button) then return end"
+
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "function love.mousemoved(x, y, dx, dy, istouch)"
+position = "after"
+match_indent = true
+payload = "if handle_strontium_mousemoved then handle_strontium_mousemoved(x, y, dx, dy) end"
+
+
+# Initialize shaders
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "boot_timer('shaders', 'controllers',0.7)"
+position = "before"
+match_indent = true
+payload = "init_strontium_shaders()"
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "--Draw the shadow"
+position = "before"
+match_indent = true
+payload = "local _perf_skip_shadow = G.PERF_MODE and G.I and G.I.CARD and #G.I.CARD >= (G.PERF_MODE_THRESHOLD or 200)"
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if not self.no_shadow and G.SETTINGS.GRAPHICS.shadows == 'On'"
+position = "at"
+match_indent = true
+payload = "if not _perf_skip_shadow and not self.no_shadow and G.SETTINGS.GRAPHICS.shadows == 'On'"
+
+# Batched/backing renderer skip logic
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "function Card:draw(layer)"
+position = "after"
+match_indent = true
+payload = '''
+if (G.USE_BATCHED_RENDERER or G.USE_STRONTIUM_RENDERER) and not self._batched_force_draw then
+    local dominated_by_deck = self.area and self.area.config and self.area.config.type == 'deck'
+    local is_dragged = G.CONTROLLER and G.CONTROLLER.dragging and G.CONTROLLER.dragging.target == self
+    local is_focused = G.CONTROLLER and G.CONTROLLER.focused and G.CONTROLLER.focused.target == self
+    -- Cards owned by UI (e.g. collection/menu previews) are not drawn by the main card loop;
+    -- they must keep using vanilla draw when batching is enabled.
+    local p = self.parent
+    local mt = p and getmetatable(p) or nil
+    local is_ui_parent =
+        (p ~= nil) and (
+            (rawget(_G, 'UIElement') and mt == UIElement) or
+            (rawget(_G, 'UIBox') and mt == UIBox) or
+            (p.UIT ~= nil) or
+            (p.UIBox ~= nil)
+        )
+
+    if not is_ui_parent and not dominated_by_deck and not is_dragged and not is_focused then
+        return
+    end
+end
+'''
+
+# Patch the SMODS version of Card:draw
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/card_draw.lua"]'
+pattern = "function Card:draw(layer)"
+position = "after"
+match_indent = true
+payload = '''
+if (G.USE_BATCHED_RENDERER or G.USE_STRONTIUM_RENDERER) and not self._batched_force_draw then
+    local dominated_by_deck = self.area and self.area.config and self.area.config.type == 'deck'
+    local is_dragged = G.CONTROLLER and G.CONTROLLER.dragging and G.CONTROLLER.dragging.target == self
+    local is_focused = G.CONTROLLER and G.CONTROLLER.focused and G.CONTROLLER.focused.target == self
+    local p = self.parent
+    local mt = p and getmetatable(p) or nil
+    local is_ui_parent =
+        (p ~= nil) and (
+            (rawget(_G, 'UIElement') and mt == UIElement) or
+            (rawget(_G, 'UIBox') and mt == UIBox) or
+            (p.UIT ~= nil) or
+            (p.UIBox ~= nil)
+        )
+
+    if not is_ui_parent and not dominated_by_deck and not is_dragged and not is_focused then
+        return
+    end
+end
+'''
+
+# Call backing/batched renderer
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "for k, v in pairs(self.I.CARD) do"
+position = "before"
+match_indent = true
+payload = '''
+if G.USE_STRONTIUM_RENDERER and G.STRONTIUM_RENDERER then
+    G.STRONTIUM_RENDERER:draw_all_cards(self.I.CARD)
+elseif G.USE_BATCHED_RENDERER and G.BATCHED_RENDERER then
+    G.BATCHED_RENDERER:reset_frame()
+    G.BATCHED_RENDERER:draw_all_cards(self.I.CARD)
+end
+'''

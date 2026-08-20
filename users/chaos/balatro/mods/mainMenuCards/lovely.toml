@@ -1,0 +1,77 @@
+[manifest]
+version = "0.0.1"
+dump_lua = true
+priority = 1234567890
+
+# Increase card limit to 3
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "{card_limit = 1, type = 'title'})"
+position = "at"
+payload = "{card_limit = 3, type = 'title'})"
+match_indent = true
+overwrite = true
+
+# Replace original card creation with three custom jokers
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "local replace_card = Card(self.title_top.T.x, self.title_top.T.y, 1.2*G.CARD_W*SC_scale, 1.2*G.CARD_H*SC_scale, G.P_CARDS.S_A, G.P_CENTERS.c_base)"
+position = "at"
+payload = '''
+-- Create three cards with horizontal offsets
+local replace_card = Card(self.title_top.T.x-4.5, self.title_top.T.y-2, 1.2*G.CARD_W*SC_scale, 1.2*G.CARD_H*SC_scale, nil, G.P_CENTERS.j_blueprint)
+local j2 = Card(self.title_top.T.x, self.title_top.T.y-2, 1.2*G.CARD_W*SC_scale, 1.2*G.CARD_H*SC_scale, nil, G.P_CENTERS.j_perkeo)
+local j3 = Card(self.title_top.T.x+2.5, self.title_top.T.y-2, 1.2*G.CARD_W*SC_scale, 1.2*G.CARD_H*SC_scale, nil, G.P_CENTERS.j_brainstorm)
+
+-- Configure properties for all cards
+for _, card in pairs({replace_card, j2, j3}) do
+    card:set_edition({negative = true}, true)
+    card:set_eternal(true)
+    card.no_ui = true
+    card.ambient_tilt = 0.0
+end
+
+replace_card:set_seal('Gold', true, true)
+j2:set_seal('Red', true, true)
+j3:set_seal('Purple', true, true)
+
+-- Emplace all cards
+self.title_top:emplace(replace_card)
+self.title_top:emplace(j2)
+self.title_top:emplace(j3)
+
+-- Widen the title area to prevent overlap
+self.title_top.T.w = self.title_top.T.w * 2.0
+'''
+match_indent = true
+overwrite = true
+
+# Update visibility activation for all cards
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "replace_card.states.visible = true"
+position = "at"
+payload = '''
+for _, card in ipairs(self.title_top.cards) do
+    card.states.visible = true
+end
+'''
+match_indent = true
+overwrite = true
+
+# Update materialize effect for all cards
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "replace_card:start_materialize"
+position = "at"
+payload = '''
+for _, card in ipairs(self.title_top.cards) do
+    card:start_materialize({G.C.WHITE,G.C.WHITE}, nil, 1.2)
+end
+'''
+match_indent = true
+overwrite = true
