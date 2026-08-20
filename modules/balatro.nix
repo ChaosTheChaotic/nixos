@@ -74,9 +74,18 @@ let
       '';
     };
 
+  checkModsTool = pkgs.writers.writePython3Bin "check-balatro-mods" { } (
+    builtins.readFile ./check_mods.py
+  );
+
   balatroModsDir = pkgs.symlinkJoin {
     name = "balatro-mods-dir";
     paths = map mkMod cfg.mods.modList;
+    nativeBuildInputs = lib.optional cfg.mods.doMetaChecks checkModsTool;
+
+    postBuild = lib.optionalString cfg.mods.doMetaChecks ''
+			check-balatro-mods "$out"
+		'';
   };
 
   moddedBalatroPkg = pkgs.symlinkJoin {
@@ -136,6 +145,12 @@ in
             type = lib.types.package;
             default = pkgs.lovely-injector;
             description = "Lovely-injector package to use";
+          };
+
+          doMetaChecks = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Sets if metadata checks should be done, erroring if conflicts or missed dependencies are found.";
           };
 
           modList = lib.mkOption {
