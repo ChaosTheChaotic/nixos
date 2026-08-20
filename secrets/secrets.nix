@@ -20,4 +20,13 @@ in
 		];
 		armour = true;
 	};
+	"gh-pat.age" = {
+		publicKeys = [
+			m1
+			m2
+			t1
+			t2
+		];
+		armour = true;
+	};
 }

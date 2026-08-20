@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   inputs,
   ...
@@ -55,6 +56,11 @@ in
   ];
 
   nixpkgs.config.allowUnfree = true;
+
+	age.secrets.gh-pat.file = ../secrets/gh-pat.age;
+  nix.extraOptions = ''
+    !include ${config.age.secrets.gh-pat.path}
+  '';
 
   nix.settings = {
     experimental-features = [
