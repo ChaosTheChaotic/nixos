@@ -9,6 +9,40 @@
 let
   cfg = config.programs.balatro;
 
+  checkIsURL =
+    str:
+    (builtins.match "^[a-zA-Z][a-zA-Z0-9+.-]*://.*" str) != null
+    || (builtins.match "^[a-zA-Z][a-zA-Z0-9+.-]*:.*/.*" str) != null;
+
+	checkURLHasHash = url:
+		if (builtins.match ".*([a-fA-F0-9]{40}|narHash=|sha256=).*" url) != null then true else false;
+
+	fetchSafe = url:
+		if !checkIsURL url then
+			url
+		else if !checkURLHasHash url then
+			builtins.trace ''
+      Failed to fetch "${url}"
+      
+      This error usually happens because either:
+      
+        1. The URL is a git repo and has no hash provided
+          If the link provided looked something like "github:owner/repo" or "git+https://something.whatever/owner/repo"
+          Nix will refuse to fetch it without a hash.
+          The fix normally looks something like "github:owner/repo/hash" or "git+https://something.whatever/owner/repo/hash"
+      
+        2. The URL is some kind of archive
+          The URL here also has no file hash, and thus nix will refuse to fetch it.
+          The fix is either to use a nix fetcher (e.g pkgs.fetchzip) and give it a hash
+          The hash will be given after initially running it and getting the hash it errors with
+          Or to add "?narHash=..." to the end of the URL, and adding the hash after it errors.
+      
+      Note that there are other causes for this error, though the 2 listed above are the most likely.
+      Additionally the error messages from this tool can be misleading.
+      For your debugging purposes, the actual error follows.
+			'' ((fetchTree url).outPath)
+		else (fetchTree url).outPath;
+
   basePkg = cfg.package.override {
     withBridgePatch = cfg.bridgePatch;
     withLinuxPatch = cfg.linuxPatch;
@@ -133,11 +167,7 @@ in
       description = "Enable the linux patch";
     };
     src-path = lib.mkOption {
-      type = lib.types.nullOr (
-        lib.types.coercedTo lib.types.str (
-          url: if lib.strings.hasPrefix "/" url then url else (fetchTree url).outPath
-        ) lib.types.path
-      );
+      type = lib.types.nullOr (lib.types.coercedTo lib.types.str fetchSafe lib.types.path);
       default = null;
       description = "The src attribute to override, or a URL to fetch";
     };
@@ -176,9 +206,7 @@ in
                     { ... }: {
                       options = {
                         src = lib.mkOption {
-                          type = lib.types.coercedTo lib.types.str (
-                            url: if lib.strings.hasPrefix "/" url then url else (fetchTree url).outPath
-                          ) lib.types.path;
+                          type = lib.types.coercedTo lib.types.str fetchSafe lib.types.path;
                           description = "Path to the mod folder, or a URL to fetch";
                         };
                         enabled = lib.mkOption {
