@@ -35,7 +35,7 @@ in
     ./gui.nix
     ./rmpc.nix
     ./equi/equi.nix
-		./balatro/balatro.nix
+    ./balatro/balatro.nix
   ];
 
   options = {
@@ -57,7 +57,7 @@ in
 
   config = {
 
-		_module.args.master = master;
+    _module.args.master = master;
 
     home.username = "chaos";
     home.homeDirectory = "/home/chaos";
@@ -103,6 +103,8 @@ in
       prettier
       google-java-format
       wf-recorder
+      odin
+      ols
 
       # Fonts
       nerd-fonts.fira-code

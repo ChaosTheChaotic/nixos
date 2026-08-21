@@ -153,6 +153,7 @@ return {
 				table.insert(lsps, "lua_ls")
 				table.insert(lsps, "cmake")
 				table.insert(lsps, "clangd")
+				table.insert(lsps, "ols")
 			end
 
 			require("mason-lspconfig").setup({
@@ -322,6 +323,14 @@ return {
 				})
 				vim.lsp.enable("cmake")
 			end
+			if not table.contains(lsps, "ols") then
+				vim.lsp.config("ols", {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { "ols" },
+				})
+				vim.lsp.enable("ols")
+			end
 			vim.lsp.config("tereix", {
 				cmd = { "tereix", "--lsp" },
 				filetypes = { "tereix" },
@@ -456,6 +465,7 @@ return {
 				"git_rebase",
 				"git_config",
 				"asm",
+				"odin",
 			})
 
 			vim.api.nvim_create_autocmd("FileType", {
@@ -667,13 +677,13 @@ return {
 				nix = { "nixfmt" },
 				go = { "gofmt" },
 				zig = { "zigfmt" },
+				odin = { "odinfmt" },
 				tereix = { "tx_fmt" },
 			},
 			formatters = {
 				stylua = { append_args = { "-a", "--indent-type", "Tabs", "--indent-width", "2" } },
 				shfmt = { append_args = { "-ci" } },
 				qmlformat = {
-					command = "qmlformat",
 					append_args = { "-t", "-n", "--objects-spacing", "--functions-spacing", "--single-line-empty-objects" },
 				},
 				tx_fmt = {
