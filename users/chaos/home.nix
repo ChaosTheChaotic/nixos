@@ -103,8 +103,8 @@ in
       prettier
       google-java-format
       wf-recorder
-      odin
-      ols
+      master.odin
+      master.ols
 
       # Fonts
       nerd-fonts.fira-code
