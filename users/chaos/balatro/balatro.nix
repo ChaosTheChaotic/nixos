@@ -9,7 +9,7 @@
 
 {
   imports = [
-    ../../../modules/balatro.nix
+		inputs.balatro.balanix.homeManagerModules.default
   ];
 
   programs.balatro = {
@@ -77,7 +77,7 @@
             patches = if patchMap ? ${modName} then patchMap.${modName} else [ ];
           };
         in
-        lib.mapAttrsToList addPatches inputs.balatro.mods;
+        lib.mapAttrsToList addPatches inputs.balatro.modding.mods;
     };
   };
 }
