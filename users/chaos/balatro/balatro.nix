@@ -9,7 +9,7 @@
 
 {
   imports = [
-		inputs.balatro.balanix.homeManagerModules.default
+    inputs.balatro.balanix.homeManagerModules.default
   ];
 
   programs.balatro = {
@@ -52,6 +52,11 @@
         let
           patchMap = {
             "BalatroMultiplayer" = [
+              {
+                file = "ui/main_menu/main_menu.lua";
+                regex = "MP\\.UI\\.show_dev_build_warning()";
+                replace = "";
+              }
               {
                 file = "ui/game/round.lua";
                 regex = "MP\\.UTILS\\.log_mem_debug_messages.*$";
