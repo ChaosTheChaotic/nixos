@@ -96,11 +96,13 @@ let
       ${lib.optionalString cfg.mods.enable ''
         wrapProgram $out/bin/balatro \
           --run 'export LOVELY_MOD_DIR="''${XDG_DATA_HOME:-$HOME/.local/share}/balatro/nix-mods"' \
-          --run '${pkgs.coreutils}/bin/rm -rf "$LOVELY_MOD_DIR"' \
-          --run 'mkdir -p "$LOVELY_MOD_DIR"' \
-          --run '${pkgs.findutils}/bin/find "$LOVELY_MOD_DIR" -type l -delete' \
-          --run '${pkgs.coreutils}/bin/cp -rL --no-preserve=mode,ownership "${balatroModsDir}/." "$LOVELY_MOD_DIR/" 2>/dev/null || true' \
-          --run '${pkgs.findutils}/bin/find "$LOVELY_MOD_DIR" -type d -exec ${pkgs.coreutils}/bin/chmod u+w {} +'
+          --run 'if [ "$(cat "$LOVELY_MOD_DIR/.nix-mods-version" 2>/dev/null)" != "${balatroModsDir}" ]; then
+            ${pkgs.coreutils}/bin/rm -rf "$LOVELY_MOD_DIR"
+            ${pkgs.coreutils}/bin/mkdir -p "$LOVELY_MOD_DIR"
+            ${pkgs.coreutils}/bin/cp -rL --no-preserve=mode,ownership "${balatroModsDir}/." "$LOVELY_MOD_DIR/" 2>/dev/null || true
+            ${pkgs.findutils}/bin/find "$LOVELY_MOD_DIR" -type d -exec ${pkgs.coreutils}/bin/chmod u+w {} +
+            echo "${balatroModsDir}" > "$LOVELY_MOD_DIR/.nix-mods-version"
+          fi'
       ''}
     '';
   };
