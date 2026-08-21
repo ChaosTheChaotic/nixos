@@ -29,7 +29,10 @@
       flake = false;
     };
     millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
-    tree-sitter.url = "github:tree-sitter/tree-sitter";
+    tree-sitter = {
+      url = "github:tree-sitter/tree-sitter";
+      inputs.nixpkgs.follows = "nixpkgs-master";
+    };
     ani-cli = {
       url = "github:pystardust/ani-cli";
       flake = false;
