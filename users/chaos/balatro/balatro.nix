@@ -83,7 +83,7 @@
           addPrefs = modName: modPath: {
             src = modPath;
             name = modName;
-            enabled = !(builtins.elem modName disabledMods);
+            enabled = !(builtins.elem (lib.toLower modName) (map lib.toLower disabledMods));
             patches = if patchMap ? ${modName} then patchMap.${modName} else [ ];
           };
         in
