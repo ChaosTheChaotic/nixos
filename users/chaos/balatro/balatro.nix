@@ -50,6 +50,11 @@
       };
       modList =
         let
+
+          disabledMods = [
+            "Solatro"
+          ];
+
           patchMap = {
             "BalatroMultiplayer" = [
               {
@@ -75,14 +80,14 @@
             ];
           };
 
-          addPatches = modName: modPath: {
+          addPrefs = modName: modPath: {
             src = modPath;
             name = modName;
-            enabled = true;
+            enabled = !(builtins.elem modName disabledMods);
             patches = if patchMap ? ${modName} then patchMap.${modName} else [ ];
           };
         in
-        lib.mapAttrsToList addPatches inputs.balatro.modding.mods;
+        lib.mapAttrsToList addPrefs inputs.balatro.modding.mods;
     };
   };
 }
