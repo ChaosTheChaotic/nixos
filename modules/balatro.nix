@@ -53,7 +53,7 @@ let
     in
     pkgs.stdenv.mkDerivation {
       name = "balatro-mod-${lib.strings.sanitizeDerivationName modName}";
-      src = mod.path;
+      src = mod.src;
 
       dontBuild = true;
       dontConfigure = true;
@@ -96,6 +96,7 @@ let
       ${lib.optionalString cfg.mods.enable ''
         wrapProgram $out/bin/balatro \
           --run 'export LOVELY_MOD_DIR="''${XDG_DATA_HOME:-$HOME/.local/share}/balatro/nix-mods"' \
+          --run '${pkgs.coreutils}/bin/rm -rf "$LOVELY_MOD_DIR"' \
           --run 'mkdir -p "$LOVELY_MOD_DIR"' \
           --run '${pkgs.findutils}/bin/find "$LOVELY_MOD_DIR" -type l -delete' \
           --run '${pkgs.coreutils}/bin/cp -rL --no-preserve=mode,ownership "${balatroModsDir}/." "$LOVELY_MOD_DIR/" 2>/dev/null || true' \
@@ -130,9 +131,13 @@ in
       description = "Enable the linux patch";
     };
     src-path = lib.mkOption {
-      type = lib.types.nullOr lib.types.path;
+      type = lib.types.nullOr (
+        lib.types.coercedTo lib.types.str (
+          url: if lib.strings.hasPrefix "/" url then url else (fetchTree url).outPath
+        ) lib.types.path
+      );
       default = null;
-      description = "The src attribute to override in nixpkgs balatro.nix";
+      description = "The src attribute to override, or a URL to fetch";
     };
     mods = lib.mkOption {
       description = "Settings for Balatro modding.";
@@ -159,7 +164,7 @@ in
             type = lib.types.listOf (
               lib.types.coercedTo lib.types.path
                 (p: {
-                  path = p;
+                  src = p;
                   enabled = true;
                   name = null;
                   patches = [ ];
@@ -168,9 +173,11 @@ in
                   lib.types.submodule (
                     { ... }: {
                       options = {
-                        path = lib.mkOption {
-                          type = lib.types.path;
-                          description = "Path to the mod folder";
+                        src = lib.mkOption {
+                          type = lib.types.coercedTo lib.types.str (
+                            url: if lib.strings.hasPrefix "/" url then url else (fetchTree url).outPath
+                          ) lib.types.path;
+                          description = "Path to the mod folder, or a URL to fetch";
                         };
                         enabled = lib.mkOption {
                           type = lib.types.bool;
@@ -249,7 +256,7 @@ in
         assertions =
           let
             modDirNames = map (
-              mod: if mod.name != null then mod.name else baseNameOf mod.path
+              mod: if mod.name != null then mod.name else baseNameOf mod.src
             ) cfg.mods.modList;
 
             countOccurrences = item: list: builtins.length (builtins.filter (x: x == item) list);

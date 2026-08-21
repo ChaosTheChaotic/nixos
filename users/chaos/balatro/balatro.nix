@@ -71,7 +71,7 @@
           };
 
           addPatches = modName: modPath: {
-            path = modPath;
+            src = modPath;
             name = modName;
             enabled = true;
             patches = if patchMap ? ${modName} then patchMap.${modName} else [ ];
