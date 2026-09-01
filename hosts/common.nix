@@ -42,6 +42,9 @@ in
     ccache
     inputs.rose-pine-hyprcursor.packages.${pkgs.stdenv.hostPlatform.system}.default
     android-tools
+    xdg-terminal-exec
+    xdg-desktop-portal-termfilechooser
+    inotify-tools
   ];
 
   fonts.packages = [
@@ -57,7 +60,7 @@ in
 
   nixpkgs.config.allowUnfree = true;
 
-	age.secrets.gh-pat.file = ../secrets/gh-pat.age;
+  age.secrets.gh-pat.file = ../secrets/gh-pat.age;
   nix.extraOptions = ''
     !include ${config.age.secrets.gh-pat.path}
   '';
@@ -218,6 +221,7 @@ in
     extraPortals = with pkgs; [
       xdg-desktop-portal-hyprland
       xdg-desktop-portal-gtk
+      xdg-desktop-portal-termfilechooser
     ];
     config = {
       common = {
@@ -225,10 +229,16 @@ in
           "hyprland"
           "gtk"
         ];
-        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
       };
     };
   };
+
+  environment.etc."xdg/xdg-desktop-portal-termfilechooser/config".text = ''
+    [filechooser]
+    cmd = _termfp.sh
+    default_dir = /tmp
+  '';
 
   programs.kdeconnect.enable = true;
 
