@@ -7,42 +7,35 @@
 
 {
   config = {
-    home.sessionVariables =
-      let
-        NIX_HOME_BASE = "${config.home.homeDirectory}/nixos-cfg";
-        SCRIPT_BASE_DIR = "${NIX_HOME_BASE}/scripts";
-      in
-      {
-        GSK_RENDERER = "ngl";
-        GDK_BACKEND = "wayland";
-        LAYER_SHELL_ENABLE = "1";
-        GI_TYPELIB_PATH =
-          with pkgs;
-          lib.makeSearchPath "lib/girepository-1.0" [
-            networkmanager
-            gtk4
-            graphene
-            gtksourceview5
-            gtk4-layer-shell
-            libsoup_3
-          ];
-        LD_LIBRARY_PATH =
-          with pkgs;
-          lib.makeSearchPath "lib" [
-            sqlite.out
-            libunwind.out
-          ];
-        XDG_DATA_DIRS = "${config.apps}:$XDG_DATA_DIRS";
-        UTIL_SCRIPT_DIR = "${SCRIPT_BASE_DIR}/util";
-        BIN_SCRIPT_DIR = "${SCRIPT_BASE_DIR}/bin";
-        WALLPAPER_DIR = "${NIX_HOME_BASE}/wallpapers";
-        NIX_CFG_DIR = "${NIX_HOME_BASE}";
-	QML_IMPORT_PATH = with pkgs; lib.makeSearchPath "lib/qt-6/qml" [
-	  quickshell
-	  kdePackages.qtdeclarative
-	  kdePackages.bluez-qt
-	];
-      };
+    home.sessionVariables = {
+      GSK_RENDERER = "ngl";
+      GDK_BACKEND = "wayland";
+      LAYER_SHELL_ENABLE = "1";
+      GI_TYPELIB_PATH =
+        with pkgs;
+        lib.makeSearchPath "lib/girepository-1.0" [
+          networkmanager
+          gtk4
+          graphene
+          gtksourceview5
+          gtk4-layer-shell
+          libsoup_3
+        ];
+      LD_LIBRARY_PATH =
+        with pkgs;
+        lib.makeSearchPath "lib" [
+          sqlite.out
+          libunwind.out
+        ];
+      XDG_DATA_DIRS = "${config.apps}:$XDG_DATA_DIRS";
+      QML_IMPORT_PATH =
+        with pkgs;
+        lib.makeSearchPath "lib/qt-6/qml" [
+          quickshell
+          kdePackages.qtdeclarative
+          kdePackages.bluez-qt
+        ];
+    } // import ../../modules/consts.nix { homeDir = config.home.homeDirectory; };
 
     home.sessionPath = [
       "$HOME/.local/bin"

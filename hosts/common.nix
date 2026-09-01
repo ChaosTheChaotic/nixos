@@ -234,9 +234,24 @@ in
     };
   };
 
+  systemd.user.services.xdg-desktop-portal-termfilechooser = {
+    environment = {
+      XDG_CONFIG_HOME = "/etc/xdg"; # Just read from /etc/xdg instead of ~/.config
+    }
+    // import ../modules/consts.nix { homeDir = config.users.users.chaos.home; };
+    path = with pkgs; [
+      xdg-terminal-exec
+      inotify-tools
+      coreutils
+      gawk
+      "/run/current-system/sw"
+      "/etc/profiles/per-user/chaos"
+    ];
+  };
+
   environment.etc."xdg/xdg-desktop-portal-termfilechooser/config".text = ''
     [filechooser]
-    cmd = _termfp.sh
+    cmd = ${customPkgs.scripts}/bin/_termfp.sh
     default_dir = /tmp
   '';
 
@@ -248,7 +263,8 @@ in
     XDG_DATA_DIRS = [
       "${pkgs.hyprland}/share"
     ];
-  };
+  }
+  // import ../modules/consts.nix { homeDir = config.users.users.chaos.home; };
 
   documentation = {
     enable = true;

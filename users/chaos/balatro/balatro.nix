@@ -58,11 +58,6 @@
           patchMap = {
             "BalatroMultiplayer" = [
               {
-                file = "ui/main_menu/main_menu.lua";
-                regex = "MP\\.UI\\.show_dev_build_warning()";
-                replace = "";
-              }
-              {
                 file = "ui/game/round.lua";
                 regex = "MP\\.UTILS\\.log_mem_debug_messages.*$";
                 replace = "MP.UTILS.log_mem_debug_messages()\n\t\treturn";
