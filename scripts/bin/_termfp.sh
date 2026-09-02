@@ -100,8 +100,14 @@ if [ "$ERRORS" -gt 0 ] || [ "$COUNT" -eq 0 ]; then
     exit 1
 fi
 
+trap '' HUP TERM
+
 rm -f "$YIELD_LOCK_FILE"
-kill -TERM "$YIELD_WRAPPER_PID" 2>/dev/null
+
+SHELL_PID=$(pgrep -P "$YIELD_WRAPPER_PID" | head -n 1)
+if [ -n "$SHELL_PID" ]; then
+    kill -SIGHUP "$SHELL_PID" 2>/dev/null
+fi
 EOF
 chmod +x "$TMP_DIR/yield"
 
@@ -112,6 +118,9 @@ source "$UTIL_SCRIPT_DIR/colors.sh"
 export PATH="$YIELD_TMP_DIR:$PATH"
 export YIELD_WRAPPER_PID=$$
 
+trap 'rm -f "$YIELD_LOCK_FILE"' EXIT
+trap 'exit 1' HUP TERM INT
+
 ACTION=$([ "$YIELD_MODE_SAVE" = "1" ] && echo "Save" || echo "Open")
 TARGET=$([ "$YIELD_MODE_DIR" = "1" ] && echo "Directory" || echo "File")
 LIMIT=$([ "$YIELD_MODE_MULTIPLE" = "1" ] && echo "Multiple" || echo "Single")
@@ -121,8 +130,6 @@ echo -e "Action: $ACTION | Target: $TARGET | Selection: $LIMIT"
 echo -e "Confirm: ${BGreen}yield <path>${Reset}  •  Cancel: ${BRed}exit${Reset} (or Ctrl+D)\n"
 
 "$SHELL"
-# Release the lock if the user exits without picking a file
-rm -f "$YIELD_LOCK_FILE"
 EOF
 chmod +x "$TMP_DIR/shell_wrapper"
 
