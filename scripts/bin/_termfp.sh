@@ -102,8 +102,6 @@ fi
 
 trap '' HUP TERM
 
-rm -f "$YIELD_LOCK_FILE"
-
 SHELL_PID=$(pgrep -P "$YIELD_WRAPPER_PID" | head -n 1)
 if [ -n "$SHELL_PID" ]; then
     kill -SIGHUP "$SHELL_PID" 2>/dev/null
