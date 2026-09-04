@@ -43,6 +43,7 @@
       transparent = true;
       enableReactDevtools = true;
       plugins = {
+        voiceMessagesInBackground.enable = true;
         advancedPermissions.enable = true;
         alwaysAnimate.enable = true;
         atSomeone.enable = true;
