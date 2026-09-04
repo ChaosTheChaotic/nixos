@@ -127,7 +127,7 @@ echo -e "${BCyan}Terminal File Chooser${Reset}"
 echo -e "Action: $ACTION | Target: $TARGET | Selection: $LIMIT"
 echo -e "Confirm: ${BGreen}yield <path>${Reset}  •  Cancel: ${BRed}exit${Reset} (or Ctrl+D)\n"
 
-"$SHELL"
+"$SHELL" -i
 EOF
 chmod +x "$TMP_DIR/shell_wrapper"
 
@@ -140,7 +140,7 @@ export YIELD_TMP_DIR="$TMP_DIR"
 
 cd "$START_DIR" || exit 1
 
-xdg-terminal-exec "$TMP_DIR/shell_wrapper" &
+kitty --class "termfp" --title "Terminal File Picker" "$TMP_DIR/shell_wrapper" &
 
 if [ -f "$LOCK_FILE" ]; then
 	inotifywait -e delete_self -e move_self "$LOCK_FILE" >/dev/null 2>&1

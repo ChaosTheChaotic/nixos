@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ ... }:
 
 {
   config = {
@@ -13,8 +13,6 @@
       hidden = true;
       ignores = [ ".git/" ];
     };
-
-    programs.fastfetch.enable = true;
 
     programs.aria2.enable = false;
     programs.jq.enable = true;

@@ -91,6 +91,14 @@ hl.window_rule({
 	float = true,
 })
 
+hl.window_rule({
+	match = {
+		class = "termfp",
+	},
+	float = true,
+	size = {"monitor_w * 0.5", "monitor_h * 0.5"},
+})
+
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 

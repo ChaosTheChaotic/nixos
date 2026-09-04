@@ -42,7 +42,6 @@ in
     ccache
     inputs.rose-pine-hyprcursor.packages.${pkgs.stdenv.hostPlatform.system}.default
     android-tools
-    xdg-terminal-exec
     xdg-desktop-portal-termfilechooser
     inotify-tools
   ];
@@ -240,7 +239,6 @@ in
     }
     // import ../modules/consts.nix { homeDir = config.users.users.chaos.home; };
     path = with pkgs; [
-      xdg-terminal-exec
       inotify-tools
       coreutils
       gawk
