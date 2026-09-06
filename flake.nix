@@ -70,7 +70,6 @@
               modules = [
                 ./hosts/${hostName}/default.nix
                 agenix.nixosModules.default
-                steam-asahi.nixosModules.default
                 { environment.systemPackages = [ agenix.packages.${system}.default ]; }
                 home-manager.nixosModules.home-manager
                 {
@@ -88,7 +87,7 @@
             hostName = "NixyPenguin";
             system = "aarch64-linux";
             cpuArch = "apple-m1";
-            extraModules = [ nixos-apple-silicon.nixosModules.apple-silicon-support ];
+            extraModules = [ nixos-apple-silicon.nixosModules.apple-silicon-support steam-asahi.nixosModules.default ];
           };
 
           "Nixpad" = mkHost {

@@ -29,6 +29,10 @@
     #nvimpager
   ];
 
+  programs.steam-asahi = {
+    enable = true;
+  };
+
   nix.settings = {
     extra-substituters = [
       "https://nixos-apple-silicon.cachix.org"

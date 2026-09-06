@@ -269,8 +269,4 @@ in
     enable = true;
     man.enable = true;
   };
-
-  programs.steam-asahi = {
-    enable = true;
-  };
 }
