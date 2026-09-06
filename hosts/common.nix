@@ -157,13 +157,13 @@ in
       domain = "@users";
       item = "nofile";
       type = "soft";
-      value = "8192";
+      value = "1048576";
     }
     {
       domain = "@users";
       item = "nofile";
       type = "hard";
-      value = "8192";
+      value = "1048576";
     }
   ];
   services.flatpak.enable = true;
@@ -187,6 +187,7 @@ in
       "render"
       "input"
       "seat"
+      "kvm"
     ];
     shell = pkgs.zsh;
   };
@@ -267,5 +268,9 @@ in
   documentation = {
     enable = true;
     man.enable = true;
+  };
+
+  programs.steam-asahi = {
+    enable = true;
   };
 }

@@ -34,6 +34,10 @@
       url = "github:pystardust/ani-cli";
       flake = false;
     };
+    steam-asahi = {
+      url = "github:sm-idk/steam-asahi";
+      inputs.nixpkgs.follows = "nixpkgs-master";
+    };
     equi.url = "path:./users/chaos/equi/plugins";
     balatro.url = "path:./users/chaos/balatro";
   };
@@ -44,6 +48,7 @@
       nixos-apple-silicon,
       home-manager,
       agenix,
+			steam-asahi,
       ...
     }@inputs:
     {
@@ -65,6 +70,7 @@
               modules = [
                 ./hosts/${hostName}/default.nix
                 agenix.nixosModules.default
+                steam-asahi.nixosModules.default
                 { environment.systemPackages = [ agenix.packages.${system}.default ]; }
                 home-manager.nixosModules.home-manager
                 {
