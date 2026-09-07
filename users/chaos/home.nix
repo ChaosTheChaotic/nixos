@@ -141,18 +141,6 @@ in
       shellcheck
 
       # Custom Inputs
-      (inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-        NIX_CFLAGS_COMPILE =
-          (oldAttrs.NIX_CFLAGS_COMPILE or "")
-          + (
-            if cpuArch == "generic" then
-              " -O3"
-            else if pkgs.stdenv.hostPlatform.isAarch64 then
-              " -mcpu=${cpuArch} -O3"
-            else
-              " -march=${cpuArch} -O3"
-          );
-      }))
       (inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
         NIX_CFLAGS_COMPILE =
           (oldAttrs.NIX_CFLAGS_COMPILE or "")
@@ -200,6 +188,48 @@ in
     ];
     programs.quickshell = {
       enable = true;
+    };
+
+    programs.vicinae = {
+      enable = true;
+      systemd = {
+        enable = true;
+        environment = {
+          USE_LAYER_SHELL = 1;
+        };
+      };
+      settings = {
+        search_files_in_root = true;
+        theme = {
+          dark = {
+            name = "rose-pine-moon";
+            icon = "oomox-rose-pine-moon";
+          };
+        };
+        launcher_window = {
+          opacity = 0.7;
+        };
+        telemetry = {
+          system_info = false;
+        };
+        favourites = [
+          "clipboard:history"
+          "applications:floorp"
+          "applications:equibop"
+        ];
+      };
+      extensions = with inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}; [
+				# TODO: Monitor the commented out extensions for when they are fixed
+        #bluetooth
+				#dbus
+        nix
+        process-manager
+        player-pilot
+        #systemd
+        fuzzy-files
+        wifi-commander
+        nerdfont-search
+      ];
     };
 
     systemd.user.settings = {

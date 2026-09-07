@@ -17,6 +17,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vicinae.url = "github:vicinaehq/vicinae";
+    vicinae-extensions = {
+      url = "github:vicinaehq/extensions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     f-sy-h = {
       url = "github:z-shell/F-Sy-H";
       flake = false;
@@ -48,7 +52,8 @@
       nixos-apple-silicon,
       home-manager,
       agenix,
-			steam-asahi,
+      steam-asahi,
+      vicinae,
       ...
     }@inputs:
     {
@@ -76,6 +81,7 @@
                   home-manager.useGlobalPkgs = true;
                   home-manager.useUserPackages = true;
                   home-manager.extraSpecialArgs = { inherit inputs cpuArch; };
+                  home-manager.sharedModules = [ vicinae.homeManagerModules.default ];
                   home-manager.users.chaos = import ./users/chaos/home.nix;
                 }
               ]
@@ -87,7 +93,10 @@
             hostName = "NixyPenguin";
             system = "aarch64-linux";
             cpuArch = "apple-m1";
-            extraModules = [ nixos-apple-silicon.nixosModules.apple-silicon-support steam-asahi.nixosModules.default ];
+            extraModules = [
+              nixos-apple-silicon.nixosModules.apple-silicon-support
+              steam-asahi.nixosModules.default
+            ];
           };
 
           "Nixpad" = mkHost {
