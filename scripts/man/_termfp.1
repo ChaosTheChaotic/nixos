@@ -1,0 +1,51 @@
+.TH _TERMFP 1 "1970-1-1" "v1.0" "Custom Scripts Manual"
+.SH NAME
+_termfp \- terminal-based file picker wrapper
+.SH SYNOPSIS
+.B _termfp
+\fIMODE_MULTIPLE\fR \fIMODE_DIR\fR \fIMODE_SAVE\fR \fISTART_PATH\fR \fISAVE_PATH\fR
+.SH DESCRIPTION
+.B _termfp
+is a wrapper script that provides a terminal-based file and directory chooser.
+It executes an interactive bash shell within a new
+.BR kitty (1)
+window, which is spawned with the class "termfp" and title "Terminal File Picker".
+.PP
+Inside this shell environment, a custom
+.B yield
+command is injected to process the user's selection.
+The script handles path validation based on the supplied execution modes and writes the absolute paths to a save file.
+If no valid paths are provided or if the selection rules are broken, the script clears the save file and returns an error.
+.SH ARGUMENTS
+.TP
+.B MODE_MULTIPLE
+Set to 1 to allow multiple selections, or 0 to restrict to a single selection.
+.TP
+.B MODE_DIR
+Set to 1 to require the selected target to be a directory, or 0 for files.
+.TP
+.B MODE_SAVE
+Set to 1 for "Save" mode, which resolves absolute paths even if the file does not yet exist.
+.TP
+.B START_PATH
+The initial path for the file picker.
+.TP
+.B SAVE_PATH
+The destination file path where the 
+.B yield
+command will write the chosen absolute paths.
+.SH THE YIELD COMMAND
+The injected
+.B yield
+command is used to confirm selections inside the shell.
+It accepts targets either as positional arguments or through piped input.
+.SH EXIT STATUS
+.TP
+.B 0
+Success. The save file contains valid selected data.
+.TP
+.B 1
+Failure or cancellation. The save file is empty or invalid selections were made.
+.SH SEE ALSO
+.BR bash (1),
+.BR kitty (1)
