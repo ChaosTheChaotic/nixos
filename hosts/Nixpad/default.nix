@@ -28,15 +28,16 @@
     DefaultTimeoutStopSec = "10s";
   };
 
-  networking.hostName = "Nixpad";
+  networking = {
+    hostName = "Nixpad";
+    wg-quick.interfaces = wgHelper.mkWgInterface {
+      privateKeyPath = config.age.secrets.wg-priv-thinker.path;
+      publicKey = "JB84ctFi3l+gxJxr/kwYXlKwLcmqWxuuLBkpE1anmgo=";
+      endpoint = "195.242.214.194:51820";
+    };
+  };
 
   age.secrets.wg-priv-thinker.file = ../../secrets/wg-priv-thinker.age;
-
-  networking.wg-quick.interfaces = wgHelper.mkWgInterface {
-    privateKeyPath = config.age.secrets.wg-priv-thinker.path;
-    publicKey = "JB84ctFi3l+gxJxr/kwYXlKwLcmqWxuuLBkpE1anmgo=";
-    endpoint = "195.242.214.194:51820";
-  };
 
   programs.steam = {
     enable = true;
