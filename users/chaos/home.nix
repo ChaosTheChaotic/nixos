@@ -159,19 +159,6 @@ in
             RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
           });
       }))
-      (inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-        env =
-          (oldAttrs.env or { })
-          // (lib.optionalAttrs (cpuArch != "generic") {
-            RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
-          });
-
-        zigBuildTarget = if cpuArch != "generic" then cpuArch else "baseline";
-
-        zigBuildFlags = builtins.filter (flag: !(lib.hasPrefix "-Dcpu=" flag)) (
-          oldAttrs.zigBuildFlags or [ ]
-        );
-      }))
       (inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
         NIX_CFLAGS_COMPILE =
           (oldAttrs.NIX_CFLAGS_COMPILE or "")
@@ -188,6 +175,27 @@ in
     ];
     programs.quickshell = {
       enable = true;
+    };
+
+    programs.clogite = {
+      enable = true;
+      keepHistfile = false;
+      modifyZshAutosuggestions = true;
+      package =
+        inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
+          (oldAttrs: {
+            env =
+              (oldAttrs.env or { })
+              // (lib.optionalAttrs (cpuArch != "generic") {
+                RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
+              });
+
+            zigBuildTarget = if cpuArch != "generic" then cpuArch else "baseline";
+
+            zigBuildFlags = builtins.filter (flag: !(lib.hasPrefix "-Dcpu=" flag)) (
+              oldAttrs.zigBuildFlags or [ ]
+            );
+          });
     };
 
     programs.vicinae = {
@@ -219,9 +227,9 @@ in
         ];
       };
       extensions = with inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}; [
-				# TODO: Monitor the commented out extensions for when they are fixed
+        # TODO: Monitor the commented out extensions for when they are fixed
         #bluetooth
-				#dbus
+        #dbus
         nix
         process-manager
         player-pilot
