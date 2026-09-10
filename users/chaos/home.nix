@@ -59,185 +59,187 @@ in
 
     _module.args.master = master;
 
-    home.username = "chaos";
-    home.homeDirectory = "/home/chaos";
-    home.stateVersion = "25.11";
+    home = {
+      username = "chaos";
+      homeDirectory = "/home/chaos";
+      stateVersion = "25.11";
+      file = {
+        file = {
+          ".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
+          ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
+          ".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
+          ".config/quickshell".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
+        };
+      };
+      packages = with pkgs; [
+        # Development
+        gcc
+        zip
+        unzip
+        file
+        which
+        neovim
+        rsync
+        pnpm
+        nodejs
+        gnumake
+        lua
+        luarocks
+        clang-tools
+        rustup
+        pkg-config
+        openssl
+        nixfmt
+        nixd
+        shfmt
+        stylua
+        typescript
+        cmake-language-server
+        lua-language-server
+        zig
+        hyprls
+        kdePackages.qtdeclarative
+        ruff
+        prettier
+        google-java-format
+        wf-recorder
+        master.odin
+        master.ols
+
+        # Fonts
+        nerd-fonts.fira-code
+        nerd-fonts.jetbrains-mono
+        fantasque-sans-mono
+        noto-fonts-color-emoji
+
+        # Utilities
+        scrcpy
+        tesseract
+        imagemagick
+        master.spotdl
+        prismlauncher
+        kdePackages.kdeconnect-kde
+        libunwind
+        qalculate-qt
+        wbg
+        libnotify
+        slurp
+        wl-clipboard
+        playerctl
+        sd
+        grim
+        master.yt-dlp
+        kdePackages.bluez-qt
+        (master.ani-cli.overrideAttrs (oldAttrs: {
+          runtimeInputs = (oldAttrs.runtimeInputs or [ ]) ++ [
+            botan3
+          ];
+          src = inputs.ani-cli;
+        }))
+        git-filter-repo
+        nix-prefetch-github
+        shellcheck
+
+        # Custom Inputs
+        (inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
+          NIX_CFLAGS_COMPILE =
+            (oldAttrs.NIX_CFLAGS_COMPILE or "")
+            + (
+              if cpuArch == "generic" then
+                " -O3"
+              else if pkgs.stdenv.hostPlatform.isAarch64 then
+                " -mcpu=${cpuArch} -O3"
+              else
+                " -march=${cpuArch} -O3"
+            );
+
+          env =
+            (oldAttrs.env or { })
+            // (lib.optionalAttrs (cpuArch != "generic") {
+              RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
+            });
+        }))
+        (inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
+          NIX_CFLAGS_COMPILE =
+            (oldAttrs.NIX_CFLAGS_COMPILE or "")
+            + (
+              if cpuArch == "generic" then
+                " -O3"
+              else if pkgs.stdenv.hostPlatform.isAarch64 then
+                " -mcpu=${cpuArch} -O3"
+              else
+                " -march=${cpuArch} -O3"
+            );
+        }))
+        rmpc-custom
+      ];
+    };
 
     programs.home-manager.enable = true;
 
-    home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
-    home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
-    home.file.".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
-    home.file.".config/quickshell".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
-
-    home.packages = with pkgs; [
-      # Development
-      gcc
-      zip
-      unzip
-      file
-      which
-      neovim
-      rsync
-      pnpm
-      nodejs
-      gnumake
-      lua
-      luarocks
-      clang-tools
-      rustup
-      pkg-config
-      openssl
-      nixfmt
-      nixd
-      shfmt
-      stylua
-      typescript
-      cmake-language-server
-      lua-language-server
-      zig
-      hyprls
-      kdePackages.qtdeclarative
-      ruff
-      prettier
-      google-java-format
-      wf-recorder
-      master.odin
-      master.ols
-
-      # Fonts
-      nerd-fonts.fira-code
-      nerd-fonts.jetbrains-mono
-      fantasque-sans-mono
-      noto-fonts-color-emoji
-
-      # Utilities
-      scrcpy
-      tesseract
-      imagemagick
-      master.spotdl
-      prismlauncher
-      kdePackages.kdeconnect-kde
-      libunwind
-      qalculate-qt
-      wbg
-      libnotify
-      slurp
-      wl-clipboard
-      playerctl
-      sd
-      grim
-      master.yt-dlp
-      kdePackages.bluez-qt
-      (master.ani-cli.overrideAttrs (oldAttrs: {
-        runtimeInputs = (oldAttrs.runtimeInputs or [ ]) ++ [
-          botan3
-        ];
-        src = inputs.ani-cli;
-      }))
-      git-filter-repo
-      nix-prefetch-github
-      shellcheck
-
-      # Custom Inputs
-      (inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-        NIX_CFLAGS_COMPILE =
-          (oldAttrs.NIX_CFLAGS_COMPILE or "")
-          + (
-            if cpuArch == "generic" then
-              " -O3"
-            else if pkgs.stdenv.hostPlatform.isAarch64 then
-              " -mcpu=${cpuArch} -O3"
-            else
-              " -march=${cpuArch} -O3"
-          );
-
-        env =
-          (oldAttrs.env or { })
-          // (lib.optionalAttrs (cpuArch != "generic") {
-            RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
-          });
-      }))
-      (inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-        NIX_CFLAGS_COMPILE =
-          (oldAttrs.NIX_CFLAGS_COMPILE or "")
-          + (
-            if cpuArch == "generic" then
-              " -O3"
-            else if pkgs.stdenv.hostPlatform.isAarch64 then
-              " -mcpu=${cpuArch} -O3"
-            else
-              " -march=${cpuArch} -O3"
-          );
-      }))
-      rmpc-custom
-    ];
-    programs.quickshell = {
-      enable = true;
-    };
-
-    programs.clogite = {
-      enable = true;
-      keepHistfile = false;
-      modifyZshAutosuggestions = true;
-      package =
-        inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
-          (oldAttrs: {
-            env =
-              (oldAttrs.env or { })
-              // (lib.optionalAttrs (cpuArch != "generic") {
-                RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
-              });
-
-            zigBuildTarget = if cpuArch != "generic" then cpuArch else "baseline";
-
-            zigBuildFlags = builtins.filter (flag: !(lib.hasPrefix "-Dcpu=" flag)) (
-              oldAttrs.zigBuildFlags or [ ]
-            );
-          });
-    };
-
-    programs.vicinae = {
-      enable = true;
-      systemd = {
+    programs = {
+      quickshell.enable = true;
+      clogite = {
         enable = true;
-        environment = {
-          USE_LAYER_SHELL = 1;
-        };
+        keepHistfile = false;
+        modifyZshAutosuggestions = true;
+        package =
+          inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
+            (oldAttrs: {
+              env =
+                (oldAttrs.env or { })
+                // (lib.optionalAttrs (cpuArch != "generic") {
+                  RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
+                });
+
+              zigBuildTarget = if cpuArch != "generic" then cpuArch else "baseline";
+
+              zigBuildFlags = builtins.filter (flag: !(lib.hasPrefix "-Dcpu=" flag)) (
+                oldAttrs.zigBuildFlags or [ ]
+              );
+            });
       };
-      settings = {
-        search_files_in_root = true;
-        theme = {
-          dark = {
-            name = "rose-pine-moon";
-            icon = "oomox-rose-pine-moon";
+      vicinae = {
+        enable = true;
+        systemd = {
+          enable = true;
+          environment = {
+            USE_LAYER_SHELL = 1;
           };
         };
-        launcher_window = {
-          opacity = 0.7;
+        settings = {
+          search_files_in_root = true;
+          theme = {
+            dark = {
+              name = "rose-pine-moon";
+              icon = "oomox-rose-pine-moon";
+            };
+          };
+          launcher_window = {
+            opacity = 0.7;
+          };
+          telemetry = {
+            system_info = false;
+          };
+          favourites = [
+            "clipboard:history"
+            "applications:floorp"
+            "applications:equibop"
+          ];
         };
-        telemetry = {
-          system_info = false;
-        };
-        favourites = [
-          "clipboard:history"
-          "applications:floorp"
-          "applications:equibop"
+        extensions = with inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}; [
+          # TODO: Monitor the commented out extensions for when they are fixed
+          #bluetooth
+          #dbus
+          nix
+          process-manager
+          player-pilot
+          #systemd
+          fuzzy-files
+          wifi-commander
+          nerdfont-search
         ];
       };
-      extensions = with inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}; [
-        # TODO: Monitor the commented out extensions for when they are fixed
-        #bluetooth
-        #dbus
-        nix
-        process-manager
-        player-pilot
-        #systemd
-        fuzzy-files
-        wifi-commander
-        nerdfont-search
-      ];
     };
 
     systemd.user.settings = {

@@ -2,339 +2,172 @@
 
 {
   config = {
-    programs.bat.enable = true;
-
-    programs.fd = {
-      enable = true;
-      extraOptions = [
-        "--no-ignore"
-        "--absolute-path"
-      ];
-      hidden = true;
-      ignores = [ ".git/" ];
-    };
-
-    programs.aria2.enable = false;
-    programs.jq.enable = true;
-
-    programs.ripgrep-all.enable = false;
-    programs.ripgrep.enable = true;
-
-    programs.git = {
-      enable = true;
-      settings = {
-        user = {
-          name = "ChaosTheChaotic";
-          email = "james.moriaty.ot@gmail.com";
-        };
+    programs = {
+      bat.enable = true;
+      fd = {
+        enable = true;
+        extraOptions = [
+          "--no-ignore"
+          "--absolute-path"
+        ];
+        hidden = true;
+        ignores = [ ".git/" ];
       };
-			lfs.enable = true;
-    };
-    programs.gh.enable = true;
-    programs.uv.enable = true;
-
-    programs.lazygit = {
-      enable = true;
-      enableZshIntegration = true;
-      settings = {
-        gui.theme = {
-          activeBorderColor = [
-            "#3e8fb0"
-            "bold"
-          ];
-          inactiveBorderColor = [ "#6e6a86" ];
-          searchingActiveBorderColor = [
-            "#ea9a97"
-            "bold"
-          ];
-          optionsTextColor = [ "#9ccfd8" ];
-          selectedLineBgColor = [ "#3e8fb0" ];
-          inactiveViewSelectedLineBgColor = [
-            "#393552"
-            "bold"
-          ];
-          cherryPickedCommitFgColor = [ "#2a273f" ];
-          cherryPickedCommitBgColor = [ "#ea9a97" ];
-          markedBaseCommitFgColor = [ "#9ccfd8" ];
-          markedBaseCommitBgColor = [ "#f6c177" ];
-          unstagedChangesColor = [ "#eb6f92" ];
-          defaultFgColor = [ "#e0def4" ];
-        };
-      };
-    };
-
-    programs.eza = {
-      enable = true;
-      colors = "always";
-      enableZshIntegration = true;
-      icons = "auto";
-      theme = {
-        colourful = true;
-        filekinds = {
-          normal = {
-            foreground = "#e0def4";
-          };
-          directory = {
-            foreground = "#9ccfd8";
-          };
-          symlink = {
-            foreground = "#56526e";
-          };
-          pipe = {
-            foreground = "#908caa";
-          };
-          block_device = {
-            foreground = "#ea9a97";
-          };
-          char_device = {
-            foreground = "#f6c177";
-          };
-          socket = {
-            foreground = "#2a283e";
-          };
-          special = {
-            foreground = "#c4a7e7";
-          };
-          executable = {
-            foreground = "#c4a7e7";
-          };
-          mount_point = {
-            foreground = "#44415a";
-          };
-        };
-        perms = {
-          user_read = {
-            foreground = "#908caa";
-          };
-          user_write = {
-            foreground = "#44415a";
-          };
-          user_execute_file = {
-            foreground = "#c4a7e7";
-          };
-          user_execute_other = {
-            foreground = "#c4a7e7";
-          };
-          group_read = {
-            foreground = "#908caa";
-          };
-          group_write = {
-            foreground = "#44415a";
-          };
-          group_execute = {
-            foreground = "#c4a7e7";
-          };
-          other_read = {
-            foreground = "#908caa";
-          };
-          other_write = {
-            foreground = "#44415a";
-          };
-          other_execute = {
-            foreground = "#c4a7e7";
-          };
-          special_user_file = {
-            foreground = "#c4a7e7";
-          };
-          special_other = {
-            foreground = "#44415a";
-          };
-          attribute = {
-            foreground = "#908caa";
-          };
-        };
-        size = {
-          major = {
-            foreground = "#908caa";
-          };
-          minor = {
-            foreground = "#9ccfd8";
-          };
-          number_byte = {
-            foreground = "#908caa";
-          };
-          number_kilo = {
-            foreground = "#56526e";
-          };
-          number_mega = {
-            foreground = "#3e8fb0";
-          };
-          number_giga = {
-            foreground = "#c4a7e7";
-          };
-          number_huge = {
-            foreground = "#c4a7e7";
-          };
-          unit_byte = {
-            foreground = "#908caa";
-          };
-          unit_kilo = {
-            foreground = "#3e8fb0";
-          };
-          unit_mega = {
-            foreground = "#c4a7e7";
-          };
-          unit_giga = {
-            foreground = "#c4a7e7";
-          };
-          unit_huge = {
-            foreground = "#9ccfd8";
-          };
-        };
-        users = {
-          user_you = {
-            foreground = "#f6c177";
-          };
-          user_root = {
-            foreground = "#eb6f92";
-          };
-          user_other = {
-            foreground = "#c4a7e7";
-          };
-          group_yours = {
-            foreground = "#56526e";
-          };
-          group_other = {
-            foreground = "#6e6a86";
-          };
-          group_root = {
-            foreground = "#eb6f92";
-          };
-        };
-        links = {
-          normal = {
-            foreground = "#9ccfd8";
-          };
-          multi_link_file = {
-            foreground = "#3e8fb0";
-          };
-        };
-        git = {
-          new = {
-            foreground = "#9ccfd8";
-          };
-          modified = {
-            foreground = "#f6c177";
-          };
-          deleted = {
-            foreground = "#eb6f92";
-          };
-          renamed = {
-            foreground = "#3e8fb0";
-          };
-          typechange = {
-            foreground = "#c4a7e7";
-          };
-          ignored = {
-            foreground = "#6e6a86";
-          };
-          conflicted = {
-            foreground = "#ea9a97";
-          };
-        };
-        git_repo = {
-          branch_main = {
-            foreground = "#908caa";
-          };
-          branch_other = {
-            foreground = "#c4a7e7";
-          };
-          git_clean = {
-            foreground = "#9ccfd8";
-          };
-          git_dirty = {
-            foreground = "#eb6f92";
-          };
-        };
-        security_context = {
-          colon = {
-            foreground = "#908caa";
-          };
+      aria2.enable = false;
+      jq.enable = true;
+      ripgrep-all.enable = false;
+      ripgrep.enable = true;
+      git = {
+        enable = true;
+        settings = {
           user = {
-            foreground = "#9ccfd8";
-          };
-          role = {
-            foreground = "#c4a7e7";
-          };
-          typ = {
-            foreground = "#6e6a86";
-          };
-          range = {
-            foreground = "#c4a7e7";
+            name = "ChaosTheChaotic";
+            email = "james.moriaty.ot@gmail.com";
           };
         };
-        file_type = {
-          image = {
-            foreground = "#f6c177";
-          };
-          video = {
-            foreground = "#eb6f92";
-          };
-          music = {
-            foreground = "#9ccfd8";
-          };
-          lossless = {
-            foreground = "#6e6a86";
-          };
-          crypto = {
-            foreground = "#44415a";
-          };
-          document = {
-            foreground = "#908caa";
-          };
-          compressed = {
-            foreground = "#c4a7e7";
-          };
-          temp = {
-            foreground = "#ea9a97";
-          };
-          compiled = {
-            foreground = "#3e8fb0";
-          };
-          build = {
-            foreground = "#6e6a86";
-          };
-          source = {
-            foreground = "#ea9a97";
+        lfs.enable = true;
+      };
+      gh.enable = true;
+      uv.enable = true;
+      lazygit = {
+        enable = true;
+        enableZshIntegration = true;
+        settings = {
+          gui.theme = {
+            activeBorderColor = [
+              "#3e8fb0"
+              "bold"
+            ];
+            inactiveBorderColor = [ "#6e6a86" ];
+            searchingActiveBorderColor = [
+              "#ea9a97"
+              "bold"
+            ];
+            optionsTextColor = [ "#9ccfd8" ];
+            selectedLineBgColor = [ "#3e8fb0" ];
+            inactiveViewSelectedLineBgColor = [
+              "#393552"
+              "bold"
+            ];
+            cherryPickedCommitFgColor = [ "#2a273f" ];
+            cherryPickedCommitBgColor = [ "#ea9a97" ];
+            markedBaseCommitFgColor = [ "#9ccfd8" ];
+            markedBaseCommitBgColor = [ "#f6c177" ];
+            unstagedChangesColor = [ "#eb6f92" ];
+            defaultFgColor = [ "#e0def4" ];
           };
         };
-        punctuation = {
-          foreground = "#56526e";
-        };
-        date = {
-          foreground = "#3e8fb0";
-        };
-        inode = {
-          foreground = "#908caa";
-        };
-        blocks = {
-          foreground = "#9399B2";
-        };
-        header = {
-          foreground = "#908caa";
-        };
-        octal = {
-          foreground = "#9ccfd8";
-        };
-        flags = {
-          foreground = "#c4a7e7";
-        };
-        symlink_path = {
-          foreground = "#9ccfd8";
-        };
-        control_char = {
-          foreground = "#3e8fb0";
-        };
-        broken_symlink = {
-          foreground = "#eb6f92";
-        };
-        broken_path_overlay = {
-          foreground = "#56526e";
+      };
+      eza = {
+        enable = true;
+        colors = "always";
+        enableZshIntegration = true;
+        icons = "auto";
+        theme = {
+          colourful = true;
+          filekinds = {
+            normal.foreground = "#e0def4";
+            directory.foreground = "#9ccfd8";
+            symlink.foreground = "#56526e";
+            pipe.foreground = "#908caa";
+            block_device.foreground = "#ea9a97";
+            char_device.foreground = "#f6c177";
+            socket.foreground = "#2a283e";
+            special.foreground = "#c4a7e7";
+            executable.foreground = "#c4a7e7";
+            mount_point.foreground = "#44415a";
+          };
+          perms = {
+            user_read.foreground = "#908caa";
+            user_write.foreground = "#44415a";
+            user_execute_file.foreground = "#c4a7e7";
+            user_execute_other.foreground = "#c4a7e7";
+            group_read.foreground = "#908caa";
+            group_write.foreground = "#44415a";
+            group_execute.foreground = "#c4a7e7";
+            other_read.foreground = "#908caa";
+            other_write.foreground = "#44415a";
+            other_execute.foreground = "#c4a7e7";
+            special_user_file.foreground = "#c4a7e7";
+            special_other.foreground = "#44415a";
+            attribute.foreground = "#908caa";
+          };
+          size = {
+            major.foreground = "#908caa";
+            minor.foreground = "#9ccfd8";
+            number_byte.foreground = "#908caa";
+            number_kilo.foreground = "#56526e";
+            number_mega.foreground = "#3e8fb0";
+            number_giga.foreground = "#c4a7e7";
+            number_huge.foreground = "#c4a7e7";
+            unit_byte.foreground = "#908caa";
+            unit_kilo.foreground = "#3e8fb0";
+            unit_mega.foreground = "#c4a7e7";
+            unit_giga.foreground = "#c4a7e7";
+            unit_huge.foreground = "#9ccfd8";
+          };
+          users = {
+            user_you.foreground = "#f6c177";
+            user_root.foreground = "#eb6f92";
+            user_other.foreground = "#c4a7e7";
+            group_yours.foreground = "#56526e";
+            group_other.foreground = "#6e6a86";
+            group_root.foreground = "#eb6f92";
+          };
+          links = {
+            normal.foreground = "#9ccfd8";
+            multi_link_file.foreground = "#3e8fb0";
+          };
+          git = {
+            new.foreground = "#9ccfd8";
+            modified.foreground = "#f6c177";
+            deleted.foreground = "#eb6f92";
+            renamed.foreground = "#3e8fb0";
+            typechange.foreground = "#c4a7e7";
+            ignored.foreground = "#6e6a86";
+            conflicted.foreground = "#ea9a97";
+          };
+          git_repo = {
+            branch_main.foreground = "#908caa";
+            branch_other.foreground = "#c4a7e7";
+            git_clean.foreground = "#9ccfd8";
+            git_dirty.foreground = "#eb6f92";
+          };
+          security_context = {
+            colon.foreground = "#908caa";
+            user.foreground = "#9ccfd8";
+            role.foreground = "#c4a7e7";
+            typ.foreground = "#6e6a86";
+            range.foreground = "#c4a7e7";
+          };
+          file_type = {
+            image.foreground = "#f6c177";
+            video.foreground = "#eb6f92";
+            music.foreground = "#9ccfd8";
+            lossless.foreground = "#6e6a86";
+            crypto.foreground = "#44415a";
+            document.foreground = "#908caa";
+            compressed.foreground = "#c4a7e7";
+            temp.foreground = "#ea9a97";
+            compiled.foreground = "#3e8fb0";
+            build.foreground = "#6e6a86";
+            source.foreground = "#ea9a97";
+          };
+          punctuation.foreground = "#56526e";
+          date.foreground = "#3e8fb0";
+          inode.foreground = "#908caa";
+          blocks.foreground = "#9399B2";
+          header.foreground = "#908caa";
+          octal.foreground = "#9ccfd8";
+          flags.foreground = "#c4a7e7";
+          symlink_path.foreground = "#9ccfd8";
+          control_char.foreground = "#3e8fb0";
+          broken_symlink.foreground = "#eb6f92";
+          broken_path_overlay.foreground = "#56526e";
         };
       };
     };
-
-    programs.btop = {
+    btop = {
       enable = true;
       settings = {
         color_theme = "rose-pine";

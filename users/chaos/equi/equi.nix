@@ -167,9 +167,7 @@
         questify = {
           enable = true;
           questButtonBadgeCount = 11;
-          acknowledgedNotices = {
-            quest-ban-warning-2026-08-07 = true;
-          };
+          acknowledgedNotices.quest-ban-warning-2026-08-07 = true;
         };
         quoter.enable = true;
         reactErrorDecoder.enable = true;
@@ -227,9 +225,7 @@
           sentOutput = "de";
         };
         translatePlus.enable = true;
-        triviaAi = {
-          systemPrompt = "You are a helpful assistant who answers questions for the user in a concise and short way while using the least amount of words and punctuation.";
-        };
+        triviaAi.systemPrompt = "You are a helpful assistant who answers questions for the user in a concise and short way while using the least amount of words and punctuation.";
         typingIndicator.enable = true;
         typingTweaks = {
           enable = true;
@@ -285,9 +281,7 @@
         customLinks = "";
         customVideoIds = "";
       };
-      betterAudioPlayer = {
-        forceMoveBelow = true;
-      };
+      betterAudioPlayer.forceMoveBelow = true;
       betterFolders = {
         nestedFolders = { };
         enableNestedFolders = true;
@@ -302,11 +296,7 @@
         showReplyPreview = 1;
         highlightNewMessages = false;
         maxReactionCount = 3;
-        tagOverrides = {
-          archived = {
-            disabled = false;
-          };
-        };
+        tagOverrides.archived.disabled = false;
         maxMediaCount = 3;
         mediaSize = 72;
       };
@@ -329,9 +319,7 @@
         autoFormat = "No";
         catboxUserHash = "";
       };
-      characterCounter = {
-        position = false;
-      };
+      characterCounter.position = false;
       ChineseWhispers = {
         intensity = 108;
         shuffle = true;
@@ -382,18 +370,14 @@
         Open = false;
         ExcludedButtons = "submit;";
       };
-      collapsibleUi = {
-        transitionMs = 160;
-      };
+      collapsibleUi.transitionMs = 160;
       commandPalette = {
         allowMouseControl = true;
         visualStyle = "classic";
         showTags = true;
         enableTagFilter = true;
       };
-      declutter = {
-        removeUsernameStyles = true;
-      };
+      declutter.removeUsernameStyles = true;
       Demonstration = {
         enable = true;
         keyBind = "F6";
@@ -424,9 +408,7 @@
         enable = true;
         searchOption = "hostandpath";
       };
-      fileUpload = {
-        interceptDiscordUpload = false;
-      };
+      fileUpload.interceptDiscordUpload = false;
       gitHubRepos = {
         showRepositoryTab = true;
         showInMiniProfile = true;
@@ -462,12 +444,8 @@
         backspaceClickAction = "delete";
         keySelection = "backspace";
       };
-      messageLoggerEnhanced = {
-        autoCheckForUpdates = true;
-      };
-      quoter = {
-        userIdentifier = 0;
-      };
+      messageLoggerEnhanced.autoCheckForUpdates = true;
+      quoter.userIdentifier = 0;
       RandomGary = {
         enable = true;
         randomGaryImageSource = "gary";
@@ -482,17 +460,13 @@
         enable = true;
         remindInterval = 60;
       };
-      Search = {
-        customSearchEngine = "example.com";
-      };
+      Search.customSearchEngine = "example.com";
       "Sekai Stickers" = {
         enable = true;
         checkForUpdateOnStartUp = true;
         AutoCloseModal = true;
       };
-      SentFromMyUname = {
-        signatureToUse = "uname";
-      };
+      SentFromMyUname.signatureToUse = "uname";
       showMeYourName = {
         ignoreEffects = true;
         animateEffects = false;
@@ -502,9 +476,7 @@
         showNearbyConnectionStatus = false;
         showUnderConnectionIcon = true;
       };
-      sidebarChat = {
-        patchCommunity = true;
-      };
+      sidebarChat.patchCommunity = true;
       silentTyping = {
         specificChats = false;
         disabledFor = "";
@@ -543,15 +515,9 @@
         showMessageHeaderTime = true;
         showProfileTime = true;
       };
-      translate = {
-        showChatBarButton = true;
-      };
-      triviaAi = {
-        autoRespond = false;
-      };
-      unreadCountBadge = {
-        replaceWhiteDot = false;
-      };
+      translate.showChatBarButton = true;
+      triviaAi.autoRespond = false;
+      unreadCountBadge.replaceWhiteDot = false;
       voiceChannelLog = {
         voiceChannelChatSelf = true;
         voiceChannelChatSilent = true;
