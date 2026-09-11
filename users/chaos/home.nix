@@ -64,12 +64,10 @@ in
       homeDirectory = "/home/chaos";
       stateVersion = "25.11";
       file = {
-        file = {
-          ".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
-          ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
-          ".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
-          ".config/quickshell".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
-        };
+        ".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
+        ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
+        ".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
+        ".config/quickshell".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
       };
       packages = with pkgs; [
         # Development
