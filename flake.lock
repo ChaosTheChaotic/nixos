@@ -261,11 +261,11 @@
     "HandyBalatro": {
       "flake": false,
       "locked": {
-        "lastModified": 1789071633,
-        "narHash": "sha256-rJIuu88g3GkKJrIoNAG0XljMZsQK76BJcueN3TtdN1s=",
+        "lastModified": 1789223149,
+        "narHash": "sha256-NFmKGb/69Ols/SaED1whJN4XPtoGQ4dz3Y5END1X2h0=",
         "owner": "SleepyG11",
         "repo": "HandyBalatro",
-        "rev": "94c273ba96385eef9a518add12336240fd7ad4aa",
+        "rev": "13372172ccd83627f362509cf5a5698a438da2c8",
         "type": "github"
       },
       "original": {
@@ -506,11 +506,11 @@
     "ani-cli": {
       "flake": false,
       "locked": {
-        "lastModified": 1788616733,
-        "narHash": "sha256-H//rbOiJGss0tmpHiJvV1DjGs3hK1KOzisbU93kUvjY=",
+        "lastModified": 1789154350,
+        "narHash": "sha256-4KpOvtNTrHNYJtyCydnuhSvb+q/S93znkHPU5kvvMvo=",
         "owner": "pystardust",
         "repo": "ani-cli",
-        "rev": "a6e178bc5eff3538ca5ffe39f6d1459eeecaa7f1",
+        "rev": "140f0d7689cccbf3a3c35a575ba51dd47dbe1626",
         "type": "github"
       },
       "original": {
@@ -1111,11 +1111,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789136855,
-        "narHash": "sha256-82D7ADWE8erhfALj3dqxAOeQaoa+Bwlsdcp9v2m/ExM=",
+        "lastModified": 1789230132,
+        "narHash": "sha256-u7aiV01Iu11NGOjXbxoCCrew6n0vo/LnULqOvZa+Agc=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "d0fd95e15e0c3baf565a9fd4bc352321e2564ea3",
+        "rev": "17bf375751d457efa3897c7c3d68106616b1d469",
         "type": "github"
       },
       "original": {
@@ -1208,11 +1208,11 @@
       },
       "locked": {
         "dir": "packages/nix",
-        "lastModified": 1788565178,
-        "narHash": "sha256-bjItIyGxVAUqaSpr2tdN/YTd8BP2DY+wAmun136LrZs=",
+        "lastModified": 1789165954,
+        "narHash": "sha256-PBo8Zm930l/ousmuDNiJE/M379/p5eOudScsdLwGGCw=",
         "owner": "SteamClientHomebrew",
         "repo": "Millennium",
-        "rev": "5cbebb86628767f365de987c451a2839afe153bc",
+        "rev": "e9f2c607c730d37a5284bf247c01b559f2a4e304",
         "type": "github"
       },
       "original": {
@@ -1372,11 +1372,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1789115297,
-        "narHash": "sha256-Oa+iNm4QccTh+ytbs2N9EHTNZ5nDI5Baf7fIfxbLH50=",
+        "lastModified": 1789204800,
+        "narHash": "sha256-7U8PDAm7XsUE5tKqToLW1vFUnrf3RPu/VAwqFeaPE+Q=",
         "owner": "4evy",
         "repo": "nixcord",
-        "rev": "d19bed0c9ad52678cdd1e0fd6fa2f21d6abab374",
+        "rev": "bcd64126461f68e4107c64761dd6e5310d800d18",
         "type": "github"
       },
       "original": {
@@ -1438,11 +1438,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1789138075,
-        "narHash": "sha256-imAxQCAYT2fGfozvA3t0ABlz73tJb+dpKwLyO/NER1Y=",
+        "lastModified": 1789232673,
+        "narHash": "sha256-6y0u7zC2sq+xwgmQde68Q5+MYAndOcKtn4otjiMClOc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "885a544236f1e99d00765862a692f5765c716415",
+        "rev": "ce86e226c1dfd62f806d0635266f259a515b38fd",
         "type": "github"
       },
       "original": {
@@ -1658,11 +1658,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789137242,
-        "narHash": "sha256-jm/p362QX3nm4LkxJHAhyFhJf9VHtbLNzYlp+7QBPXk=",
+        "lastModified": 1789232459,
+        "narHash": "sha256-ulb2ZIHwfcazehzd9qS11ahnNQ8QCTp6xOhtfM3towk=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "080e99d47944e519c5fe2c549ad5b1f4b063986a",
+        "rev": "921204ac99e6972ce7889797a623f88b2134354f",
         "type": "github"
       },
       "original": {
@@ -1757,11 +1757,11 @@
     "smods": {
       "flake": false,
       "locked": {
-        "lastModified": 1789081843,
-        "narHash": "sha256-XmFvpmrEdmn9oCMMLymObwiD5Ny2SJfLLI/uSU1IdYo=",
+        "lastModified": 1789164159,
+        "narHash": "sha256-6Vd2copB5fxHXrRzDZa6fTQccg78vGyjZH+jZJ5sVVM=",
         "owner": "Steamodded",
         "repo": "smods",
-        "rev": "9133d7b8e99ccc24cab94a6e5428b2958acd8f13",
+        "rev": "6fbbceda5035b8a3ed7a2ec9b7188e8ccb9762e5",
         "type": "github"
       },
       "original": {
@@ -2034,11 +2034,11 @@
     "tree-sitter-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1788909917,
-        "narHash": "sha256-1kxg4AshErQan4q7uM8T1Nu+bPw/a2CQQc3Tf7wHSPM=",
+        "lastModified": 1789166374,
+        "narHash": "sha256-n6f+qbZ6f8azDJi8R4h0TzRtkEr2LRGQhhrowtSDPLQ=",
         "owner": "tree-sitter",
         "repo": "tree-sitter",
-        "rev": "de98c6c970f4c5d3a725ee48199c478090d614af",
+        "rev": "b2cf42f7ef45bbcbd527a4ea8ffdb9cc7b2b3500",
         "type": "github"
       },
       "original": {
