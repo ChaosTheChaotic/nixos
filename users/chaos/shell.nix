@@ -16,10 +16,7 @@
           with pkgs;
           lib.makeSearchPath "lib/girepository-1.0" [
             networkmanager
-            gtk4
             graphene
-            gtksourceview5
-            gtk4-layer-shell
             libsoup_3
           ];
         LD_LIBRARY_PATH =

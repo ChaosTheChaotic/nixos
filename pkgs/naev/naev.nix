@@ -11,6 +11,7 @@
   dav1d,
   opus,
   libgit2,
+  libssh2,
   libzip,
   enet,
   freetype,
@@ -38,7 +39,7 @@
   rust-bindgen,
   openssl,
   naevSrc ? null,
-	scalefactorPatch ? false,
+  scalefactorPatch ? false,
 }:
 
 let
@@ -75,6 +76,9 @@ stdenv.mkDerivation (finalAttrs: {
   CARGO = "${cargo}/bin/cargo";
   CARGO_NET_OFFLINE = "true";
   OPENSSL_NO_VENDOR = "1";
+  LIBSSH2_SYS_USE_PKG_CONFIG = "1";
+  LIBGIT2_NO_VENDOR = "1";
+  LIBGIT2_SYS_USE_PKG_CONFIG = "1";
 
   cargoDeps = cargoDeps;
 
@@ -96,6 +100,7 @@ stdenv.mkDerivation (finalAttrs: {
     dav1d
     opus
     libgit2
+    libssh2
     libzip
     enet
     freetype
@@ -146,30 +151,31 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   postPatch = ''
-    patchShebangs .
+        patchShebangs .
 
-    mkdir -p subprojects
-    cp -r ${lyaml} subprojects/lyaml-6.2.8
-    chmod -R +w subprojects/lyaml-6.2.8
-    cp -r subprojects/packagefiles/lyaml/* subprojects/lyaml-6.2.8 2>/dev/null || true
+        mkdir -p subprojects
+        cp -r ${lyaml} subprojects/lyaml-6.2.8
+        chmod -R +w subprojects/lyaml-6.2.8
+        cp -r subprojects/packagefiles/lyaml/* subprojects/lyaml-6.2.8 2>/dev/null || true
 
-    cp -r ${nativefiledialog-extended} subprojects/nativefiledialog-extended-1.2.1
-    chmod -R +w subprojects/nativefiledialog-extended-1.2.1
-    tmp=$(mktemp -d)
-    unzip ${nativefiledialog-extended-patch} -d $tmp
-    cp -r $tmp/*/* subprojects/nativefiledialog-extended-1.2.1
-	'' + lib.optionalString scalefactorPatch ''
-		sed -i '/window_addFader/ {
-		  :loop
-		  /)[[:space:]]*;/! {
-		    N
-		    b loop
-		  }
-		  /conf\.scalefactor/ {
-		    s/log[[:space:]]*([[:space:]]*1\.[[:space:]]*)/log( 0.1 )/g
-		    s/log[[:space:]]*([[:space:]]*3\.[[:space:]]*)/log( 5.0 )/g
-		  }
-		}' src/options.c
+        cp -r ${nativefiledialog-extended} subprojects/nativefiledialog-extended-1.2.1
+        chmod -R +w subprojects/nativefiledialog-extended-1.2.1
+        tmp=$(mktemp -d)
+        unzip ${nativefiledialog-extended-patch} -d $tmp
+        cp -r $tmp/*/* subprojects/nativefiledialog-extended-1.2.1
+    	''
+  + lib.optionalString scalefactorPatch ''
+    		sed -i '/window_addFader/ {
+    		  :loop
+    		  /)[[:space:]]*;/! {
+    		    N
+    		    b loop
+    		  }
+    		  /conf\.scalefactor/ {
+    		    s/log[[:space:]]*([[:space:]]*1\.[[:space:]]*)/log( 0.1 )/g
+    		    s/log[[:space:]]*([[:space:]]*3\.[[:space:]]*)/log( 5.0 )/g
+    		  }
+    		}' src/options.c
   '';
 
   postConfigure = ''

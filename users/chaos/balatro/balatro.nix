@@ -31,7 +31,7 @@
         };
 
         cargoLock = {
-          lockFile = "${inputs.lovely-injector}/Cargo.lock";
+          lockFile = "${src}/Cargo.lock";
           outputHashes."retour-0.4.0-alpha.2" = "sha256-GtLTjErXJIYXQaOFLfMgXb8N+oyHNXGTBD0UeyvbjrA=";
         };
 

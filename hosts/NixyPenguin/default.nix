@@ -1,7 +1,10 @@
 {
   config,
   pkgs,
+  lib,
+  inputs,
   wgHelper,
+  nixpkgs-pinned-kernel,
   ...
 }:
 
@@ -10,6 +13,19 @@
     ./hardware-configuration.nix
     ../common.nix
   ];
+
+  boot.kernelPackages = lib.mkForce (
+    let
+      pinnedPkgs = import nixpkgs-pinned-kernel {
+        system = "aarch64-linux";
+        config.allowUnfree = true;
+        overlays = [
+          inputs.nixos-apple-silicon.overlays.apple-silicon-overlay
+        ];
+      };
+    in
+    pinnedPkgs.linux-asahi
+  );
 
   environment.systemPackages = with pkgs; [
     asahi-bless
