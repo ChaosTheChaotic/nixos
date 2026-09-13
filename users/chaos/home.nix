@@ -34,6 +34,7 @@ in
     ./cli.nix
     ./gui.nix
     ./rmpc.nix
+    ./music-rename.nix
     ./equi/equi.nix
     ./balatro/balatro.nix
   ];
