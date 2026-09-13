@@ -23,28 +23,29 @@ let
     mkdir -p "$MUSIC_DIR"
 
     # Check for files that finish writing or are moved into the directory
-    ${pkgs.inotify-tools}/bin/inotifywait -m "$MUSIC_DIR" -e close_write -e moved_to -e create --format '%w%f' |
-    	while read -r FILE; do
-    	  if [ ! -f "$FILE" ]; then continue; fi
+    ${pkgs.inotify-tools}/bin/inotifywait -m "$MUSIC_DIR" -e close_write -e moved_to -e create --format '%w%f' &
+    INOTIFY_PID=$!
+    while read -r FILE; do
+      if [ ! -f "$FILE" ]; then continue; fi
 
-    	  # Extract metadata
-    	  TITLE=$(get_music_tag "title" "$FILE")
-    	  ARTIST=$(get_music_tag "artist" "$FILE")
+      # Extract metadata
+      TITLE=$(get_music_tag "title" "$FILE")
+      ARTIST=$(get_music_tag "artist" "$FILE")
 
-    		# Dont attempt rename if we dont have both
-    	  if [ -n "$TITLE" ] && [ -n "$ARTIST" ]; then
-    	      TITLE=$(sanitize_str "$TITLE")
-    	      ARTIST=$(sanitize_str "$ARTIST")
+    	# Dont attempt rename if we dont have both
+      if [ -n "$TITLE" ] && [ -n "$ARTIST" ]; then
+          TITLE=$(sanitize_str "$TITLE")
+          ARTIST=$(sanitize_str "$ARTIST")
 
-    	      DIR=$(dirname "$FILE")
-    	      EXT="''${FILE##*.}"
-    	      NEW_NAME="''${DIR}/''${TITLE}_''${ARTIST}.''${EXT}"
+          DIR=$(dirname "$FILE")
+          EXT="''${FILE##*.}"
+          NEW_NAME="''${DIR}/''${TITLE}_''${ARTIST}.''${EXT}"
 
-    	      if [ "$FILE" != "$NEW_NAME" ]; then
-    	          mv -n "$FILE" "$NEW_NAME"
-    	      fi
-    	  fi
-    	done
+          if [ "$FILE" != "$NEW_NAME" ]; then
+              mv -n "$FILE" "$NEW_NAME"
+          fi
+      fi
+    done < <(wait $INOTIFY_PID)
   '';
 in
 {
