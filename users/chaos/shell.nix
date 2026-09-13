@@ -45,7 +45,7 @@
         enable = true;
         shellAliases = {
           lla = "eza -al";
-          lt = "eza -alT";
+          lt = "eza -alT --ignore-glob=\".gradle|buildSrc|.git|node_modules|build|dist|target|.cache|.direnv|.zig-cache|.tx_cache|zig-out|zig-pkg\"";
           cp = "cp -rv";
           mv = "mv -v";
           img = "kitty icat";
