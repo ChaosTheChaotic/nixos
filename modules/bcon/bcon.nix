@@ -17,18 +17,23 @@
   freetype,
   libgbm,
   libglvnd,
+  bconSrc ? null,
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "bcon";
   version = "1.4.0";
 
-  src = fetchFromGitHub {
-    owner = "sanohiro";
-    repo = "bcon";
-    rev = "v${version}";
-    hash = "sha256-Mv/FEFUYVPDk1h4P2s6a0s9ioGakzOxERJCk+vQcYr8=";
-  };
+  src =
+    if bconSrc != null then
+      bconSrc
+    else
+      fetchFromGitHub {
+        owner = "sanohiro";
+        repo = "bcon";
+        rev = "v${version}";
+        hash = "sha256-Mv/FEFUYVPDk1h4P2s6a0s9ioGakzOxERJCk+vQcYr8=";
+      };
 
   cargoLock = {
     lockFile = "${src}/Cargo.lock";

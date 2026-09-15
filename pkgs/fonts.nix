@@ -23,6 +23,5 @@ stdenvNoCC.mkDerivation {
     description = "Extra fonts";
     homepage = "";
     platforms = platforms.all;
-    maintainers = with maintainers; [ ];
   };
 }

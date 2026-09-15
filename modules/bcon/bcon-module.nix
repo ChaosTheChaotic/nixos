@@ -1,11 +1,12 @@
 {
   pkgs,
   lib,
+  bconSrc ? null,
   ...
 }:
 
 let
-  bcon = pkgs.callPackage ./bcon.nix { };
+  bcon = pkgs.callPackage ./bcon.nix { bconSrc = bconSrc; };
 
   bconTty = "tty2";
 

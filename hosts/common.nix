@@ -15,7 +15,13 @@ let
 in
 {
 
-	imports = [ ../modules/bcon/bcon-module.nix ];
+  imports = [
+    ../modules/bcon/bcon-module.nix
+  ];
+
+  _module.args = {
+    bconSrc = inputs.bcon;
+  };
 
   environment = {
     systemPackages = with pkgs; [

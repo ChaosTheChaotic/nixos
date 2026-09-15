@@ -43,6 +43,10 @@
       url = "github:sm-idk/steam-asahi";
       inputs.nixpkgs.follows = "nixpkgs-master";
     };
+    bcon = {
+      url = "github:sanohiro/bcon";
+      flake = false;
+    };
     equi.url = "path:./users/chaos/equi/plugins";
     balatro.url = "path:./users/chaos/balatro";
   };

@@ -587,6 +587,22 @@
         "type": "github"
       }
     },
+    "bcon": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1778148051,
+        "narHash": "sha256-Mv/FEFUYVPDk1h4P2s6a0s9ioGakzOxERJCk+vQcYr8=",
+        "owner": "sanohiro",
+        "repo": "bcon",
+        "rev": "514b01a8845aeb85c73d2fcb075b7ddad6fa13b7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sanohiro",
+        "repo": "bcon",
+        "type": "github"
+      }
+    },
     "clientsidebadges": {
       "flake": false,
       "locked": {
@@ -1440,11 +1456,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1789494247,
-        "narHash": "sha256-7PDYbOx4msreDcGWmm3ZyKP+yVIIGbnBhD1PO0RsyU0=",
+        "lastModified": 1789494694,
+        "narHash": "sha256-GqjXMGcd/EI8k3UlToGMJZbBCTJGg+Fp0zDqY3WokQQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "4dc9cfbcc7e8a6994734fbd131e3db04a1130697",
+        "rev": "7ec9d15cdfbec03374270a3bad7ebfd5f0ad37c5",
         "type": "github"
       },
       "original": {
@@ -1676,11 +1692,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789493071,
-        "narHash": "sha256-nKzK7OMDI0T7o0WBxF7G2IwglpbnfQWgZRxjwhe2FmU=",
+        "lastModified": 1789495410,
+        "narHash": "sha256-I9ZLeQ4dfSAiXtHoMR5I06RrZkEzZdAJUipB5fth0ew=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "cb0d6d39731011add48022bc9e1d418bda472626",
+        "rev": "64ac88e5dc59cd42a4a121574f33f9635d07fa68",
         "type": "github"
       },
       "original": {
@@ -1710,6 +1726,7 @@
         "agenix": "agenix",
         "ani-cli": "ani-cli",
         "balatro": "balatro",
+        "bcon": "bcon",
         "clogite": "clogite",
         "equi": "equi",
         "f-sy-h": "f-sy-h",
@@ -2130,11 +2147,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1789437980,
-        "narHash": "sha256-+TtZ/HSbXcm3nEaI26W7O+t0PYZh8gs9KqaDPDHEO4g=",
+        "lastModified": 1789495994,
+        "narHash": "sha256-bT4q4vm78Jp9ZukNEkgKhX5UAOt77z1PrcqosBhhiPs=",
         "owner": "vicinaehq",
         "repo": "vicinae",
-        "rev": "5f52811a71b3c853813865e0921c8d9e272097da",
+        "rev": "886e74a0bfe4b6405c98b513ba96ce5c0c1524aa",
         "type": "github"
       },
       "original": {
