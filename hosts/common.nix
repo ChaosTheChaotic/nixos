@@ -15,6 +15,8 @@ let
 in
 {
 
+	imports = [ ../modules/bcon/bcon-module.nix ];
+
   environment = {
     systemPackages = with pkgs; [
       customPkgs.scripts

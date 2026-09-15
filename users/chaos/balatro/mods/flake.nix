@@ -103,7 +103,7 @@
     };
 
     JokerDisplay = {
-      url = "github:nh6574/JokerDisplay";
+      url = "github:nh6574/JokerDisplay/stable";
       flake = false;
     };
 
