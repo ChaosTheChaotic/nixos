@@ -19,6 +19,14 @@ in
 {
   environment.systemPackages = [ bcon ];
 
+  environment.etc."wireplumber/wireplumber.conf.d/51-disable-bluez-seat-monitoring.conf".text = ''
+    wireplumber.profiles = {
+      main = {
+        monitor.bluez.seat-monitoring = disabled
+      }
+    }
+  '';
+
   # bcon needs GPU/EGL access
   hardware.graphics.enable = true;
 
