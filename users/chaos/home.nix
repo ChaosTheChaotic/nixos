@@ -138,6 +138,7 @@ in
         git-filter-repo
         nix-prefetch-github
         shellcheck
+        nix-output-monitor
 
         # Custom Inputs
         (inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
