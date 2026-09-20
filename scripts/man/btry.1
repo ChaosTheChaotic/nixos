@@ -31,24 +31,27 @@ format. If the data is unavailable or zero, it returns
 .SH FILES
 The script reads data from the following sysfs paths:
 .TP
-.I /sys/class/power_supply/macsmc-battery/capacity
+.I /sys/class/power_supply/$BTRY_DEV/capacity
 Current battery charge percentage.
 .TP
-.I /sys/class/power_supply/macsmc-battery/status
+.I /sys/class/power_supply/$BTRY_DEV/status
 Current charging state.
 .TP
-.I /sys/class/power_supply/macsmc-battery/time_to_empty_now
+.I /sys/class/power_supply/$BTRY_DEV/time_to_empty_now
 Raw seconds remaining until the battery is depleted.
 .TP
-.I /sys/class/power_supply/macsmc-battery/time_to_full_now
+.I /sys/class/power_supply/$BTRY_DEV/time_to_full_now
 Raw seconds remaining until the battery is fully charged.
 .SH NOTES
-This script is specifically configured for systems using the 
+This script is uses the device name configured for systems using the 
 .B macsmc-battery 
-driver (common on Linux on Apple Silicon). It may require modification 
+driver by default(made for Linux on Apple Silicon). It may require modification 
 to work with standard 
 .B BAT0 
 interfaces.
+This can be changed by setting the
+.B BTRY_DEV
+environment variable.
 .SH SEE ALSO
 .MR printf 1 ,
 .MR bash 1
