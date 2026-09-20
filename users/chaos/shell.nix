@@ -51,7 +51,7 @@
           img = "kitty icat";
           lg = "lazygit";
           prismlauncher = "prismlauncher -d ${config.dotfiles}/PrismLauncher";
-          rb = "(sudo systemd-inhibit --what=handle-lid-switch --why=\"NixOS rebuild\" nixos-rebuild switch --flake /etc/nixos) |& nom";
+          rb = "systemd-inhibit --what=handle-lid-switch --why=\"NixOS rebuild\" nixos-rebuild switch --log-format internal-json --elevate=sudo --flake /etc/nixos |& nom --json";
           scrcpy = "scrcpy --render-driver=opengl";
         };
         sessionVariables = {
