@@ -7,7 +7,7 @@ source "$UTIL_SCRIPT_DIR/nums.sh"
 TARGET="/sys/class/leds/kbd_backlight/brightness"
 
 if [[ ! -e "$TARGET" ]]; then
-  fatal "Target file $TARGET does not exist" "1"
+  fatal "Target file $TARGET does not exist, perhaps no keyboard backlight exists?" "1"
 fi
 
 # Display brightness on no arg
