@@ -12,9 +12,25 @@
     ../common.nix
   ];
 
-  environment.sessionVariables = {
-    BTRY_DEV = "BAT1";
+  environment = {
+    systemPackages = with pkgs; [
+      age
+      age-plugin-tpm
+    ];
+
+    sessionVariables = {
+      BTRY_DEV = "BAT1";
+    };
   };
+
+  age.identityPaths = [
+    "${./Nixpad-tpm.key}"
+  ];
+
+  age.ageBin = "${pkgs.writeShellScriptBin "age-tpm" ''
+    export PATH="${pkgs.age-plugin-tpm}/bin:$PATH"
+    exec ${pkgs.age}/bin/age "$@"
+  ''}/bin/age-tpm";
 
   nixpkgs.overlays = [
     inputs.millennium.overlays.default
