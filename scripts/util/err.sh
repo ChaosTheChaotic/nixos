@@ -31,12 +31,12 @@ function fatal() {
 
 function warn() {
   local msg="$1"
-  printf "${Yellow}[WARN]: %s${Reset}" "$msg"
+  printf "${Yellow}[WARN]: %s${Reset}\n" "$msg"
   if $HAS_NOTIFY_SEND; then
     notify-send --urgency=normal "[WARN]" "$msg"
   fi
 }
 
 function info() {
-  printf "[INFO]: %s" "$1"
+  printf "[INFO]: %s\n" "$1"
 }
