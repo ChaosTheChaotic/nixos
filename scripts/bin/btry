@@ -15,10 +15,12 @@ fmt_s() {
   printf "%d:%02d:%02d" $h $m $s
 }
 
-CAPACITY_FILE="/sys/class/power_supply/macsmc-battery/capacity"
-STATUS_FILE="/sys/class/power_supply/macsmc-battery/status"
-TTE_FILE="/sys/class/power_supply/macsmc-battery/time_to_empty_now"
-TTF_FILE="/sys/class/power_supply/macsmc-battery/time_to_full_now"
+: "${BTRY_DEV:="macsmc-battery"}"
+
+CAPACITY_FILE="/sys/class/power_supply/$BTRY_DEV/capacity"
+STATUS_FILE="/sys/class/power_supply/$BTRY_DEV/status"
+TTE_FILE="/sys/class/power_supply/$BTRY_DEV/time_to_empty_now"
+TTF_FILE="/sys/class/power_supply/$BTRY_DEV/time_to_full_now"
 
 # Check if required files exist and are readable
 if [[ ! -r "$CAPACITY_FILE" ]]; then

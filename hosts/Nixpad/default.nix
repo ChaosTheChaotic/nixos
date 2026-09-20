@@ -12,6 +12,10 @@
     ../common.nix
   ];
 
+  environment.sessionVariables = {
+    BTRY_DEV = "BAT1";
+  };
+
   nixpkgs.overlays = [
     inputs.millennium.overlays.default
   ];

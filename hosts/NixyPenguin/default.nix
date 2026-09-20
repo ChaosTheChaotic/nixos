@@ -27,23 +27,29 @@
     pinnedPkgs.linux-asahi
   );
 
-  environment.systemPackages = with pkgs; [
-    asahi-bless
-    asahi-btsync
-    asahi-wifisync
-    (muvm.override {
-      fex = (
-        pkgs.fex.overrideAttrs (oldAttrs: {
-          nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [
-            pkgs.python3Packages.packaging
-            pkgs.python3Packages.setuptools
-          ];
-        })
-      );
-    })
-    (callPackage ../../pkgs/naev/naev.nix { scalefactorPatch = true; })
-    #nvimpager
-  ];
+  environment = {
+    systemPackages = with pkgs; [
+      asahi-bless
+      asahi-btsync
+      asahi-wifisync
+      (muvm.override {
+        fex = (
+          pkgs.fex.overrideAttrs (oldAttrs: {
+            nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [
+              pkgs.python3Packages.packaging
+              pkgs.python3Packages.setuptools
+            ];
+          })
+        );
+      })
+      (callPackage ../../pkgs/naev/naev.nix { scalefactorPatch = true; })
+      #nvimpager
+    ];
+
+    sessionVariables = {
+      BTRY_DEV = "macsmc-battery";
+    };
+  };
 
   programs.steam-asahi = {
     enable = true;
