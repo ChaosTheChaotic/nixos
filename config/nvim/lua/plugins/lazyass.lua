@@ -433,6 +433,7 @@ return {
 				"typescript",
 				"javascript",
 				"json",
+				"ron",
 				"yaml",
 				"csv",
 				"html",
