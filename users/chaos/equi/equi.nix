@@ -211,7 +211,6 @@
         spotifyCrack.enable = true;
         startupTimings.enable = true;
         stopAutoUnread.enable = true;
-        summaries.enable = true;
         supportHelper.enable = true;
         talkInReverse.enable = true;
         tenorGifSearch.enable = true;
