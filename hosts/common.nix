@@ -64,6 +64,7 @@ in
       ];
     }
     // import ../modules/consts.nix { homeDir = config.users.users.chaos.home; };
+
     etc."xdg/xdg-desktop-portal-termfilechooser/config".text = ''
       [filechooser]
       cmd = ${customPkgs.scripts}/bin/_termfp.sh
@@ -145,11 +146,12 @@ in
     settings.Manager = {
       DefaultTimeoutStartSec = "90s";
     };
+    user.tmpfiles.rules = [
+      "d %h/.config/xdg-desktop-portal-termfilechooser 0755 - - - -"
+      "L+ %h/.config/xdg-desktop-portal-termfilechooser/config - - - - /etc/xdg/xdg-desktop-portal-termfilechooser/config"
+    ];
     user.services.xdg-desktop-portal-termfilechooser = {
-      environment = {
-        XDG_CONFIG_HOME = "/etc/xdg"; # Just read from /etc/xdg instead of ~/.config
-      }
-      // import ../modules/consts.nix { homeDir = config.users.users.chaos.home; };
+      environment = import ../modules/consts.nix { homeDir = config.users.users.chaos.home; };
       path = with pkgs; [
         inotify-tools
         coreutils
