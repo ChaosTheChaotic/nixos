@@ -485,6 +485,7 @@ return {
 						"lspinfo",
 						"checkhealth",
 						"text",
+						"conf",
 					}
 					for _, name in ipairs(ignore_ft) do
 						if ft == name then

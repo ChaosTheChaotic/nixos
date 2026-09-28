@@ -110,9 +110,9 @@ in
         "benchmark"
       ];
       flake-registry = "";
+      nix-path = [ "nixpkgs=${inputs.nixpkgs}" ];
     };
     registry.nixpkgs.flake = inputs.nixpkgs;
-    nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
   };
 
   hardware = {
