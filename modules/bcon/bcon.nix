@@ -43,6 +43,10 @@ rustPlatform.buildRustPackage rec {
 
   postPatch = ''
     find . -type f -name '*.rs' -exec sed -i 's|"/bin/login"|"/run/current-system/sw/bin/login"|g' {} +
+
+		sed -i '/0x2328/a\
+0x23ED..=0x23EF |\
+0x23F1..=0x23F2 |' src/font/emoji.rs
   '';
 
   nativeBuildInputs = [

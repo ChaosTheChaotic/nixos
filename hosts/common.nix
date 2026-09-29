@@ -19,10 +19,6 @@ in
     ../modules/bcon/bcon-module.nix
   ];
 
-  _module.args = {
-    bconSrc = inputs.bcon;
-  };
-
   environment = {
     systemPackages = with pkgs; [
       customPkgs.scripts
@@ -258,6 +254,16 @@ in
       xwayland.enable = true;
     };
     kdeconnect.enable = true;
+
+    bcon = {
+      enable = true;
+      src = inputs.bcon;
+
+      ttys = [ "tty2" ];
+
+      polkitPowerRules = true;
+      disableBluezSeatMonitoring = true;
+    };
   };
 
   users.users.chaos = {
