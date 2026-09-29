@@ -90,4 +90,19 @@ in
       AmbientCapabilities = [ "CAP_SYS_TTY_CONFIG" ];
     };
   };
+
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      var allowed = [
+        "org.freedesktop.login1.reboot",
+        "org.freedesktop.login1.reboot-multiple-sessions",
+        "org.freedesktop.login1.power-off",
+        "org.freedesktop.login1.power-off-multiple-sessions",
+        "org.freedesktop.login1.inhibit-handle-lid-switch"
+      ];
+      if (subject.isInGroup("wheel") && allowed.indexOf(action.id) >= 0) {
+        return polkit.Result.YES;
+      }
+    });
+  '';
 }
