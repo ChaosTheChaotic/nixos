@@ -105,12 +105,6 @@ in
         master.odin
         master.ols
 
-        # Fonts
-        nerd-fonts.fira-code
-        nerd-fonts.jetbrains-mono
-        fantasque-sans-mono
-        noto-fonts-color-emoji
-
         # Utilities
         scrcpy
         tesseract

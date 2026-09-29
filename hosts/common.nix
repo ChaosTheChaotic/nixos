@@ -72,11 +72,13 @@ in
     '';
   };
 
-  fonts.packages = [
+  fonts.packages = with pkgs; [
     extraFonts
-    pkgs.nerd-fonts.jetbrains-mono
-    pkgs.nerd-fonts.fira-code
-    pkgs.nerd-fonts.fira-mono
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
+    nerd-fonts.fira-mono
+    noto-fonts-color-emoji
+    fantasque-sans-mono
   ];
 
   nixpkgs = {
