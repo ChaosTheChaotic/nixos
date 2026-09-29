@@ -72,14 +72,17 @@ in
     '';
   };
 
-  fonts.packages = with pkgs; [
-    extraFonts
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.fira-code
-    nerd-fonts.fira-mono
-    noto-fonts-color-emoji
-    fantasque-sans-mono
-  ];
+  fonts = {
+    fontconfig.enable = true;
+    packages = with pkgs; [
+      extraFonts
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.fira-code
+      nerd-fonts.fira-mono
+      noto-fonts-color-emoji
+      fantasque-sans-mono
+    ];
+  };
 
   nixpkgs = {
     config.allowUnfree = true;
