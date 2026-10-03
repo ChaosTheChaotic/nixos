@@ -199,6 +199,7 @@ in
           enable = true;
           environment = {
             USE_LAYER_SHELL = 1;
+            QSG_RHI_BACKEND = "vulkan";
           };
         };
         settings = {
