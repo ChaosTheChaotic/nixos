@@ -54,6 +54,7 @@ in
       ExecStart = "${musicRenamer}/bin/music-renamer";
       Restart = "always";
       RestartSec = "5";
+      TimeoutStopSec = "2";
     };
     Install = {
       WantedBy = [ "default.target" ];

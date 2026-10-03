@@ -263,6 +263,7 @@ in
 
       polkitPowerRules = true;
       disableBluezSeatMonitoring = true;
+      settings.font.main = "JetBrainsMono NF";
     };
   };
 
