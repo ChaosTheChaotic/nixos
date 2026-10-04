@@ -178,10 +178,6 @@ in
         enable = true;
         keepHistfile = false;
         modifyZshAutosuggestions = true;
-        syncing = {
-          enable = true;
-          syncDir = osConfig.services.syncthing.settings.folders.clogite.path;
-        };
         package =
           inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
             (oldAttrs: {

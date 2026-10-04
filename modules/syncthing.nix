@@ -1,7 +1,6 @@
 { config, ... }:
 let
   home = config.users.users.chaos.home;
-  clogiteSyncDir = "${home}/.local/share/clogite/sync";
   devices = {
     asahi = {
       id = "MTI5TFN-XS65Z6U-GYCD6OB-J6QVCC2-KB2OJIX-RRSWGNG-JH6OFSM-3N5XRAA";
@@ -46,15 +45,6 @@ in
       inherit devices;
 
       folders = {
-        clogite = {
-          path = clogiteSyncDir;
-          devices = all;
-          type = "sendreceive";
-          fsWatcherEnabled = true;
-          fsWatcherDelayS = 2;
-          versioning = null;
-          ignorePatterns = [ "*.tmp.*" ];
-        };
         music = {
           path = "${home}/Music";
           devices = all;

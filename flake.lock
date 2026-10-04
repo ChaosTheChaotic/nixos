@@ -624,11 +624,11 @@
         "sqlite-zstd": "sqlite-zstd"
       },
       "locked": {
-        "lastModified": 1791145234,
-        "narHash": "sha256-TskGc+AYn70e5smcIgDz7+wtCElS48+YeU1C2l13S2Q=",
+        "lastModified": 1791150904,
+        "narHash": "sha256-jtirwuvK7LLowOyqSL7GwECn4jhGjEIHlKu8e44RJXI=",
         "owner": "chaosthechaotic",
         "repo": "clogite",
-        "rev": "4fdd166c250122cc7ee2f8bedd8067b5f4018f6b",
+        "rev": "6a7d2e803f3ed4312957c122f91cd2edeb01db71",
         "type": "github"
       },
       "original": {
