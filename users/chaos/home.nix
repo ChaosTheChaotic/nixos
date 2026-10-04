@@ -194,6 +194,9 @@ in
             });
       };
       vicinae = {
+        package = inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
+          nodejs = pkgs.nodejs;
+        };
         enable = true;
         systemd = {
           enable = true;
