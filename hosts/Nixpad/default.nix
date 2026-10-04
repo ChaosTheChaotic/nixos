@@ -59,6 +59,9 @@
 
   age.secrets.wg-priv-thinker.file = ../../secrets/wg-priv-thinker.age;
 
+  age.secrets.syncthing-key.file = ../../secrets/syncthing-key-thinker.age;
+  services.syncthing.cert = "${./syncthing-cert.pem}";
+
   programs.steam = {
     enable = true;
     package = pkgs.millennium-steam;

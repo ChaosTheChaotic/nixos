@@ -17,6 +17,7 @@ in
 
   imports = [
     ../modules/bcon/bcon-module.nix
+    ../modules/syncthing.nix
   ];
 
   environment = {

@@ -80,6 +80,9 @@
 
   age.secrets.wg-priv-asahi.file = ../../secrets/wg-priv-asahi.age;
 
+  age.secrets.syncthing-key.file = ../../secrets/syncthing-key-asahi.age;
+  services.syncthing.cert = "${./syncthing-cert.pem}";
+
   networking.wg-quick.interfaces = wgHelper.mkWgInterface {
     privateKeyPath = config.age.secrets.wg-priv-asahi.path;
     publicKey = "KiCvg9+bh7/ssQDALW3uXSTLaURS3mgZdi/O9CxlFXo=";
