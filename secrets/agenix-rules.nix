@@ -7,6 +7,16 @@ let
   ttpm = "age1tag1qtlfg5h35ukqvare3v9j0sqwzuek6wvdw6a7pl4due9hl2f4rwa2kvurwy5"; # tpm chip
 in
 {
+  "chaos-passwd-hash.age" = {
+    publicKeys = [
+      m1
+      m2
+      t1
+      t2
+      ttpm
+    ];
+    armour = true;
+  };
   "wg-priv-asahi.age" = {
     publicKeys = [
       m1

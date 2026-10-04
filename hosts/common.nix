@@ -268,7 +268,10 @@ in
     };
   };
 
+  age.secrets.chaos-passwd.file = ../secrets/chaos-passwd-hash.age;
+
   users.users.chaos = {
+    hashedPasswordFile = config.age.secrets.chaos-passwd.path;
     isNormalUser = true;
     extraGroups = [
       "wheel"
