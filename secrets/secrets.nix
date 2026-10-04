@@ -32,4 +32,12 @@ in
     ];
     armour = true;
   };
+
+  "syncthing-key-asahi.age" = {
+    publicKeys = [
+      m1
+      m2
+    ];
+    armour = true;
+  };
 }

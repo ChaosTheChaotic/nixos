@@ -445,6 +445,7 @@ return {
 				"java",
 				"xml",
 				"hyprlang",
+				"pem",
 				"nix",
 				"vim",
 				"vimdoc",
