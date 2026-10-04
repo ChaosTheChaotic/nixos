@@ -40,4 +40,12 @@ in
     ];
     armour = true;
   };
+  "syncthing-key-thinker.age" = {
+    publicKeys = [
+      t1
+      t2
+      ttpm
+    ];
+    armour = true;
+  };
 }
