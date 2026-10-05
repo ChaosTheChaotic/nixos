@@ -14,6 +14,16 @@
     ../common.nix
   ];
 
+  nixpkgs.overlays = [
+    (final: prev: {
+      uboot-asahi = prev.uboot-asahi.overrideAttrs (old: {
+        makeFlags = (old.makeFlags or [ ]) ++ [
+          "DTC=${final.buildPackages.dtc}/bin/dtc"
+        ];
+      });
+    })
+  ];
+
   boot.kernelPackages = lib.mkForce (
     let
       pinnedPkgs = import nixpkgs-pinned-kernel {
@@ -21,6 +31,13 @@
         config.allowUnfree = true;
         overlays = [
           inputs.nixos-apple-silicon.overlays.apple-silicon-overlay
+          (final: prev: {
+            uboot-asahi = prev.uboot-asahi.overrideAttrs (old: {
+              makeFlags = (old.makeFlags or [ ]) ++ [
+                "DTC=${final.buildPackages.dtc}/bin/dtc"
+              ];
+            });
+          })
         ];
       };
     in
