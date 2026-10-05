@@ -108,4 +108,9 @@
       };
     };
   };
+
+  stylix.targets = {
+    gtk.enable = true;
+    qt.enable = true;
+  };
 }

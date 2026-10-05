@@ -47,6 +47,7 @@
       url = "github:sanohiro/bcon";
       flake = false;
     };
+    stylix.url = "github:nix-community/stylix";
     equi.url = "path:./users/chaos/equi/plugins";
     balatro.url = "path:./users/chaos/balatro";
   };
@@ -59,6 +60,7 @@
       agenix,
       steam-asahi,
       vicinae,
+      stylix,
       clogite,
       ...
     }@inputs:
@@ -83,6 +85,7 @@
               modules = [
                 ./hosts/${hostName}/default.nix
                 agenix.nixosModules.default
+                stylix.nixosModules.stylix
                 { environment.systemPackages = [ agenix.packages.${system}.default ]; }
                 home-manager.nixosModules.home-manager
                 {
