@@ -48,6 +48,10 @@
       flake = false;
     };
     stylix.url = "github:nix-community/stylix";
+    fbb = {
+      url = "github:e1z0/Framebuffer-browser";
+      flake = false;
+    };
     equi.url = "path:./users/chaos/equi/plugins";
     balatro.url = "path:./users/chaos/balatro";
   };
@@ -78,7 +82,7 @@
             nixpkgs.lib.nixosSystem {
               inherit system;
               specialArgs = {
-                inherit inputs;
+                inherit inputs cpuArch;
                 wgHelper = import ./modules/wireguard.nix;
               }
               // systemExtraSpecialArgs;

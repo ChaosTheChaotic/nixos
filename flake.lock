@@ -773,6 +773,22 @@
         "type": "github"
       }
     },
+    "fbb": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1770767114,
+        "narHash": "sha256-M9UWZux5Pf33iWmEUtvyR2AlBgUT8e4qJ2prjOyfwxo=",
+        "owner": "e1z0",
+        "repo": "Framebuffer-browser",
+        "rev": "4213a694ea2e2e846ef1c176bdb13bf6d025a8a6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "e1z0",
+        "repo": "Framebuffer-browser",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -1887,6 +1903,7 @@
         "clogite": "clogite",
         "equi": "equi",
         "f-sy-h": "f-sy-h",
+        "fbb": "fbb",
         "home-manager": "home-manager_2",
         "lovely-injector": "lovely-injector",
         "millennium": "millennium",

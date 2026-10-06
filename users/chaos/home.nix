@@ -3,7 +3,6 @@
   pkgs,
   lib,
   inputs,
-	osConfig,
   cpuArch ? "generic",
   ...
 }:

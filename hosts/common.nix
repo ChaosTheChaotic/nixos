@@ -51,6 +51,7 @@ in
       android-tools
       xdg-desktop-portal-termfilechooser
       inotify-tools
+      (pkgs.callPackage ../pkgs/fbb/fbb.nix { })
     ];
     shells = with pkgs; [ zsh ];
     sessionVariables.NIXOS_OZONE_WL = "1";
@@ -283,6 +284,9 @@ in
       "input"
       "seat"
       "kvm"
+      "tty"
+      "audio"
+      "usb"
     ];
     shell = pkgs.zsh;
   };
