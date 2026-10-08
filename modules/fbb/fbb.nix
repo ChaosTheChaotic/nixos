@@ -4,7 +4,7 @@
   fetchFromGitHub,
   cmake,
   qt6,
-  runtimeShell,
+  libinput,
   coreutils,
   util-linux,
   defaultBackend ? "auto",
@@ -14,6 +14,7 @@ assert lib.assertOneOf "defaultBackend" defaultBackend [
   "auto"
   "eglfs"
   "fb"
+  "wayland"
 ];
 
 stdenv.mkDerivation {
@@ -35,6 +36,8 @@ stdenv.mkDerivation {
   buildInputs = [
     qt6.qtbase
     qt6.qtwebengine
+    qt6.qtwayland
+    libinput
   ];
 
   postPatch = ''
@@ -42,22 +45,30 @@ stdenv.mkDerivation {
       --replace-fail 'set(CMAKE_PREFIX_PATH /opt/qt6.8/6.8.0/gcc_64)' ""
   '';
 
+  postBuild = ''
+    $CC -O3 -Wall -o fbbrowser-vt-reset ${./vtreset.c}
+    $CC -O3 -Wall -shared -fPIC -o libfbbrowser-pointer.so ${./pointerspeed.c} -linput
+  '';
+
   installPhase = ''
     runHook preInstall
 
     install -Dm755 fbbrowser $out/libexec/fbbrowser/fbbrowser
+    install -Dm755 fbbrowser-vt-reset $out/bin/fbbrowser-vt-reset
+    install -Dm755 libfbbrowser-pointer.so $out/lib/fbbrowser/libfbbrowser-pointer.so
 
     install -Dm755 ${./launcher.sh} $out/bin/fbbrowser
     substituteInPlace $out/bin/fbbrowser \
-      --subst-var-by shell ${runtimeShell} \
       --subst-var-by path ${lib.makeBinPath [ coreutils util-linux ]} \
       --subst-var-by unwrapped $out/libexec/fbbrowser/fbbrowser \
+      --subst-var-by vtReset $out/bin/fbbrowser-vt-reset \
+      --subst-var-by pointerShim $out/lib/fbbrowser/libfbbrowser-pointer.so \
       --subst-var-by defaultBackend ${defaultBackend}
 
     runHook postInstall
   '';
 
-	# Launcher is shell script, only real binary gets wrapped
+  # The launcher is a shell script; only the real Qt binary gets wrapped.
   dontWrapQtApps = true;
   postFixup = ''
     wrapQtApp $out/libexec/fbbrowser/fbbrowser

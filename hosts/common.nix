@@ -19,6 +19,7 @@ in
     ../modules/bcon/bcon-module.nix
     ../modules/syncthing.nix
     ../modules/stylix.nix
+    ../modules/fbb/fbbrowser-module.nix
   ];
 
   environment = {
@@ -51,7 +52,6 @@ in
       android-tools
       xdg-desktop-portal-termfilechooser
       inotify-tools
-      (pkgs.callPackage ../pkgs/fbb/fbb.nix { })
     ];
     shells = with pkgs; [ zsh ];
     sessionVariables.NIXOS_OZONE_WL = "1";
@@ -268,6 +268,7 @@ in
       disableBluezSeatMonitoring = true;
       settings.font.main = "JetBrainsMono NF";
     };
+    framebuffer-browser.enable = true;
   };
 
   age.secrets.chaos-passwd.file = ../secrets/chaos-passwd-hash.age;
