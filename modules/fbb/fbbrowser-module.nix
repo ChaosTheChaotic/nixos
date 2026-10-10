@@ -25,7 +25,7 @@ in
 
     package = mkOption {
       type = types.package;
-      default = pkgs.callPackage ./fbb.nix { };
+      default = pkgs.callPackage ./fbb.nix { pointerSpeed = cfg.pointerSpeed; };
       defaultText = literalExpression "pkgs.callPackage ./fbb.nix { }";
       description = "The framebuffer-browser package to install.";
     };
@@ -58,21 +58,6 @@ in
         leaves libinput's default. Qt has no setting for this, so a small
         LD_PRELOAD shim applies it to the browser process only. Applies to
         eglfs/linuxfb, not to `--backend wayland`.
-      '';
-    };
-
-    pointerAcceleration = mkOption {
-      type = types.nullOr (
-        types.enum [
-          "flat"
-          "adaptive"
-        ]
-      );
-      default = null;
-      description = ''
-        libinput acceleration profile. `flat` means constant speed (no
-        acceleration), which makes {option}`pointerSpeed` behave like a plain
-        sensitivity multiplier.
       '';
     };
 
@@ -122,9 +107,6 @@ in
       // lib.optionalAttrs cfg.hardwareCursor { FBBROWSER_HWCURSOR = "1"; }
       // lib.optionalAttrs (cfg.pointerSpeed != null) {
         FBBROWSER_POINTER_SPEED = toString cfg.pointerSpeed;
-      }
-      // lib.optionalAttrs (cfg.pointerAcceleration != null) {
-        FBBROWSER_POINTER_ACCEL = cfg.pointerAcceleration;
       };
 
       # eglfs needs EGL/GBM and the GPU driver from /run/opengl-driver.

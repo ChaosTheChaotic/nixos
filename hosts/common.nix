@@ -268,7 +268,10 @@ in
       disableBluezSeatMonitoring = true;
       settings.font.main = "JetBrainsMono NF";
     };
-    framebuffer-browser.enable = true;
+    framebuffer-browser = {
+      enable = true;
+      pointerSpeed = -0.7;
+    };
   };
 
   age.secrets.chaos-passwd.file = ../secrets/chaos-passwd-hash.age;

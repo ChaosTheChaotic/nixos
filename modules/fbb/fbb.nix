@@ -4,10 +4,10 @@
   fetchFromGitHub,
   cmake,
   qt6,
-  libinput,
   coreutils,
   util-linux,
   defaultBackend ? "auto",
+  pointerSpeed ? null,
 }:
 
 assert lib.assertOneOf "defaultBackend" defaultBackend [
@@ -33,11 +33,10 @@ stdenv.mkDerivation {
     qt6.wrapQtAppsHook
   ];
 
-  buildInputs = [
-    qt6.qtbase
-    qt6.qtwebengine
-    qt6.qtwayland
-    libinput
+  buildInputs = with qt6; [
+    qtbase
+    qtwebengine
+    qtwayland
   ];
 
   postPatch = ''
@@ -47,7 +46,7 @@ stdenv.mkDerivation {
 
   postBuild = ''
     $CC -O3 -Wall -o fbbrowser-vt-reset ${./vtreset.c}
-    $CC -O3 -Wall -shared -fPIC -o libfbbrowser-pointer.so ${./pointerspeed.c} -linput
+    $CC -O3 -Wall -shared -fPIC -o libfbbrowser-pointer.so ${./pointerspeed.c}
   '';
 
   installPhase = ''
@@ -59,11 +58,17 @@ stdenv.mkDerivation {
 
     install -Dm755 ${./launcher.sh} $out/bin/fbbrowser
     substituteInPlace $out/bin/fbbrowser \
-      --subst-var-by path ${lib.makeBinPath [ coreutils util-linux ]} \
+      --subst-var-by path ${
+        lib.makeBinPath [
+          coreutils
+          util-linux
+        ]
+      } \
       --subst-var-by unwrapped $out/libexec/fbbrowser/fbbrowser \
       --subst-var-by vtReset $out/bin/fbbrowser-vt-reset \
       --subst-var-by pointerShim $out/lib/fbbrowser/libfbbrowser-pointer.so \
-      --subst-var-by defaultBackend ${defaultBackend}
+      --subst-var-by defaultBackend ${defaultBackend} \
+      --subst-var-by pointerSpeedDefault "${if pointerSpeed != null then toString pointerSpeed else ""}"
 
     runHook postInstall
   '';

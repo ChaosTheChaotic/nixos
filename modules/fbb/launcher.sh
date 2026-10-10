@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+export FBBROWSER_POINTER_SPEED="${FBBROWSER_POINTER_SPEED:-@pointerSpeedDefault@}"
 export PATH="@path@${PATH:+:$PATH}"
 
 real_bin='@unwrapped@'
@@ -49,8 +50,6 @@ Environment:
                              default: some drivers (e.g. Asahi) reject Qt's cursor
                              ioctls, spamming "Failed to move cursor on screen"
   FBBROWSER_POINTER_SPEED    libinput pointer speed, -1.0 .. 1.0 (0 = libinput default)
-  FBBROWSER_POINTER_ACCEL    flat | adaptive acceleration profile
-                             (speed/accel need eglfs or linuxfb with libinput)
   QT_QPA_EGLFS_KMS_CONFIG    Your own Qt KMS JSON; stops the launcher generating one
                              (then hwcursor is whatever your JSON says)
   QT_QPA_PLATFORM            If set and backend is 'auto', used as-is (no detection)
@@ -279,13 +278,11 @@ case "$url" in ./*) url="file://$PWD/${url#./}" ;; esac
 
 preload=""
 if [ -n "${FBBROWSER_POINTER_SPEED:-}${FBBROWSER_POINTER_ACCEL:-}" ]; then
-  if [ "$vt_owner" = 0 ]; then
-    note "pointer speed/accel only apply to eglfs/linuxfb; under '$resolved' the compositor owns them"
-  elif [ "$evdev" = 1 ]; then
-    warn "pointer speed/accel need libinput, but FBBROWSER_*_DEV switched Qt to plain evdev: ignored"
-  else
-    preload=$pointer_shim
-  fi
+	if [ "$vt_owner" = 0 ]; then
+		note "pointer speed/accel only apply to eglfs/linuxfb; under '$resolved' the compositor owns them"
+	else
+		preload=$pointer_shim
+	fi
 fi
 
 cmd=("$real_bin")
