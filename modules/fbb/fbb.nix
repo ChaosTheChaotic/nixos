@@ -8,6 +8,7 @@
   util-linux,
   defaultBackend ? "auto",
   pointerSpeed ? null,
+  fbbSrc ? null,
 }:
 
 assert lib.assertOneOf "defaultBackend" defaultBackend [
@@ -21,12 +22,16 @@ stdenv.mkDerivation {
   pname = "framebuffer-browser";
   version = "0-unstable";
 
-  src = fetchFromGitHub {
-    owner = "femelo";
-    repo = "framebuffer-browser";
-    rev = "main";
-    hash = "sha256-Y0M0KO9JuyoZ7BkXWHEySf39/ajPLPL7611WYbaF7HI=";
-  };
+  src =
+    if fbbSrc != null then
+      fbbSrc
+    else
+      fetchFromGitHub {
+        owner = "femelo";
+        repo = "framebuffer-browser";
+        rev = "main";
+        hash = "sha256-Y0M0KO9JuyoZ7BkXWHEySf39/ajPLPL7611WYbaF7HI=";
+      };
 
   nativeBuildInputs = [
     cmake

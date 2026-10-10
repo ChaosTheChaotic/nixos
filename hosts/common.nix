@@ -270,6 +270,7 @@ in
     };
     framebuffer-browser = {
       enable = true;
+      source = inputs.fbb;
       pointerSpeed = -0.7;
     };
   };

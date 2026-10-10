@@ -23,9 +23,18 @@ in
   options.programs.framebuffer-browser = {
     enable = mkEnableOption "fbbrowser, a Qt6 WebEngine browser for the Linux console";
 
+    source = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "The source files to which framebuffer-browser should be built from";
+    };
+
     package = mkOption {
       type = types.package;
-      default = pkgs.callPackage ./fbb.nix { pointerSpeed = cfg.pointerSpeed; };
+      default = pkgs.callPackage ./fbb.nix {
+        pointerSpeed = cfg.pointerSpeed;
+        fbbSrc = cfg.source;
+      };
       defaultText = literalExpression "pkgs.callPackage ./fbb.nix { }";
       description = "The framebuffer-browser package to install.";
     };

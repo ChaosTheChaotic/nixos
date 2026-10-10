@@ -49,7 +49,7 @@
     };
     stylix.url = "github:nix-community/stylix";
     fbb = {
-      url = "github:e1z0/Framebuffer-browser";
+      url = "github:femelo/framebuffer-browser";
       flake = false;
     };
     equi.url = "path:./users/chaos/equi/plugins";
