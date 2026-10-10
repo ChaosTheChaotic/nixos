@@ -17,7 +17,7 @@ let
     }
 
     sanitize_str() {
-    	echo "$1" | tr '/' '-' | tr ' ' '_' | tr '.' '_'
+    	echo "$1" | tr '/' '-' | tr ' ' '_' | tr '.' '_' | tr -d '*?:"<>|\\'
     }
 
     mkdir -p "$MUSIC_DIR"
