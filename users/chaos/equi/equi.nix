@@ -213,7 +213,7 @@
         stopAutoUnread.enable = true;
         supportHelper.enable = true;
         talkInReverse.enable = true;
-        tenorGifSearch.enable = true;
+        gifProviderSwitcher.enable = true;
         themeAttributes.enable = true;
         timezones = {
           enable = true;
