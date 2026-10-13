@@ -1,7 +1,7 @@
 {
   pkgs ? import <nixpkgs> { },
   cpuArch ? "generic",
-	mpdSrc,
+  mpdSrc,
 }:
 
 let

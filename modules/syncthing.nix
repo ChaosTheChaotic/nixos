@@ -50,10 +50,6 @@ in
           devices = all;
           type = "sendreceive";
           fsWatcherEnabled = true;
-          versioning = {
-            type = "trashcan";
-            params.cleanoutDays = "30";
-          };
         };
       };
     };
