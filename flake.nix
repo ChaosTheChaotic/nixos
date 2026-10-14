@@ -48,10 +48,7 @@
       flake = false;
     };
     stylix.url = "github:nix-community/stylix";
-    fbb = {
-      url = "github:femelo/framebuffer-browser";
-      flake = false;
-    };
+    fbb.url = "github:ChaosTheChaotic/framebuffer-browser";
     equi.url = "path:./users/chaos/equi/plugins";
     balatro.url = "path:./users/chaos/balatro";
   };
@@ -65,6 +62,7 @@
       steam-asahi,
       vicinae,
       stylix,
+      fbb,
       clogite,
       ...
     }@inputs:
@@ -90,6 +88,7 @@
                 ./hosts/${hostName}/default.nix
                 agenix.nixosModules.default
                 stylix.nixosModules.stylix
+                fbb.nixosModules.default
                 { environment.systemPackages = [ agenix.packages.${system}.default ]; }
                 home-manager.nixosModules.home-manager
                 {

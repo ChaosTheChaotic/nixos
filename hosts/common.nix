@@ -19,7 +19,6 @@ in
     ../modules/bcon/bcon-module.nix
     ../modules/syncthing.nix
     ../modules/stylix.nix
-    ../modules/fbb/fbbrowser-module.nix
   ];
 
   environment = {
