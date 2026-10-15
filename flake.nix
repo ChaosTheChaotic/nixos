@@ -49,6 +49,7 @@
     };
     stylix.url = "github:nix-community/stylix";
     fbb.url = "github:ChaosTheChaotic/framebuffer-browser";
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
     equi.url = "path:./users/chaos/equi/plugins";
     balatro.url = "path:./users/chaos/balatro";
   };
@@ -62,6 +63,7 @@
       steam-asahi,
       vicinae,
       stylix,
+      nix-flatpak,
       fbb,
       clogite,
       ...
@@ -89,6 +91,7 @@
                 agenix.nixosModules.default
                 stylix.nixosModules.stylix
                 fbb.nixosModules.default
+                nix-flatpak.nixosModules.nix-flatpak
                 { environment.systemPackages = [ agenix.packages.${system}.default ]; }
                 home-manager.nixosModules.home-manager
                 {
