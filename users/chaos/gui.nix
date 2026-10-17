@@ -5,6 +5,33 @@
   ...
 }:
 
+let
+  buildMozillaXpiAddon = pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon;
+  vicinae-browser-integration = buildMozillaXpiAddon {
+    pname = "vicinae-browser-integration";
+    version = "1.0.0";
+    addonId = "firefox@vicinae.com";
+    urls = [
+      "https://addons.mozilla.org/firefox/downloads/file/4839406/vicinae-1.0.0.xpi"
+    ];
+    sha256 = "sha256-mWwFbVVr6cnJdJRANnJGMReXPn0b/BD62fcZ+MB9lCY=";
+    meta = with lib; {
+      homepage = "https://www.vicinae.com";
+      description = "Connects to the Vicinae desktop app to search and switch browser tabs from the launcher.";
+      license = {
+        shortName = "vicinae-browser-integration";
+        fullName = "Vicinae Browser Integration";
+        url = "https://addons.mozilla.org/en-US/firefox/addon/vicinae/license";
+        free = true;
+      };
+      mozPermissions = [
+        "nativeMessaging"
+        "tabs"
+      ];
+      platforms = platforms.all;
+    };
+  };
+in
 {
   programs = {
     hyprlock.enable = true;
@@ -39,6 +66,7 @@
             return-youtube-dislikes
             sponsorblock
             vimium-c
+            vicinae-browser-integration
           ];
         };
       };
