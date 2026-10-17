@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  config,
   ...
 }:
 
@@ -9,6 +10,7 @@
     hyprlock.enable = true;
     floorp = {
       enable = true;
+      nativeMessagingHosts = [ config.programs.vicinae.package ];
       profiles.default = {
         search = {
           force = true;
