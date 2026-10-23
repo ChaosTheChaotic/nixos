@@ -96,22 +96,6 @@
         "type": "github"
       }
     },
-    "BalatroMultiplayer": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1788279114,
-        "narHash": "sha256-LOgqkSaNr1E4x23OsU4ZvQ/qtviDBOM1uRza7SlHTFU=",
-        "owner": "Balatro-Multiplayer",
-        "repo": "BalatroMultiplayer",
-        "rev": "5551e21ff9a071c1103a7cc16f410013ef7092db",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Balatro-Multiplayer",
-        "repo": "BalatroMultiplayer",
-        "type": "github"
-      }
-    },
     "BetterTags": {
       "flake": false,
       "locked": {
@@ -1240,11 +1224,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792668857,
-        "narHash": "sha256-chUrnAqBhBLvXBUsLFxFYBIl8c0GWp06wdjmAMS8l+U=",
+        "lastModified": 1792703141,
+        "narHash": "sha256-3X34FaSeMJXMx8CK/BN6sZ9knwNauuiJXQhLM+bQQuI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "cb7de2c7e589afe7531d4832c71ad4df144624ea",
+        "rev": "6750249c69969d09d952efaf3fab88a2bdac7ec6",
         "type": "github"
       },
       "original": {
@@ -1377,7 +1361,6 @@
         "Balatro-Planet-Card-Cash-Out-Mod": "Balatro-Planet-Card-Cash-Out-Mod",
         "Balatro-Stickers-Always-Shown": "Balatro-Stickers-Always-Shown",
         "Balatro-with-Multiverse-Time-Travel": "Balatro-with-Multiverse-Time-Travel",
-        "BalatroMultiplayer": "BalatroMultiplayer",
         "BetterTags": "BetterTags",
         "Blueprint": "Blueprint",
         "Brainstorm": "Brainstorm",
@@ -1519,11 +1502,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1792236246,
-        "narHash": "sha256-SttBwl9KAlNK6ilyTG5IFvZw9FHKG0uHVJo+L3lJKiI=",
+        "lastModified": 1792706836,
+        "narHash": "sha256-HqvqANTIPCe+Z1ghWQPBIauk56p0rZJUwO8GWiF5IiI=",
         "owner": "4evy",
         "repo": "nixcord",
-        "rev": "fc11ff6901b9bb2de811db719346a6aa70e990aa",
+        "rev": "337f2b1f8c188c749e3047901282529a309c4d62",
         "type": "github"
       },
       "original": {
@@ -1615,11 +1598,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1792670556,
-        "narHash": "sha256-taa6qUWKnxOYaug3aq2huXGVhcecS9nWkRZn4PF/Gzo=",
+        "lastModified": 1792713266,
+        "narHash": "sha256-fP8i/Rp7UHzvfW9ihN5msiZxiGZ1RBN+VYoISTXPvbY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "5c1fee47b6e7fe5373b1edc75153cd21633864df",
+        "rev": "0efde09fa2afb93d2ed7e9c643b4603acee2f0ea",
         "type": "github"
       },
       "original": {
@@ -1874,11 +1857,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792702540,
-        "narHash": "sha256-aXi5CCaR2nGbpkJd6qZdlqZio8ROAFAjyhl2RPXSVFU=",
+        "lastModified": 1792714601,
+        "narHash": "sha256-qEpuPmqDimVUteoCADJN2kMzdOfcIVWKcs5Snmw4mY0=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "5e61a2455f2b2150dae25cd1c753ffcd0e6b7cbf",
+        "rev": "a84e05e1d6938ac2b1bf0407f046ff75c9f9ce76",
         "type": "github"
       },
       "original": {
@@ -2453,11 +2436,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1792583026,
-        "narHash": "sha256-bSXZFEmLfeOXUNoHwxbTK8FDTzNPlZrSy7UUla0wzF4=",
+        "lastModified": 1792707299,
+        "narHash": "sha256-ZSUgGMrOpIyEiGotWGvV/Q1i20KLrUiQjcCc2si8IT0=",
         "owner": "vicinaehq",
         "repo": "vicinae",
-        "rev": "3a854e136b8fa91da8ea0eff2164ef2e03f39ea6",
+        "rev": "9771014d04c5f1a139fb62de2783c83416366242",
         "type": "github"
       },
       "original": {

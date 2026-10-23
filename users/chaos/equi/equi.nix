@@ -16,7 +16,7 @@
       eval = inputs.equi.plugins.eval;
       venfetch = inputs.equi.plugins.venfetch;
       clientsidebadges = inputs.equi.plugins.clientsidebadges;
-      gallerymode = inputs.equi.plugins.gallerymode;
+      #gallerymode = inputs.equi.plugins.gallerymode; TODO: Wait for this plugin to update to the new toasts api if ever
       newlinesincommands = inputs.equi.plugins.newlinesincommands;
       inrole = inputs.equi.plugins.inrole;
       rebuildandrestart = ./plugins/rebuildAndRestart;
@@ -86,10 +86,7 @@
         devCompanion.enable = true;
         disableDeepLinks.enable = true;
         downloadAllAttachments.enable = true;
-        equicordHelper = {
-          enable = true;
-          disableAdoptTagPrompt = true;
-        };
+        equicordHelper.enable = true;
         equicordToolbox.enable = true;
         experiments = {
           enable = true;
@@ -101,7 +98,7 @@
           enableStreamQualityBypass = false;
         };
         fakeProfileThemes.enable = true;
-        favouriteAnything.enable = true;
+        favoriteAnything.enable = true;
         fileUpload = {
           enable = true;
           serviceType = "catbox";

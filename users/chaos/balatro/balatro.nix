@@ -55,31 +55,10 @@
             "Solatro"
           ];
 
-          patchMap = {
-            "BalatroMultiplayer" = [
-              {
-                file = "ui/game/round.lua";
-                regex = "MP\\.UTILS\\.log_mem_debug_messages.*$";
-                replace = "MP.UTILS.log_mem_debug_messages()\n\t\treturn";
-              }
-              {
-                file = "lib/matchmaking.lua";
-                regex = "if not mod\\.disabled and key ~= \"Balatro\" then table\\.insert\\(mod_table, key \\.\\. \"-\" \\.\\. \\(mod\\.version or \"UNK\"\\)\\) end";
-                replace = "if not mod.disabled and key == \"Multiplayer\" then table.insert(mod_table, key .. \"-\" .. (mod.version or \"UNK\")) end";
-              }
-              {
-                file = "core.lua";
-                regex = "MP\\.BANNED_MODS = \\{[^\\}]*\\}";
-                replace = "MP.BANNED_MODS = {}";
-              }
-            ];
-          };
-
           addPrefs = modName: modPath: {
             src = modPath;
             name = modName;
             enabled = !(builtins.elem (lib.toLower modName) (map lib.toLower disabledMods));
-            patches = if patchMap ? ${modName} then patchMap.${modName} else [ ];
           };
         in
         lib.mapAttrsToList addPrefs inputs.balatro.modding.mods;

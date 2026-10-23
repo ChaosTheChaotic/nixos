@@ -27,11 +27,6 @@
       flake = false;
     };
 
-    BalatroMultiplayer = {
-      url = "github:Balatro-Multiplayer/BalatroMultiplayer";
-      flake = false;
-    };
-
     Balatro-Planet-Card-Cash-Out-Mod = {
       url = "github:antler5/Balatro-Planet-Card-Cash-Out-Mod";
       flake = false;
