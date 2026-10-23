@@ -85,7 +85,7 @@
       eachSystem = lib.genAttrs systems;
       pkgsFor = inputs.nixpkgs.legacyPackages;
 
-      version = "0.27.0";
+      version = "0.27.1";
 
       # Use the source input directly
       src = inputs.tree-sitter-src;
