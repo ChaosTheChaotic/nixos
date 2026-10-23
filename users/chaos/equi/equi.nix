@@ -44,6 +44,7 @@
       enableReactDevtools = true;
       plugins = {
         voiceMessagesInBackground.enable = true;
+        addAttachments.enable = true;
         advancedPermissions.enable = true;
         alwaysAnimate.enable = true;
         atSomeone.enable = true;
@@ -84,10 +85,20 @@
         };
         decor.enable = true;
         devCompanion.enable = true;
+        directFileDownload.enable = true;
         disableDeepLinks.enable = true;
         downloadAllAttachments.enable = true;
         equicordHelper.enable = true;
         equicordToolbox.enable = true;
+        equiTweaks = {
+          enable = true;
+          autoCorrect = true;
+          enableAutoCorrect = true;
+          noMirroredCamera = true;
+          noModalAnimation = true;
+          refreshSlashCommands = true;
+          restoreFileDownloadButton = true;
+        };
         experiments = {
           enable = true;
           toolbarDevMenu = true;
@@ -168,6 +179,7 @@
         };
         quoter.enable = true;
         reactErrorDecoder.enable = true;
+        reactionTimestamps.enable = true;
         readAllNotificationsButton.enable = true;
         repeatMessages.enable = true;
         replyTimestamp.enable = true;
