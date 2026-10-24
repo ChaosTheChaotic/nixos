@@ -305,8 +305,6 @@ PanelWindow {
 			PopupWindow {
 				id: musicPopup
 
-				property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
-
 				color: "transparent"
 				implicitHeight: 170
 				implicitWidth: 380
@@ -336,285 +334,296 @@ PanelWindow {
 					onTriggered: musicPopup.visible = false
 				}
 
-				Rectangle {
-					id: popupContent
+				Loader {
+					id: musicPopupLoader
 
-					readonly property bool isClosing: closeTimer.running
-
+					active: musicPopup.visible
 					anchors.fill: parent
-					clip: true
-					color: "#CC232136"
-					opacity: (musicPopup.visible && !isClosing) ? 1 : 0
-					radius: 12
-					scale: (musicPopup.visible && !isClosing) ? 1 : 0.95
-					y: (musicPopup.visible && !isClosing) ? 10 : -20
 
-					Behavior on opacity {
-						NumberAnimation {
-							duration: 200
-							easing.type: Easing.OutCubic
-						}
-					}
-					Behavior on scale {
-						NumberAnimation {
-							duration: 200
-							easing.type: Easing.OutBack
-						}
-					}
-					Behavior on y {
-						NumberAnimation {
-							duration: 250
-							easing.type: Easing.OutCubic
-						}
-					}
+					sourceComponent: Rectangle {
+						id: popupContent
 
-					Timer {
-						interval: 500
-						repeat: true
-						running: musicPopup.visible && musicPopup.activePlayer && musicPopup.activePlayer.playbackState === MprisPlaybackState.Playing
+						readonly property var activePlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
+						readonly property bool isClosing: closeTimer.running
+						property bool isLoaded: false
 
-						onTriggered: musicPopup.activePlayer.positionChanged()
-					}
-
-					RowLayout {
 						anchors.fill: parent
-						anchors.margins: 16
-						spacing: 16
+						clip: true
+						color: "#CC232136"
+						opacity: (isLoaded && !isClosing) ? 1 : 0
+						radius: 12
+						scale: (isLoaded && !isClosing) ? 1 : 0.95
+						y: (isLoaded && !isClosing) ? 10 : -20
 
-						// Album Art
-						Rectangle {
-							Layout.alignment: Qt.AlignVCenter
-							Layout.preferredHeight: 120
-							Layout.preferredWidth: 120
-							clip: true
-							color: "#393552"
-							radius: 8
-
-							Image {
-								anchors.fill: parent
-								asynchronous: true
-								fillMode: Image.PreserveAspectCrop
-								source: musicPopup.activePlayer ? musicPopup.activePlayer.trackArtUrl : ""
+						Behavior on opacity {
+							NumberAnimation {
+								duration: 200
+								easing.type: Easing.OutCubic
+							}
+						}
+						Behavior on scale {
+							NumberAnimation {
+								duration: 200
+								easing.type: Easing.OutBack
+							}
+						}
+						Behavior on y {
+							NumberAnimation {
+								duration: 250
+								easing.type: Easing.OutCubic
 							}
 						}
 
-						ColumnLayout {
-							Layout.fillHeight: true
-							Layout.fillWidth: true
-							spacing: 4
+						Component.onCompleted: isLoaded = true
 
-							Text {
-								Layout.fillWidth: true
-								color: "#e0def4"
-								elide: Text.ElideRight
-								font.bold: true
-								font.pixelSize: 16
-								text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackTitle || "Unknown Title") : "No Title"
-							}
+						Timer {
+							interval: 500
+							repeat: true
+							running: musicPopup.visible && popupContent.activePlayer && popupContent.activePlayer.playbackState === MprisPlaybackState.Playing
 
-							Text {
-								Layout.fillWidth: true
-								color: "#908caa"
-								elide: Text.ElideRight
-								font.pixelSize: 13
-								text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackArtist || "Unknown Artist") : "No Artist"
-							}
+							onTriggered: popupContent.activePlayer.positionChanged()
+						}
 
-							Text {
-								Layout.fillWidth: true
-								color: "#6e6a86"
-								elide: Text.ElideRight
-								font.pixelSize: 12
-								text: musicPopup.activePlayer ? (musicPopup.activePlayer.trackAlbum || "Unknown Album") : "No Album"
-							}
+						RowLayout {
+							anchors.fill: parent
+							anchors.margins: 16
+							spacing: 16
 
-							Item {
-								Layout.fillHeight: true
-							}
+							// Album Art
+							Rectangle {
+								Layout.alignment: Qt.AlignVCenter
+								Layout.preferredHeight: 120
+								Layout.preferredWidth: 120
+								clip: true
+								color: "#393552"
+								radius: 8
 
-							// Progress Bar
-							RowLayout {
-								function formatTime(secondsIn) {
-									if (!secondsIn)
-										return "0:00";
-									let seconds = Math.floor(secondsIn);
-									let m = Math.floor(seconds / 60);
-									let s = seconds % 60;
-									return m + ":" + (s < 10 ? "0" : "") + s;
+								Image {
+									anchors.fill: parent
+									asynchronous: true
+									fillMode: Image.PreserveAspectCrop
+									source: popupContent.activePlayer ? popupContent.activePlayer.trackArtUrl : ""
 								}
+							}
 
+							ColumnLayout {
+								Layout.fillHeight: true
 								Layout.fillWidth: true
-								spacing: 8
+								spacing: 4
 
 								Text {
-									color: "#908caa"
-									font.pixelSize: 10
-									text: parent.formatTime(musicPopup.activePlayer ? musicPopup.activePlayer.position : 0)
+									Layout.fillWidth: true
+									color: "#e0def4"
+									elide: Text.ElideRight
+									font.bold: true
+									font.pixelSize: 16
+									text: popupContent.activePlayer ? (popupContent.activePlayer.trackTitle || "Unknown Title") : "No Title"
 								}
 
-								Rectangle {
+								Text {
 									Layout.fillWidth: true
-									color: "#393552"
-									implicitHeight: 6
-									radius: 3
+									color: "#908caa"
+									elide: Text.ElideRight
+									font.pixelSize: 13
+									text: popupContent.activePlayer ? (popupContent.activePlayer.trackArtist || "Unknown Artist") : "No Artist"
+								}
+
+								Text {
+									Layout.fillWidth: true
+									color: "#6e6a86"
+									elide: Text.ElideRight
+									font.pixelSize: 12
+									text: popupContent.activePlayer ? (popupContent.activePlayer.trackAlbum || "Unknown Album") : "No Album"
+								}
+
+								Item {
+									Layout.fillHeight: true
+								}
+
+								// Progress Bar
+								RowLayout {
+									function formatTime(secondsIn) {
+										if (!secondsIn)
+											return "0:00";
+										let seconds = Math.floor(secondsIn);
+										let m = Math.floor(seconds / 60);
+										let s = seconds % 60;
+										return m + ":" + (s < 10 ? "0" : "") + s;
+									}
+
+									Layout.fillWidth: true
+									spacing: 8
+
+									Text {
+										color: "#908caa"
+										font.pixelSize: 10
+										text: parent.formatTime(popupContent.activePlayer ? popupContent.activePlayer.position : 0)
+									}
 
 									Rectangle {
-										color: "#c4a7e7"
-										height: parent.height
+										Layout.fillWidth: true
+										color: "#393552"
+										implicitHeight: 6
 										radius: 3
-										width: {
-											if (!musicPopup.activePlayer || !musicPopup.activePlayer.length)
-												return 0;
-											return Math.min(1, musicPopup.activePlayer.position / musicPopup.activePlayer.length) * parent.width;
-										}
-									}
 
-									MouseArea {
-										anchors.fill: parent
-										cursorShape: Qt.PointingHandCursor
-
-										onClicked: mouse => {
-											if (musicPopup.activePlayer && musicPopup.activePlayer.length) {
-												let clickRatio = mouse.x / width;
-												musicPopup.activePlayer.position = clickRatio * musicPopup.activePlayer.length;
+										Rectangle {
+											color: "#c4a7e7"
+											height: parent.height
+											radius: 3
+											width: {
+												if (!popupContent.activePlayer || !popupContent.activePlayer.length)
+													return 0;
+												return Math.min(1, popupContent.activePlayer.position / popupContent.activePlayer.length) * parent.width;
 											}
 										}
-									}
-								}
 
-								Text {
-									color: "#908caa"
-									font.pixelSize: 10
-									text: parent.formatTime(musicPopup.activePlayer ? musicPopup.activePlayer.length : 0)
-								}
-							}
+										MouseArea {
+											anchors.fill: parent
+											cursorShape: Qt.PointingHandCursor
 
-							Item {
-								Layout.fillHeight: true
-							}
-
-							// Media Controls
-							RowLayout {
-								Layout.alignment: Qt.AlignHCenter
-								Layout.fillWidth: true
-								spacing: 16
-
-								// Previous
-								Rectangle {
-									color: prevArea.containsMouse ? "#393552" : "transparent"
-									implicitHeight: 36
-									implicitWidth: 36
-									radius: 18
-
-									Behavior on color {
-										ColorAnimation {
-											duration: 150
+											onClicked: mouse => {
+												if (popupContent.activePlayer && popupContent.activePlayer.length) {
+													let clickRatio = mouse.x / width;
+													popupContent.activePlayer.position = clickRatio * popupContent.activePlayer.length;
+												}
+											}
 										}
 									}
 
 									Text {
-										anchors.centerIn: parent
-										color: prevArea.containsMouse ? "#c4a7e7" : "#e0def4"
-										font.family: "JetBrainsMono Nerd Font"
-										font.pixelSize: 20
-										text: "󰒮"
+										color: "#908caa"
+										font.pixelSize: 10
+										text: parent.formatTime(popupContent.activePlayer ? popupContent.activePlayer.length : 0)
+									}
+								}
+
+								Item {
+									Layout.fillHeight: true
+								}
+
+								// Media Controls
+								RowLayout {
+									Layout.alignment: Qt.AlignHCenter
+									Layout.fillWidth: true
+									spacing: 16
+
+									// Previous
+									Rectangle {
+										color: prevArea.containsMouse ? "#393552" : "transparent"
+										implicitHeight: 36
+										implicitWidth: 36
+										radius: 18
 
 										Behavior on color {
 											ColorAnimation {
 												duration: 150
 											}
 										}
-									}
 
-									MouseArea {
-										id: prevArea
+										Text {
+											anchors.centerIn: parent
+											color: prevArea.containsMouse ? "#c4a7e7" : "#e0def4"
+											font.family: "JetBrainsMono Nerd Font"
+											font.pixelSize: 20
+											text: "󰒮"
 
-										anchors.fill: parent
-										cursorShape: Qt.PointingHandCursor
-										hoverEnabled: true
+											Behavior on color {
+												ColorAnimation {
+													duration: 150
+												}
+											}
+										}
 
-										onClicked: if (musicPopup.activePlayer)
-											musicPopup.activePlayer.previous()
-									}
-								}
+										MouseArea {
+											id: prevArea
 
-								// Play / Pause
-								Rectangle {
-									property bool isPlaying: musicPopup.activePlayer ? musicPopup.activePlayer.playbackState === MprisPlaybackState.Playing : false
+											anchors.fill: parent
+											cursorShape: Qt.PointingHandCursor
+											hoverEnabled: true
 
-									color: playArea.containsMouse ? "#c4a7e7" : "#393552"
-									implicitHeight: 44
-									implicitWidth: 44
-									radius: 22
-
-									Behavior on color {
-										ColorAnimation {
-											duration: 150
+											onClicked: if (popupContent.activePlayer)
+												popupContent.activePlayer.previous()
 										}
 									}
 
-									Text {
-										anchors.centerIn: parent
-										color: playArea.containsMouse ? "#232136" : "#e0def4"
-										font.family: "JetBrainsMono Nerd Font"
-										font.pixelSize: 22
-										text: parent.isPlaying ? "󰏤" : "󰐊"
+									// Play / Pause
+									Rectangle {
+										property bool isPlaying: popupContent.activePlayer ? popupContent.activePlayer.playbackState === MprisPlaybackState.Playing : false
+
+										color: playArea.containsMouse ? "#c4a7e7" : "#393552"
+										implicitHeight: 44
+										implicitWidth: 44
+										radius: 22
 
 										Behavior on color {
 											ColorAnimation {
 												duration: 150
 											}
 										}
-									}
 
-									MouseArea {
-										id: playArea
+										Text {
+											anchors.centerIn: parent
+											color: playArea.containsMouse ? "#232136" : "#e0def4"
+											font.family: "JetBrainsMono Nerd Font"
+											font.pixelSize: 22
+											text: parent.isPlaying ? "󰏤" : "󰐊"
 
-										anchors.fill: parent
-										cursorShape: Qt.PointingHandCursor
-										hoverEnabled: true
+											Behavior on color {
+												ColorAnimation {
+													duration: 150
+												}
+											}
+										}
 
-										onClicked: if (musicPopup.activePlayer)
-											musicPopup.activePlayer.togglePlaying()
-									}
-								}
+										MouseArea {
+											id: playArea
 
-								// Next
-								Rectangle {
-									color: nextArea.containsMouse ? "#393552" : "transparent"
-									implicitHeight: 36
-									implicitWidth: 36
-									radius: 18
+											anchors.fill: parent
+											cursorShape: Qt.PointingHandCursor
+											hoverEnabled: true
 
-									Behavior on color {
-										ColorAnimation {
-											duration: 150
+											onClicked: if (popupContent.activePlayer)
+												popupContent.activePlayer.togglePlaying()
 										}
 									}
 
-									Text {
-										anchors.centerIn: parent
-										color: nextArea.containsMouse ? "#c4a7e7" : "#e0def4"
-										font.family: "JetBrainsMono Nerd Font"
-										font.pixelSize: 20
-										text: "󰒭"
+									// Next
+									Rectangle {
+										color: nextArea.containsMouse ? "#393552" : "transparent"
+										implicitHeight: 36
+										implicitWidth: 36
+										radius: 18
 
 										Behavior on color {
 											ColorAnimation {
 												duration: 150
 											}
 										}
-									}
 
-									MouseArea {
-										id: nextArea
+										Text {
+											anchors.centerIn: parent
+											color: nextArea.containsMouse ? "#c4a7e7" : "#e0def4"
+											font.family: "JetBrainsMono Nerd Font"
+											font.pixelSize: 20
+											text: "󰒭"
 
-										anchors.fill: parent
-										cursorShape: Qt.PointingHandCursor
-										hoverEnabled: true
+											Behavior on color {
+												ColorAnimation {
+													duration: 150
+												}
+											}
+										}
 
-										onClicked: if (musicPopup.activePlayer)
-											musicPopup.activePlayer.next()
+										MouseArea {
+											id: nextArea
+
+											anchors.fill: parent
+											cursorShape: Qt.PointingHandCursor
+											hoverEnabled: true
+
+											onClicked: if (popupContent.activePlayer)
+												popupContent.activePlayer.next()
+										}
 									}
 								}
 							}
@@ -693,7 +702,7 @@ PanelWindow {
 					font.pixelSize: 14
 					text: {
 						if (state === 1)
-							return "󰂄"; // Charging
+							return "󰂄";
 						if (percent >= 90)
 							return "󰁹";
 						if (percent >= 80)
@@ -761,8 +770,6 @@ PanelWindow {
 					id: wifiText
 
 					property bool isWifiOn: Networking.wifiEnabled && Networking.wifiHardwareEnabled
-
-					// Just use first wifi device
 					property var wifiDevice: {
 						for (let i = 0; i < Networking.devices.values.length; i++) {
 							let dev = Networking.devices.values[i];
@@ -785,7 +792,6 @@ PanelWindow {
 					}
 				}
 
-				// Bluetooth status icon
 				Text {
 					color: BluezQt.Manager.bluetoothOperational ? "#c4a7e7" : "#6e6a86"
 					font.family: "JetBrainsMono Nerd Font"
@@ -804,7 +810,6 @@ PanelWindow {
 			PopupWindow {
 				id: netPopup
 
-				// Active tab
 				property string activeTab: "wifi"
 
 				color: "transparent"
@@ -834,192 +839,184 @@ PanelWindow {
 					onTriggered: netPopup.visible = false
 				}
 
-				Rectangle {
-					id: netPopupContent
+				Loader {
+					id: netPopupLoader
 
-					readonly property bool isClosing: netCloseTimer.running
-
+					active: netPopup.visible
 					anchors.fill: parent
-					clip: true
-					color: "#CC232136"
-					opacity: (netPopup.visible && !isClosing) ? 1 : 0
-					radius: 12
-					scale: (netPopup.visible && !isClosing) ? 1 : 0.95
-					y: (netPopup.visible && !isClosing) ? 10 : -20
 
-					Behavior on opacity {
-						NumberAnimation {
-							duration: 200
-							easing.type: Easing.OutCubic
-						}
-					}
-					Behavior on scale {
-						NumberAnimation {
-							duration: 200
-							easing.type: Easing.OutBack
-						}
-					}
-					Behavior on y {
-						NumberAnimation {
-							duration: 250
-							easing.type: Easing.OutCubic
-						}
-					}
+					sourceComponent: Rectangle {
+						id: netPopupContent
 
-					ColumnLayout {
+						readonly property bool isClosing: netCloseTimer.running
+						property bool isLoaded: false
+
 						anchors.fill: parent
-						anchors.margins: 12
-						spacing: 12
+						clip: true
+						color: "#CC232136"
+						opacity: (isLoaded && !isClosing) ? 1 : 0
+						radius: 12
+						scale: (isLoaded && !isClosing) ? 1 : 0.95
+						y: (isLoaded && !isClosing) ? 10 : -20
 
-						// Animated Icon-Only Tab Bar
-						RowLayout {
-							Layout.fillWidth: true
-							spacing: 8
-
-							// Segmented Control Switcher
-							Rectangle {
-								Layout.fillWidth: true
-								color: "#393552"
-								implicitHeight: 36
-								radius: 18
-
-								RowLayout {
-									anchors.fill: parent
-									spacing: 4
-
-									// Wi‑Fi Icon Tab
-									Rectangle {
-										Layout.fillHeight: true
-										Layout.fillWidth: true
-										color: netPopup.activeTab === "wifi" ? "#c4a7e7" : "transparent"
-										radius: 18
-
-										Behavior on color {
-											ColorAnimation {
-												duration: 250
-												easing.type: Easing.OutCubic
-											}
-										}
-
-										Text {
-											anchors.centerIn: parent
-											color: netPopup.activeTab === "wifi" ? "#232136" : "#e0def4"
-											font.family: "JetBrainsMono Nerd Font"
-											font.pixelSize: 16
-											text: "󰖩"
-
-											Behavior on color {
-												ColorAnimation {
-													duration: 250
-												}
-											}
-										}
-
-										MouseArea {
-											anchors.fill: parent
-											cursorShape: Qt.PointingHandCursor
-
-											onClicked: netPopup.activeTab = "wifi"
-										}
-									}
-
-									// Bluetooth Icon Tab
-									Rectangle {
-										Layout.fillHeight: true
-										Layout.fillWidth: true
-										color: netPopup.activeTab === "bluetooth" ? "#c4a7e7" : "transparent"
-										radius: 18
-
-										Behavior on color {
-											ColorAnimation {
-												duration: 250
-												easing.type: Easing.OutCubic
-											}
-										}
-
-										Text {
-											anchors.centerIn: parent
-											color: netPopup.activeTab === "bluetooth" ? "#232136" : "#e0def4"
-											font.family: "JetBrainsMono Nerd Font"
-											font.pixelSize: 16
-											text: "󰂯"
-
-											Behavior on color {
-												ColorAnimation {
-													duration: 250
-												}
-											}
-										}
-
-										MouseArea {
-											anchors.fill: parent
-											cursorShape: Qt.PointingHandCursor
-
-											onClicked: netPopup.activeTab = "bluetooth"
-										}
-									}
-								}
+						Behavior on opacity {
+							NumberAnimation {
+								duration: 200
+								easing.type: Easing.OutCubic
 							}
-
-							// Animated Refresh button
-							Rectangle {
-								color: refreshMouse.containsMouse ? "#403d4d" : "transparent"
-								implicitHeight: 36
-								implicitWidth: 36
-								radius: 18
-
-								Behavior on color {
-									ColorAnimation {
-										duration: 150
-									}
-								}
-
-								Text {
-									anchors.centerIn: parent
-									color: "#e0def4"
-									font.family: "JetBrainsMono Nerd Font"
-									font.pixelSize: 16
-									text: ""
-
-									RotationAnimation on rotation {
-										duration: 1000
-										from: 0
-										loops: Animation.Infinite
-										running: (netPopup.activeTab === "wifi" && tabLoader.item && tabLoader.item.isScanning) || (netPopup.activeTab === "bluetooth" && BluezQt.Manager.usableAdapter && BluezQt.Manager.usableAdapter.discovering)
-										to: 360
-									}
-								}
-
-								MouseArea {
-									id: refreshMouse
-
-									anchors.fill: parent
-									cursorShape: Qt.PointingHandCursor
-									hoverEnabled: true
-
-									onClicked: {
-										if (netPopup.activeTab === "wifi") {
-											if (tabLoader.item && tabLoader.item.updateWifiList)
-												tabLoader.item.updateWifiList();
-										} else if (netPopup.activeTab === "bluetooth") {
-											if (tabLoader.item && tabLoader.item.updateBluetoothList)
-												tabLoader.item.updateBluetoothList();
-										}
-									}
-								}
+						}
+						Behavior on scale {
+							NumberAnimation {
+								duration: 200
+								easing.type: Easing.OutBack
+							}
+						}
+						Behavior on y {
+							NumberAnimation {
+								duration: 250
+								easing.type: Easing.OutCubic
 							}
 						}
 
-						// Content area
-						Item {
-							Layout.fillHeight: true
-							Layout.fillWidth: true
+						Component.onCompleted: isLoaded = true
 
-							Loader {
-								id: tabLoader
+						ColumnLayout {
+							anchors.fill: parent
+							anchors.margins: 12
+							spacing: 12
 
-								anchors.fill: parent
-								sourceComponent: netPopup.activeTab === "wifi" ? wifiComponent : bluetoothComponent
+							RowLayout {
+								Layout.fillWidth: true
+								spacing: 8
+
+								Rectangle {
+									Layout.fillWidth: true
+									color: "#393552"
+									implicitHeight: 36
+									radius: 18
+
+									RowLayout {
+										anchors.fill: parent
+										spacing: 4
+
+										Rectangle {
+											Layout.fillHeight: true
+											Layout.fillWidth: true
+											color: netPopup.activeTab === "wifi" ? "#c4a7e7" : "transparent"
+											radius: 18
+
+											Behavior on color {
+												ColorAnimation {
+													duration: 250
+													easing.type: Easing.OutCubic
+												}
+											}
+
+											Text {
+												anchors.centerIn: parent
+												color: netPopup.activeTab === "wifi" ? "#232136" : "#e0def4"
+												font.family: "JetBrainsMono Nerd Font"
+												font.pixelSize: 16
+												text: "󰖩"
+											}
+
+											MouseArea {
+												anchors.fill: parent
+												cursorShape: Qt.PointingHandCursor
+
+												onClicked: netPopup.activeTab = "wifi"
+											}
+										}
+
+										Rectangle {
+											Layout.fillHeight: true
+											Layout.fillWidth: true
+											color: netPopup.activeTab === "bluetooth" ? "#c4a7e7" : "transparent"
+											radius: 18
+
+											Behavior on color {
+												ColorAnimation {
+													duration: 250
+													easing.type: Easing.OutCubic
+												}
+											}
+
+											Text {
+												anchors.centerIn: parent
+												color: netPopup.activeTab === "bluetooth" ? "#232136" : "#e0def4"
+												font.family: "JetBrainsMono Nerd Font"
+												font.pixelSize: 16
+												text: "󰂯"
+											}
+
+											MouseArea {
+												anchors.fill: parent
+												cursorShape: Qt.PointingHandCursor
+
+												onClicked: netPopup.activeTab = "bluetooth"
+											}
+										}
+									}
+								}
+
+								Rectangle {
+									color: refreshMouse.containsMouse ? "#403d4d" : "transparent"
+									implicitHeight: 36
+									implicitWidth: 36
+									radius: 18
+
+									Behavior on color {
+										ColorAnimation {
+											duration: 150
+										}
+									}
+
+									Text {
+										anchors.centerIn: parent
+										color: "#e0def4"
+										font.family: "JetBrainsMono Nerd Font"
+										font.pixelSize: 16
+										text: ""
+
+										RotationAnimation on rotation {
+											duration: 1000
+											from: 0
+											loops: Animation.Infinite
+											running: (netPopup.activeTab === "wifi" && tabLoader.item && tabLoader.item.isScanning) || (netPopup.activeTab === "bluetooth" && BluezQt.Manager.usableAdapter && BluezQt.Manager.usableAdapter.discovering)
+											to: 360
+										}
+									}
+
+									MouseArea {
+										id: refreshMouse
+
+										anchors.fill: parent
+										cursorShape: Qt.PointingHandCursor
+										hoverEnabled: true
+
+										onClicked: {
+											if (netPopup.activeTab === "wifi") {
+												if (tabLoader.item && tabLoader.item.updateWifiList)
+													tabLoader.item.updateWifiList();
+											} else if (netPopup.activeTab === "bluetooth") {
+												if (tabLoader.item && tabLoader.item.updateBluetoothList)
+													tabLoader.item.updateBluetoothList();
+											}
+										}
+									}
+								}
+							}
+
+							Item {
+								Layout.fillHeight: true
+								Layout.fillWidth: true
+
+								Loader {
+									id: tabLoader
+
+									anchors.fill: parent
+									sourceComponent: netPopup.activeTab === "wifi" ? wifiComponent : bluetoothComponent
+								}
 							}
 						}
 					}
@@ -1054,7 +1051,6 @@ PanelWindow {
 
 						function updateWifiList() {
 							if (wifiDevice) {
-								// Toggle scanner off and back on to force an immediate new scan
 								wifiDevice.scannerEnabled = false;
 								wifiDevice.scannerEnabled = true;
 								isScanning = true;
@@ -1084,8 +1080,6 @@ PanelWindow {
 						}
 
 						ListView {
-							id: wifiListView
-
 							anchors.fill: parent
 							clip: true
 							model: wifiDevice ? wifiDevice.networks : null
@@ -1161,7 +1155,6 @@ PanelWindow {
 							}
 						}
 
-						// Animated Password Input Overlay
 						Rectangle {
 							anchors.fill: parent
 							color: "#CC232136"
@@ -1170,25 +1163,6 @@ PanelWindow {
 							scale: visible ? 1 : 0.95
 							visible: wifiRoot.passwordVisible
 							z: 1
-
-							Behavior on opacity {
-								NumberAnimation {
-									duration: 200
-									easing.type: Easing.OutCubic
-								}
-							}
-							Behavior on scale {
-								NumberAnimation {
-									duration: 250
-									easing.type: Easing.OutBack
-								}
-							}
-
-							onVisibleChanged: {
-								if (visible) {
-									passwordInput.forceActiveFocus();
-								}
-							}
 
 							ColumnLayout {
 								anchors.centerIn: parent
@@ -1292,7 +1266,6 @@ PanelWindow {
 					}
 				}
 
-				// Bluetooth Component
 				Component {
 					id: bluetoothComponent
 
@@ -1324,7 +1297,6 @@ PanelWindow {
 							if (!bluetoothModel)
 								return;
 							let insertIdx = 0;
-
 							for (let i = 0; i < bluetoothModel.count; ++i) {
 								if (bluetoothModel.get(i).paired && bluetoothModel.get(i).connected) {
 									if (i > insertIdx)
@@ -1332,7 +1304,6 @@ PanelWindow {
 									insertIdx++;
 								}
 							}
-
 							for (let i = insertIdx; i < bluetoothModel.count; ++i) {
 								if (bluetoothModel.get(i).paired && !bluetoothModel.get(i).connected) {
 									if (i > insertIdx)
@@ -1441,13 +1412,6 @@ PanelWindow {
 							model: bluetoothModel
 							spacing: 6
 
-							add: Transition {
-								NumberAnimation {
-									duration: 250
-									easing.type: Easing.OutCubic
-									properties: "y"
-								}
-							}
 							delegate: Rectangle {
 								required property var model
 
@@ -1455,12 +1419,6 @@ PanelWindow {
 								implicitHeight: 40
 								radius: 8
 								width: ListView.view.width
-
-								Behavior on color {
-									ColorAnimation {
-										duration: 150
-									}
-								}
 
 								RowLayout {
 									anchors.fill: parent
@@ -1497,12 +1455,6 @@ PanelWindow {
 										implicitWidth: 28
 										radius: 14
 										visible: model.paired
-
-										Behavior on color {
-											ColorAnimation {
-												duration: 150
-											}
-										}
 
 										Text {
 											anchors.centerIn: parent
@@ -1558,13 +1510,6 @@ PanelWindow {
 											}
 										}
 									}
-								}
-							}
-							move: Transition {
-								NumberAnimation {
-									duration: 250
-									easing.type: Easing.OutCubic
-									properties: "y"
 								}
 							}
 						}
@@ -1628,8 +1573,6 @@ PanelWindow {
 				id: calPopup
 
 				property var daysModel: []
-
-				// Calendar Logic
 				property var displayedDate: new Date()
 				property var selectedDate: new Date()
 
@@ -1642,7 +1585,6 @@ PanelWindow {
 					let today = new Date();
 					let arr = [];
 
-					// Previous Month Fillers
 					for (let i = firstDay - 1; i >= 0; i--) {
 						let date = new Date(displayedDate.getFullYear(), displayedDate.getMonth() - 1, daysInPrevMonth - i);
 						arr.push({
@@ -1653,7 +1595,6 @@ PanelWindow {
 						});
 					}
 
-					// Current Month
 					for (let i = 1; i <= daysInMonth; i++) {
 						let date = new Date(displayedDate.getFullYear(), displayedDate.getMonth(), i);
 						let isToday = (i === today.getDate() && displayedDate.getMonth() === today.getMonth() && displayedDate.getFullYear() === today.getFullYear());
@@ -1665,7 +1606,6 @@ PanelWindow {
 						});
 					}
 
-					// Next Month Fillers
 					let remaining = 42 - arr.length;
 					for (let i = 1; i <= remaining; i++) {
 						let date = new Date(displayedDate.getFullYear(), displayedDate.getMonth() + 1, i);
@@ -1706,177 +1646,171 @@ PanelWindow {
 					onTriggered: calPopup.visible = false
 				}
 
-				Rectangle {
-					id: calPopupContent
+				Loader {
+					id: calPopupLoader
 
-					readonly property bool isClosing: calCloseTimer.running
-
+					active: calPopup.visible
 					anchors.fill: parent
-					clip: true
-					color: "#CC232136"
-					opacity: (calPopup.visible && !isClosing) ? 1 : 0
-					radius: 12
-					scale: (calPopup.visible && !isClosing) ? 1 : 0.95
-					y: (calPopup.visible && !isClosing) ? 10 : -20
 
-					Behavior on opacity {
-						NumberAnimation {
-							duration: 200
-							easing.type: Easing.OutCubic
-						}
-					}
-					Behavior on scale {
-						NumberAnimation {
-							duration: 200
-							easing.type: Easing.OutBack
-						}
-					}
-					Behavior on y {
-						NumberAnimation {
-							duration: 250
-							easing.type: Easing.OutCubic
-						}
-					}
+					sourceComponent: Rectangle {
+						id: calPopupContent
 
-					ColumnLayout {
+						readonly property bool isClosing: calCloseTimer.running
+						property bool isLoaded: false
+
 						anchors.fill: parent
-						anchors.margins: 16
-						spacing: 16
+						clip: true
+						color: "#CC232136"
+						opacity: (isLoaded && !isClosing) ? 1 : 0
+						radius: 12
+						scale: (isLoaded && !isClosing) ? 1 : 0.95
+						y: (isLoaded && !isClosing) ? 10 : -20
 
-						// Month/Year Navigation Header
-						RowLayout {
-							Layout.fillWidth: true
-
-							Text {
-								color: prevMonthMa.containsMouse ? "#c4a7e7" : "#908caa"
-								font.family: "JetBrainsMono Nerd Font"
-								font.pixelSize: 16
-								text: ""
-
-								Behavior on color {
-									ColorAnimation {
-										duration: 150
-									}
-								}
-
-								MouseArea {
-									id: prevMonthMa
-
-									anchors.fill: parent
-									cursorShape: Qt.PointingHandCursor
-									hoverEnabled: true
-
-									onClicked: {
-										calPopup.displayedDate = new Date(calPopup.displayedDate.getFullYear(), calPopup.displayedDate.getMonth() - 1, 1);
-										calPopup.updateCalendar();
-									}
-								}
+						Behavior on opacity {
+							NumberAnimation {
+								duration: 200
+								easing.type: Easing.OutCubic
 							}
-
-							Text {
-								Layout.fillWidth: true
-								color: "#e0def4"
-								font.bold: true
-								font.pixelSize: 15
-								horizontalAlignment: Text.AlignHCenter
-								text: Qt.formatDateTime(calPopup.displayedDate, "MMMM yyyy")
+						}
+						Behavior on scale {
+							NumberAnimation {
+								duration: 200
+								easing.type: Easing.OutBack
 							}
-
-							Text {
-								color: nextMonthMa.containsMouse ? "#c4a7e7" : "#908caa"
-								font.family: "JetBrainsMono Nerd Font"
-								font.pixelSize: 16
-								text: ""
-
-								Behavior on color {
-									ColorAnimation {
-										duration: 150
-									}
-								}
-
-								MouseArea {
-									id: nextMonthMa
-
-									anchors.fill: parent
-									cursorShape: Qt.PointingHandCursor
-									hoverEnabled: true
-
-									onClicked: {
-										calPopup.displayedDate = new Date(calPopup.displayedDate.getFullYear(), calPopup.displayedDate.getMonth() + 1, 1);
-										calPopup.updateCalendar();
-									}
-								}
+						}
+						Behavior on y {
+							NumberAnimation {
+								duration: 250
+								easing.type: Easing.OutCubic
 							}
 						}
 
-						// Calendar Grid
-						GridLayout {
-							Layout.fillWidth: true
-							columnSpacing: 4
-							columns: 7
-							rowSpacing: 8
+						Component.onCompleted: isLoaded = true
 
-							// Day of Week Labels
-							Repeater {
-								model: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+						ColumnLayout {
+							anchors.fill: parent
+							anchors.margins: 16
+							spacing: 16
+
+							RowLayout {
+								Layout.fillWidth: true
 
 								Text {
-									required property string modelData
-
-									Layout.fillWidth: true
-									color: "#908caa"
-									font.bold: true
-									font.pixelSize: 12
-									horizontalAlignment: Text.AlignHCenter
-									text: modelData
-								}
-							}
-
-							// Days Grid
-							Repeater {
-								model: calPopup.daysModel
-
-								Item {
-									readonly property bool isSelected: modelData.date.getTime() === calPopup.selectedDate.getTime()
-									readonly property bool isToday: modelData.isToday
-									required property var modelData
-
-									Layout.fillWidth: true
-									Layout.preferredHeight: width
-
-									Rectangle {
-										anchors.centerIn: parent
-										color: parent.isSelected ? "#ebbcba" : (parent.isToday ? "#9ccfd8" : "transparent")
-										height: 30
-										radius: 15
-										width: 30
-
-										Text {
-											anchors.centerIn: parent
-											color: (parent.parent.isToday || parent.parent.isSelected) ? "#232136" : (parent.parent.modelData.isCurrent ? "#e0def4" : "#6e6a86")
-											font.bold: parent.parent.isToday || parent.parent.isSelected
-											font.pixelSize: 13
-											text: parent.parent.modelData.day
-										}
-									}
+									color: prevMonthMa.containsMouse ? "#c4a7e7" : "#908caa"
+									font.family: "JetBrainsMono Nerd Font"
+									font.pixelSize: 16
+									text: ""
 
 									MouseArea {
+										id: prevMonthMa
+
 										anchors.fill: parent
 										cursorShape: Qt.PointingHandCursor
+										hoverEnabled: true
 
 										onClicked: {
-											let d = new Date(parent.modelData.date);
-											d.setHours(0, 0, 0, 0);
-											calPopup.selectedDate = d;
+											calPopup.displayedDate = new Date(calPopup.displayedDate.getFullYear(), calPopup.displayedDate.getMonth() - 1, 1);
+											calPopup.updateCalendar();
+										}
+									}
+								}
+
+								Text {
+									Layout.fillWidth: true
+									color: "#e0def4"
+									font.bold: true
+									font.pixelSize: 15
+									horizontalAlignment: Text.AlignHCenter
+									text: Qt.formatDateTime(calPopup.displayedDate, "MMMM yyyy")
+								}
+
+								Text {
+									color: nextMonthMa.containsMouse ? "#c4a7e7" : "#908caa"
+									font.family: "JetBrainsMono Nerd Font"
+									font.pixelSize: 16
+									text: ""
+
+									MouseArea {
+										id: nextMonthMa
+
+										anchors.fill: parent
+										cursorShape: Qt.PointingHandCursor
+										hoverEnabled: true
+
+										onClicked: {
+											calPopup.displayedDate = new Date(calPopup.displayedDate.getFullYear(), calPopup.displayedDate.getMonth() + 1, 1);
+											calPopup.updateCalendar();
 										}
 									}
 								}
 							}
-						}
 
-						Item {
-							Layout.fillHeight: true
-						} // Bottom spacer
+							GridLayout {
+								Layout.fillWidth: true
+								columnSpacing: 4
+								columns: 7
+								rowSpacing: 8
+
+								Repeater {
+									model: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+
+									Text {
+										required property string modelData
+
+										Layout.fillWidth: true
+										color: "#908caa"
+										font.bold: true
+										font.pixelSize: 12
+										horizontalAlignment: Text.AlignHCenter
+										text: modelData
+									}
+								}
+
+								Repeater {
+									model: calPopup.daysModel
+
+									Item {
+										readonly property bool isSelected: modelData.date.getTime() === calPopup.selectedDate.getTime()
+										readonly property bool isToday: modelData.isToday
+										required property var modelData
+
+										Layout.fillWidth: true
+										Layout.preferredHeight: width
+
+										Rectangle {
+											anchors.centerIn: parent
+											color: parent.isSelected ? "#ebbcba" : (parent.isToday ? "#9ccfd8" : "transparent")
+											height: 30
+											radius: 15
+											width: 30
+
+											Text {
+												anchors.centerIn: parent
+												color: (parent.parent.isToday || parent.parent.isSelected) ? "#232136" : (parent.parent.modelData.isCurrent ? "#e0def4" : "#6e6a86")
+												font.bold: parent.parent.isToday || parent.parent.isSelected
+												font.pixelSize: 13
+												text: parent.parent.modelData.day
+											}
+										}
+
+										MouseArea {
+											anchors.fill: parent
+											cursorShape: Qt.PointingHandCursor
+
+											onClicked: {
+												let d = new Date(parent.modelData.date);
+												d.setHours(0, 0, 0, 0);
+												calPopup.selectedDate = d;
+											}
+										}
+									}
+								}
+							}
+
+							Item {
+								Layout.fillHeight: true
+							}
+						}
 					}
 				}
 			}
@@ -1952,538 +1886,474 @@ PanelWindow {
 					onTriggered: sysPopup.visible = false
 				}
 
-				Rectangle {
-					id: sysPopupContent
+				Loader {
+					id: sysPopupLoader
 
-					property real cpuUsage: 0
-					property real diskUsage: 0
-					readonly property bool isClosing: sysCloseTimer.running
-					property real netRx: 0
-					property real netTx: 0
-					property real ramMax: 1
-					property real ramUsage: 0
-					property real sysTemp: 0
-					property string sysUptime: "0h 0m"
-
-					function formatBytes(bytes) {
-						if (bytes === 0)
-							return "0 B/s";
-						const k = 1024;
-						const sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
-						const i = Math.floor(Math.log(bytes) / Math.log(k));
-						return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-					}
-
+					active: sysPopup.visible
 					anchors.fill: parent
-					clip: true
-					color: "#CC232136"
-					opacity: (sysPopup.visible && !isClosing) ? 1 : 0
-					radius: 12
-					scale: (sysPopup.visible && !isClosing) ? 1 : 0.95
-					y: (sysPopup.visible && !isClosing) ? 10 : -20
 
-					Behavior on opacity {
-						NumberAnimation {
-							duration: 200
-							easing.type: Easing.OutCubic
+					sourceComponent: Rectangle {
+						id: sysPopupContent
+
+						property real cpuUsage: 0
+						property real diskUsage: 0
+						readonly property bool isClosing: sysCloseTimer.running
+						property bool isLoaded: false
+						property real netRx: 0
+						property real netTx: 0
+						property real ramMax: 1
+						property real ramUsage: 0
+						property real sysTemp: 0
+						property string sysUptime: "0h 0m"
+
+						function formatBytes(bytes) {
+							if (bytes === 0)
+								return "0 B/s";
+							const k = 1024;
+							const sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
+							const i = Math.floor(Math.log(bytes) / Math.log(k));
+							return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 						}
-					}
-					Behavior on scale {
-						NumberAnimation {
-							duration: 200
-							easing.type: Easing.OutBack
-						}
-					}
-					Behavior on y {
-						NumberAnimation {
-							duration: 250
-							easing.type: Easing.OutCubic
-						}
-					}
 
-					FileView {
-						id: sysstatFile
-
-						path: "/dev/shm/sysstat.json"
-						printErrors: false
-						watchChanges: true
-
-						onFileChanged: reload()
-						onLoaded: {
-							try {
-								const s = JSON.parse(text());
-								sysPopupContent.cpuUsage = s.cpu ?? 0;
-								sysPopupContent.ramUsage = s.ram ?? 0;
-								sysPopupContent.ramMax = s.ramMax ?? 1;
-								sysPopupContent.diskUsage = s.disk ?? 0;
-								sysPopupContent.sysUptime = s.uptime ?? "0h 0m";
-								sysPopupContent.sysTemp = (s.temp ?? 0) / 1000.0;
-								sysPopupContent.netRx = s.rx ?? 0;
-								sysPopupContent.netTx = s.tx ?? 0;
-							} catch (e) {
-								console.error("sysstat parse error:", e);
-							}
-						}
-					}
-
-					Timer {
-						interval: 2000
-						repeat: true
-						running: sysPopup.visible && !sysCloseTimer.running
-
-						onTriggered: sysstatFile.reload()
-					}
-
-					ColumnLayout {
 						anchors.fill: parent
-						anchors.margins: 16
-						spacing: 16
+						clip: true
+						color: "#CC232136"
+						opacity: (isLoaded && !isClosing) ? 1 : 0
+						radius: 12
+						scale: (isLoaded && !isClosing) ? 1 : 0.95
+						y: (isLoaded && !isClosing) ? 10 : -20
 
-						// CPU
-						RowLayout {
-							Layout.fillWidth: true
-							spacing: 12
-
-							Text {
-								Layout.preferredWidth: 20
-								color: "#eb6f92"
-								font.family: "JetBrainsMono Nerd Font"
-								font.pixelSize: 16
-								text: ""
+						Behavior on opacity {
+							NumberAnimation {
+								duration: 200
+								easing.type: Easing.OutCubic
 							}
-
-							Rectangle {
-								Layout.fillWidth: true
-								color: "#393552"
-								implicitHeight: 8
-								radius: 4
-
-								Rectangle {
-									color: "#eb6f92"
-									height: parent.height
-									radius: 4
-									width: parent.width * (sysPopupContent.cpuUsage / 100)
-
-									Behavior on width {
-										NumberAnimation {
-											duration: 500
-											easing.type: Easing.OutCubic
-										}
-									}
-								}
+						}
+						Behavior on scale {
+							NumberAnimation {
+								duration: 200
+								easing.type: Easing.OutBack
 							}
-
-							Text {
-								Layout.preferredWidth: 50
-								color: "#e0def4"
-								font.pixelSize: 12
-								horizontalAlignment: Text.AlignRight
-								text: sysPopupContent.cpuUsage + "%"
+						}
+						Behavior on y {
+							NumberAnimation {
+								duration: 250
+								easing.type: Easing.OutCubic
 							}
 						}
 
-						// RAM
-						RowLayout {
-							Layout.fillWidth: true
-							spacing: 12
+						Component.onCompleted: isLoaded = true
 
-							Text {
-								Layout.preferredWidth: 20
-								color: "#f6c177"
-								font.family: "JetBrainsMono Nerd Font"
-								font.pixelSize: 16
-								text: ""
-							}
+						FileView {
+							id: sysstatFile
 
-							Rectangle {
-								Layout.fillWidth: true
-								color: "#393552"
-								implicitHeight: 8
-								radius: 4
+							path: "/dev/shm/sysstat.json"
+							printErrors: false
+							watchChanges: true
 
-								Rectangle {
-									color: "#f6c177"
-									height: parent.height
-									radius: 4
-									width: parent.width * (sysPopupContent.ramUsage / sysPopupContent.ramMax)
-
-									Behavior on width {
-										NumberAnimation {
-											duration: 500
-											easing.type: Easing.OutCubic
-										}
-									}
-								}
-							}
-
-							Text {
-								Layout.preferredWidth: 50
-								color: "#e0def4"
-								font.pixelSize: 12
-								horizontalAlignment: Text.AlignRight
-								text: Math.round((sysPopupContent.ramUsage / sysPopupContent.ramMax) * 100) + "%"
-							}
-						}
-
-						// Disk
-						RowLayout {
-							Layout.fillWidth: true
-							spacing: 12
-
-							Text {
-								Layout.preferredWidth: 20
-								color: "#c4a7e7"
-								font.family: "JetBrainsMono Nerd Font"
-								font.pixelSize: 16
-								text: "󰋊"
-							}
-
-							Rectangle {
-								Layout.fillWidth: true
-								color: "#393552"
-								implicitHeight: 8
-								radius: 4
-
-								Rectangle {
-									color: "#c4a7e7"
-									height: parent.height
-									radius: 4
-									width: parent.width * (sysPopupContent.diskUsage / 100)
-
-									Behavior on width {
-										NumberAnimation {
-											duration: 500
-											easing.type: Easing.OutCubic
-										}
-									}
-								}
-							}
-
-							Text {
-								Layout.preferredWidth: 50
-								color: "#e0def4"
-								font.pixelSize: 12
-								horizontalAlignment: Text.AlignRight
-								text: sysPopupContent.diskUsage + "%"
-							}
-						}
-
-						Item {
-							Layout.fillHeight: true
-						}
-
-						// Stats
-						GridLayout {
-							Layout.fillWidth: true
-							columnSpacing: 16
-							columns: 2
-							rowSpacing: 12
-
-							// Uptime
-							RowLayout {
-								Layout.fillWidth: true
-								spacing: 8
-
-								Text {
-									color: "#f6c177"
-									font.family: "JetBrainsMono Nerd Font"
-									font.pixelSize: 18
-									text: "󰔚"
-								}
-
-								Text {
-									Layout.fillWidth: true
-									color: "#e0def4"
-									elide: Text.ElideRight
-									font.bold: false
-									font.pixelSize: 13
-									text: "Up: " + sysPopupContent.sysUptime
-								}
-							}
-
-							// Temperature
-							RowLayout {
-								Layout.fillWidth: true
-								spacing: 8
-
-								Text {
-									color: "#ea9a97"
-									font.family: "JetBrainsMono Nerd Font"
-									font.pixelSize: 18
-									text: ""
-								}
-
-								Text {
-									Layout.fillWidth: true
-									color: "#e0def4"
-									font.bold: false
-									font.pixelSize: 13
-									text: Math.round(sysPopupContent.sysTemp) + "°C"
-								}
-							}
-
-							// Download speed
-							RowLayout {
-								Layout.fillWidth: true
-								spacing: 8
-
-								Text {
-									color: "#9ccfd8"
-									font.family: "JetBrainsMono Nerd Font"
-									font.pixelSize: 16
-									text: "󰁅"
-								}
-
-								Text {
-									Layout.fillWidth: true
-									color: "#e0def4"
-									font.pixelSize: 12
-									text: sysPopupContent.formatBytes(sysPopupContent.netRx)
-								}
-							}
-
-							// Upload speed
-							RowLayout {
-								Layout.fillWidth: true
-								spacing: 8
-
-								Text {
-									color: "#eb6f92"
-									font.family: "JetBrainsMono Nerd Font"
-									font.pixelSize: 16
-									text: "󰁝"
-								}
-
-								Text {
-									Layout.fillWidth: true
-									color: "#e0def4"
-									font.pixelSize: 12
-									text: sysPopupContent.formatBytes(sysPopupContent.netTx)
+							onFileChanged: reload()
+							onLoaded: {
+								try {
+									const s = JSON.parse(text());
+									sysPopupContent.cpuUsage = s.cpu ?? 0;
+									sysPopupContent.ramUsage = s.ram ?? 0;
+									sysPopupContent.ramMax = s.ramMax ?? 1;
+									sysPopupContent.diskUsage = s.disk ?? 0;
+									sysPopupContent.sysUptime = s.uptime ?? "0h 0m";
+									sysPopupContent.sysTemp = (s.temp ?? 0) / 1000.0;
+									sysPopupContent.netRx = s.rx ?? 0;
+									sysPopupContent.netTx = s.tx ?? 0;
+								} catch (e) {
+									console.error("sysstat parse error:", e);
 								}
 							}
 						}
 
-						Item {
-							Layout.fillHeight: true
+						Timer {
+							interval: 2000
+							repeat: true
+							running: sysPopup.visible && !sysCloseTimer.running
+
+							onTriggered: sysstatFile.reload()
 						}
 
-						Rectangle {
-							Layout.fillWidth: true
-							color: "#393552"
-							implicitHeight: 1
-						}
-
-						Item {
-							Layout.fillHeight: true
-						}
-
-						// Power Actions Row
-						RowLayout {
-							Layout.alignment: Qt.AlignHCenter
-							Layout.fillWidth: true
+						ColumnLayout {
+							anchors.fill: parent
+							anchors.margins: 16
 							spacing: 16
 
-							// Shutdown
-							Rectangle {
-								color: pwrOffMa.containsMouse ? "#eb6f92" : "#393552"
-								implicitHeight: 40
-								implicitWidth: 40
-								radius: 20
-
-								Behavior on color {
-									ColorAnimation {
-										duration: 150
-									}
-								}
+							// CPU
+							RowLayout {
+								Layout.fillWidth: true
+								spacing: 12
 
 								Text {
-									anchors.centerIn: parent
-									color: pwrOffMa.containsMouse ? "#232136" : "#eb6f92"
+									Layout.preferredWidth: 20
+									color: "#eb6f92"
 									font.family: "JetBrainsMono Nerd Font"
-									font.pixelSize: 18
-									text: ""
+									font.pixelSize: 16
+									text: ""
+								}
 
-									Behavior on color {
-										ColorAnimation {
-											duration: 150
+								Rectangle {
+									Layout.fillWidth: true
+									color: "#393552"
+									implicitHeight: 8
+									radius: 4
+
+									Rectangle {
+										color: "#eb6f92"
+										height: parent.height
+										radius: 4
+										width: parent.width * (sysPopupContent.cpuUsage / 100)
+
+										Behavior on width {
+											NumberAnimation {
+												duration: 500
+												easing.type: Easing.OutCubic
+											}
 										}
 									}
 								}
 
-								MouseArea {
-									id: pwrOffMa
+								Text {
+									Layout.preferredWidth: 50
+									color: "#e0def4"
+									font.pixelSize: 12
+									horizontalAlignment: Text.AlignRight
+									text: sysPopupContent.cpuUsage + "%"
+								}
+							}
 
-									anchors.fill: parent
-									cursorShape: Qt.PointingHandCursor
-									hoverEnabled: true
+							// RAM
+							RowLayout {
+								Layout.fillWidth: true
+								spacing: 12
 
-									onClicked: {
-										sysPopup.visible = false;
-										Hyprland.dispatch("exec systemctl poweroff");
+								Text {
+									Layout.preferredWidth: 20
+									color: "#f6c177"
+									font.family: "JetBrainsMono Nerd Font"
+									font.pixelSize: 16
+									text: ""
+								}
+
+								Rectangle {
+									Layout.fillWidth: true
+									color: "#393552"
+									implicitHeight: 8
+									radius: 4
+
+									Rectangle {
+										color: "#f6c177"
+										height: parent.height
+										radius: 4
+										width: parent.width * (sysPopupContent.ramUsage / sysPopupContent.ramMax)
+
+										Behavior on width {
+											NumberAnimation {
+												duration: 500
+												easing.type: Easing.OutCubic
+											}
+										}
+									}
+								}
+
+								Text {
+									Layout.preferredWidth: 50
+									color: "#e0def4"
+									font.pixelSize: 12
+									horizontalAlignment: Text.AlignRight
+									text: Math.round((sysPopupContent.ramUsage / sysPopupContent.ramMax) * 100) + "%"
+								}
+							}
+
+							// Disk
+							RowLayout {
+								Layout.fillWidth: true
+								spacing: 12
+
+								Text {
+									Layout.preferredWidth: 20
+									color: "#c4a7e7"
+									font.family: "JetBrainsMono Nerd Font"
+									font.pixelSize: 16
+									text: "󰋊"
+								}
+
+								Rectangle {
+									Layout.fillWidth: true
+									color: "#393552"
+									implicitHeight: 8
+									radius: 4
+
+									Rectangle {
+										color: "#c4a7e7"
+										height: parent.height
+										radius: 4
+										width: parent.width * (sysPopupContent.diskUsage / 100)
+
+										Behavior on width {
+											NumberAnimation {
+												duration: 500
+												easing.type: Easing.OutCubic
+											}
+										}
+									}
+								}
+
+								Text {
+									Layout.preferredWidth: 50
+									color: "#e0def4"
+									font.pixelSize: 12
+									horizontalAlignment: Text.AlignRight
+									text: sysPopupContent.diskUsage + "%"
+								}
+							}
+
+							Item {
+								Layout.fillHeight: true
+							}
+
+							GridLayout {
+								Layout.fillWidth: true
+								columnSpacing: 16
+								columns: 2
+								rowSpacing: 12
+
+								RowLayout {
+									Layout.fillWidth: true
+									spacing: 8
+
+									Text {
+										color: "#f6c177"
+										font.family: "JetBrainsMono Nerd Font"
+										font.pixelSize: 18
+										text: "󰔚"
+									}
+
+									Text {
+										Layout.fillWidth: true
+										color: "#e0def4"
+										font.pixelSize: 13
+										text: "Up: " + sysPopupContent.sysUptime
+									}
+								}
+
+								RowLayout {
+									Layout.fillWidth: true
+									spacing: 8
+
+									Text {
+										color: "#ea9a97"
+										font.family: "JetBrainsMono Nerd Font"
+										font.pixelSize: 18
+										text: ""
+									}
+
+									Text {
+										Layout.fillWidth: true
+										color: "#e0def4"
+										font.pixelSize: 13
+										text: Math.round(sysPopupContent.sysTemp) + "°C"
+									}
+								}
+
+								RowLayout {
+									Layout.fillWidth: true
+									spacing: 8
+
+									Text {
+										color: "#9ccfd8"
+										font.family: "JetBrainsMono Nerd Font"
+										font.pixelSize: 16
+										text: "󰁅"
+									}
+
+									Text {
+										Layout.fillWidth: true
+										color: "#e0def4"
+										font.pixelSize: 12
+										text: sysPopupContent.formatBytes(sysPopupContent.netRx)
+									}
+								}
+
+								RowLayout {
+									Layout.fillWidth: true
+									spacing: 8
+
+									Text {
+										color: "#eb6f92"
+										font.family: "JetBrainsMono Nerd Font"
+										font.pixelSize: 16
+										text: "󰁝"
+									}
+
+									Text {
+										Layout.fillWidth: true
+										color: "#e0def4"
+										font.pixelSize: 12
+										text: sysPopupContent.formatBytes(sysPopupContent.netTx)
 									}
 								}
 							}
 
-							// Restart
-							Rectangle {
-								color: pwrReMa.containsMouse ? "#f6c177" : "#393552"
-								implicitHeight: 40
-								implicitWidth: 40
-								radius: 20
-
-								Behavior on color {
-									ColorAnimation {
-										duration: 150
-									}
-								}
-
-								Text {
-									anchors.centerIn: parent
-									color: pwrReMa.containsMouse ? "#232136" : "#f6c177"
-									font.family: "JetBrainsMono Nerd Font"
-									font.pixelSize: 18
-									text: ""
-
-									Behavior on color {
-										ColorAnimation {
-											duration: 150
-										}
-									}
-								}
-
-								MouseArea {
-									id: pwrReMa
-
-									anchors.fill: parent
-									cursorShape: Qt.PointingHandCursor
-									hoverEnabled: true
-
-									onClicked: {
-										sysPopup.visible = false;
-										Hyprland.dispatch("exec systemctl reboot");
-									}
-								}
+							Item {
+								Layout.fillHeight: true
 							}
 
-							// Sleep
 							Rectangle {
-								color: pwrSlMa.containsMouse ? "#c4a7e7" : "#393552"
-								implicitHeight: 40
-								implicitWidth: 40
-								radius: 20
-
-								Behavior on color {
-									ColorAnimation {
-										duration: 150
-									}
-								}
-
-								Text {
-									anchors.centerIn: parent
-									color: pwrSlMa.containsMouse ? "#232136" : "#c4a7e7"
-									font.family: "JetBrainsMono Nerd Font"
-									font.pixelSize: 18
-									text: "󰤄"
-
-									Behavior on color {
-										ColorAnimation {
-											duration: 150
-										}
-									}
-								}
-
-								MouseArea {
-									id: pwrSlMa
-
-									anchors.fill: parent
-									cursorShape: Qt.PointingHandCursor
-									hoverEnabled: true
-
-									onClicked: {
-										sysPopup.visible = false;
-										Hyprland.dispatch("exec systemctl suspend");
-									}
-								}
+								Layout.fillWidth: true
+								color: "#393552"
+								implicitHeight: 1
 							}
 
-							// Lock
-							Rectangle {
-								color: pwrLkMa.containsMouse ? "#9ccfd8" : "#393552"
-								implicitHeight: 40
-								implicitWidth: 40
-								radius: 20
-
-								Behavior on color {
-									ColorAnimation {
-										duration: 150
-									}
-								}
-
-								Text {
-									anchors.centerIn: parent
-									color: pwrLkMa.containsMouse ? "#232136" : "#9ccfd8"
-									font.family: "JetBrainsMono Nerd Font"
-									font.pixelSize: 18
-									text: ""
-
-									Behavior on color {
-										ColorAnimation {
-											duration: 150
-										}
-									}
-								}
-
-								MouseArea {
-									id: pwrLkMa
-
-									anchors.fill: parent
-									cursorShape: Qt.PointingHandCursor
-									hoverEnabled: true
-
-									onClicked: {
-										sysPopup.visible = false;
-										Hyprland.dispatch("lock");
-									}
-								}
+							Item {
+								Layout.fillHeight: true
 							}
 
-							// Exit Hyprland
-							Rectangle {
-								color: pwrExMa.containsMouse ? "#ea9a97" : "#393552"
-								implicitHeight: 40
-								implicitWidth: 40
-								radius: 20
+							RowLayout {
+								Layout.alignment: Qt.AlignHCenter
+								Layout.fillWidth: true
+								spacing: 16
 
-								Behavior on color {
-									ColorAnimation {
-										duration: 150
+								Rectangle {
+									color: pwrOffMa.containsMouse ? "#eb6f92" : "#393552"
+									implicitHeight: 40
+									implicitWidth: 40
+									radius: 20
+
+									Text {
+										anchors.centerIn: parent
+										color: pwrOffMa.containsMouse ? "#232136" : "#eb6f92"
+										font.family: "JetBrainsMono Nerd Font"
+										font.pixelSize: 18
+										text: ""
 									}
-								}
 
-								Text {
-									anchors.centerIn: parent
-									color: pwrExMa.containsMouse ? "#232136" : "#ea9a97"
-									font.family: "JetBrainsMono Nerd Font"
-									font.pixelSize: 18
-									text: "󰗽"
+									MouseArea {
+										id: pwrOffMa
 
-									Behavior on color {
-										ColorAnimation {
-											duration: 150
+										anchors.fill: parent
+										cursorShape: Qt.PointingHandCursor
+										hoverEnabled: true
+
+										onClicked: {
+											sysPopup.visible = false;
+											Hyprland.dispatch("exec systemctl poweroff");
 										}
 									}
 								}
 
-								MouseArea {
-									id: pwrExMa
+								Rectangle {
+									color: pwrReMa.containsMouse ? "#f6c177" : "#393552"
+									implicitHeight: 40
+									implicitWidth: 40
+									radius: 20
 
-									anchors.fill: parent
-									cursorShape: Qt.PointingHandCursor
-									hoverEnabled: true
+									Text {
+										anchors.centerIn: parent
+										color: pwrReMa.containsMouse ? "#232136" : "#f6c177"
+										font.family: "JetBrainsMono Nerd Font"
+										font.pixelSize: 18
+										text: ""
+									}
 
-									onClicked: {
-										sysPopup.visible = false;
-										Hyprland.dispatch("exit");
+									MouseArea {
+										id: pwrReMa
+
+										anchors.fill: parent
+										cursorShape: Qt.PointingHandCursor
+										hoverEnabled: true
+
+										onClicked: {
+											sysPopup.visible = false;
+											Hyprland.dispatch("exec systemctl reboot");
+										}
+									}
+								}
+
+								Rectangle {
+									color: pwrSlMa.containsMouse ? "#c4a7e7" : "#393552"
+									implicitHeight: 40
+									implicitWidth: 40
+									radius: 20
+
+									Text {
+										anchors.centerIn: parent
+										color: pwrSlMa.containsMouse ? "#232136" : "#c4a7e7"
+										font.family: "JetBrainsMono Nerd Font"
+										font.pixelSize: 18
+										text: "󰤄"
+									}
+
+									MouseArea {
+										id: pwrSlMa
+
+										anchors.fill: parent
+										cursorShape: Qt.PointingHandCursor
+										hoverEnabled: true
+
+										onClicked: {
+											sysPopup.visible = false;
+											Hyprland.dispatch("exec systemctl suspend");
+										}
+									}
+								}
+
+								Rectangle {
+									color: pwrLkMa.containsMouse ? "#9ccfd8" : "#393552"
+									implicitHeight: 40
+									implicitWidth: 40
+									radius: 20
+
+									Text {
+										anchors.centerIn: parent
+										color: pwrLkMa.containsMouse ? "#232136" : "#9ccfd8"
+										font.family: "JetBrainsMono Nerd Font"
+										font.pixelSize: 18
+										text: ""
+									}
+
+									MouseArea {
+										id: pwrLkMa
+
+										anchors.fill: parent
+										cursorShape: Qt.PointingHandCursor
+										hoverEnabled: true
+
+										onClicked: {
+											sysPopup.visible = false;
+											Hyprland.dispatch("exec systemctl lock");
+										}
+									}
+								}
+
+								Rectangle {
+									color: pwrExMa.containsMouse ? "#ea9a97" : "#393552"
+									implicitHeight: 40
+									implicitWidth: 40
+									radius: 20
+
+									Text {
+										anchors.centerIn: parent
+										color: pwrExMa.containsMouse ? "#232136" : "#ea9a97"
+										font.family: "JetBrainsMono Nerd Font"
+										font.pixelSize: 18
+										text: "󰗽"
+									}
+
+									MouseArea {
+										id: pwrExMa
+
+										anchors.fill: parent
+										cursorShape: Qt.PointingHandCursor
+										hoverEnabled: true
+
+										onClicked: {
+											sysPopup.visible = false;
+											Hyprland.dispatch("exit");
+										}
 									}
 								}
 							}
