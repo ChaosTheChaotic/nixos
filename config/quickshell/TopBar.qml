@@ -1,14 +1,15 @@
 pragma ComponentBehavior: Bound
 
+import org.kde.bluezqt as BluezQt
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
-import Quickshell.Services.Mpris
 import Quickshell.Io
-import Quickshell.Services.UPower
+import Quickshell.Networking
+import Quickshell.Services.Mpris
 import Quickshell.Services.Pipewire
-import org.kde.bluezqt as BluezQt
+import Quickshell.Services.UPower
 
 PanelWindow {
 	id: root
@@ -756,11 +757,20 @@ PanelWindow {
 				anchors.centerIn: parent
 				spacing: 8
 
-				// Wi‑Fi status icon (polled sadly cuz i gave up)
 				Text {
 					id: wifiText
 
-					property bool isWifiOn: false
+					property bool isWifiOn: Networking.wifiEnabled && Networking.wifiHardwareEnabled
+
+					// Just use first wifi device
+					property var wifiDevice: {
+						for (let i = 0; i < Networking.devices.values.length; i++) {
+							let dev = Networking.devices.values[i];
+							if (dev.type === DeviceType.Wifi)
+								return dev;
+						}
+						return null;
+					}
 
 					color: isWifiOn ? "#9ccfd8" : "#6e6a86"
 					font.family: "JetBrainsMono Nerd Font"
@@ -771,26 +781,6 @@ PanelWindow {
 						ColorAnimation {
 							duration: 250
 							easing.type: Easing.OutCubic
-						}
-					}
-
-					Component.onCompleted: wifiStatusProc.running = true
-
-					Timer {
-						interval: 2000
-						repeat: true
-						running: true
-
-						onTriggered: wifiStatusProc.running = true
-					}
-
-					Process {
-						id: wifiStatusProc
-
-						command: ["nmcli", "radio", "wifi"]
-
-						stdout: SplitParser {
-							onRead: data => wifiText.isWifiOn = data.trim() === "enabled"
 						}
 					}
 				}
@@ -991,12 +981,11 @@ PanelWindow {
 									font.pixelSize: 16
 									text: ""
 
-									// Spin animation while scanning
 									RotationAnimation on rotation {
 										duration: 1000
 										from: 0
 										loops: Animation.Infinite
-										running: (netPopup.activeTab === "wifi" && scanProc.running) || (netPopup.activeTab === "bluetooth" && BluezQt.Manager.usableAdapter && BluezQt.Manager.usableAdapter.discovering)
+										running: (netPopup.activeTab === "wifi" && tabLoader.item && tabLoader.item.isScanning) || (netPopup.activeTab === "bluetooth" && BluezQt.Manager.usableAdapter && BluezQt.Manager.usableAdapter.discovering)
 										to: 360
 									}
 								}
@@ -1010,23 +999,11 @@ PanelWindow {
 
 									onClicked: {
 										if (netPopup.activeTab === "wifi") {
-											scanProc.running = true;
-										} else {
-											if (tabLoader.item && tabLoader.item.updateBluetoothList)
-												tabLoader.item.updateBluetoothList();
-										}
-									}
-								}
-
-								Process {
-									id: scanProc
-
-									command: ["nmcli", "device", "wifi", "rescan"]
-
-									onRunningChanged: {
-										if (!running) {
 											if (tabLoader.item && tabLoader.item.updateWifiList)
 												tabLoader.item.updateWifiList();
+										} else if (netPopup.activeTab === "bluetooth") {
+											if (tabLoader.item && tabLoader.item.updateBluetoothList)
+												tabLoader.item.updateBluetoothList();
 										}
 									}
 								}
@@ -1048,175 +1025,62 @@ PanelWindow {
 					}
 				}
 
-				// Wi‑Fi Component
 				Component {
 					id: wifiComponent
 
 					Item {
 						id: wifiRoot
 
-						property string lastAttemptSecurity: ""
-						property string lastAttemptSsid: ""
+						property bool isScanning: false
 						property bool passwordVisible: false
-						property string pendingSecurity: ""
-						property string pendingSsid: ""
-						property var savedSsids: new Set()
-						property string wifiInterface: ""
-
-						function addOrUpdateWifi(ssid, security, signal, active) {
-							let found = false;
-							let isKnown = wifiRoot.savedSsids.has(ssid);
-
-							for (let i = 0; i < wifiModel.count; i++) {
-								if (wifiModel.get(i).ssid === ssid) {
-									wifiModel.set(i, {
-										ssid,
-										security,
-										signal,
-										active,
-										isKnown,
-										seen: true
-									});
-									found = true;
-									break;
-								}
+						property var pendingNetwork: null
+						property var wifiDevice: {
+							for (let i = 0; i < Networking.devices.values.length; i++) {
+								let dev = Networking.devices.values[i];
+								if (dev.type === DeviceType.Wifi)
+									return dev;
 							}
-
-							if (!found) {
-								wifiModel.append({
-									ssid,
-									security,
-									signal,
-									active,
-									isKnown,
-									seen: true
-								});
-							}
-							sortWifiModel();
+							return null;
 						}
 
 						function connectWithPassword() {
-							if (pendingSsid && passwordInput.text) {
-								connectProc.command = ["nmcli", "device", "wifi", "connect", pendingSsid, "password", passwordInput.text];
-								connectProc.running = true;
+							if (wifiRoot.pendingNetwork && passwordInput.text.trim() !== "") {
+								wifiRoot.pendingNetwork.connectWithPsk(passwordInput.text);
 								passwordVisible = false;
 								passwordInput.text = "";
-							}
-						}
-
-						function fetchSavedConnections() {
-							savedConnsProc.running = true;
-						}
-
-						function sortWifiModel() {
-							let insertIdx = 0;
-							for (let i = 0; i < wifiModel.count; ++i) {
-								if (wifiModel.get(i).active) {
-									if (i > insertIdx)
-										wifiModel.move(i, insertIdx, 1);
-									insertIdx++;
-								}
-							}
-							for (let i = insertIdx; i < wifiModel.count; ++i) {
-								if (wifiModel.get(i).isKnown && !wifiModel.get(i).active) {
-									if (i > insertIdx)
-										wifiModel.move(i, insertIdx, 1);
-									insertIdx++;
-								}
+								wifiRoot.pendingNetwork = null;
 							}
 						}
 
 						function updateWifiList() {
-							for (let i = 0; i < wifiModel.count; i++)
-								wifiModel.setProperty(i, "seen", false);
-							wifiListProc.running = true;
+							if (wifiDevice) {
+								// Toggle scanner off and back on to force an immediate new scan
+								wifiDevice.scannerEnabled = false;
+								wifiDevice.scannerEnabled = true;
+								isScanning = true;
+								scanTimer.restart();
+							}
 						}
 
-						Component.onCompleted: ifaceProc.running = true
-
-						ListModel {
-							id: wifiModel
+						Component.onCompleted: {
+							if (wifiDevice) {
+								wifiDevice.scannerEnabled = true;
+								isScanning = true;
+								scanTimer.restart();
+							}
+						}
+						Component.onDestruction: {
+							if (wifiDevice) {
+								wifiDevice.scannerEnabled = false;
+							}
 						}
 
 						Timer {
-							interval: 5000
-							repeat: true
-							running: netPopup.visible && netPopup.activeTab === "wifi"
+							id: scanTimer
 
-							Component.onCompleted: {
-								wifiRoot.updateWifiList();
-								wifiRoot.fetchSavedConnections();
-							}
-							onTriggered: {
-								wifiRoot.updateWifiList();
-								wifiRoot.fetchSavedConnections();
-							}
-						}
+							interval: 4000
 
-						Process {
-							id: savedConnsProc
-
-							command: ["sh", "-c", "nmcli -t -f NAME,TYPE connection show | awk -F: '$2 == \"wifi\" {print $1}'"]
-
-							stdout: SplitParser {
-								onRead: line => {
-									if (line.trim() !== "") {
-										wifiRoot.savedSsids.add(line.trim());
-									}
-								}
-							}
-
-							onRunningChanged: {
-								if (!running) {
-									for (let i = 0; i < wifiModel.count; i++) {
-										let ssid = wifiModel.get(i).ssid;
-										let known = wifiRoot.savedSsids.has(ssid);
-										wifiModel.setProperty(i, "isKnown", known);
-									}
-									wifiRoot.sortWifiModel();
-								}
-							}
-						}
-
-						Process {
-							id: wifiListProc
-
-							command: ["nmcli", "-t", "-f", "SSID,SECURITY,SIGNAL,ACTIVE", "device", "wifi", "list"]
-
-							stdout: SplitParser {
-								onRead: line => {
-									if (line.trim() === "")
-										return;
-									const parts = line.split(":");
-									if (parts.length >= 4) {
-										const ssid = parts[0];
-										const security = parts[1] === "" ? "--" : parts[1];
-										const signal = parseInt(parts[2]) || 0;
-										const active = parts[3] === "yes";
-										wifiRoot.addOrUpdateWifi(ssid, security, signal, active);
-									}
-								}
-							}
-
-							onRunningChanged: {
-								if (!running) {
-									for (let i = wifiModel.count - 1; i >= 0; i--) {
-										if (!wifiModel.get(i).seen)
-											wifiModel.remove(i);
-									}
-									wifiRoot.fetchSavedConnections();
-								}
-							}
-						}
-
-						Process {
-							id: ifaceProc
-
-							command: ["sh", "-c", "nmcli -t -f DEVICE,TYPE device status | grep ':wifi$' | cut -d: -f1 | head -1"]
-
-							stdout: SplitParser {
-								onRead: data => wifiRoot.wifiInterface = data.trim()
-							}
+							onTriggered: wifiRoot.isScanning = false
 						}
 
 						ListView {
@@ -1224,30 +1088,16 @@ PanelWindow {
 
 							anchors.fill: parent
 							clip: true
-							model: wifiModel
+							model: wifiDevice ? wifiDevice.networks : null
 							spacing: 6
-							visible: !wifiRoot.passwordVisible
 
-							add: Transition {
-								NumberAnimation {
-									duration: 250
-									easing.type: Easing.OutCubic
-									properties: "y"
-								}
-							}
 							delegate: Rectangle {
-								required property var model
+								required property var modelData
 
 								color: mouseArea.containsMouse ? "#403d4d" : "transparent"
 								implicitHeight: 40
 								radius: 8
 								width: ListView.view.width
-
-								Behavior on color {
-									ColorAnimation {
-										duration: 150
-									}
-								}
 
 								RowLayout {
 									anchors.fill: parent
@@ -1256,57 +1106,38 @@ PanelWindow {
 									spacing: 8
 
 									Text {
-										color: model.active ? "#9ccfd8" : "#e0def4"
+										color: modelData.connected ? "#9ccfd8" : "#e0def4"
 										font.family: "JetBrainsMono Nerd Font"
 										font.pixelSize: 14
-										text: {
-											if (model.signal >= 80)
-												return "󰤨";
-											if (model.signal >= 60)
-												return "󰤥";
-											if (model.signal >= 40)
-												return "󰤢";
-											if (model.signal >= 20)
-												return "󰤟";
-											return "󰤯";
-										}
+										text: "󰤨"
 									}
 
 									Text {
 										Layout.fillWidth: true
 										color: "#e0def4"
 										elide: Text.ElideRight
-										font.bold: model.active
+										font.bold: modelData.connected
 										font.pixelSize: 13
-										text: model.ssid || "<hidden>"
+										text: modelData.name || "<hidden>"
 									}
 
-									Row {
-										spacing: 4
+									Text {
+										color: "#9ccfd8"
+										font.family: "JetBrainsMono Nerd Font"
+										font.pixelSize: 14
+										text: modelData.connected || modelData.known ? "" : ""
+									}
+								}
 
-										Text {
-											color: (model.security === "--") ? "#9ccfd8" : "#eb6f92"
-											font.family: "JetBrainsMono Nerd Font"
-											font.pixelSize: 12
-											text: {
-												if (model.security === "--")
-													return "";
-												else if (model.isKnown)
-													return "";
-												else
-													return "";
-											}
-											visible: text !== ""
-										}
-
-										Text {
-											color: "#9ccfd8"
-											font.family: "JetBrainsMono Nerd Font"
-											font.pixelSize: 14
-											text: (model.isKnown || model.active) ? "" : ""
-											visible: (model.isKnown || model.active)
+								Connections {
+									function onConnectionFailed(reason) {
+										if (reason === ConnectionFailReason.NoSecrets) {
+											wifiRoot.pendingNetwork = modelData;
+											wifiRoot.passwordVisible = true;
 										}
 									}
+
+									target: modelData
 								}
 
 								MouseArea {
@@ -1317,53 +1148,20 @@ PanelWindow {
 									hoverEnabled: true
 
 									onClicked: {
-										if (model.active) {
-											if (wifiRoot.wifiInterface) {
-												disconnectProc.command = ["nmcli", "device", "disconnect", wifiRoot.wifiInterface];
-												disconnectProc.running = true;
-											}
+										if (modelData.connected) {
+											modelData.disconnect();
+										} else if (!modelData.known && modelData.security !== WifiSecurityType.Open) {
+											wifiRoot.pendingNetwork = modelData;
+											wifiRoot.passwordVisible = true;
 										} else {
-											wifiRoot.lastAttemptSsid = model.ssid;
-											wifiRoot.lastAttemptSecurity = model.security;
-											connectProc.command = ["nmcli", "device", "wifi", "connect", model.ssid];
-											connectProc.running = true;
+											modelData.connect();
 										}
 									}
 								}
 							}
-							move: Transition {
-								NumberAnimation {
-									duration: 250
-									easing.type: Easing.OutCubic
-									properties: "y"
-								}
-							}
 						}
 
-						Process {
-							id: disconnectProc
-
-							onRunningChanged: if (!running)
-								wifiRoot.updateWifiList()
-						}
-
-						Process {
-							id: connectProc
-
-							onExited: exitCode => {
-								if (exitCode !== 0 && wifiRoot.lastAttemptSecurity && wifiRoot.lastAttemptSecurity !== "--") {
-									wifiRoot.passwordVisible = true;
-									wifiRoot.pendingSsid = wifiRoot.lastAttemptSsid;
-									wifiRoot.pendingSecurity = wifiRoot.lastAttemptSecurity;
-								}
-								wifiRoot.lastAttemptSsid = "";
-								wifiRoot.lastAttemptSecurity = "";
-							}
-							onRunningChanged: if (!running)
-								wifiRoot.updateWifiList()
-						}
-
-						// Animated Password Screen
+						// Animated Password Input Overlay
 						Rectangle {
 							anchors.fill: parent
 							color: "#CC232136"
@@ -1386,6 +1184,12 @@ PanelWindow {
 								}
 							}
 
+							onVisibleChanged: {
+								if (visible) {
+									passwordInput.forceActiveFocus();
+								}
+							}
+
 							ColumnLayout {
 								anchors.centerIn: parent
 								spacing: 16
@@ -1398,22 +1202,16 @@ PanelWindow {
 									font.bold: true
 									font.pixelSize: 16
 									horizontalAlignment: Text.AlignHCenter
-									text: wifiRoot.pendingSsid
+									text: wifiRoot.pendingNetwork ? wifiRoot.pendingNetwork.name : "Enter Password"
 								}
 
 								Rectangle {
 									Layout.fillWidth: true
-									border.color: passwordInput.focus ? "#c4a7e7" : "transparent"
+									border.color: passwordInput.activeFocus ? "#c4a7e7" : "transparent"
 									border.width: 1
 									color: "#393552"
 									implicitHeight: 36
 									radius: 18
-
-									Behavior on border.color {
-										ColorAnimation {
-											duration: 150
-										}
-									}
 
 									TextInput {
 										id: passwordInput
@@ -1423,7 +1221,6 @@ PanelWindow {
 										anchors.rightMargin: 12
 										color: "#e0def4"
 										echoMode: TextInput.Password
-										focus: true
 										font.pixelSize: 13
 										verticalAlignment: TextInput.AlignVCenter
 
@@ -1431,7 +1228,6 @@ PanelWindow {
 									}
 								}
 
-								// Icon-based Connect/Cancel Buttons
 								RowLayout {
 									Layout.alignment: Qt.AlignHCenter
 									spacing: 24
@@ -1442,24 +1238,12 @@ PanelWindow {
 										implicitWidth: 44
 										radius: 22
 
-										Behavior on color {
-											ColorAnimation {
-												duration: 150
-											}
-										}
-
 										Text {
 											anchors.centerIn: parent
 											color: cancelMouse.containsMouse ? "#232136" : "#eb6f92"
 											font.family: "JetBrainsMono Nerd Font"
 											font.pixelSize: 20
 											text: ""
-
-											Behavior on color {
-												ColorAnimation {
-													duration: 150
-												}
-											}
 										}
 
 										MouseArea {
@@ -1472,6 +1256,7 @@ PanelWindow {
 											onClicked: {
 												wifiRoot.passwordVisible = false;
 												passwordInput.text = "";
+												wifiRoot.pendingNetwork = null;
 											}
 										}
 									}
@@ -1482,12 +1267,6 @@ PanelWindow {
 										implicitWidth: 44
 										radius: 22
 
-										Behavior on color {
-											ColorAnimation {
-												duration: 150
-											}
-										}
-
 										Text {
 											anchors.centerIn: parent
 											color: connectMouse.containsMouse ? "#232136" : "#9ccfd8"
@@ -1495,12 +1274,6 @@ PanelWindow {
 											font.family: "JetBrainsMono Nerd Font"
 											font.pixelSize: 20
 											text: "󰄬"
-
-											Behavior on color {
-												ColorAnimation {
-													duration: 150
-												}
-											}
 										}
 
 										MouseArea {
@@ -1572,10 +1345,12 @@ PanelWindow {
 						function updateBluetoothList() {
 							const adapter = BluezQt.Manager.usableAdapter;
 							if (adapter) {
-								if (adapter.discovering)
+								if (adapter.discovering) {
 									adapter.stopDiscovery();
-								else
+								} else {
 									adapter.startDiscovery();
+									btScanTimer.restart();
+								}
 							}
 							bluetoothModel.clear();
 							for (const device of BluezQt.Manager.devices)
@@ -1598,8 +1373,33 @@ PanelWindow {
 						}
 
 						Component.onCompleted: {
+							const adapter = BluezQt.Manager.usableAdapter;
+							if (adapter) {
+								if (!adapter.discovering)
+									adapter.startDiscovery();
+								btScanTimer.restart();
+							}
 							for (const device of BluezQt.Manager.devices)
 								addDevice(device);
+						}
+						Component.onDestruction: {
+							const adapter = BluezQt.Manager.usableAdapter;
+							if (adapter && adapter.discovering) {
+								adapter.stopDiscovery();
+							}
+						}
+
+						Timer {
+							id: btScanTimer
+
+							interval: 5000
+
+							onTriggered: {
+								const adapter = BluezQt.Manager.usableAdapter;
+								if (adapter && adapter.discovering) {
+									adapter.stopDiscovery();
+								}
+							}
 						}
 
 						ListModel {
