@@ -2001,60 +2001,37 @@ PanelWindow {
 						}
 					}
 
-					Process {
-						command: ["bash", "-c", `
-	    read cpu user nice system idle iowait irq softirq steal guest guest_nice < /proc/stat
-	    prev_idle=\$idle
-	    prev_total=\$((user+nice+system+idle+iowait+irq+softirq+steal))
-	    rx_old=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/rx_bytes 2>/dev/null || echo 0)
-	    tx_old=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/tx_bytes 2>/dev/null || echo 0)
+					FileView {
+						id: sysstatFile
 
-	    while true; do
-	    sleep 2
-	    read cpu user nice system idle iowait irq softirq steal guest guest_nice < /proc/stat
-	    total=\$((user+nice+system+idle+iowait+irq+softirq+steal))
-	    diff_idle=\$((idle - prev_idle))
-	    diff_total=\$((total - prev_total))
-	    cpu_usage=\$((100 * (diff_total - diff_idle) / diff_total))
-	    prev_idle=\$idle
-	    prev_total=\$total
+						path: "/dev/shm/sysstat.json"
+						printErrors: false
+						watchChanges: true
 
-	    read ram ram_max <<< \$(free -m | awk '/Mem:/ {print \$3, \$2}')
-	    disk=\$(df / | awk 'NR==2 {printf "%d", (\$3/\$2)*100}')
-	    temp=\$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo 0)
-
-	    up_val=\$(awk '{d=int(\$1/86400); h=int((\$1%86400)/3600); m=int((\$1%3600)/60); if(d>0) printf "%dd %dh", d, h; else printf "%dh %dm", h, m}' /proc/uptime)
-
-	    rx_new=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/rx_bytes 2>/dev/null || echo 0)
-	    tx_new=\$(awk '{s+=\$1} END {print s}' /sys/class/net/[ew]*/statistics/tx_bytes 2>/dev/null || echo 0)
-	    rx_rate=\$(((rx_new - rx_old) / 2))
-	    tx_rate=\$(((tx_new - tx_old) / 2))
-	    rx_old=\$rx_new; tx_old=\$tx_new
-
-	    printf '{"cpu":%s, "ram":%s, "ram_max":%s, "disk":%s, "temp":%s, "rx":%s, "tx":%s, "uptime":"%s"}\\n' "\${cpu_usage:-0}" "\${ram:-0}" "\${ram_max:-1}" "\${disk:-0}" "\${temp:-0}" "\${rx_rate:-0}" "\${tx_rate:-0}" "\${up_val}"
-	    done
-	    `]
-						running: sysPopup.visible
-
-						stdout: SplitParser {
-							onRead: data => {
-								try {
-									let j = JSON.parse(data);
-									sysPopupContent.cpuUsage = j.cpu;
-									sysPopupContent.ramUsage = j.ram;
-									sysPopupContent.ramMax = j.ram_max;
-									sysPopupContent.diskUsage = j.disk;
-									sysPopupContent.sysTemp = j.temp / 1000;
-									sysPopupContent.netRx = j.rx;
-									sysPopupContent.netTx = j.tx;
-									sysPopupContent.sysUptime = j.uptime || "0h 0m";
-								} catch (e) {
-									console.error("Stats JSON parse error: ", e, " Data:", data);
-								}
+						onFileChanged: reload()
+						onLoaded: {
+							try {
+								const s = JSON.parse(text());
+								sysPopupContent.cpuUsage = s.cpu ?? 0;
+								sysPopupContent.ramUsage = s.ram ?? 0;
+								sysPopupContent.ramMax = s.ramMax ?? 1;
+								sysPopupContent.diskUsage = s.disk ?? 0;
+								sysPopupContent.sysUptime = s.uptime ?? "0h 0m";
+								sysPopupContent.sysTemp = (s.temp ?? 0) / 1000.0;
+								sysPopupContent.netRx = s.rx ?? 0;
+								sysPopupContent.netTx = s.tx ?? 0;
+							} catch (e) {
+								console.error("sysstat parse error:", e);
 							}
 						}
+					}
 
-						Component.onCompleted: running = true
+					Timer {
+						interval: 2000
+						repeat: true
+						running: sysPopup.visible && !sysCloseTimer.running
+
+						onTriggered: sysstatFile.reload()
 					}
 
 					ColumnLayout {
@@ -2294,9 +2271,7 @@ PanelWindow {
 							Layout.fillWidth: true
 							color: "#393552"
 							implicitHeight: 1
-						} // Divider
-
-
+						}
 
 						Item {
 							Layout.fillHeight: true
