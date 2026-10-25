@@ -49,6 +49,10 @@
         alwaysAnimate.enable = true;
         atSomeone.enable = true;
         betterAudioPlayer.enable = true;
+        betterBackreading = {
+          enable = true;
+          channelOpenScrollMode = "default";
+        };
         betterFolders.enable = true;
         betterForwards.enable = true;
         betterGifAltText.enable = true;
@@ -104,6 +108,10 @@
           toolbarDevMenu = true;
         };
         expressionCloner.enable = true;
+        externalPlayer = {
+          enable = true;
+          player = "vlc";
+        };
         fakeNitro = {
           enable = true;
           enableStreamQualityBypass = false;
