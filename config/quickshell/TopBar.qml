@@ -1080,6 +1080,8 @@ PanelWindow {
 						}
 
 						ListView {
+							id: wifiListView
+
 							anchors.fill: parent
 							clip: true
 							model: wifiDevice ? wifiDevice.networks : null
@@ -1152,6 +1154,14 @@ PanelWindow {
 										}
 									}
 								}
+							}
+
+							Component.onCompleted: {
+								contentY = 0;
+								positionViewAtBeginning();
+							}
+							onCountChanged: {
+								contentY = 0;
 							}
 						}
 
