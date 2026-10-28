@@ -41,6 +41,11 @@ rustPlatform.buildRustPackage rec {
     allowBuiltinFetchGit = true;
   };
 
+  patches = [
+    ./bcon-kitty-placeholders.patch
+    ./bcon-kitty-c1-anchored.patch
+  ];
+
   postPatch = ''
         find . -type f -name '*.rs' -exec sed -i 's|"/bin/login"|"/run/current-system/sw/bin/login"|g' {} +
 

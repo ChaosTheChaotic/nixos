@@ -1,0 +1,506 @@
+bcon: fix Kitty Unicode placeholders (U=1), as used by rmpc, yazi, ratatui-image
+
+- a=T with U=1 created a real placement at the cursor and moved the cursor;
+  it now only records a virtual placement.
+- Virtual placements are sized from the image when c=/r= are omitted, and are
+  no longer pruned (text writes, erase, scroll, clear) or drawn as real images.
+- The row/column diacritics table was wrong (110 entries, 74 mismatching
+  Kitty's); it is now Kitty's rowcolumn-diacritics.txt.
+- Placeholder cells without diacritics inherit them from the left neighbour.
+- Tiles are drawn in their own pass after the text flush, for every
+  placeholder cell each frame, merged into one quad per run of cells.
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -4626,55 +4626,9 @@
+                         continue;
+                     }
+                 }
+-                // Unicode placeholder (U+10EEEE) — render image tile instead of glyph
++                // Unicode placeholder (U+10EEEE): drawn as an image tile after the
++                // text flush (see below), never as a glyph
+                 if first_ch == terminal::grid::IMAGE_PLACEHOLDER_CHAR {
+-                    // Decode image ID from foreground color (24-bit RGB)
+-                    let image_id = match cell.fg {
+-                        terminal::grid::Color::Rgb(r, g, b) => {
+-                            ((r as u32) << 16) | ((g as u32) << 8) | (b as u32)
+-                        }
+-                        terminal::grid::Color::Indexed(idx) => idx as u32,
+-                        _ => 0,
+-                    };
+-                    // Decode placement ID from underline color
+-                    let _placement_id = match cell.underline_color {
+-                        Some(terminal::grid::Color::Rgb(r, g, b)) => {
+-                            ((r as u32) << 16) | ((g as u32) << 8) | (b as u32)
+-                        }
+-                        _ => 0,
+-                    };
+-                    // Decode row/col from diacritical marks
+-                    let mut chars = grapheme.chars();
+-                    chars.next(); // skip U+10EEEE
+-                    let img_row = chars.next()
+-                        .and_then(terminal::grid::diacritical_to_index)
+-                        .unwrap_or(0);
+-                    let img_col = chars.next()
+-                        .and_then(terminal::grid::diacritical_to_index)
+-                        .unwrap_or(0);
+-
+-                    // Find the image and draw the appropriate tile
+-                    if image_id > 0 {
+-                        if let Some(image) = term.images.get(image_id) {
+-                            let key = gpu::image_key(render_pane_id.0, image_id);
+-                            if !image_renderer.has_texture(key) {
+-                                image_renderer.upload_image(gl, key, image);
+-                            }
+-                            // Find virtual placement for size info
+-                            let vp = grid.image_placements.iter().find(|p| {
+-                                p.id == image_id && p.is_virtual
+-                            });
+-                            let (total_cols, total_rows) = vp
+-                                .map(|p| (p.width_cells.max(1), p.height_cells.max(1)))
+-                                .unwrap_or((1, 1));
+-                            // Calculate source rectangle (UV coords)
+-                            let u0 = img_col as f32 / total_cols as f32;
+-                            let v0 = img_row as f32 / total_rows as f32;
+-                            let u1 = (img_col + 1) as f32 / total_cols as f32;
+-                            let v1 = (img_row + 1) as f32 / total_rows as f32;
+-                            image_renderer.draw_uv(key, x, y, cell_w, cell_h, u0, v0, u1, v1);
+-                        }
+-                    }
+                     continue;
+                 }
+ 
+@@ -5626,7 +5580,7 @@
+         // === Z-order pass 1: Images with z < 0 (below text) ===
+         image_renderer.begin();
+         for placement in &grid.image_placements {
+-            if placement.z >= 0 {
++            if placement.z >= 0 || placement.is_virtual {
+                 continue;
+             }
+             if term.images.get(placement.id).is_none() {
+@@ -5669,10 +5623,124 @@
+         emoji_atlas.upload_if_dirty(gl);
+         emoji_renderer.flush(gl, &emoji_atlas, screen_w, screen_h);
+ 
++        // === Kitty Unicode placeholder tiles (above text, below z >= 0 images) ===
++        // Scanned every frame, not just the dirty rows, and drawn over the cached
++        // FBO like real placements. Adjacent cells showing consecutive columns of
++        // one image row are merged into a single quad.
++        {
++            let mut tiles = Vec::new();
++            for row in 0..grid.rows() {
++                // Previous cell: (fg, underline color, image row, image col)
++                let mut left: Option<(
++                    terminal::grid::Color,
++                    Option<terminal::grid::Color>,
++                    usize,
++                    usize,
++                )> = None;
++                // Open run: (image id, image row, first image col, first screen col, cells)
++                let mut run: Option<(u32, usize, usize, usize, usize)> = None;
++                // col == cols() closes the last run of the row
++                for col in 0..=grid.cols() {
++                    let mut decoded: Option<(u32, usize, usize)> = None;
++                    if col < grid.cols() {
++                        let cell = term.display_cell(row, col);
++                        if cell.width != 0
++                            && cell.grapheme.chars().next()
++                                == Some(terminal::grid::IMAGE_PLACEHOLDER_CHAR)
++                        {
++                            let image_id = match cell.fg {
++                                terminal::grid::Color::Rgb(r, g, b) => {
++                                    ((r as u32) << 16) | ((g as u32) << 8) | (b as u32)
++                                }
++                                terminal::grid::Color::Indexed(idx) => idx as u32,
++                                _ => 0,
++                            };
++                            let mut chars = cell.grapheme.chars();
++                            chars.next();
++                            let row_mark =
++                                chars.next().and_then(terminal::grid::diacritical_to_index);
++                            let col_mark =
++                                chars.next().and_then(terminal::grid::diacritical_to_index);
++                            // Omitted diacritics are inherited from the left neighbour
++                            // if it has the same colors (same row, next column)
++                            let left_match = left
++                                .filter(|l| l.0 == cell.fg && l.1 == cell.underline_color);
++                            let (img_row, img_col) = match (row_mark, col_mark, left_match) {
++                                (Some(r), Some(c), _) => (r, c),
++                                (Some(r), None, Some(l)) if l.2 == r => (r, l.3 + 1),
++                                (Some(r), None, _) => (r, 0),
++                                (None, None, Some(l)) => (l.2, l.3 + 1),
++                                (None, col_only, _) => (0, col_only.unwrap_or(0)),
++                            };
++                            left = Some((cell.fg, cell.underline_color, img_row, img_col));
++                            decoded = Some((image_id, img_row, img_col));
++                        } else {
++                            left = None;
++                        }
++                    }
++
++                    if let (Some((rid, rrow, rcol0, rscreen0, rlen)), Some((id, ir, ic))) =
++                        (run, decoded)
++                    {
++                        if rid == id && rrow == ir && rcol0 + rlen == ic {
++                            run = Some((rid, rrow, rcol0, rscreen0, rlen + 1));
++                            continue;
++                        }
++                    }
++                    if let Some((rid, rrow, rcol0, rscreen0, rlen)) = run.take() {
++                        if let Some(image) = term.images.get(rid).filter(|_| rid > 0) {
++                            let (total_cols, total_rows) = grid
++                                .image_placements
++                                .iter()
++                                .find(|p| p.id == rid && p.is_virtual)
++                                .map(|p| (p.width_cells.max(1), p.height_cells.max(1)))
++                                .unwrap_or_else(|| {
++                                    (
++                                        ((image.width as f32 / cell_w).ceil() as usize).max(1),
++                                        ((image.height as f32 / cell_h).ceil() as usize).max(1),
++                                    )
++                                });
++                            let len = rlen.min(total_cols.saturating_sub(rcol0));
++                            if len > 0 && rrow < total_rows {
++                                tiles.push((
++                                    rid,
++                                    gpu::image_key(pane_num, rid),
++                                    margin_x + rscreen0 as f32 * cell_w,
++                                    margin_y + row as f32 * cell_h,
++                                    len as f32 * cell_w,
++                                    cell_h,
++                                    rcol0 as f32 / total_cols as f32,
++                                    rrow as f32 / total_rows as f32,
++                                    (rcol0 + len) as f32 / total_cols as f32,
++                                    (rrow + 1) as f32 / total_rows as f32,
++                                ));
++                            }
++                        }
++                    }
++                    if let Some((id, ir, ic)) = decoded {
++                        run = Some((id, ir, ic, col, 1));
++                    }
++                }
++            }
++            for chunk in tiles.chunks(256) {
++                image_renderer.begin();
++                for &(image_id, key, x, y, w, h, u0, v0, u1, v1) in chunk {
++                    // The dirty-texture removal above may have dropped it
++                    if !image_renderer.has_texture(key) {
++                        if let Some(image) = term.images.get(image_id) {
++                            image_renderer.upload_image(gl, key, image);
++                        }
++                    }
++                    image_renderer.draw_uv(key, x, y, w, h, u0, v0, u1, v1);
++                }
++                image_renderer.flush(gl, screen_w, screen_h);
++            }
++        }
++
+         // === Z-order pass 2: Images with z >= 0 (above text) ===
+         image_renderer.begin();
+         for placement in &grid.image_placements {
+-            if placement.z < 0 {
++            if placement.z < 0 || placement.is_virtual {
+                 continue;
+             }
+             if term.images.get(placement.id).is_none() {
+--- a/src/terminal/grid.rs
++++ b/src/terminal/grid.rs
+@@ -108,7 +108,8 @@
+     pub src_y: u32,
+     pub src_w: u32,
+     pub src_h: u32,
+-    /// Virtual placement for Unicode placeholder (U+10EEEE)
++    /// Virtual placement for Unicode placeholder (U+10EEEE). Has no screen
++    /// position (row/col are 0), so erase/scroll/overwrite must leave it alone.
+     pub is_virtual: bool,
+     /// Placement ID (for Unicode placeholder matching)
+     pub placement_id: u32,
+@@ -127,30 +128,59 @@
+ 
+ /// Diacritical marks used for Unicode placeholder row/col encoding.
+ /// These are combining characters with class 230 (above) from Unicode 6.0.0.
+-/// Index in this table = the row/column number.
++/// Index in this table = the row/column number. Must be Kitty's
++/// rowcolumn-diacritics.txt verbatim (sorted; looked up by binary search).
+ const PLACEHOLDER_DIACRITICS: &[char] = &[
+     '\u{0305}', '\u{030D}', '\u{030E}', '\u{0310}', '\u{0312}', '\u{033D}', '\u{033E}',
+     '\u{033F}', '\u{0346}', '\u{034A}', '\u{034B}', '\u{034C}', '\u{0350}', '\u{0351}',
+     '\u{0352}', '\u{0357}', '\u{035B}', '\u{0363}', '\u{0364}', '\u{0365}', '\u{0366}',
+     '\u{0367}', '\u{0368}', '\u{0369}', '\u{036A}', '\u{036B}', '\u{036C}', '\u{036D}',
+-    '\u{036E}', '\u{036F}', '\u{0483}', '\u{0484}', '\u{0485}', '\u{0486}', '\u{0592}',
+-    '\u{0593}', '\u{0594}', '\u{0595}', '\u{0597}', '\u{0598}', '\u{0599}', '\u{059C}',
+-    '\u{059D}', '\u{059E}', '\u{059F}', '\u{05A0}', '\u{05A1}', '\u{05A8}', '\u{05A9}',
+-    '\u{05AB}', '\u{05AC}', '\u{05AF}', '\u{05C4}', '\u{0610}', '\u{0611}', '\u{0612}',
+-    '\u{0613}', '\u{0614}', '\u{0615}', '\u{0616}', '\u{0617}', '\u{0657}', '\u{0658}',
+-    '\u{0659}', '\u{065A}', '\u{065B}', '\u{065D}', '\u{065E}', '\u{06D6}', '\u{06D7}',
+-    '\u{06D8}', '\u{06D9}', '\u{06DA}', '\u{06DB}', '\u{06DC}', '\u{06DF}', '\u{06E0}',
+-    '\u{06E1}', '\u{06E2}', '\u{06E4}', '\u{06E7}', '\u{06E8}', '\u{06EB}', '\u{06EC}',
+-    '\u{0730}', '\u{0731}', '\u{0732}', '\u{0733}', '\u{0734}', '\u{0735}', '\u{0736}',
+-    '\u{0737}', '\u{0738}', '\u{0739}', '\u{073A}', '\u{073B}', '\u{073C}', '\u{073D}',
+-    '\u{073E}', '\u{073F}', '\u{0740}', '\u{0741}', '\u{0743}', '\u{0744}', '\u{0745}',
+-    '\u{0746}', '\u{0747}', '\u{0748}', '\u{0749}', '\u{074A}',
++    '\u{036E}', '\u{036F}', '\u{0483}', '\u{0484}', '\u{0485}', '\u{0486}', '\u{0487}',
++    '\u{0592}', '\u{0593}', '\u{0594}', '\u{0595}', '\u{0597}', '\u{0598}', '\u{0599}',
++    '\u{059C}', '\u{059D}', '\u{059E}', '\u{059F}', '\u{05A0}', '\u{05A1}', '\u{05A8}',
++    '\u{05A9}', '\u{05AB}', '\u{05AC}', '\u{05AF}', '\u{05C4}', '\u{0610}', '\u{0611}',
++    '\u{0612}', '\u{0613}', '\u{0614}', '\u{0615}', '\u{0616}', '\u{0617}', '\u{0657}',
++    '\u{0658}', '\u{0659}', '\u{065A}', '\u{065B}', '\u{065D}', '\u{065E}', '\u{06D6}',
++    '\u{06D7}', '\u{06D8}', '\u{06D9}', '\u{06DA}', '\u{06DB}', '\u{06DC}', '\u{06DF}',
++    '\u{06E0}', '\u{06E1}', '\u{06E2}', '\u{06E4}', '\u{06E7}', '\u{06E8}', '\u{06EB}',
++    '\u{06EC}', '\u{0730}', '\u{0732}', '\u{0733}', '\u{0735}', '\u{0736}', '\u{073A}',
++    '\u{073D}', '\u{073F}', '\u{0740}', '\u{0741}', '\u{0743}', '\u{0745}', '\u{0747}',
++    '\u{0749}', '\u{074A}', '\u{07EB}', '\u{07EC}', '\u{07ED}', '\u{07EE}', '\u{07EF}',
++    '\u{07F0}', '\u{07F1}', '\u{07F3}', '\u{0816}', '\u{0817}', '\u{0818}', '\u{0819}',
++    '\u{081B}', '\u{081C}', '\u{081D}', '\u{081E}', '\u{081F}', '\u{0820}', '\u{0821}',
++    '\u{0822}', '\u{0823}', '\u{0825}', '\u{0826}', '\u{0827}', '\u{0829}', '\u{082A}',
++    '\u{082B}', '\u{082C}', '\u{082D}', '\u{0951}', '\u{0953}', '\u{0954}', '\u{0F82}',
++    '\u{0F83}', '\u{0F86}', '\u{0F87}', '\u{135D}', '\u{135E}', '\u{135F}', '\u{17DD}',
++    '\u{193A}', '\u{1A17}', '\u{1A75}', '\u{1A76}', '\u{1A77}', '\u{1A78}', '\u{1A79}',
++    '\u{1A7A}', '\u{1A7B}', '\u{1A7C}', '\u{1B6B}', '\u{1B6D}', '\u{1B6E}', '\u{1B6F}',
++    '\u{1B70}', '\u{1B71}', '\u{1B72}', '\u{1B73}', '\u{1CD0}', '\u{1CD1}', '\u{1CD2}',
++    '\u{1CDA}', '\u{1CDB}', '\u{1CE0}', '\u{1DC0}', '\u{1DC1}', '\u{1DC3}', '\u{1DC4}',
++    '\u{1DC5}', '\u{1DC6}', '\u{1DC7}', '\u{1DC8}', '\u{1DC9}', '\u{1DCB}', '\u{1DCC}',
++    '\u{1DD1}', '\u{1DD2}', '\u{1DD3}', '\u{1DD4}', '\u{1DD5}', '\u{1DD6}', '\u{1DD7}',
++    '\u{1DD8}', '\u{1DD9}', '\u{1DDA}', '\u{1DDB}', '\u{1DDC}', '\u{1DDD}', '\u{1DDE}',
++    '\u{1DDF}', '\u{1DE0}', '\u{1DE1}', '\u{1DE2}', '\u{1DE3}', '\u{1DE4}', '\u{1DE5}',
++    '\u{1DE6}', '\u{1DFE}', '\u{20D0}', '\u{20D1}', '\u{20D4}', '\u{20D5}', '\u{20D6}',
++    '\u{20D7}', '\u{20DB}', '\u{20DC}', '\u{20E1}', '\u{20E7}', '\u{20E9}', '\u{20F0}',
++    '\u{2CEF}', '\u{2CF0}', '\u{2CF1}', '\u{2DE0}', '\u{2DE1}', '\u{2DE2}', '\u{2DE3}',
++    '\u{2DE4}', '\u{2DE5}', '\u{2DE6}', '\u{2DE7}', '\u{2DE8}', '\u{2DE9}', '\u{2DEA}',
++    '\u{2DEB}', '\u{2DEC}', '\u{2DED}', '\u{2DEE}', '\u{2DEF}', '\u{2DF0}', '\u{2DF1}',
++    '\u{2DF2}', '\u{2DF3}', '\u{2DF4}', '\u{2DF5}', '\u{2DF6}', '\u{2DF7}', '\u{2DF8}',
++    '\u{2DF9}', '\u{2DFA}', '\u{2DFB}', '\u{2DFC}', '\u{2DFD}', '\u{2DFE}', '\u{2DFF}',
++    '\u{A66F}', '\u{A67C}', '\u{A67D}', '\u{A6F0}', '\u{A6F1}', '\u{A8E0}', '\u{A8E1}',
++    '\u{A8E2}', '\u{A8E3}', '\u{A8E4}', '\u{A8E5}', '\u{A8E6}', '\u{A8E7}', '\u{A8E8}',
++    '\u{A8E9}', '\u{A8EA}', '\u{A8EB}', '\u{A8EC}', '\u{A8ED}', '\u{A8EE}', '\u{A8EF}',
++    '\u{A8F0}', '\u{A8F1}', '\u{AAB0}', '\u{AAB2}', '\u{AAB3}', '\u{AAB7}', '\u{AAB8}',
++    '\u{AABE}', '\u{AABF}', '\u{AAC1}', '\u{FE20}', '\u{FE21}', '\u{FE22}', '\u{FE23}',
++    '\u{FE24}', '\u{FE25}', '\u{FE26}', '\u{10A0F}', '\u{10A38}', '\u{1D185}', '\u{1D186}',
++    '\u{1D187}', '\u{1D188}', '\u{1D189}', '\u{1D1AA}', '\u{1D1AB}', '\u{1D1AC}', '\u{1D1AD}',
++    '\u{1D242}', '\u{1D243}', '\u{1D244}',
+ ];
++const _: () = assert!(PLACEHOLDER_DIACRITICS.len() == 297);
+ 
+ /// Decode a diacritical mark to its index in the placeholder table.
+ /// Returns None if the character is not a recognized placeholder diacritical.
+ pub fn diacritical_to_index(ch: char) -> Option<usize> {
+-    PLACEHOLDER_DIACRITICS.iter().position(|&c| c == ch)
++    PLACEHOLDER_DIACRITICS.binary_search(&ch).ok()
+ }
+ 
+ /// Text color
+@@ -1468,7 +1498,7 @@
+                 self.wrapped_lines.fill(false);
+                 // Clear non-overlay image placements
+                 // Overlay images (C=1) are only removed by explicit Kitty delete command
+-                self.image_placements.retain(|p| p.overlay);
++                self.image_placements.retain(|p| p.overlay || p.is_virtual);
+                 // Mark all rows dirty
+                 self.mark_all_dirty();
+             }
+@@ -1544,7 +1574,7 @@
+     fn remove_images_at_row(&mut self, row: usize) {
+         let abs_row = row as u64 + self.scrollback_total;
+         self.image_placements.retain(|p| {
+-            if p.overlay {
++            if p.overlay || p.is_virtual {
+                 return true;
+             }
+             let img_end = p.row + p.height_cells.saturating_sub(1) as u64;
+@@ -1561,7 +1591,7 @@
+         let abs_row = row as u64 + self.scrollback_total;
+         let col_end = col.saturating_add(width);
+         self.image_placements.retain(|p| {
+-            if p.overlay || p.z < 0 {
++            if p.overlay || p.is_virtual || p.z < 0 {
+                 return true;
+             }
+             let img_row_end = p.row + p.height_cells as u64;
+@@ -1642,7 +1672,7 @@
+             // Prune images beyond max_scrollback
+             let min_visible_abs = self.scrollback_total.saturating_sub(self.max_scrollback as u64);
+             self.image_placements.retain(|p| {
+-                if p.overlay {
++                if p.overlay || p.is_virtual {
+                     return true;
+                 }
+                 p.row + p.height_cells as u64 > min_visible_abs
+@@ -1652,7 +1682,7 @@
+             let abs_top = top as u64 + self.scrollback_total;
+             let abs_bottom = bottom as u64 + self.scrollback_total;
+             self.image_placements.retain_mut(|p| {
+-                if p.overlay {
++                if p.overlay || p.is_virtual {
+                     return true;
+                 }
+                 if p.row >= abs_top && p.row <= abs_bottom {
+@@ -2029,7 +2059,7 @@
+         let abs_top = top as u64 + self.scrollback_total;
+         let abs_bottom = bottom as u64 + self.scrollback_total;
+         self.image_placements.retain_mut(|p| {
+-            if p.overlay {
++            if p.overlay || p.is_virtual {
+                 return true;
+             }
+             if p.row >= abs_top && p.row <= abs_bottom {
+@@ -2533,7 +2563,7 @@
+                 let new_row_end = new_row + height_cells as u64;
+                 let mut reuse_pos: Option<(u64, usize)> = None;
+                 self.image_placements.retain(|p| {
+-                    if p.overlay || p.z != z_index {
++                    if p.overlay || p.is_virtual || p.z != z_index {
+                         return true;
+                     }
+                     let p_row_end = p.row + p.height_cells as u64;
+@@ -2557,7 +2587,7 @@
+                 let new_row_end = new_row + height_cells as u64;
+                 let new_col_end = new_col + width_cells;
+                 self.image_placements.retain(|p| {
+-                    if p.overlay || p.z != z_index {
++                    if p.overlay || p.is_virtual || p.z != z_index {
+                         return true;
+                     }
+                     let p_row_end = p.row + p.height_cells as u64;
+--- a/src/terminal/mod.rs
++++ b/src/terminal/mod.rs
+@@ -1279,31 +1279,18 @@
+                     if params.unicode_placement {
+                         // U=1: Create virtual placement (not rendered directly,
+                         // rendered via U+10EEEE characters in the text grid)
+-                        if let Some(image) = self.images.get(id) {
+-                            let placement = grid::ImagePlacement {
++                        if let Some((pixel_width, pixel_height)) =
++                            self.images.get(id).map(|image| (image.width, image.height))
++                        {
++                            self.register_virtual_placement(
+                                 id,
+-                                row: 0,
+-                                col: 0,
+-                                width_cells: display_cols.max(1) as usize,
+-                                height_cells: display_rows.max(1) as usize,
+-                                pixel_width: image.width,
+-                                pixel_height: image.height,
+-                                overlay: false,
+-                                z: params.z_index,
+-                                offset_x: 0,
+-                                offset_y: 0,
+-                                src_x: 0,
+-                                src_y: 0,
+-                                src_w: 0,
+-                                src_h: 0,
+-                                is_virtual: true,
+-                                placement_id: params.placement_id,
+-                                parent_id: 0,
+-                                parent_placement_id: 0,
+-                                rel_h: 0,
+-                                rel_v: 0,
+-                            };
+-                            self.grid.image_placements.push(placement);
++                                pixel_width,
++                                pixel_height,
++                                display_cols,
++                                display_rows,
++                                params.z_index,
++                                params.placement_id,
++                            );
+                         }
+                     } else if params.parent_id > 0 {
+                         // Relative placement: position relative to parent
+@@ -1422,6 +1409,77 @@
+         }
+     }
+ 
++    /// Cell size of a virtual placement: c=/r= if given, otherwise derived from
++    /// the image size (aspect ratio kept when only one of them is given).
++    fn virtual_placement_cells(
++        pixel_width: u32,
++        pixel_height: u32,
++        cell_width: u32,
++        cell_height: u32,
++        cols: u32,
++        rows: u32,
++    ) -> (usize, usize) {
++        let cw = cell_width.max(1) as u64;
++        let ch = cell_height.max(1) as u64;
++        let (pw, ph) = (pixel_width as u64, pixel_height as u64);
++        let (c, r) = match (cols as u64, rows as u64) {
++            (0, 0) => ((pw + cw - 1) / cw, (ph + ch - 1) / ch),
++            (c, 0) if pw > 0 => (c, ((c * cw * ph + pw - 1) / pw + ch - 1) / ch),
++            (0, r) if ph > 0 => (((r * ch * pw + ph - 1) / ph + cw - 1) / cw, r),
++            (c, r) => (c, r),
++        };
++        (c.max(1) as usize, r.max(1) as usize)
++    }
++
++    /// Record a virtual placement (U=1). It draws nothing and does not move the
++    /// cursor: the image is shown by U+10EEEE placeholder cells printed as text.
++    fn register_virtual_placement(
++        &mut self,
++        id: u32,
++        pixel_width: u32,
++        pixel_height: u32,
++        display_cols: u32,
++        display_rows: u32,
++        z: i32,
++        placement_id: u32,
++    ) {
++        let (width_cells, height_cells) = Self::virtual_placement_cells(
++            pixel_width,
++            pixel_height,
++            self.cell_width,
++            self.cell_height,
++            display_cols,
++            display_rows,
++        );
++        self.grid
++            .image_placements
++            .retain(|p| !(p.is_virtual && p.id == id && p.placement_id == placement_id));
++        self.grid.image_placements.push(grid::ImagePlacement {
++            id,
++            row: 0,
++            col: 0,
++            width_cells,
++            height_cells,
++            pixel_width,
++            pixel_height,
++            overlay: false,
++            z,
++            offset_x: 0,
++            offset_y: 0,
++            src_x: 0,
++            src_y: 0,
++            src_w: 0,
++            src_h: 0,
++            is_virtual: true,
++            placement_id,
++            parent_id: 0,
++            parent_placement_id: 0,
++            rel_h: 0,
++            rel_v: 0,
++        });
++        self.grid.mark_all_dirty();
++    }
++
+     /// Handle Kitty decode result.
+     ///
+     /// `client_requested_response` reflects whether the client identified the
+@@ -1479,7 +1537,17 @@
+                 }
+                 self.images.insert(term_img);
+ 
+-                if action == KittyAction::TransmitAndDisplay {
++                if action == KittyAction::TransmitAndDisplay && kitty_img.unicode_placement {
++                    self.register_virtual_placement(
++                        img_id,
++                        width,
++                        height,
++                        display_cols,
++                        display_rows,
++                        kitty_img.z_index,
++                        kitty_img.placement_id,
++                    );
++                } else if action == KittyAction::TransmitAndDisplay {
+                     let superseded = self.grid.place_image(
+                         img_id,
+                         width,

@@ -1,0 +1,103 @@
+bcon: anchor C=1 image placements to the text, like kitty
+
+C=1 placements used a screen-relative row, so they did not scroll with the
+text and survived a screen clear: an image placed near the bottom (e.g. by
+`kitten icat`, which places with C=1 and prints the newlines itself) stayed
+pinned over the prompt. They now use an absolute row, scroll/prune with the
+text and are deleted by ED 2/3. Text writes still do not remove them.
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -4145,11 +4145,8 @@
+             let scrollback_total = grid.scrollback_total();
+             let scroll_offset = term.scroll_offset as u64;
+             grid.image_placements.iter().filter(|p| p.z < 0 && !p.is_virtual).filter_map(|p| {
+-                let display_row = if p.overlay {
+-                    p.row as isize
+-                } else {
+-                    (p.row as i64 - scrollback_total as i64 + scroll_offset as i64) as isize
+-                };
++                let display_row =
++                    (p.row as i64 - scrollback_total as i64 + scroll_offset as i64) as isize;
+                 if display_row < 0 || display_row >= grid.rows() as isize {
+                     return None;
+                 }
+@@ -5587,9 +5584,7 @@
+                 continue;
+             }
+             let pane_rows = grid.rows();
+-            let display_row = if placement.overlay {
+-                placement.row as isize
+-            } else {
++            let display_row = {
+                 let scrollback_total = grid.scrollback_total();
+                 let scroll_offset = term.scroll_offset as u64;
+                 (placement.row as i64 - scrollback_total as i64 + scroll_offset as i64) as isize
+@@ -5747,9 +5742,7 @@
+                 continue;
+             }
+             let pane_rows = grid.rows();
+-            let display_row = if placement.overlay {
+-                placement.row as isize
+-            } else {
++            let display_row = {
+                 let scrollback_total = grid.scrollback_total();
+                 let scroll_offset = term.scroll_offset as u64;
+                 (placement.row as i64 - scrollback_total as i64 + scroll_offset as i64) as isize
+--- a/src/terminal/grid.rs
++++ b/src/terminal/grid.rs
+@@ -1496,9 +1496,8 @@
+                 }
+                 // Clear all wrapped flags
+                 self.wrapped_lines.fill(false);
+-                // Clear non-overlay image placements
+-                // Overlay images (C=1) are only removed by explicit Kitty delete command
+-                self.image_placements.retain(|p| p.overlay || p.is_virtual);
++                // Like kitty, clearing the screen deletes images (C=1 ones too)
++                self.image_placements.retain(|p| p.is_virtual);
+                 // Mark all rows dirty
+                 self.mark_all_dirty();
+             }
+@@ -1667,12 +1666,12 @@
+         // Adjust image placements for scroll
+         if top == 0 && bottom == self.rows - 1 {
+             // Full-screen scroll: increment absolute counter
+-            // Non-overlay images use absolute coords, so no adjustment needed
++            // Images use absolute coords, so no adjustment needed
+             self.scrollback_total += n as u64;
+             // Prune images beyond max_scrollback
+             let min_visible_abs = self.scrollback_total.saturating_sub(self.max_scrollback as u64);
+             self.image_placements.retain(|p| {
+-                if p.overlay || p.is_virtual {
++                if p.is_virtual {
+                     return true;
+                 }
+                 p.row + p.height_cells as u64 > min_visible_abs
+@@ -1682,7 +1681,7 @@
+             let abs_top = top as u64 + self.scrollback_total;
+             let abs_bottom = bottom as u64 + self.scrollback_total;
+             self.image_placements.retain_mut(|p| {
+-                if p.overlay || p.is_virtual {
++                if p.is_virtual {
+                     return true;
+                 }
+                 if p.row >= abs_top && p.row <= abs_bottom {
+@@ -2059,7 +2058,7 @@
+         let abs_top = top as u64 + self.scrollback_total;
+         let abs_bottom = bottom as u64 + self.scrollback_total;
+         self.image_placements.retain_mut(|p| {
+-            if p.overlay || p.is_virtual {
++            if p.is_virtual {
+                 return true;
+             }
+             if p.row >= abs_top && p.row <= abs_bottom {
+@@ -2491,8 +2490,8 @@
+         if do_not_move_cursor {
+             // C=1: place image at cursor position, do not move cursor
+             // Overlay mode: text writes don't remove this image
+-            // Overlay uses screen-relative row (doesn't scroll with text)
+-            let new_row = self.cursor_row as u64;
++            // Anchored to the text (absolute row) like kitty, so it scrolls with it
++            let new_row = self.cursor_row as u64 + self.scrollback_total;
+             let new_col = self.cursor_col;
+             let new_row_end = new_row + height_cells as u64;
+             let new_col_end = new_col + width_cells;
