@@ -289,6 +289,7 @@ in
       enable = true;
       source = inputs.fbb;
       pointerSpeed = -0.7;
+      settings.adblockTtlHours = 48;
     };
   };
 
