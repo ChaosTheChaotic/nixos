@@ -265,7 +265,25 @@ in
 
       polkitPowerRules = true;
       disableBluezSeatMonitoring = true;
-      settings.font.main = "JetBrainsMono NF";
+      settings = {
+        font.main = "JetBrainsMono NF";
+        keybinds = {
+          copy = [ "ctrl+shift+c" ];
+          paste = [ "ctrl+shift+v" ];
+          screenshot = [ "ctrl+shift+s" ];
+          search = [ "ctrl+shift+f" ];
+          scroll_up = [ "ctrl+shift+u" ];
+          scroll_down = [ "ctrl+shift+d" ];
+          split_right = [ "ctrl+shift+enter" ];
+          split_down = [ "ctrl+shift+l" ];
+          close_pane = [ "ctrl+shift+w" ];
+          pane_left = [ "ctrl+w+left" ];
+          pane_right = [ "ctrl+w+right" ];
+          pane_down = [ "ctrl+w+down" ];
+          pane_up = [ "ctrl+w+up" ];
+        };
+        paths.screenshot_dir = "~/Screenshots";
+      };
     };
     framebuffer-browser = {
       enable = true;

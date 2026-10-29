@@ -108,10 +108,6 @@
           toolbarDevMenu = true;
         };
         expressionCloner.enable = true;
-        externalPlayer = {
-          enable = true;
-          player = "vlc";
-        };
         fakeNitro = {
           enable = true;
           enableStreamQualityBypass = false;

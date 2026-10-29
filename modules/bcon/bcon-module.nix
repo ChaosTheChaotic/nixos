@@ -84,7 +84,8 @@ in
       description = ''
         Contents of `/etc/bcon/config.toml`
         See <https://github.com/sanohiro/bcon/blob/main/docs/configuration.md>
-        for the available keys.      '';
+        for the available keys.
+      '';
     };
 
     logLevel = mkOption {
