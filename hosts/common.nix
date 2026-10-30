@@ -7,7 +7,7 @@
 }:
 
 let
-  customPkgs = import ../pkgs/default.nix { inherit pkgs; };
+  customScripts = (import ../pkgs/default.nix { inherit pkgs; }).scripts;
   extraFonts = pkgs.callPackage ../pkgs/fonts.nix {
     stdenvNoCC = pkgs.stdenvNoCC;
     lib = pkgs.lib;
@@ -24,8 +24,7 @@ in
 
   environment = {
     systemPackages = with pkgs; [
-      customPkgs.scripts
-      customPkgs.scriptsManPgs
+      customScripts
       git
       openssl.dev
       man-pages
@@ -65,7 +64,7 @@ in
 
     etc."xdg/xdg-desktop-portal-termfilechooser/config".text = ''
       [filechooser]
-      cmd = ${customPkgs.scripts}/bin/_termfp.sh
+      cmd = ${customScripts}/bin/_termfp.sh
       default_dir = /tmp
     '';
   };
