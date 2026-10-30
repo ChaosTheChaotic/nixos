@@ -87,7 +87,9 @@
               }
               // systemExtraSpecialArgs;
               modules = [
+                ./hosts/common.nix
                 ./hosts/${hostName}/default.nix
+                ./hosts/${hostName}/hardware-configuration.nix
                 agenix.nixosModules.default
                 stylix.nixosModules.stylix
                 fbb.nixosModules.default

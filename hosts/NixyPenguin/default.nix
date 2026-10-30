@@ -25,11 +25,6 @@ let
   });
 in
 {
-  imports = [
-    ./hardware-configuration.nix
-    ../common.nix
-  ];
-
   nixpkgs.overlays = [
     (final: prev: {
       uboot-asahi = prev.uboot-asahi.overrideAttrs (old: {
