@@ -2,6 +2,7 @@
   config,
   pkgs,
   inputs,
+  consts,
   ...
 }:
 
@@ -34,7 +35,7 @@
             kdePackages.bluez-qt
           ];
       }
-      // import ../../modules/consts.nix { homeDir = config.home.homeDirectory; };
+      // consts;
       sessionPath = [
         "$HOME/.local/bin"
       ];

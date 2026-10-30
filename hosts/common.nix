@@ -2,6 +2,7 @@
   config,
   pkgs,
   inputs,
+  consts,
   ...
 }:
 
@@ -60,7 +61,7 @@ in
         "${pkgs.hyprland}/share"
       ];
     }
-    // import ../modules/consts.nix { homeDir = config.users.users.chaos.home; };
+    // consts;
 
     etc."xdg/xdg-desktop-portal-termfilechooser/config".text = ''
       [filechooser]
@@ -155,7 +156,7 @@ in
       "L+ %h/.config/xdg-desktop-portal-termfilechooser/config - - - - /etc/xdg/xdg-desktop-portal-termfilechooser/config"
     ];
     user.services.xdg-desktop-portal-termfilechooser = {
-      environment = import ../modules/consts.nix { homeDir = config.users.users.chaos.home; };
+      environment = consts;
       path = with pkgs; [
         inotify-tools
         coreutils

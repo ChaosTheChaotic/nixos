@@ -71,6 +71,8 @@
     {
       nixosConfigurations =
         let
+          userName = "chaos";
+          consts = import ./modules/consts.nix { homeDir = "/home/${userName}"; };
           mkHost =
             {
               hostName,
@@ -79,13 +81,17 @@
               extraModules ? [ ],
               systemExtraSpecialArgs ? { },
             }:
+            let
+              sharedArgs = { inherit inputs cpuArch consts; };
+            in
             nixpkgs.lib.nixosSystem {
               inherit system;
-              specialArgs = {
-                inherit inputs cpuArch;
-                wgHelper = import ./modules/wireguard.nix;
-              }
-              // systemExtraSpecialArgs;
+              specialArgs =
+                sharedArgs
+                // {
+                  wgHelper = import ./modules/wireguard.nix;
+                }
+                // systemExtraSpecialArgs;
               modules = [
                 ./hosts/common.nix
                 ./hosts/${hostName}/default.nix
@@ -99,7 +105,7 @@
                 {
                   home-manager.useGlobalPkgs = true;
                   home-manager.useUserPackages = true;
-                  home-manager.extraSpecialArgs = { inherit inputs cpuArch; };
+                  home-manager.extraSpecialArgs = sharedArgs;
                   home-manager.sharedModules = [
                     vicinae.homeManagerModules.default
                     clogite.homeManagerModules.default
