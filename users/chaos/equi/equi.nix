@@ -92,6 +92,7 @@
         directFileDownload.enable = true;
         disableDeepLinks.enable = true;
         downloadAllAttachments.enable = true;
+        draftNavigator.enable = true;
         equicordHelper.enable = true;
         equicordToolbox.enable = true;
         equiTweaks = {

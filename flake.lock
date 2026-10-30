@@ -488,11 +488,11 @@
     "ani-cli": {
       "flake": false,
       "locked": {
-        "lastModified": 1792685647,
-        "narHash": "sha256-NfC6dUwleAu0VX314EetbsxmjOFjWF9823zbwOcyw5s=",
+        "lastModified": 1793383113,
+        "narHash": "sha256-QSXoowGmP84QHztRVesMZqSUzYSR4e2SlRsSV5QJy00=",
         "owner": "pystardust",
         "repo": "ani-cli",
-        "rev": "0301d67d5768d332b049821a30082ad43d9a215a",
+        "rev": "840b8d35c6e73ca9d284e7d4bd2974e0ed836597",
         "type": "github"
       },
       "original": {
@@ -762,11 +762,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1793290150,
-        "narHash": "sha256-GFmmf/rtbeWRo0T0fKmQaykT/JzKhG9lOAGGA4rT25Y=",
+        "lastModified": 1793391600,
+        "narHash": "sha256-6Mu2SePq2JsiGLYeJv3On6ychd56HOcGSoCQvBfNc7M=",
         "owner": "ChaosTheChaotic",
         "repo": "framebuffer-browser",
-        "rev": "ce3903b2e0a44a38700cb7e8821de92d5847e96c",
+        "rev": "db2e22f92e3ab05881af55a18117ef0fd17cc083",
         "type": "github"
       },
       "original": {
@@ -1408,11 +1408,11 @@
     "mpd": {
       "flake": false,
       "locked": {
-        "lastModified": 1793109948,
-        "narHash": "sha256-kVvpeSQHg+tbbD08DT7EDdwFVVc8C5mHixEj9SuhICg=",
+        "lastModified": 1793387731,
+        "narHash": "sha256-TugUVpjpW3V6ddL/REtbnp7PZFAqvEoyMjGkSNg1Lsc=",
         "owner": "MusicPlayerDaemon",
         "repo": "MPD",
-        "rev": "2cf314f7b04620f998ecf123d059c36b91b715d2",
+        "rev": "f5c7a1ae8d6dba851d406eba03b51086a7b0e35c",
         "type": "github"
       },
       "original": {
@@ -1502,11 +1502,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1793291850,
-        "narHash": "sha256-bn3oJzhmVcw3Or3QfkhpmsVJxIP3/szZbLoFWohKDmc=",
+        "lastModified": 1793347528,
+        "narHash": "sha256-+NqHFebGr5ZGV2+dB5VxY8dbhEYri88shVoti8Uz6ZE=",
         "owner": "4evy",
         "repo": "nixcord",
-        "rev": "5c9cbf8aa03c9e510d94a084233e72a67bbeab17",
+        "rev": "a34086a0168d0726facdd699364b179c94b828c8",
         "type": "github"
       },
       "original": {
@@ -1598,11 +1598,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1793290624,
-        "narHash": "sha256-gg52qF/kKSc9ipQ3k3XLRQDRhUDXlyiJmIBznU8rgtk=",
+        "lastModified": 1793391050,
+        "narHash": "sha256-eQuf1alHPJYfnB8IRSbYi8S0vWxcqpMnJZ7KxEFNAb0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "bc55ca2970b483c8ce4952395e5aa24fa01c3c11",
+        "rev": "d8a799deb5fa51c2b3bb85b6776becdd3e315e0a",
         "type": "github"
       },
       "original": {
@@ -1752,11 +1752,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1791734076,
-        "narHash": "sha256-i5qk1kLiit98rRbh1AXmWBNT9QXC/y4l5Wk/u5EdpDQ=",
+        "lastModified": 1793110635,
+        "narHash": "sha256-dhoW6VgFWlaodSY5jrBn+CF2FLmaUvDVgM7+C7T2+NM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "7fd4004d0511991fff3a0524856a9be09e28c5f0",
+        "rev": "31ecbaca1bdefa45dffc409f0250bd8039ea0010",
         "type": "github"
       },
       "original": {
@@ -1857,11 +1857,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793291724,
-        "narHash": "sha256-Pp5q7oyYtihaDUgnh0HibzpqYPwvZxxopcK09BNJ0nA=",
+        "lastModified": 1793391354,
+        "narHash": "sha256-KLSRDoeIpH2VbAw2NVxAAjzmYX2gWgZp8DQ4wdKuIM4=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "8cdb15f749e30939b4d024fba25facb156eea85b",
+        "rev": "de40623b7382c251e332077909ece482682c4da4",
         "type": "github"
       },
       "original": {
@@ -1986,11 +1986,11 @@
     "smods": {
       "flake": false,
       "locked": {
-        "lastModified": 1793029811,
-        "narHash": "sha256-hxUbpLQPSFA327mytAENL3fUlxXdireYQ3iCI+CCWuE=",
+        "lastModified": 1793373211,
+        "narHash": "sha256-SQr1THvgLOH2YucjOPxhgyE+ay2i9//cvcgBCp74Gdw=",
         "owner": "Steamodded",
         "repo": "smods",
-        "rev": "1628df5aa656e12a72b9f3cfbb42ae65ab1122e1",
+        "rev": "b482166328b32ac1cf9855afd5ebbf7f58a498ea",
         "type": "github"
       },
       "original": {
@@ -2359,11 +2359,11 @@
     "tree-sitter-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1793166594,
-        "narHash": "sha256-fnJ7hIGvFGZ8NcxK9NBq1BpMSSeBoZtu5hXRtgfgLUw=",
+        "lastModified": 1793344065,
+        "narHash": "sha256-Bz1AVbQzIWmJVhw1FJVsswy3lDdprI16Bw2s8ZOU+y8=",
         "owner": "tree-sitter",
         "repo": "tree-sitter",
-        "rev": "ad067fddf76a32c3071f8f3a31e8719d348e2737",
+        "rev": "1fac4c467cb9a798c0a4a70daa31f970bc8c3c0e",
         "type": "github"
       },
       "original": {
