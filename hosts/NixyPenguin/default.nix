@@ -23,16 +23,15 @@ let
       chmod -R a+rX $out/usr/lib/millennium
     '';
   });
+  ubootAsahiFix = final: prev: {
+    uboot-asahi = prev.uboot-asahi.overrideAttrs (old: {
+      makeFlags = (old.makeFlags or [ ]) ++ [ "DTC=${final.buildPackages.dtc}/bin/dtc" ];
+    });
+  };
 in
 {
   nixpkgs.overlays = [
-    (final: prev: {
-      uboot-asahi = prev.uboot-asahi.overrideAttrs (old: {
-        makeFlags = (old.makeFlags or [ ]) ++ [
-          "DTC=${final.buildPackages.dtc}/bin/dtc"
-        ];
-      });
-    })
+    ubootAsahiFix
   ];
 
   boot.kernelPackages = lib.mkForce (
@@ -42,13 +41,7 @@ in
         config.allowUnfree = true;
         overlays = [
           inputs.nixos-apple-silicon.overlays.apple-silicon-overlay
-          (final: prev: {
-            uboot-asahi = prev.uboot-asahi.overrideAttrs (old: {
-              makeFlags = (old.makeFlags or [ ]) ++ [
-                "DTC=${final.buildPackages.dtc}/bin/dtc"
-              ];
-            });
-          })
+          ubootAsahiFix
         ];
       };
     in
