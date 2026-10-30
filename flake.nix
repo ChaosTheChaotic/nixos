@@ -82,7 +82,14 @@
               systemExtraSpecialArgs ? { },
             }:
             let
-              sharedArgs = { inherit inputs cpuArch consts; };
+              sharedArgs = {
+                inherit inputs cpuArch consts;
+                arch = import ./lib/arch.nix {
+                  inherit (nixpkgs) lib;
+                  inherit cpuArch;
+                  isAarch64 = system == "aarch64-linux";
+                };
+              };
             in
             nixpkgs.lib.nixosSystem {
               inherit system;

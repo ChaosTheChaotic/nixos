@@ -3,7 +3,7 @@
   pkgs,
   lib,
   inputs,
-  cpuArch ? "generic",
+  arch,
   ...
 }:
 
@@ -24,7 +24,7 @@ let
     ];
   };
   rmpc-custom = pkgs.callPackage ../../pkgs/rmpc.nix {
-    inherit cpuArch;
+    inherit arch;
     mpdSrc = inputs.mpd;
   };
 in
@@ -136,36 +136,14 @@ in
         nix-output-monitor
 
         # Custom Inputs
-        (inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-          NIX_CFLAGS_COMPILE =
-            (oldAttrs.NIX_CFLAGS_COMPILE or "")
-            + (
-              if cpuArch == "generic" then
-                " -O3"
-              else if pkgs.stdenv.hostPlatform.isAarch64 then
-                " -mcpu=${cpuArch} -O3"
-              else
-                " -march=${cpuArch} -O3"
-            );
-
-          env =
-            (oldAttrs.env or { })
-            // (lib.optionalAttrs (cpuArch != "generic") {
-              RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
-            });
-        }))
-        (inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-          NIX_CFLAGS_COMPILE =
-            (oldAttrs.NIX_CFLAGS_COMPILE or "")
-            + (
-              if cpuArch == "generic" then
-                " -O3"
-              else if pkgs.stdenv.hostPlatform.isAarch64 then
-                " -mcpu=${cpuArch} -O3"
-              else
-                " -march=${cpuArch} -O3"
-            );
-        }))
+        lib.pipe
+        inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default
+        [
+          arch.withRustFlags
+          arch.withCflags
+        ]
+        arch.withCflags
+        (inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default)
         rmpc-custom
       ];
     };
@@ -181,13 +159,11 @@ in
         package =
           inputs.clogite.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
             (oldAttrs: {
-              env =
-                (oldAttrs.env or { })
-                // (lib.optionalAttrs (cpuArch != "generic") {
-                  RUSTFLAGS = "-C target-cpu=${cpuArch} -C llvm-args=-vectorize-loops";
-                });
+              env = (oldAttrs.env or { }) // {
+                RUSTFLAGS = arch.rustFlags;
+              };
 
-              zigBuildTarget = if cpuArch != "generic" then cpuArch else "baseline";
+              zigBuildTarget = arch.zigTarget;
 
               zigBuildFlags = builtins.filter (flag: !(lib.hasPrefix "-Dcpu=" flag)) (
                 oldAttrs.zigBuildFlags or [ ]
