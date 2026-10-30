@@ -46,7 +46,6 @@ in
       chafa
       xxd
       go
-      ccache
       inputs.rose-pine-hyprcursor.packages.${pkgs.stdenv.hostPlatform.system}.default
       android-tools
       xdg-desktop-portal-termfilechooser
@@ -114,6 +113,8 @@ in
       ];
       flake-registry = "";
       nix-path = [ "nixpkgs=${inputs.nixpkgs}" ];
+      max-jobs = "auto";
+      cores = 0;
     };
     registry.nixpkgs.flake = inputs.nixpkgs;
   };
@@ -291,6 +292,7 @@ in
       pointerSpeed = -0.7;
       settings.adblockTtlHours = 48;
     };
+    ccache.enable = true;
   };
 
   age.secrets.chaos-passwd.file = ../secrets/chaos-passwd-hash.age;
