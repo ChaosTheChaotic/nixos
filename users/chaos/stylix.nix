@@ -11,6 +11,7 @@
     };
     floorp = {
       enable = true;
+      colorTheme.enable = true;
       profileNames = [ "default" ];
     };
     lazygit.enable = true;
