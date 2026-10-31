@@ -3,6 +3,7 @@
   pkgs,
   inputs,
   consts,
+  palette,
   ...
 }:
 
@@ -55,10 +56,7 @@
           rb = "systemd-inhibit --what=handle-lid-switch --why=\"NixOS rebuild\" nixos-rebuild switch --log-format internal-json --elevate=sudo --flake /etc/nixos |& nom --json";
           scrcpy = "scrcpy --render-driver=opengl";
         };
-        sessionVariables = {
-          EDITOR = "nvim";
-          BAT_THEME = "rose-pine-moon";
-        };
+        sessionVariables.EDITOR = "nvim";
         autosuggestion.enable = true;
         oh-my-zsh = {
           enable = true;
@@ -116,13 +114,15 @@
           };
           palette = "rose-pine-moon";
           palettes.rose-pine-moon = {
-            overlay = "#393552";
-            love = "#eb6f92";
-            gold = "#f6c177";
-            rose = "#ea9a97";
-            pine = "#3e8fb0";
-            foam = "#9ccfd8";
-            iris = "#c4a7e7";
+            inherit (palette)
+              overlay
+              love
+              gold
+              rose
+              pine
+              foam
+              iris
+              ;
           };
         };
       };

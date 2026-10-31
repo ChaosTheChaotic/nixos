@@ -38,6 +38,8 @@ in
     ./sysstat.nix
     ./equi/equi.nix
     ./balatro/balatro.nix
+    ./stylix.nix
+    ../../modules/palette.nix
   ];
 
   options = {
@@ -68,7 +70,6 @@ in
       file = {
         ".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
         ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
-        ".config/bat".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/bat";
         ".config/quickshell".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
       };
       packages = with pkgs; [
@@ -136,14 +137,11 @@ in
         nix-output-monitor
 
         # Custom Inputs
-        lib.pipe
-        inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default
-        [
+        (lib.pipe inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default [
           arch.withRustFlags
           arch.withCflags
-        ]
-        arch.withCflags
-        (inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default)
+        ])
+        (arch.withCflags inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default)
         rmpc-custom
       ];
     };

@@ -7,7 +7,7 @@
 }:
 
 let
-  customScripts = (import ../pkgs/default.nix { inherit pkgs; }).scripts;
+  customScripts = pkgs.callPackage ../pkgs/scripts.nix { };
   extraFonts = pkgs.callPackage ../pkgs/fonts.nix {
     stdenvNoCC = pkgs.stdenvNoCC;
     lib = pkgs.lib;
@@ -20,6 +20,7 @@ in
     ../modules/bcon/bcon-module.nix
     ../modules/syncthing.nix
     ../modules/stylix.nix
+    ../modules/palette.nix
   ];
 
   environment = {
