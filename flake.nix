@@ -114,7 +114,7 @@
                   })
                   (lib.mkIf (syncthing != null) {
                     age.secrets.syncthing-key.file = ./secrets/${syncthing.secretName}.age;
-                    services.syncthing.cert = ./hosts/${hostName}/syncthing-cert.pem;
+                    services.syncthing.cert = "${./hosts/${hostName}/syncthing-cert.pem}";
                   })
                 ];
             in

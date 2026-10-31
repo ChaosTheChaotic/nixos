@@ -80,7 +80,6 @@ in
         confirm_os_window_close = 0;
         dynamic_background_opacity = true;
         enable_audio_bell = false;
-        background_opacity = "0.3";
         background_blur = 5;
         cursor_trail = 1;
         font_family = "JetBrains Mono Nerd Font";
