@@ -96,7 +96,7 @@ hl.window_rule({
 		class = "termfp",
 	},
 	float = true,
-	size = {"monitor_w * 0.5", "monitor_h * 0.5"},
+	size = { "monitor_w * 0.5", "monitor_h * 0.5" },
 })
 
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
@@ -208,7 +208,6 @@ hl.config({
 	},
 	dwindle = {
 		preserve_split = true,
-		special_scale_factor = 0.8,
 	},
 	master = {
 		--new_is_master = true

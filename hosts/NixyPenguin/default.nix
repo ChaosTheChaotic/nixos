@@ -3,6 +3,7 @@
   lib,
   inputs,
   nixpkgs-pinned-kernel,
+  ccache,
   ...
 }:
 
@@ -38,6 +39,7 @@ in
         system = "aarch64-linux";
         config.allowUnfree = true;
         overlays = [
+          ccache.overlay
           inputs.nixos-apple-silicon.overlays.apple-silicon-overlay
           ubootAsahiFix
         ];
@@ -52,16 +54,18 @@ in
       asahi-btsync
       asahi-wifisync
       (muvm.override {
-        fex = (
+        fex = ccache.withCmakeLauncher pkgs (
           pkgs.fex.overrideAttrs (oldAttrs: {
             nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [
-              pkgs.python3Packages.packaging
               pkgs.python3Packages.setuptools
             ];
           })
         );
       })
-      (callPackage ../../pkgs/naev/naev.nix { scalefactorPatch = true; })
+      (callPackage ../../pkgs/naev/naev.nix {
+        scalefactorPatch = true;
+        stdenv = ccache.stdenv pkgs;
+      })
       #nvimpager
     ];
 

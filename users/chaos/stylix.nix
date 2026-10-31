@@ -6,9 +6,7 @@
       enable = true;
       opacity = {
         enable = true;
-        override = {
-          background = 0.3;
-        };
+        override.terminal = 0.3;
       };
     };
     floorp = {

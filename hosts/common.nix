@@ -4,6 +4,7 @@
   inputs,
   consts,
   userName,
+  ccache,
   ...
 }:
 
@@ -22,6 +23,7 @@ in
     ../modules/syncthing.nix
     ../modules/stylix.nix
     ../modules/palette.nix
+    ../modules/ccache.nix
   ];
 
   environment = {
@@ -293,6 +295,7 @@ in
       source = inputs.fbb;
       pointerSpeed = -0.7;
       settings.adblockTtlHours = 48;
+      package = ccache.withCcache pkgs (inputs.fbb.packages.${pkgs.stdenv.hostPlatform.system}.default);
     };
     ccache.enable = true;
   };

@@ -92,6 +92,13 @@
                   inherit cpuArch;
                   isAarch64 = system == "aarch64-linux";
                 };
+                ccache = import ./lib/ccache.nix {
+                  inherit (nixpkgs) lib;
+                  enable = true;
+                  cacheDir = "/var/cache/ccache";
+                  maxSize = "10G";
+                  compressionLevel = 5;
+                };
               };
 
               hostDefaults =

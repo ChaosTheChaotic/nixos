@@ -488,11 +488,11 @@
     "ani-cli": {
       "flake": false,
       "locked": {
-        "lastModified": 1793383113,
-        "narHash": "sha256-QSXoowGmP84QHztRVesMZqSUzYSR4e2SlRsSV5QJy00=",
+        "lastModified": 1793397859,
+        "narHash": "sha256-5oEI4qUG0SlKmuRDezt3zLdSsHoMpjhtAacXHREIzpA=",
         "owner": "pystardust",
         "repo": "ani-cli",
-        "rev": "840b8d35c6e73ca9d284e7d4bd2974e0ed836597",
+        "rev": "a9d789ffeabcecb3d0fe0e118ee20ec7cd33c398",
         "type": "github"
       },
       "original": {
@@ -652,22 +652,6 @@
         "type": "github"
       }
     },
-    "clientsidebadges": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1753908912,
-        "narHash": "sha256-pbfMcNq1fWVz5mXFUYhsgDGCl9g/RqVpnzqqx0N71BI=",
-        "ref": "refs/heads/main",
-        "rev": "687187308b6ab1af601c557bbf7949372e8bc2e4",
-        "revCount": 28,
-        "type": "git",
-        "url": "https://git.nin0.dev/userplugins/clientsidebadges"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://git.nin0.dev/userplugins/clientsidebadges"
-      }
-    },
     "clogite": {
       "inputs": {
         "nixpkgs": "nixpkgs_3",
@@ -707,10 +691,8 @@
     },
     "equi": {
       "inputs": {
-        "clientsidebadges": "clientsidebadges",
         "eval": "eval",
         "gallerymode": "gallerymode",
-        "inrole": "inrole",
         "newlinesincommands": "newlinesincommands",
         "nixcord": "nixcord",
         "venfetch": "venfetch"
@@ -1259,22 +1241,6 @@
         "type": "github"
       }
     },
-    "inrole": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1760696182,
-        "narHash": "sha256-85R3OjBM19kUD3U9Af9sNBBfNJ+cMnCNEL01NK6yLHY=",
-        "ref": "refs/heads/main",
-        "rev": "0c1192d1e92d056f146879b9cd9fe95e4046c4d8",
-        "revCount": 14,
-        "type": "git",
-        "url": "https://git.nin0.dev/userplugins/in-role"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://git.nin0.dev/userplugins/in-role"
-      }
-    },
     "lovely-injector": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -1502,11 +1468,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1793347528,
-        "narHash": "sha256-+NqHFebGr5ZGV2+dB5VxY8dbhEYri88shVoti8Uz6ZE=",
+        "lastModified": 1793460300,
+        "narHash": "sha256-lz5dWCxZUU2vm91psRYWMvZ3npCzZoLm/JqUbrn9IHQ=",
         "owner": "4evy",
         "repo": "nixcord",
-        "rev": "a34086a0168d0726facdd699364b179c94b828c8",
+        "rev": "7b23f8a486ec4e6eefd2493bc1ff5f4a39ae56ea",
         "type": "github"
       },
       "original": {
@@ -1598,11 +1564,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1793391050,
-        "narHash": "sha256-eQuf1alHPJYfnB8IRSbYi8S0vWxcqpMnJZ7KxEFNAb0=",
+        "lastModified": 1793459296,
+        "narHash": "sha256-WkWFUTmF4WTNcp7tF8J7j9NcggcFYth3dj+eG8UH6Pg=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d8a799deb5fa51c2b3bb85b6776becdd3e315e0a",
+        "rev": "fc992ac053a621b453506462a036229c5f80f6fb",
         "type": "github"
       },
       "original": {
@@ -1659,11 +1625,11 @@
     },
     "nixpkgs_11": {
       "locked": {
-        "lastModified": 1793110635,
-        "narHash": "sha256-dhoW6VgFWlaodSY5jrBn+CF2FLmaUvDVgM7+C7T2+NM=",
+        "lastModified": 1793341285,
+        "narHash": "sha256-Y1CiZ4SoBUjLQyQM/pY+rS2dXD3CHLPstF0lmOc73D4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "31ecbaca1bdefa45dffc409f0250bd8039ea0010",
+        "rev": "1c89083e451e891152365b799595cf7790a43325",
         "type": "github"
       },
       "original": {
@@ -1675,11 +1641,11 @@
     },
     "nixpkgs_12": {
       "locked": {
-        "lastModified": 1793110635,
-        "narHash": "sha256-dhoW6VgFWlaodSY5jrBn+CF2FLmaUvDVgM7+C7T2+NM=",
+        "lastModified": 1793341285,
+        "narHash": "sha256-Y1CiZ4SoBUjLQyQM/pY+rS2dXD3CHLPstF0lmOc73D4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "31ecbaca1bdefa45dffc409f0250bd8039ea0010",
+        "rev": "1c89083e451e891152365b799595cf7790a43325",
         "type": "github"
       },
       "original": {
@@ -1707,11 +1673,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1793110635,
-        "narHash": "sha256-dhoW6VgFWlaodSY5jrBn+CF2FLmaUvDVgM7+C7T2+NM=",
+        "lastModified": 1793341285,
+        "narHash": "sha256-Y1CiZ4SoBUjLQyQM/pY+rS2dXD3CHLPstF0lmOc73D4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "31ecbaca1bdefa45dffc409f0250bd8039ea0010",
+        "rev": "1c89083e451e891152365b799595cf7790a43325",
         "type": "github"
       },
       "original": {
@@ -1813,11 +1779,11 @@
     },
     "nixpkgs_9": {
       "locked": {
-        "lastModified": 1793110635,
-        "narHash": "sha256-dhoW6VgFWlaodSY5jrBn+CF2FLmaUvDVgM7+C7T2+NM=",
+        "lastModified": 1793341285,
+        "narHash": "sha256-Y1CiZ4SoBUjLQyQM/pY+rS2dXD3CHLPstF0lmOc73D4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "31ecbaca1bdefa45dffc409f0250bd8039ea0010",
+        "rev": "1c89083e451e891152365b799595cf7790a43325",
         "type": "github"
       },
       "original": {
@@ -1857,11 +1823,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793391354,
-        "narHash": "sha256-KLSRDoeIpH2VbAw2NVxAAjzmYX2gWgZp8DQ4wdKuIM4=",
+        "lastModified": 1793461026,
+        "narHash": "sha256-dqj+yjqng/8IOsCaqfHh2JmUCfzR7RJgUyYnhWc4XZ4=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "de40623b7382c251e332077909ece482682c4da4",
+        "rev": "3ddae40af6d3f78b21a62734b69c8634437c9652",
         "type": "github"
       },
       "original": {
@@ -2359,11 +2325,11 @@
     "tree-sitter-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1793344065,
-        "narHash": "sha256-Bz1AVbQzIWmJVhw1FJVsswy3lDdprI16Bw2s8ZOU+y8=",
+        "lastModified": 1793451146,
+        "narHash": "sha256-FFFw1zfYJzFsWUNJMxITrGwu8K0xdUnfsBOrZvIEa9E=",
         "owner": "tree-sitter",
         "repo": "tree-sitter",
-        "rev": "1fac4c467cb9a798c0a4a70daa31f970bc8c3c0e",
+        "rev": "ef95bde0db0ddb83db7a099e4a5328a769775afd",
         "type": "github"
       },
       "original": {

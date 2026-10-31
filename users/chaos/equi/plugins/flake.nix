@@ -1,4 +1,5 @@
 {
+  # TODO: Check commented out plugins for new fixes
   description = "Equicord userplugins bundle";
 
   inputs = {
@@ -11,10 +12,10 @@
       url = "git+https://git.nin0.dev/userplugins/venfetch";
       flake = false;
     };
-    clientsidebadges = {
-      url = "git+https://git.nin0.dev/userplugins/clientsidebadges";
-      flake = false;
-    };
+    #clientsidebadges = {
+    #  url = "git+https://git.nin0.dev/userplugins/clientsidebadges";
+    #  flake = false;
+    #};
     gallerymode = {
       url = "github:Sodroz/GalleryMode";
       flake = false;
@@ -23,10 +24,10 @@
       url = "github:lolsuffocate/vc-NewlinesInCommands";
       flake = false;
     };
-    inrole = {
-      url = "git+https://git.nin0.dev/userplugins/in-role";
-      flake = false;
-    };
+    #inrole = {
+    #  url = "git+https://git.nin0.dev/userplugins/in-role";
+    #  flake = false;
+    #};
   };
 
   outputs =

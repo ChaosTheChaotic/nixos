@@ -2,10 +2,11 @@
   pkgs,
   arch,
   mpdSrc,
+	stdenv ? pkgs.stdenv,
 }:
 
 let
-  mpd-minimal = pkgs.stdenv.mkDerivation {
+  mpd-minimal = stdenv.mkDerivation {
     pname = "mpd-minimal";
     version = "0.25-git";
 

@@ -5,6 +5,7 @@
   inputs,
   arch,
   userName,
+  ccache,
   ...
 }:
 
@@ -27,6 +28,7 @@ let
   rmpc-custom = pkgs.callPackage ../../pkgs/rmpc.nix {
     inherit arch;
     mpdSrc = inputs.mpd;
+    stdenv = ccache.stdenv pkgs;
   };
 in
 {
@@ -138,8 +140,12 @@ in
         nix-output-monitor
 
         # Custom Inputs
-        (arch.withAll inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default)
-        (arch.withCflags inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default)
+        (ccache.withCcache pkgs (
+          arch.withAll inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default
+        ))
+        (ccache.withCcache pkgs (
+          arch.withCflags inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default
+        ))
         rmpc-custom
       ];
     };
@@ -167,9 +173,11 @@ in
             });
       };
       vicinae = {
-        package = inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
-          nodejs = pkgs.nodejs;
-        };
+        package = ccache.withCmakeLauncher pkgs (
+          inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
+            nodejs = pkgs.nodejs;
+          }
+        );
         enable = true;
         systemd = {
           enable = true;

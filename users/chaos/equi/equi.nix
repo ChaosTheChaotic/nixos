@@ -16,10 +16,10 @@
     userPlugins = {
       eval = inputs.equi.plugins.eval;
       venfetch = inputs.equi.plugins.venfetch;
-      clientsidebadges = inputs.equi.plugins.clientsidebadges;
+      #clientsidebadges = inputs.equi.plugins.clientsidebadges;
       #gallerymode = inputs.equi.plugins.gallerymode; TODO: Wait for this plugin to update to the new toasts api if ever
       newlinesincommands = inputs.equi.plugins.newlinesincommands;
-      inrole = inputs.equi.plugins.inrole;
+      #inrole = inputs.equi.plugins.inrole;
       rebuildandrestart = ./plugins/rebuildAndRestart;
     };
 
@@ -82,7 +82,6 @@
         consoleJanitor.enable = true;
         consoleShortcuts.enable = true;
         copyFileContents.enable = true;
-        copyStickerLinks.enable = true;
         crashHandler.enable = true;
         declutter = {
           enable = true;
@@ -109,7 +108,7 @@
           enable = true;
           toolbarDevMenu = true;
         };
-        expressionCloner.enable = true;
+        expressionManager.enable = true;
         fakeNitro = {
           enable = true;
           enableStreamQualityBypass = false;
