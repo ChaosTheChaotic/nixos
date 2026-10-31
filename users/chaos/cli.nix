@@ -145,56 +145,11 @@
       btop = {
         enable = true;
         settings = {
-          color_theme = "rose-pine-moon";
           theme_background = false;
           truecolor = true;
           rounded_corners = true;
           terminal_sync = true;
         };
-        themes.rose-pine-moon = ''
-          theme[main_bg]="${palette.base}"
-          theme[main_fg]="${palette.text}"
-          theme[title]="${palette.subtle}"
-          theme[hi_fg]="${palette.text}"
-          theme[selected_bg]="${palette.highlightHigh}"
-          theme[selected_fg]="${palette.gold}"
-          theme[inactive_fg]="${palette.highlightMed}"
-          theme[graph_text]="${palette.foam}"
-          theme[meter_bg]="${palette.foam}"
-          theme[proc_misc]="${palette.iris}"
-          theme[cpu_box]="${palette.rose}"
-          theme[mem_box]="${palette.pine}"
-          theme[net_box]="${palette.iris}"
-          theme[proc_box]="${palette.love}"
-          theme[div_line]="${palette.muted}"
-          theme[temp_start]="${palette.rose}"
-          theme[temp_mid]="${palette.gold}"
-          theme[temp_end]="${palette.love}"
-          theme[cpu_start]="${palette.gold}"
-          theme[cpu_mid]="${palette.rose}"
-          theme[cpu_end]="${palette.love}"
-          theme[free_start]="${palette.love}"
-          theme[free_mid]="${palette.love}"
-          theme[free_end]="${palette.love}"
-          theme[cached_start]="${palette.iris}"
-          theme[cached_mid]="${palette.iris}"
-          theme[cached_end]="${palette.iris}"
-          theme[available_start]="${palette.pine}"
-          theme[available_mid]="${palette.pine}"
-          theme[available_end]="${palette.pine}"
-          theme[used_start]="${palette.rose}"
-          theme[used_mid]="${palette.rose}"
-          theme[used_end]="${palette.rose}"
-          theme[download_start]="${palette.pine}"
-          theme[download_mid]="${palette.foam}"
-          theme[download_end]="${palette.foam}"
-          theme[upload_start]="${palette.rose}"
-          theme[upload_mid]="${palette.love}"
-          theme[upload_end]="${palette.love}"
-          theme[process_start]="${palette.pine}"
-          theme[process_mid]="${palette.foam}"
-          theme[process_end]="${palette.foam}"
-        '';
       };
     };
   };
