@@ -86,7 +86,12 @@
             }:
             let
               sharedArgs = {
-                inherit inputs cpuArch consts userName;
+                inherit
+                  inputs
+                  cpuArch
+                  consts
+                  userName
+                  ;
                 arch = import ./lib/arch.nix {
                   inherit (nixpkgs) lib;
                   inherit cpuArch;

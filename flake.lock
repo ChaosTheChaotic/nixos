@@ -744,11 +744,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1793391600,
-        "narHash": "sha256-6Mu2SePq2JsiGLYeJv3On6ychd56HOcGSoCQvBfNc7M=",
+        "lastModified": 1793499486,
+        "narHash": "sha256-7J/6pV/kC9MjNejqzXMWPZg/Far+dAQ3vbeboql6eWM=",
         "owner": "ChaosTheChaotic",
         "repo": "framebuffer-browser",
-        "rev": "db2e22f92e3ab05881af55a18117ef0fd17cc083",
+        "rev": "218e6b42b64554414083946ccebf50f5e85845ac",
         "type": "github"
       },
       "original": {
