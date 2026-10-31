@@ -1,8 +1,6 @@
 {
-  config,
   pkgs,
   inputs,
-  wgHelper,
   ...
 }:
 
@@ -43,22 +41,7 @@
     DefaultTimeoutStopSec = "10s";
   };
 
-  networking = {
-    hostName = "Nixpad";
-    wg-quick.interfaces = wgHelper.mkWgInterface {
-      privateKeyPath = config.age.secrets.wg-priv-thinker.path;
-      publicKey = "JB84ctFi3l+gxJxr/kwYXlKwLcmqWxuuLBkpE1anmgo=";
-      endpoint = "195.242.214.194:51820";
-    };
-  };
-
-  age.secrets.wg-priv-thinker.file = ../../secrets/wg-priv-thinker.age;
-
-  age.secrets.syncthing-key.file = ../../secrets/syncthing-key-thinker.age;
-  services = {
-    syncthing.cert = "${./syncthing-cert.pem}";
-    flatpak.packages = [ "org.vinegarhq.Sober" ];
-  };
+  services.flatpak.packages = [ "org.vinegarhq.Sober" ];
 
   programs.steam = {
     enable = true;
@@ -78,6 +61,4 @@
       size = 16 * 1024;
     }
   ];
-
-  system.stateVersion = "26.05";
 }

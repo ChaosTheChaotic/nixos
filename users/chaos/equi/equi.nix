@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   ...
 }:
@@ -157,8 +158,8 @@
         messageLogger.enable = true;
         messageLoggerEnhanced = {
           enable = true;
-          imageCacheDir = "/home/chaos/.config/equibop/MessageLoggerData/savedImages";
-          logsDir = "/home/chaos/.config/equibop/MessageLoggerData";
+          imageCacheDir = "${config.home.homeDirectory}/.config/equibop/MessageLoggerData/savedImages";
+          logsDir = "${config.home.homeDirectory}/.config/equibop/MessageLoggerData";
           attachmentFileExtensions = "none";
         };
         messagePeek.enable = true;

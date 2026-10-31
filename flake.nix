@@ -78,6 +78,9 @@
               hostName,
               system,
               cpuArch,
+              stateVersion,
+              wg ? null, # { secretName, publicKey, endpoint }
+              syncthing ? null, # { secretName } — cert at ./hosts/${hostName}/syncthing-cert.pem
               extraModules ? [ ],
               systemExtraSpecialArgs ? { },
             }:
@@ -90,19 +93,40 @@
                   isAarch64 = system == "aarch64-linux";
                 };
               };
+
+              hostDefaults =
+                { config, lib, ... }:
+                let
+                  wgHelper = import ./modules/wireguard.nix;
+                in
+                lib.mkMerge [
+                  {
+                    networking.hostName = hostName;
+                    system.stateVersion = stateVersion;
+                  }
+                  (lib.mkIf (wg != null) {
+                    age.secrets.${wg.secretName}.file = ./secrets/${wg.secretName}.age;
+                    networking.wg-quick.interfaces = wgHelper.mkWgInterface {
+                      privateKeyPath = config.age.secrets.${wg.secretName}.path;
+                      publicKey = wg.publicKey;
+                      endpoint = wg.endpoint;
+                    };
+                  })
+                  (lib.mkIf (syncthing != null) {
+                    age.secrets.syncthing-key.file = ./secrets/${syncthing.secretName}.age;
+                    services.syncthing.cert = ./hosts/${hostName}/syncthing-cert.pem;
+                  })
+                ];
             in
             nixpkgs.lib.nixosSystem {
               inherit system;
               specialArgs =
-                sharedArgs
-                // {
-                  wgHelper = import ./modules/wireguard.nix;
-                }
-                // systemExtraSpecialArgs;
+                sharedArgs // { wgHelper = import ./modules/wireguard.nix; } // systemExtraSpecialArgs;
               modules = [
                 ./hosts/common.nix
                 ./hosts/${hostName}/default.nix
                 ./hosts/${hostName}/hardware-configuration.nix
+                hostDefaults
                 agenix.nixosModules.default
                 stylix.nixosModules.stylix
                 fbb.nixosModules.default
@@ -117,28 +141,46 @@
                     vicinae.homeManagerModules.default
                     clogite.homeManagerModules.default
                   ];
-                  home-manager.users.chaos = import ./users/chaos/home.nix;
+                  home-manager.users.${userName} = import ./users/${userName}/home.nix;
                 }
               ]
               ++ extraModules;
             };
         in
         {
+          "Nixpad" = mkHost {
+            hostName = "Nixpad";
+            system = "x86_64-linux";
+            cpuArch = "skylake";
+            stateVersion = "26.05";
+            wg = {
+              secretName = "wg-priv-thinker";
+              publicKey = "JB84ctFi3l+gxJxr/kwYXlKwLcmqWxuuLBkpE1anmgo=";
+              endpoint = "195.242.214.194:51820";
+            };
+            syncthing = {
+              secretName = "syncthing-key-thinker";
+            };
+          };
+
           "NixyPenguin" = mkHost {
             hostName = "NixyPenguin";
             system = "aarch64-linux";
             cpuArch = "apple-m1";
+            stateVersion = "25.11";
+            wg = {
+              secretName = "wg-priv-asahi";
+              publicKey = "KiCvg9+bh7/ssQDALW3uXSTLaURS3mgZdi/O9CxlFXo=";
+              endpoint = "79.127.254.65:51820";
+            };
+            syncthing = {
+              secretName = "syncthing-key-asahi";
+            };
             extraModules = [
               nixos-apple-silicon.nixosModules.apple-silicon-support
               steam-asahi.nixosModules.default
             ];
             systemExtraSpecialArgs = { inherit (inputs) nixpkgs-pinned-kernel; };
-          };
-
-          "Nixpad" = mkHost {
-            hostName = "Nixpad";
-            system = "x86_64-linux";
-            cpuArch = "skylake";
           };
         };
     };

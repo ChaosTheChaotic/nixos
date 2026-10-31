@@ -1,9 +1,7 @@
 {
-  config,
   pkgs,
   lib,
   inputs,
-  wgHelper,
   nixpkgs-pinned-kernel,
   ...
 }:
@@ -97,7 +95,6 @@ in
     system-features = [
       "gccarch-apple-m1"
     ];
-    flake-registry = "";
   };
 
   hardware.asahi = {
@@ -107,19 +104,4 @@ in
   };
 
   boot.loader.efi.canTouchEfiVariables = false;
-
-  networking.hostName = "NixyPenguin";
-
-  age.secrets.wg-priv-asahi.file = ../../secrets/wg-priv-asahi.age;
-
-  age.secrets.syncthing-key.file = ../../secrets/syncthing-key-asahi.age;
-  services.syncthing.cert = "${./syncthing-cert.pem}";
-
-  networking.wg-quick.interfaces = wgHelper.mkWgInterface {
-    privateKeyPath = config.age.secrets.wg-priv-asahi.path;
-    publicKey = "KiCvg9+bh7/ssQDALW3uXSTLaURS3mgZdi/O9CxlFXo=";
-    endpoint = "79.127.254.65:51820";
-  };
-
-  system.stateVersion = "25.11";
 }
