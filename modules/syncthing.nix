@@ -1,6 +1,6 @@
-{ config, ... }:
+{ config, userName, ... }:
 let
-  home = config.users.users.chaos.home;
+  home = config.users.users.${userName}.home;
   devices = {
     asahi = {
       id = "MTI5TFN-XS65Z6U-GYCD6OB-J6QVCC2-KB2OJIX-RRSWGNG-JH6OFSM-3N5XRAA";
@@ -15,14 +15,14 @@ let
 in
 {
   age.secrets.syncthing-key = {
-    owner = "chaos";
+    owner = "${userName}";
     mode = "0400";
   };
 
   services.syncthing = {
     enable = true;
     openDefaultPorts = false;
-    user = "chaos";
+    user = "${userName}";
     group = "users";
     dataDir = home;
     configDir = "${home}/.config/syncthing";

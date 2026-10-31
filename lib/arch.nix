@@ -26,4 +26,10 @@ rec {
     drv.overrideAttrs (old: {
       NIX_CFLAGS_COMPILE = (old.NIX_CFLAGS_COMPILE or "") + nixCflags;
     });
+  withAll =
+    drv:
+    lib.pipe drv [
+      withCflags
+      withRustFlags
+    ];
 }

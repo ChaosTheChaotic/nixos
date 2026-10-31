@@ -4,6 +4,7 @@
   lib,
   inputs,
   arch,
+  userName,
   ...
 }:
 
@@ -64,8 +65,8 @@ in
     _module.args.master = master;
 
     home = {
-      username = "chaos";
-      homeDirectory = "/home/chaos";
+      username = "${userName}";
+      homeDirectory = "/home/${userName}";
       stateVersion = "25.11";
       file = {
         ".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
@@ -137,10 +138,7 @@ in
         nix-output-monitor
 
         # Custom Inputs
-        (lib.pipe inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default [
-          arch.withRustFlags
-          arch.withCflags
-        ])
+        (arch.withAll inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default)
         (arch.withCflags inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default)
         rmpc-custom
       ];

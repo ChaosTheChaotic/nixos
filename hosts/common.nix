@@ -3,6 +3,7 @@
   pkgs,
   inputs,
   consts,
+  userName,
   ...
 }:
 
@@ -162,7 +163,7 @@ in
         coreutils
         gawk
         "/run/current-system/sw"
-        "/etc/profiles/per-user/chaos"
+        "/etc/profiles/per-user/${userName}"
       ];
     };
   };
@@ -296,10 +297,10 @@ in
     ccache.enable = true;
   };
 
-  age.secrets.chaos-passwd.file = ../secrets/chaos-passwd-hash.age;
+  age.secrets."${userName}-passwd".file = ../secrets/${userName}-passwd-hash.age;
 
-  users.users.chaos = {
-    hashedPasswordFile = config.age.secrets.chaos-passwd.path;
+  users.users.${userName} = {
+    hashedPasswordFile = config.age.secrets."${userName}-passwd".path;
     isNormalUser = true;
     extraGroups = [
       "wheel"
