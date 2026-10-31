@@ -33,6 +33,6 @@
     { nixcord, ... }@inputs:
     {
       inherit nixcord;
-      plugins = inputs;
+      plugins = removeAttrs inputs [ "nixcord" ];
     };
 }

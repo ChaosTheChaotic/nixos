@@ -23,13 +23,7 @@
           pname = "lovely-injector";
           version = "0.9.0";
 
-          src = pkgs.fetchFromGitHub {
-            owner = "ethangreen-dev";
-            repo = "lovely-injector";
-            rev = "v${version}";
-            hash = "sha256-TzBxyIf7MjzsdFaJLBp2dXWNj5sOXyoMifaaztNIOog=";
-            fetchSubmodules = true;
-          };
+          src = inputs.lovely-injector;
 
           cargoLock = {
             lockFile = "${src}/Cargo.lock";
