@@ -296,6 +296,7 @@ in
       pointerSpeed = -0.7;
       settings.adblockTtlHours = 48;
       package = ccache.withCcache pkgs (inputs.fbb.packages.${pkgs.stdenv.hostPlatform.system}.default);
+			extensions = [ inputs.return-youtube-dislike ];
     };
     ccache.enable = true;
   };

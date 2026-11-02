@@ -1877,6 +1877,18 @@
         "type": "github"
       }
     },
+    "return-youtube-dislike": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-++ZuRGSQOgRbbxHVkNL9fJzcA3Wrg+he1jVnVxPLmgI=",
+        "type": "file",
+        "url": "https://github.com/Anarios/return-youtube-dislike/releases/download/v4.0.6/return-youtube-dislike-chrome-4.0.6.zip"
+      },
+      "original": {
+        "type": "file",
+        "url": "https://github.com/Anarios/return-youtube-dislike/releases/download/v4.0.6/return-youtube-dislike-chrome-4.0.6.zip"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -1897,6 +1909,7 @@
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-pinned-kernel": "nixpkgs-pinned-kernel",
         "nur": "nur",
+        "return-youtube-dislike": "return-youtube-dislike",
         "rose-pine-hyprcursor": "rose-pine-hyprcursor",
         "steam-asahi": "steam-asahi",
         "stylix": "stylix",

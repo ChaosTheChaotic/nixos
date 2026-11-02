@@ -49,6 +49,10 @@
     };
     stylix.url = "github:nix-community/stylix";
     fbb.url = "github:ChaosTheChaotic/framebuffer-browser";
+    return-youtube-dislike = {
+      url = "file+https://github.com/Anarios/return-youtube-dislike/releases/download/v4.0.6/return-youtube-dislike-chrome-4.0.6.zip";
+      flake = false;
+    };
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
     equi.url = "path:./users/chaos/equi/plugins";
     balatro.url = "path:./users/chaos/balatro";
