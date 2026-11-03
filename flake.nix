@@ -50,7 +50,7 @@
     stylix.url = "github:nix-community/stylix";
     fbb.url = "github:ChaosTheChaotic/framebuffer-browser";
     return-youtube-dislike = {
-      url = "file+https://github.com/Anarios/return-youtube-dislike/releases/download/v4.0.6/return-youtube-dislike-chrome-4.0.6.zip";
+      url = "file+https://clients2.google.com/service/update2/crx?response=redirect&prodversion=131.0&acceptformat=crx2,crx3&x=id%3Dgebbhagfogifgggkldgodflihgfeippi%26uc";
       flake = false;
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";

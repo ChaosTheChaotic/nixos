@@ -1564,11 +1564,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1793651134,
-        "narHash": "sha256-vlPsKIQIUN7AFrmDaeAs2NiDWw47MnbCXGJMvL5tiLM=",
+        "lastModified": 1793722985,
+        "narHash": "sha256-LG9Fc7wXwhm67Mz999kX1O/gUPeNGj9ThL+b7diR2js=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "04cd86ed5e92ad9caa22c9d2984d182accea3611",
+        "rev": "99faf641a2977fdf121860f9e3369f148807ccca",
         "type": "github"
       },
       "original": {
@@ -1823,11 +1823,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793650548,
-        "narHash": "sha256-uohpj+4IcPKlmDKTb/SigPkgrDHtiu91YxIwoghi/xM=",
+        "lastModified": 1793722696,
+        "narHash": "sha256-Fn9EY9BbSoUZehtTyAMCDwlNq9jzCXT3iUCYcsjLvAI=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "d590c13b2b6918c492912f4d03f63348de953a9a",
+        "rev": "3571a9d461119a501d9861715c4862f25f51b285",
         "type": "github"
       },
       "original": {
@@ -1880,13 +1880,13 @@
     "return-youtube-dislike": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-++ZuRGSQOgRbbxHVkNL9fJzcA3Wrg+he1jVnVxPLmgI=",
+        "narHash": "sha256-CXwOB8vyWZR8ukiI+mWoK/479YFXrTCAGW4XTZC2w9w=",
         "type": "file",
-        "url": "https://github.com/Anarios/return-youtube-dislike/releases/download/v4.0.6/return-youtube-dislike-chrome-4.0.6.zip"
+        "url": "https://clients2.google.com/service/update2/crx?acceptformat=crx2%2Ccrx3&prodversion=131.0&response=redirect&x=id%3Dgebbhagfogifgggkldgodflihgfeippi%26uc"
       },
       "original": {
         "type": "file",
-        "url": "https://github.com/Anarios/return-youtube-dislike/releases/download/v4.0.6/return-youtube-dislike-chrome-4.0.6.zip"
+        "url": "https://clients2.google.com/service/update2/crx?acceptformat=crx2%2Ccrx3&prodversion=131.0&response=redirect&x=id%3Dgebbhagfogifgggkldgodflihgfeippi%26uc"
       }
     },
     "root": {
@@ -2415,11 +2415,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1793201884,
-        "narHash": "sha256-oRwMcnX7EDDgW4SreLYJdkswIrIghVP/6Kp1fLYhf88=",
+        "lastModified": 1793659729,
+        "narHash": "sha256-23OEQBhC7AlNGPV6B/zl/tEvcMuHPbk5NWmIVq9szdw=",
         "owner": "vicinaehq",
         "repo": "vicinae",
-        "rev": "b94c5100efa4aa6e79fa48c0521dfc68d5a03344",
+        "rev": "0ed7dcce1f530067aa251d1beab1a57760e385b4",
         "type": "github"
       },
       "original": {
