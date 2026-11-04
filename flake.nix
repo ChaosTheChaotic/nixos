@@ -6,8 +6,11 @@
     nixpkgs-pinned-kernel.url = "github:NixOS/nixpkgs/d407951447dcd00442e97087bf374aad70c04cea";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixos-apple-silicon.url = "github:nix-community/nixos-apple-silicon/3902c801519264191a7c3dfec8dd1f9faeb38fd5"; # TODO: Check and remove lock on this and pinned kernel once binary cache is back
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -68,6 +71,7 @@
       vicinae,
       stylix,
       nix-flatpak,
+      determinate,
       fbb,
       clogite,
       ...
@@ -144,6 +148,7 @@
                 ./hosts/${hostName}/hardware-configuration.nix
                 hostDefaults
                 agenix.nixosModules.default
+                determinate.nixosModules.default
                 stylix.nixosModules.stylix
                 fbb.nixosModules.default
                 nix-flatpak.nixosModules.nix-flatpak
