@@ -48,16 +48,14 @@ in
   options = {
     dotfiles = lib.mkOption {
       type = lib.types.path;
-      apply = toString;
-      default = "${toString ../../config}";
-      example = "${toString ../../config}";
+      default = ../../config;
+      example = ../../config;
       description = "Location of dotfiles";
     };
     apps = lib.mkOption {
       type = lib.types.path;
-      apply = toString;
-      default = "${toString ../../apps}";
-      example = "${toString ../../apps}";
+      default = ../../apps;
+      example = ../../apps;
       description = "Location of applications";
     };
   };
