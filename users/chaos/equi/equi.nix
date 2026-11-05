@@ -59,6 +59,7 @@
         betterGifAltText.enable = true;
         betterSessions.enable = true;
         betterSettings.enable = true;
+        betterMutualServers.enable = true;
         callTimer.enable = true;
         cancelFriendRequest.enable = true;
         channelTabs = {
