@@ -29,7 +29,6 @@ in
   environment = {
     systemPackages = with pkgs; [
       customScripts
-      git
       openssl.dev
       man-pages
       man-pages-posix
@@ -267,6 +266,7 @@ in
       xwayland.enable = true;
     };
     kdeconnect.enable = true;
+    git.enable = true;
 
     bcon = {
       enable = true;
