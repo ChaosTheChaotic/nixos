@@ -58,6 +58,7 @@
         betterForwards.enable = true;
         betterGifAltText.enable = true;
         betterSessions.enable = true;
+        betterSearch.enable = true;
         betterSettings.enable = true;
         betterMutualServers.enable = true;
         callTimer.enable = true;

@@ -38,7 +38,7 @@
     };
 
     balatro-utils = {
-      url = "git+https://codeberg.org/frostice482/balatro-utils";
+      url = "git+https://codeberg.org/balafrost/utils";
       flake = false;
     };
 

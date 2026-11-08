@@ -38,7 +38,11 @@
           env = {
             RUSTC_BOOTSTRAP = "1";
           };
-          nativeBuildInputs = [ pkgs.cmake ];
+          buildInputs = [ pkgs.zstd ];
+          nativeBuildInputs = [
+            pkgs.cmake
+            pkgs.pkg-config
+          ];
         }
       );
       modList =
