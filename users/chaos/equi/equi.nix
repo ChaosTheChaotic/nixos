@@ -95,6 +95,17 @@
         disableDeepLinks.enable = true;
         downloadAllAttachments.enable = true;
         draftNavigator.enable = true;
+        elementHighlighter = {
+          enable = true;
+          showBorderRadius = true;
+          showClasses = true;
+          showDisplay = true;
+          showFont = true;
+          showId = true;
+          showMargin = true;
+          showPadding = true;
+          showPosition = true;
+        };
         equicordHelper.enable = true;
         equicordToolbox.enable = true;
         equiTweaks = {
