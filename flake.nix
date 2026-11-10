@@ -3,9 +3,15 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-pinned-kernel.url = "github:NixOS/nixpkgs/d407951447dcd00442e97087bf374aad70c04cea";
+    nixpkgs-pinned-kernel = {
+      url = "github:NixOS/nixpkgs/d407951447dcd00442e97087bf374aad70c04cea";
+      buildTime = true;
+    };
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
-    nixos-apple-silicon.url = "github:nix-community/nixos-apple-silicon/3902c801519264191a7c3dfec8dd1f9faeb38fd5"; # TODO: Check and remove lock on this and pinned kernel once binary cache is back
+    nixos-apple-silicon = {
+      url = "github:nix-community/nixos-apple-silicon/3902c801519264191a7c3dfec8dd1f9faeb38fd5"; # TODO: Check and remove lock on this and pinned kernel once binary cache is back
+      buildTime = true;
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -36,7 +42,10 @@
       url = "github:MusicPlayerDaemon/MPD";
       flake = false;
     };
-    millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
+    millennium = {
+      url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
+      buildTime = true;
+    };
     tree-sitter.url = "path:./pkgs/tree-sitter";
     ani-cli = {
       url = "github:pystardust/ani-cli";
@@ -44,6 +53,7 @@
     };
     steam-asahi = {
       url = "github:sm-idk/steam-asahi";
+      buildTime = true;
       inputs.nixpkgs.follows = "nixpkgs-master";
     };
     bcon = {

@@ -543,11 +543,11 @@
         "rev": "9363be0b5c7b92c3cb91f8a97c3c0c62ffa7c1ef",
         "revCount": 204,
         "type": "git",
-        "url": "https://codeberg.org/frostice482/balatro-utils"
+        "url": "https://codeberg.org/balafrost/utils"
       },
       "original": {
         "type": "git",
-        "url": "https://codeberg.org/frostice482/balatro-utils"
+        "url": "https://codeberg.org/balafrost/utils"
       }
     },
     "balatrodarkmode": {
@@ -1339,11 +1339,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793979366,
-        "narHash": "sha256-7OoWDsYO9teiPxl0QdlS5lYE20Pue8/5mpscSL32FUA=",
+        "lastModified": 1794278858,
+        "narHash": "sha256-rkrJwLgLSHBnXfgoSKIDa+2LLGdTqynsV3GAxOTGhUU=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "2c0c1f01521469cf0271180c453c79782d53c2f6",
+        "rev": "82ce401aa350502897c3f2e85f384d61cd3b0b6d",
         "type": "github"
       },
       "original": {
@@ -1623,11 +1623,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1794159897,
-        "narHash": "sha256-M+35oe7+cLLqj28tBwlxG5s1vji8IZb/1p1GzkRy6O4=",
+        "lastModified": 1794324842,
+        "narHash": "sha256-54MAVlTBxvqEjobNpu6Yu53+psn0cOJ/NnMdT8Ws9h8=",
         "owner": "4evy",
         "repo": "nixcord",
-        "rev": "93699d1aa4829372a3eb5550f3a19ddc52aad8a5",
+        "rev": "803504cff18fad929f6d72612e0b8b23de6d9c02",
         "type": "github"
       },
       "original": {
@@ -1735,11 +1735,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1794011605,
-        "narHash": "sha256-mYPtVyGHuGL+x0E4X08diVPirElRykF1y2ScjIf0b9M=",
+        "lastModified": 1794326478,
+        "narHash": "sha256-hBGEnPD/5ukOvYyTC3QWnIQXsxXwK2hobb2IjJShBY0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "081bc352a12dbcf102fb7f5931c211cf88e1e05d",
+        "rev": "ba3cf0df2f10ba105f1f59c5a23714e9bb1b32a4",
         "type": "github"
       },
       "original": {
@@ -2038,11 +2038,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794163786,
-        "narHash": "sha256-16a6U+FcTHw2nhvgvowX0fmgkyo2NzU+z7Mw1PzwuHU=",
+        "lastModified": 1794326595,
+        "narHash": "sha256-KfTKSphkBZLgdbdm5xfHxqCUnkaZEi7UJjmgOUrw7xw=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "716931d600b05e1bb737b68c1d6544f0a497c718",
+        "rev": "83f694206a0ba1df6f544aaef4ed00b23a684218",
         "type": "github"
       },
       "original": {
@@ -2554,11 +2554,11 @@
     "tree-sitter-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1794091147,
-        "narHash": "sha256-Svq/DMmR9yvKKSppGni+CSp5k0tqozM8U/FzyltzrMQ=",
+        "lastModified": 1794324291,
+        "narHash": "sha256-Kp97CykaIR1OaCehfYKXcbRBjhmDVpUrbOkNwZpf52s=",
         "owner": "tree-sitter",
         "repo": "tree-sitter",
-        "rev": "ad0aeb42d34c9f922990cc1159b41dea37d9c0e7",
+        "rev": "03a4d01aa216397b6ab6474caf360e08a10455f0",
         "type": "github"
       },
       "original": {
@@ -2631,11 +2631,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1794153382,
-        "narHash": "sha256-GyN4K/lOaRRO2RkFJS5dVmpNX7xsrVbclzBfxd3mxtU=",
+        "lastModified": 1794278344,
+        "narHash": "sha256-RWmum1MyV0K6IC6VI0s0BTARxTbWUYp/25KwVqAC9Tk=",
         "owner": "vicinaehq",
         "repo": "vicinae",
-        "rev": "84a0086f0e589576c3c55a211579e63c20d83e59",
+        "rev": "cbba6f819801fffb809aa1043fe9f5bc7fd5598f",
         "type": "github"
       },
       "original": {

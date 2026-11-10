@@ -115,6 +115,7 @@ in
       experimental-features = [
         "nix-command"
         "flakes"
+        "build-time-fetch-tree"
       ];
       system-features = [
         "big-parallel"
