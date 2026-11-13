@@ -2,7 +2,7 @@
   pkgs,
   arch,
   mpdSrc,
-	stdenv ? pkgs.stdenv,
+  stdenv ? pkgs.stdenv,
 }:
 
 let
@@ -37,6 +37,7 @@ let
       icu
       pipewire
       alsa-lib
+      tinyalsa
     ];
 
     mesonFlags = [
@@ -88,7 +89,6 @@ let
       "-Dcue=false"
       "-Dcdio_paranoia=disabled"
       "-Dcurl=disabled"
-      "-Dmms=disabled"
       "-Dnfs=disabled"
       "-Dsmbclient=disabled"
       "-Dqobuz=disabled"

@@ -95,6 +95,7 @@
         disableDeepLinks.enable = true;
         downloadAllAttachments.enable = true;
         draftNavigator.enable = true;
+        duplicateCategory.enable = true;
         elementHighlighter = {
           enable = true;
           showBorderRadius = true;

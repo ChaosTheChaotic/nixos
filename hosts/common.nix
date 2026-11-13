@@ -309,6 +309,10 @@ in
       env.QTWEBENGINE_CHROMIUM_FLAGS = "--force-dark-mode --enable-features=WebContentsForceDark";
     };
     ccache.enable = true;
+    nix-index-database = {
+      enable = true;
+      comma.enable = true;
+    };
   };
 
   age.secrets."${userName}-passwd".file = ../secrets/${userName}-passwd-hash.age;
