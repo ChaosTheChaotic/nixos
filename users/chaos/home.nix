@@ -107,6 +107,7 @@ in
         wf-recorder
         master.odin
         master.ols
+        license-generator
 
         # Utilities
         scrcpy
