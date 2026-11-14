@@ -145,6 +145,7 @@ in
         (ccache.withCcache pkgs (
           arch.withCflags inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default
         ))
+        (arch.withRustFlags inputs.ltyr.packages.${pkgs.stdenv.hostPlatform.system}.default)
         rmpc-custom
       ];
     };

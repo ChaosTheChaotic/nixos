@@ -61,6 +61,7 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ltyr.url = "github:ChaosTheChaotic/ltyr";
     equi.url = "path:./users/chaos/equi/plugins";
     balatro.url = "path:./users/chaos/balatro";
   };
