@@ -242,7 +242,10 @@ in
           };
           updates.check_for_updates = false; # Manage through nix
           presence.share_rich_presence = false;
-          voice.self_mute = true;
+          voice = {
+            self_mute = true;
+            allow_microphone_transmit = true;
+          };
         };
       };
     };
