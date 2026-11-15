@@ -6,6 +6,7 @@
   arch,
   userName,
   ccache,
+  osConfig,
   ...
 }:
 
@@ -150,8 +151,6 @@ in
       ];
     };
 
-    age.secrets.dc-tkn.file = ../../secrets/gh-pat.age;
-
     programs = {
       home-manager.enable = true;
       quickshell.enable = true;
@@ -228,7 +227,7 @@ in
           buildInputs = [ pkgs.makeWrapper ];
           postBuild = ''
             wrapProgram $out/bin/concord \
-              --run 'set -a; source ${config.age.secrets.dc-tkn.path}; set +a'
+              --run 'set -a; source ${osConfig.age.secrets.dc-tkn.path}; set +a'
           '';
         };
         settings = {

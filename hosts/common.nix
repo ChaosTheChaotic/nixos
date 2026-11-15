@@ -24,6 +24,7 @@ in
     ../modules/stylix.nix
     ../modules/palette.nix
     ../modules/ccache.nix
+    ./common-age.nix
   ];
 
   environment = {
@@ -90,8 +91,6 @@ in
       inputs.nur.overlays.default
     ];
   };
-
-  age.secrets.gh-pat.file = ../secrets/gh-pat.age;
 
   nix = {
     extraOptions = ''
@@ -314,8 +313,6 @@ in
       comma.enable = true;
     };
   };
-
-  age.secrets."${userName}-passwd".file = ../secrets/${userName}-passwd-hash.age;
 
   users.users.${userName} = {
     hashedPasswordFile = config.age.secrets."${userName}-passwd".path;
