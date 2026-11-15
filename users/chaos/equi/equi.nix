@@ -54,6 +54,7 @@
           enable = true;
           channelOpenScrollMode = "default";
         };
+        betterPollDetails.enable = true;
         betterFolders.enable = true;
         betterForwards.enable = true;
         betterGifAltText.enable = true;

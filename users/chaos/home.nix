@@ -150,9 +150,9 @@ in
       ];
     };
 
-    programs.home-manager.enable = true;
 
     programs = {
+      home-manager.enable = true;
       quickshell.enable = true;
       clogite = {
         enable = true;
