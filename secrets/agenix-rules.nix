@@ -23,40 +23,32 @@ let
 in
 {
   "chaos-passwd-hash.age" = {
-    publicKeys = [
-      all
-    ];
+    publicKeys = all;
     armour = true;
   };
   "wg-priv-asahi.age" = {
-    publicKeys = [
-      mKeys
-    ];
+    publicKeys = mKeys;
     armour = true;
   };
   "wg-priv-thinker.age" = {
-    publicKeys = [
-      tKeys
-    ];
+    publicKeys = tKeys;
     armour = true;
   };
   "gh-pat.age" = {
-    publicKeys = [
-      all
-    ];
+    publicKeys = all;
     armour = true;
   };
 
   "syncthing-key-asahi.age" = {
-    publicKeys = [
-      mKeys
-    ];
+    publicKeys = mKeys;
     armour = true;
   };
   "syncthing-key-thinker.age" = {
-    publicKeys = [
-      tKeys
-    ];
+    publicKeys = tKeys;
+    armour = true;
+  };
+  "dc-tkn.age" = {
+    publicKeys = all;
     armour = true;
   };
 }
