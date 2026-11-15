@@ -150,6 +150,7 @@ in
       ];
     };
 
+    age.secrets.dc-tkn.file = ../../secrets/gh-pat.age;
 
     programs = {
       home-manager.enable = true;
@@ -218,6 +219,32 @@ in
           wifi-commander
           nerdfont-search
         ];
+      };
+      concord = {
+        enable = true;
+        package = pkgs.symlinkJoin {
+          name = "concord-with-token";
+          paths = [ pkgs.concord-tui ];
+          buildInputs = [ pkgs.makeWrapper ];
+          postBuild = ''
+            wrapProgram $out/bin/concord \
+              --run 'set -a; source ${config.age.secrets.dc-tkn.path}; set +a'
+          '';
+        };
+        settings = {
+          display = {
+            image_protocol = "kitty";
+            show_avatars = true;
+            show_images = true;
+            show_custom_emoji = true;
+          };
+          composer = {
+            emojis_as_links = true;
+          };
+          updates.check_for_updates = false; # Manage through nix
+          presence.share_rich_presence = false;
+          voice.self_mute = true;
+        };
       };
     };
 
