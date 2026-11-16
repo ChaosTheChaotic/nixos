@@ -113,6 +113,7 @@ in
         # Utilities
         scrcpy
         tesseract
+        mpv
         imagemagick
         master.spotdl
         prismlauncher
@@ -236,6 +237,7 @@ in
             show_avatars = true;
             show_images = true;
             show_custom_emoji = true;
+            media_playback = true;
           };
           composer = {
             emojis_as_links = true;
