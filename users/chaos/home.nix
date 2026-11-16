@@ -252,6 +252,8 @@ in
       };
     };
 
+    xdg.configFile."concord/config.toml".force = lib.mkForce true; # Fix for nix complaining that the folder will be clobbered every time
+
     systemd.user.settings = {
       Manager = {
         DefaultLimitNOFILE = "524288";
