@@ -1,0 +1,673 @@
+diff -ruN a/src/drm/device.rs b/src/drm/device.rs
+--- a/src/drm/device.rs	2026-11-17 08:27:38.840600095 +0000
++++ b/src/drm/device.rs	2026-11-17 08:28:02.593937199 +0000
+@@ -798,6 +798,37 @@
+         Ok(())
+     }
+ 
++    /// Refuse a pending VT release (VT_RELDISP with 0). The switch is cancelled
++    /// and this VT stays active. Used while an external program owns the display.
++    pub fn refuse_release(&mut self) -> Result<()> {
++        let ret = unsafe { libc::ioctl(self.tty_fd, VT_RELDISP, 0 as libc::c_int) };
++        if ret < 0 {
++            return Err(anyhow!(
++                "VT_RELDISP(0) failed: {}",
++                std::io::Error::last_os_error()
++            ));
++        }
++        Ok(())
++    }
++
++    /// Re-assert process-controlled VT mode and KD_GRAPHICS. A program that took
++    /// over the display (Qt's VT handler, for one) may have changed either.
++    pub fn reassert(&mut self) {
++        let mode = VtMode {
++            mode: VT_PROCESS,
++            waitv: 0,
++            relsig: Signal::SIGUSR2 as libc::c_short,
++            acqsig: Signal::SIGUSR1 as libc::c_short,
++            frsig: 0,
++        };
++        unsafe {
++            libc::ioctl(self.tty_fd, VT_SETMODE, &mode);
++            libc::ioctl(self.tty_fd, KDSETMODE, KD_GRAPHICS);
++            libc::tcflush(self.tty_fd, libc::TCIFLUSH);
++        }
++        self.active = true;
++    }
++
+     /// Request switch to another VT
+     ///
+     /// This triggers a VT switch by calling VT_ACTIVATE.
+diff -ruN a/src/handoff.rs b/src/handoff.rs
+--- a/src/handoff.rs	1970-01-01 00:00:00.000000000 +0000
++++ b/src/handoff.rs	2026-11-17 08:28:02.583735744 +0000
+@@ -0,0 +1,400 @@
++//! Display hand-off: let an external program own the display, then take it back.
++//!
++//! Server side lives in bcon, client side is `bcon handoff [opts] -- CMD ARGS...`.
++//!
++//! Protocol over /run/bcon/handoff-ttyN.sock (one line each way):
++//!   client -> bcon   BEGIN <kms|fb> <pty|none> <stop-keys|->
++//!   bcon   -> client OK | ERR <reason>      (sent once the display is released)
++//!   client runs CMD, then sends END (or simply exits / dies: EOF counts as END)
++//!
++//! `kms`: bcon drops DRM master, so CMD can become master (mpv --gpu-context=drm,
++//!        Qt eglfs_kms, SDL kmsdrm, ...). Needs the VT backend (root).
++//! `fb` : bcon keeps master but puts the boot framebuffer (the fbdev emulation
++//!        buffer behind /dev/fb0) back on the CRTC, so CMD can draw to /dev/fb0.
++//!
++//! While a hand-off is active bcon does not render or modeset. It keeps draining
++//! every PTY (CMD's stdout would otherwise block) and reading input, which is
++//! forwarded to the PTY (`pty`) or dropped (`none`).
++
++use std::io::{self, BufRead, BufReader, Read, Write};
++use std::os::unix::fs::PermissionsExt;
++use std::os::unix::io::{AsRawFd, RawFd};
++use std::os::unix::net::{UnixListener, UnixStream};
++use std::os::unix::process::ExitStatusExt;
++use std::path::{Path, PathBuf};
++use std::process::Command;
++use std::time::{Duration, Instant};
++
++use anyhow::{anyhow, bail, Context, Result};
++use log::{debug, warn};
++
++const SOCK_DIR: &str = "/run/bcon";
++
++// evdev keycodes (linux/input-event-codes.h)
++const KEY_ESC: u32 = 1;
++const KEY_BACKSPACE: u32 = 14;
++const KEY_Q: u32 = 16;
++
++pub fn socket_path(vt: u16) -> PathBuf {
++    Path::new(SOCK_DIR).join(format!("handoff-tty{}.sock", vt))
++}
++
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum HandoffMode {
++    Kms,
++    Fb,
++}
++
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum InputMode {
++    Pty,
++    None,
++}
++
++fn parse_stop_keys(s: &str) -> Vec<u32> {
++    s.split(',')
++        .filter_map(|k| match k.trim().to_ascii_lowercase().as_str() {
++            "q" => Some(KEY_Q),
++            "esc" | "escape" => Some(KEY_ESC),
++            _ => None,
++        })
++        .collect()
++}
++
++fn peer_cred(stream: &UnixStream) -> io::Result<libc::ucred> {
++    let mut cred = libc::ucred {
++        pid: 0,
++        uid: 0,
++        gid: 0,
++    };
++    let mut len = std::mem::size_of::<libc::ucred>() as libc::socklen_t;
++    let ret = unsafe {
++        libc::getsockopt(
++            stream.as_raw_fd(),
++            libc::SOL_SOCKET,
++            libc::SO_PEERCRED,
++            &mut cred as *mut _ as *mut libc::c_void,
++            &mut len,
++        )
++    };
++    if ret < 0 {
++        Err(io::Error::last_os_error())
++    } else {
++        Ok(cred)
++    }
++}
++
++/// Hide the hardware cursor plane (needs DRM master). Otherwise the pointer image
++/// can stay on top of whatever the other program draws.
++pub fn hide_hw_cursor(drm_fd: RawFd, crtc_id: u32) {
++    #[repr(C)]
++    struct DrmModeCursor {
++        flags: u32,
++        crtc_id: u32,
++        x: i32,
++        y: i32,
++        width: u32,
++        height: u32,
++        handle: u32,
++    }
++    const DRM_MODE_CURSOR_BO: u32 = 0x01;
++    // DRM_IOCTL_MODE_CURSOR = DRM_IOWR(0xA3, struct drm_mode_cursor)
++    let req = nix::request_code_readwrite!(0x64, 0xA3, std::mem::size_of::<DrmModeCursor>())
++        as libc::c_ulong;
++    let mut c = DrmModeCursor {
++        flags: DRM_MODE_CURSOR_BO,
++        crtc_id,
++        x: 0,
++        y: 0,
++        width: 0,
++        height: 0,
++        handle: 0, // handle 0 + CURSOR_BO = disable the cursor
++    };
++    let ret = unsafe { libc::ioctl(drm_fd, req, &mut c as *mut _) };
++    if ret < 0 {
++        debug!(
++            "handoff: hiding hw cursor failed: {}",
++            io::Error::last_os_error()
++        );
++    }
++}
++
++// ============================================================================
++// Server (inside bcon)
++// ============================================================================
++
++pub struct HandoffServer {
++    listener: UnixListener,
++    path: PathBuf,
++}
++
++impl HandoffServer {
++    pub fn bind(vt: u16) -> io::Result<Self> {
++        std::fs::create_dir_all(SOCK_DIR)?;
++        let path = socket_path(vt);
++        let _ = std::fs::remove_file(&path);
++        let listener = UnixListener::bind(&path)?;
++        // Peer credentials are checked per request, so any local user may connect.
++        std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o666))?;
++        listener.set_nonblocking(true)?;
++        Ok(Self { listener, path })
++    }
++
++    /// Non-blocking. Returns a validated BEGIN request if one is waiting.
++    /// `allowed_uid` is the user logged in on the active pane (root is always allowed).
++    pub fn poll(&self, allowed_uid: Option<u32>) -> Option<Request> {
++        let (stream, _) = match self.listener.accept() {
++            Ok(s) => s,
++            Err(e) if e.kind() == io::ErrorKind::WouldBlock => return None,
++            Err(e) => {
++                warn!("handoff: accept failed: {}", e);
++                return None;
++            }
++        };
++        match Request::read(stream, allowed_uid) {
++            Ok(r) => Some(r),
++            Err(e) => {
++                warn!("handoff: rejected request: {:#}", e);
++                None
++            }
++        }
++    }
++}
++
++impl Drop for HandoffServer {
++    fn drop(&mut self) {
++        let _ = std::fs::remove_file(&self.path);
++    }
++}
++
++pub struct Request {
++    stream: UnixStream,
++    pub pid: i32,
++    pgid: i32,
++    pub mode: HandoffMode,
++    pub input: InputMode,
++    stop_keys: Vec<u32>,
++}
++
++impl Request {
++    fn read(stream: UnixStream, allowed_uid: Option<u32>) -> Result<Self> {
++        stream.set_nonblocking(false)?;
++        stream.set_read_timeout(Some(Duration::from_millis(500)))?;
++
++        let cred = peer_cred(&stream).context("SO_PEERCRED failed")?;
++        if cred.uid != 0 && Some(cred.uid) != allowed_uid {
++            let mut s = &stream;
++            let _ = s.write_all(b"ERR not permitted\n");
++            bail!("uid {} is not allowed to take the display", cred.uid);
++        }
++
++        let mut line = String::new();
++        BufReader::new((&stream).take(256)).read_line(&mut line)?;
++        let mut it = line.split_whitespace();
++        if it.next() != Some("BEGIN") {
++            bail!("expected BEGIN, got {:?}", line.trim());
++        }
++        let mode = match it.next() {
++            Some("kms") => HandoffMode::Kms,
++            Some("fb") => HandoffMode::Fb,
++            other => bail!("bad mode {:?}", other),
++        };
++        let input = match it.next() {
++            Some("pty") => InputMode::Pty,
++            Some("none") => InputMode::None,
++            other => bail!("bad input mode {:?}", other),
++        };
++        let stop_keys = match it.next() {
++            Some("-") | None => Vec::new(),
++            Some(list) => parse_stop_keys(list),
++        };
++
++        // The kernel, not the client, says who is on the other end.
++        let pgid = unsafe { libc::getpgid(cred.pid) };
++
++        Ok(Self {
++            stream,
++            pid: cred.pid,
++            pgid,
++            mode,
++            input,
++            stop_keys,
++        })
++    }
++
++    pub fn reject(mut self, why: &str) {
++        let _ = writeln!(self.stream, "ERR {}", why);
++    }
++
++    /// Tell the client it may go ahead (display already released).
++    pub fn accept(mut self) -> io::Result<ActiveHandoff> {
++        self.stream.write_all(b"OK\n")?;
++        self.stream.set_read_timeout(None)?;
++        self.stream.set_nonblocking(true)?;
++        Ok(ActiveHandoff {
++            stream: self.stream,
++            pgid: self.pgid,
++            pid: self.pid,
++            input: self.input,
++            stop_keys: self.stop_keys,
++            ended_at: None,
++            term_sent: false,
++            kill_sent: false,
++        })
++    }
++}
++
++pub struct ActiveHandoff {
++    stream: UnixStream,
++    pgid: i32,
++    pub pid: i32,
++    pub input: InputMode,
++    stop_keys: Vec<u32>,
++    ended_at: Option<Instant>,
++    term_sent: bool,
++    kill_sent: bool,
++}
++
++impl ActiveHandoff {
++    /// True once the client said END, exited, or died (a dead process closes its
++    /// socket, so even SIGKILL ends up here).
++    pub fn poll_client(&mut self) -> bool {
++        if self.ended_at.is_some() {
++            return true;
++        }
++        let mut buf = [0u8; 64];
++        match self.stream.read(&mut buf) {
++            Ok(0) => {
++                self.ended_at = Some(Instant::now());
++                true
++            }
++            Ok(n) if buf[..n].starts_with(b"END") => {
++                self.ended_at = Some(Instant::now());
++                true
++            }
++            Ok(_) => false,
++            Err(e) if e.kind() == io::ErrorKind::WouldBlock => false,
++            Err(_) => {
++                self.ended_at = Some(Instant::now());
++                true
++            }
++        }
++    }
++
++    /// Ctrl+Alt+Backspace always stops the program; `--stop-keys` adds plain keys.
++    pub fn is_stop_key(&self, keycode: u32, ctrl: bool, alt: bool) -> bool {
++        if ctrl && alt && keycode == KEY_BACKSPACE {
++            return true;
++        }
++        !ctrl && !alt && self.stop_keys.contains(&keycode)
++    }
++
++    /// Signal the client's whole process group (the helper and the program).
++    pub fn signal_job(&self, sig: libc::c_int) {
++        let own = unsafe { libc::getpgrp() };
++        if self.pgid > 1 && self.pgid != own {
++            unsafe { libc::killpg(self.pgid, sig) };
++        }
++    }
++
++    /// Called while retaking the display keeps failing: the program is still
++    /// holding DRM master. Escalate rather than leave the console dead.
++    pub fn escalate(&mut self) {
++        let elapsed = match self.ended_at {
++            Some(t) => t.elapsed(),
++            None => return,
++        };
++        if elapsed > Duration::from_secs(3) && !self.term_sent {
++            self.term_sent = true;
++            warn!("handoff: display not released after 3s, sending SIGTERM to the job");
++            self.signal_job(libc::SIGTERM);
++        }
++        if elapsed > Duration::from_secs(5) && !self.kill_sent {
++            self.kill_sent = true;
++            warn!("handoff: display not released after 5s, sending SIGKILL to the job");
++            self.signal_job(libc::SIGKILL);
++        }
++    }
++}
++
++// ============================================================================
++// Client (`bcon handoff ... -- CMD`)
++// ============================================================================
++
++pub fn run_client(args: &[String]) -> Result<i32> {
++    const USAGE: &str = "usage: bcon handoff [--mode kms|fb] [--input pty|none] \
++[--stop-keys q,esc] -- COMMAND [ARGS...]";
++
++    let mut mode = "kms";
++    let mut input = "pty";
++    let mut stop = String::from("-");
++    let mut i = 0;
++    while i < args.len() {
++        match args[i].as_str() {
++            "--mode" => {
++                i += 1;
++                mode = match args.get(i).map(String::as_str) {
++                    Some("kms") => "kms",
++                    Some("fb") => "fb",
++                    _ => bail!("--mode needs kms or fb\n{}", USAGE),
++                };
++            }
++            "--input" => {
++                i += 1;
++                input = match args.get(i).map(String::as_str) {
++                    Some("pty") => "pty",
++                    Some("none") => "none",
++                    _ => bail!("--input needs pty or none\n{}", USAGE),
++                };
++            }
++            "--stop-keys" => {
++                i += 1;
++                stop = args
++                    .get(i)
++                    .cloned()
++                    .ok_or_else(|| anyhow!("--stop-keys needs a list\n{}", USAGE))?;
++            }
++            "--" => {
++                i += 1;
++                break;
++            }
++            _ => break,
++        }
++        i += 1;
++    }
++    let cmd = &args[i.min(args.len())..];
++    if cmd.is_empty() {
++        bail!("{}", USAGE);
++    }
++
++    let sock = std::env::var_os("BCON_HANDOFF_SOCK")
++        .map(PathBuf::from)
++        .or_else(|| crate::drm::get_active_vt().map(socket_path))
++        .ok_or_else(|| anyhow!("cannot tell which VT is active"))?;
++    let mut stream = UnixStream::connect(&sock).with_context(|| {
++        format!(
++            "cannot connect to {} (is this a bcon with hand-off support, on the active VT?)",
++            sock.display()
++        )
++    })?;
++
++    writeln!(stream, "BEGIN {} {} {}", mode, input, stop)?;
++    stream.set_read_timeout(Some(Duration::from_secs(5)))?;
++    let mut reply = String::new();
++    BufReader::new(&stream).read_line(&mut reply)?;
++    let reply = reply.trim();
++    if reply != "OK" {
++        bail!(
++            "bcon refused the hand-off: {}",
++            reply.strip_prefix("ERR ").unwrap_or(reply)
++        );
++    }
++
++    // Same process group as this helper, so bcon can stop both with one killpg().
++    let status = Command::new(&cmd[0]).args(&cmd[1..]).status();
++    let _ = stream.write_all(b"END\n");
++    match status {
++        Ok(st) => Ok(st.code().unwrap_or_else(|| 128 + st.signal().unwrap_or(0))),
++        Err(e) => bail!("cannot run {}: {}", cmd[0], e),
++    }
++}
+diff -ruN a/src/main.rs b/src/main.rs
+--- a/src/main.rs	2026-11-17 08:27:38.758652823 +0000
++++ b/src/main.rs	2026-11-17 08:28:02.593567091 +0000
+@@ -20,6 +20,8 @@
+ mod drm;
+ mod font;
+ mod gpu;
++#[cfg(target_os = "linux")]
++mod handoff;
+ mod input;
+ mod pane;
+ mod session;
+@@ -1192,6 +1194,18 @@
+     // Check command line arguments
+     let args: Vec<String> = std::env::args().collect();
+ 
++    // `bcon handoff -- CMD...` is a client mode: it never starts the terminal.
++    #[cfg(target_os = "linux")]
++    if args.get(1).map(String::as_str) == Some("handoff") {
++        match handoff::run_client(&args[2..]) {
++            Ok(code) => std::process::exit(code),
++            Err(e) => {
++                eprintln!("bcon handoff: {:#}", e);
++                std::process::exit(1);
++            }
++        }
++    }
++
+     // --help
+     if args.iter().any(|a| a == "--help" || a == "-h") {
+         print_help();
+@@ -2186,6 +2200,22 @@
+     let mut drm_master_ever_held = initial_drm_master;
+     let drm_master_wait_start = Instant::now();
+ 
++    // Display hand-off (`bcon handoff -- CMD`). The socket is always offered so the
++    // client gets a clear error; requests are refused unless we run the VT backend.
++    #[cfg(target_os = "linux")]
++    let handoff_server = target_vt.and_then(|vt| match handoff::HandoffServer::bind(vt) {
++        Ok(s) => {
++            info!("Hand-off socket: {}", handoff::socket_path(vt).display());
++            Some(s)
++        }
++        Err(e) => {
++            warn!("Hand-off disabled (cannot bind socket): {}", e);
++            None
++        }
++    });
++    #[cfg(target_os = "linux")]
++    let mut handoff_active: Option<handoff::ActiveHandoff> = None;
++
+     // Appearance colors (from config, may be overridden by OSC 10/11)
+     let config_bg = cfg.appearance.background_rgb();
+     let config_fg = cfg.appearance.foreground_rgb();
+@@ -2399,6 +2429,16 @@
+                         // Kernel requests us to release the VT.
+                         info!("VT release requested");
+ 
++                        // An external program owns the display. Switching away now
++                        // would leave the other VT without DRM master, so say no.
++                        if handoff_active.is_some() {
++                            info!("VT release refused: display is handed off");
++                            if let Err(e) = vt_switcher.refuse_release() {
++                                log::warn!("Failed to refuse VT release: {}", e);
++                            }
++                            continue;
++                        }
++
+                         // Send focus out event to terminal applications.
+                         if let Err(e) = term.send_focus_event(false) {
+                             log::debug!("Failed to send FocusOut event: {}", e);
+@@ -2494,6 +2534,156 @@
+             break;
+         }
+ 
++        // ---- Display hand-off ---------------------------------------------------
++        // `bcon handoff -- CMD` asks us to give the display to CMD (mpv's DRM output,
++        // a Qt eglfs browser, ...) and to take it back when CMD exits.
++        #[cfg(target_os = "linux")]
++        if handoff_active.is_none() && drm_master_held {
++            if let Some(ref server) = handoff_server {
++                if let Some(req) = server.poll(term.logged_in_uid()) {
++                    let vt_ok = target_vt.map(drm::is_vt_active).unwrap_or(false);
++                    if seatd_manages_drm {
++                        req.reject("hand-off needs bcon's VT backend (BCON_BACKEND=vt), this one uses libseat");
++                    } else if !vt_ok {
++                        req.reject("bcon's VT is not active");
++                    } else {
++                        // Needs master, so hide the cursor plane first.
++                        if use_hw_cursor {
++                            handoff::hide_hw_cursor(drm_device.as_raw_fd(), unsafe {
++                                std::mem::transmute::<_, u32>(display_config.crtc_handle)
++                            });
++                        }
++                        let released: Result<(), String> = match req.mode {
++                            handoff::HandoffMode::Kms => {
++                                drm_device.drop_master().map_err(|e| e.to_string())
++                            }
++                            handoff::HandoffMode::Fb => match saved_crtc {
++                                // Keep master; show the boot (fbdev) framebuffer again.
++                                Some(ref c) => {
++                                    c.restore(&drm_device, display_config.crtc_handle);
++                                    Ok(())
++                                }
++                                None => Err("no saved boot framebuffer to show".to_string()),
++                            },
++                        };
++                        match released {
++                            Ok(()) => {
++                                info!("handoff: display released ({:?}) to pid {}", req.mode, req.pid);
++                                drm_master_held = false;
++                                let _ = term.send_focus_event(false);
++                                match req.accept() {
++                                    Ok(h) => handoff_active = Some(h),
++                                    Err(e) => {
++                                        // Client vanished before we could answer.
++                                        warn!("handoff: client went away: {}", e);
++                                        if drm_device.set_master().is_ok() {
++                                            drm_master_held = true;
++                                        }
++                                        needs_redraw = true;
++                                    }
++                                }
++                            }
++                            Err(e) => {
++                                warn!("handoff: cannot release display: {}", e);
++                                req.reject(&e);
++                                if let Some(ref hc) = hw_cursor {
++                                    hc.show();
++                                    let (x, y) = display_config.cursor_position(mouse_x, mouse_y);
++                                    hc.move_to(x, y);
++                                }
++                            }
++                        }
++                        continue 'main_loop;
++                    }
++                }
++            }
++        }
++
++        // While handed off: never render or modeset. Keep draining PTYs (the program's
++        // stdout would block on a full buffer) and watch for the program to finish.
++        #[cfg(target_os = "linux")]
++        if handoff_active.is_some() {
++            let mut reclaimed = false;
++            if let Some(h) = handoff_active.as_mut() {
++                let client_gone = h.poll_client();
++
++                tab_mgr.process_all_pty();
++
++                if let Some(ref mut evdev_kb) = evdev_keyboard {
++                    let (key_events, _mouse_events) = evdev_kb.process_raw_events();
++                    for raw in &key_events {
++                        if !raw.is_press {
++                            continue;
++                        }
++                        if h.is_stop_key(raw.keycode, raw.mods_ctrl, raw.mods_alt) {
++                            info!("handoff: stop key pressed, terminating the job");
++                            h.signal_job(libc::SIGTERM);
++                            continue;
++                        }
++                        if h.input == handoff::InputMode::Pty && !client_gone {
++                            let t = tab_mgr.active_terminal_mut();
++                            let sym = xkbcommon::xkb::Keysym::new(raw.keysym);
++                            let kb_config = input::KeyboardConfig {
++                                application_cursor_keys: t.grid.modes.application_cursor_keys,
++                                modify_other_keys: t.grid.keyboard.modify_other_keys,
++                                kitty_flags: t.grid.keyboard.kitty_flags,
++                                key_action: raw.action,
++                            };
++                            let bytes = input::keysym_to_bytes_with_mods(
++                                sym,
++                                &raw.utf8,
++                                raw.mods_ctrl,
++                                raw.mods_alt,
++                                raw.mods_shift,
++                                &kb_config,
++                            );
++                            if !bytes.is_empty() {
++                                let _ = t.write_to_pty(&bytes);
++                            }
++                        }
++                    }
++                }
++
++                if client_gone {
++                    // The program has exited (or died): take the display back. SET_MASTER
++                    // is a no-op in `fb` mode, where we never dropped it.
++                    match drm_device.set_master() {
++                        Ok(()) => reclaimed = true,
++                        Err(e) => {
++                            log::debug!("handoff: cannot retake master yet: {}", e);
++                            h.escalate();
++                        }
++                    }
++                }
++            }
++
++            if reclaimed {
++                handoff_active = None;
++                drm_master_held = true;
++                info!("handoff: display reclaimed");
++
++                // The program may have changed the VT mode or keyboard mode.
++                if let Some(ref mut vt_switcher) = vt_switcher {
++                    vt_switcher.reassert();
++                }
++                if let Some(ref hc) = hw_cursor {
++                    hc.show();
++                    let (x, y) = display_config.cursor_position(mouse_x, mouse_y);
++                    hc.move_to(x, y);
++                }
++                for tab in tab_mgr.tabs.iter_mut() {
++                    for pane in tab.panes.values_mut() {
++                        pane.terminal.mark_all_dirty();
++                    }
++                }
++                let _ = tab_mgr.active_terminal_mut().send_focus_event(true);
++                needs_redraw = true;
++            }
++
++            std::thread::sleep(Duration::from_millis(8));
++            continue 'main_loop;
++        }
++
+         // Skip most processing if we don't have DRM master (VT switched away)
+         if !drm_master_held {
+             // If DRM master was never acquired, check for timeout.

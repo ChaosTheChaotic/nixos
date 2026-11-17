@@ -220,36 +220,46 @@ in
           nerdfont-search
         ];
       };
-      concord = {
-        enable = true;
-        package = pkgs.symlinkJoin {
-          name = "concord-with-token";
-          paths = [ pkgs.concord-tui ];
-          buildInputs = [ pkgs.makeWrapper ];
-          postBuild = ''
-            wrapProgram $out/bin/concord \
-              --run 'set -a; source ${osConfig.age.secrets.dc-tkn.path}; set +a'
+      concord =
+        let
+          mpvBcon = pkgs.writeShellScriptBin "mpv" ''
+            active_tty=$(cat /sys/class/tty/tty0/active 2>/dev/null)
+            if [ -n "$active_tty" ] && [ -S "/run/bcon/handoff-$active_tty.sock" ] && [ -z "$WAYLAND_DISPLAY$DISPLAY" ]; then
+              exec bcon handoff --input none --stop-keys q,esc -- \
+                ${pkgs.mpv}/bin/mpv --vo=gpu --gpu-context=drm "$@"
+            fi
+            exec ${pkgs.mpv}/bin/mpv "$@"
           '';
+        in
+        {
+          enable = true;
+          package = pkgs.symlinkJoin {
+            name = "concord-with-token";
+            paths = [ pkgs.concord-tui ];
+            buildInputs = [ pkgs.makeWrapper ];
+            postBuild = ''
+              wrapProgram $out/bin/concord --run 'set -a; source ${osConfig.age.secrets.dc-tkn.path}; set +a' --prefix PATH : ${mpvBcon}/bin
+            '';
+          };
+          settings = {
+            display = {
+              image_protocol = "kitty";
+              show_avatars = true;
+              show_images = true;
+              show_custom_emoji = true;
+              media_playback = true;
+            };
+            composer = {
+              emojis_as_links = true;
+            };
+            updates.check_for_updates = false; # Manage through nix
+            presence.share_rich_presence = false;
+            voice = {
+              self_mute = true;
+              allow_microphone_transmit = true;
+            };
+          };
         };
-        settings = {
-          display = {
-            image_protocol = "kitty";
-            show_avatars = true;
-            show_images = true;
-            show_custom_emoji = true;
-            media_playback = true;
-          };
-          composer = {
-            emojis_as_links = true;
-          };
-          updates.check_for_updates = false; # Manage through nix
-          presence.share_rich_presence = false;
-          voice = {
-            self_mute = true;
-            allow_microphone_transmit = true;
-          };
-        };
-      };
     };
 
     xdg.configFile."concord/config.toml".force = lib.mkForce true; # Fix for nix complaining that the folder will be clobbered every time

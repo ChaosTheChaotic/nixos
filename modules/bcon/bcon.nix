@@ -44,6 +44,7 @@ rustPlatform.buildRustPackage rec {
   patches = [
     ./bcon-kitty-placeholders.patch
     ./bcon-kitty-c1-anchored.patch
+    ./bcon-handoff.patch
   ];
 
   postPatch = ''
