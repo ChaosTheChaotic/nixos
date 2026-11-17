@@ -8,20 +8,6 @@
 }:
 
 let
-  millennium-bin = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
-    pname = "millennium-bin";
-    version = "3.6.1";
-    src = pkgs.fetchurl {
-      url = "https://github.com/SteamClientHomebrew/Millennium/releases/download/v${finalAttrs.version}/millennium-v${finalAttrs.version}-linux-x86_64.tar.gz";
-      sha256 = "sha256-AhWhl3mtkopTxelHdzBjaSrUCrWheboRlobeUVD7t2M=";
-    };
-    dontBuild = true;
-    installPhase = ''
-      mkdir -p $out/usr/lib/millennium
-      tar -xzf $src -C $out
-      chmod -R a+rX $out/usr/lib/millennium
-    '';
-  });
   ubootAsahiFix = final: prev: {
     uboot-asahi = prev.uboot-asahi.overrideAttrs (old: {
       makeFlags = (old.makeFlags or [ ]) ++ [ "DTC=${final.buildPackages.dtc}/bin/dtc" ];
@@ -74,20 +60,11 @@ in
     };
   };
 
-  programs.steam-asahi = {
-    enable = true;
-
-    package = pkgs.steam-asahi.override {
-      extraEnv = (pkgs.steam-asahi.extraEnv or { }) // {
-        MILLENNIUM_RUNTIME_PATH = "${millennium-bin}/usr/lib/millennium/libmillennium_x86.so";
-      };
-    };
+	# steam-asahi module needs the gtk problem handler set to not abort as it does naturally
+  programs.steam-asahi.enable = true;
+  nixpkgs.config.problems.handlers = {
+    "gtk+".broken = "warn";
   };
-
-  systemd.user.tmpfiles.rules = [
-    "L+ %h/.local/share/Steam/ubuntu12_32/libXtst.so.6 - - - - ${millennium-bin}/usr/lib/millennium/libmillennium_bootstrap_x86.so"
-    "L+ %h/.local/share/Steam/ubuntu12_64/libXtst.so.6 - - - - ${millennium-bin}/usr/lib/millennium/libmillennium_bootstrap_hhx64.so"
-  ];
 
   nix.settings = {
     extra-substituters = [

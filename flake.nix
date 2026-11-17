@@ -43,7 +43,7 @@
       flake = false;
     };
     steam-asahi = {
-      url = "github:sm-idk/steam-asahi";
+      url = "github:thatwhichisdev/steam-asahi";
       inputs.nixpkgs.follows = "nixpkgs-master";
     };
     bcon = {

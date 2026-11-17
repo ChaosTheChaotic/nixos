@@ -2406,15 +2406,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1783937169,
-        "narHash": "sha256-d+0Bfwtt7HmLW2Usnw9XHA/uyNVHy3G1wT1yNQWuyCs=",
-        "owner": "sm-idk",
+        "lastModified": 1790759153,
+        "narHash": "sha256-LSsB0IhBl6xVED54edRvAl4xCD7HL0pRM9gwgqlsaT0=",
+        "owner": "thatwhichisdev",
         "repo": "steam-asahi",
-        "rev": "5e538015e267bfd57ccf49e5ed0660ac7fd9f8ea",
+        "rev": "aff7bddb7dcdfcf8a8a8bc51ae59815f6e871c41",
         "type": "github"
       },
       "original": {
-        "owner": "sm-idk",
+        "owner": "thatwhichisdev",
         "repo": "steam-asahi",
         "type": "github"
       }
