@@ -31,6 +31,9 @@ let
     mpdSrc = inputs.mpd;
     stdenv = ccache.stdenv pkgs;
   };
+  tereix = ccache.withCcache pkgs (
+    arch.withCflags inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default
+  );
 in
 {
   imports = [
@@ -71,7 +74,6 @@ in
       stateVersion = "25.11";
       file = {
         ".config/hypr".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/hypr";
-        ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim";
         ".config/quickshell".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/quickshell";
       };
       packages = with pkgs; [
@@ -81,7 +83,6 @@ in
         unzip
         file
         which
-        neovim
         rsync
         pnpm
         nodejs
@@ -93,21 +94,11 @@ in
         pkg-config
         openssl
         nixfmt
-        nixd
-        shfmt
-        stylua
         typescript
-        cmake-language-server
-        lua-language-server
         zig
-        hyprls
         kdePackages.qtdeclarative
-        ruff
-        prettier
-        google-java-format
         wf-recorder
         master.odin
-        master.ols
         license-generator
 
         # Utilities
@@ -144,11 +135,14 @@ in
         (ccache.withCcache pkgs (
           arch.withAll inputs.tree-sitter.packages.${pkgs.stdenv.hostPlatform.system}.default
         ))
-        (ccache.withCcache pkgs (
-          arch.withCflags inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default
-        ))
+        tereix
         (arch.withRustFlags inputs.ltyr.packages.${pkgs.stdenv.hostPlatform.system}.default)
         rmpc-custom
+
+        (inputs.nvim.lib.mkNvim {
+          inherit pkgs master tereix;
+          balatroLsp = true;
+        })
       ];
     };
 

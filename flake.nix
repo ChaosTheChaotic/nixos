@@ -64,6 +64,10 @@
     ltyr.url = "github:ChaosTheChaotic/ltyr";
     equi.url = "path:./users/chaos/equi/plugins";
     balatro.url = "path:./users/chaos/balatro";
+    nvim = {
+      url = "path:./users/chaos/nvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
