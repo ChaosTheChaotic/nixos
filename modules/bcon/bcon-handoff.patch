@@ -41,8 +41,8 @@ diff -ruN a/src/drm/device.rs b/src/drm/device.rs
      /// This triggers a VT switch by calling VT_ACTIVATE.
 diff -ruN a/src/handoff.rs b/src/handoff.rs
 --- a/src/handoff.rs	1970-01-01 00:00:00.000000000 +0000
-+++ b/src/handoff.rs	2026-11-17 08:28:02.583735744 +0000
-@@ -0,0 +1,400 @@
++++ b/src/handoff.rs	2026-11-17 21:41:41.672336707 +0000
+@@ -0,0 +1,461 @@
 +//! Display hand-off: let an external program own the display, then take it back.
 +//!
 +//! Server side lives in bcon, client side is `bcon handoff [opts] -- CMD ARGS...`.
@@ -50,7 +50,11 @@ diff -ruN a/src/handoff.rs b/src/handoff.rs
 +//! Protocol over /run/bcon/handoff-ttyN.sock (one line each way):
 +//!   client -> bcon   BEGIN <kms|fb> <pty|none> <stop-keys|->
 +//!   bcon   -> client OK | ERR <reason>      (sent once the display is released)
++//!   bcon   -> client STOP                   (a stop key was pressed; client stops CMD)
 +//!   client runs CMD, then sends END (or simply exits / dies: EOF counts as END)
++//!
++//! STOP is handled by the client, which owns CMD and runs as the user. bcon itself
++//! runs hardened (no CAP_KILL) and cannot signal the user's processes.
 +//!
 +//! `kms`: bcon drops DRM master, so CMD can become master (mpv --gpu-context=drm,
 +//!        Qt eglfs_kms, SDL kmsdrm, ...). Needs the VT backend (root).
@@ -283,6 +287,7 @@ diff -ruN a/src/handoff.rs b/src/handoff.rs
 +            input: self.input,
 +            stop_keys: self.stop_keys,
 +            ended_at: None,
++            stop_sent: false,
 +            term_sent: false,
 +            kill_sent: false,
 +        })
@@ -296,6 +301,7 @@ diff -ruN a/src/handoff.rs b/src/handoff.rs
 +    pub input: InputMode,
 +    stop_keys: Vec<u32>,
 +    ended_at: Option<Instant>,
++    stop_sent: bool,
 +    term_sent: bool,
 +    kill_sent: bool,
 +}
@@ -334,11 +340,33 @@ diff -ruN a/src/handoff.rs b/src/handoff.rs
 +        !ctrl && !alt && self.stop_keys.contains(&keycode)
 +    }
 +
-+    /// Signal the client's whole process group (the helper and the program).
++    /// Ask the client to stop its program. Returns true the first time only.
++    pub fn request_stop(&mut self) -> bool {
++        if self.stop_sent {
++            return false;
++        }
++        self.stop_sent = true;
++        let mut s = &self.stream;
++        if let Err(e) = s.write_all(b"STOP\n") {
++            warn!("handoff: could not send STOP: {}", e);
++        }
++        true
++    }
++
++    /// Last resort: signal the client's whole process group. Only used when the
++    /// client is gone but the program still holds the display. Needs CAP_KILL, which
++    /// the bcon service may not have, so failures are reported instead of ignored.
 +    pub fn signal_job(&self, sig: libc::c_int) {
 +        let own = unsafe { libc::getpgrp() };
 +        if self.pgid > 1 && self.pgid != own {
-+            unsafe { libc::killpg(self.pgid, sig) };
++            if unsafe { libc::killpg(self.pgid, sig) } != 0 {
++                warn!(
++                    "handoff: killpg({}, {}) failed: {} (the bcon service needs CAP_KILL for this)",
++                    self.pgid,
++                    sig,
++                    io::Error::last_os_error()
++                );
++            }
 +        }
 +    }
 +
@@ -435,17 +463,50 @@ diff -ruN a/src/handoff.rs b/src/handoff.rs
 +        );
 +    }
 +
-+    // Same process group as this helper, so bcon can stop both with one killpg().
-+    let status = Command::new(&cmd[0]).args(&cmd[1..]).status();
++    let mut child = match Command::new(&cmd[0]).args(&cmd[1..]).spawn() {
++        Ok(c) => c,
++        Err(e) => {
++            let _ = stream.write_all(b"END\n");
++            bail!("cannot run {}: {}", cmd[0], e);
++        }
++    };
++
++    // bcon sends STOP when a stop key is pressed. We own the program and run as the
++    // user, so we stop it ourselves: SIGTERM first, SIGKILL if it ignores that.
++    let _ = stream.set_nonblocking(true);
++    let mut stop_at: Option<Instant> = None;
++    let mut killed = false;
++    let status = loop {
++        match child.try_wait() {
++            Ok(Some(st)) => break Ok(st),
++            Ok(None) => {}
++            Err(e) => break Err(e),
++        }
++        let mut buf = [0u8; 16];
++        if let Ok(n) = stream.read(&mut buf) {
++            if n > 0 && buf[..n].starts_with(b"STOP") && stop_at.is_none() {
++                stop_at = Some(Instant::now());
++                unsafe { libc::kill(child.id() as libc::pid_t, libc::SIGTERM) };
++            }
++        }
++        if let Some(t) = stop_at {
++            if !killed && t.elapsed() > Duration::from_secs(2) {
++                let _ = child.kill();
++                killed = true;
++            }
++        }
++        std::thread::sleep(Duration::from_millis(20));
++    };
++
 +    let _ = stream.write_all(b"END\n");
 +    match status {
 +        Ok(st) => Ok(st.code().unwrap_or_else(|| 128 + st.signal().unwrap_or(0))),
-+        Err(e) => bail!("cannot run {}: {}", cmd[0], e),
++        Err(e) => bail!("waiting for {} failed: {}", cmd[0], e),
 +    }
 +}
 diff -ruN a/src/main.rs b/src/main.rs
 --- a/src/main.rs	2026-11-17 08:27:38.758652823 +0000
-+++ b/src/main.rs	2026-11-17 08:28:02.593567091 +0000
++++ b/src/main.rs	2026-11-17 21:41:41.675199986 +0000
 @@ -20,6 +20,8 @@
  mod drm;
  mod font;
@@ -514,7 +575,7 @@ diff -ruN a/src/main.rs b/src/main.rs
                          // Send focus out event to terminal applications.
                          if let Err(e) = term.send_focus_event(false) {
                              log::debug!("Failed to send FocusOut event: {}", e);
-@@ -2494,6 +2534,156 @@
+@@ -2494,6 +2534,157 @@
              break;
          }
  
@@ -600,8 +661,9 @@ diff -ruN a/src/main.rs b/src/main.rs
 +                            continue;
 +                        }
 +                        if h.is_stop_key(raw.keycode, raw.mods_ctrl, raw.mods_alt) {
-+                            info!("handoff: stop key pressed, terminating the job");
-+                            h.signal_job(libc::SIGTERM);
++                            if h.request_stop() {
++                                info!("handoff: stop key pressed, asking the program to stop");
++                            }
 +                            continue;
 +                        }
 +                        if h.input == handoff::InputMode::Pty && !client_gone {
