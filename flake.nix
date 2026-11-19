@@ -2,7 +2,7 @@
   description = "NixOS Config";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";
     nixpkgs-pinned-kernel.url = "github:NixOS/nixpkgs/d407951447dcd00442e97087bf374aad70c04cea";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixos-apple-silicon.url = "github:nix-community/nixos-apple-silicon/3902c801519264191a7c3dfec8dd1f9faeb38fd5"; # TODO: Check and remove lock on this and pinned kernel once binary cache is back
