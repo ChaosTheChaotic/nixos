@@ -149,6 +149,7 @@ in
     programs = {
       home-manager.enable = true;
       quickshell.enable = true;
+      yacht.enable = true;
       clogite = {
         enable = true;
         keepHistfile = false;

@@ -15,6 +15,8 @@
     vp.dressing-nvim
   ];
 
+	extraConfigLua = builtins.readFile ./yacht.lua;
+
   plugins.telescope = {
     enable = true;
     package = vp.telescope-nvim;

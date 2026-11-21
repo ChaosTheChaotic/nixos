@@ -51,7 +51,10 @@
       flake = false;
     };
     stylix.url = "github:nix-community/stylix";
-    fbb.url = "github:ChaosTheChaotic/framebuffer-browser";
+    fbb = {
+      url = "github:ChaosTheChaotic/framebuffer-browser";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     return-youtube-dislike = {
       url = "file+https://clients2.google.com/service/update2/crx?response=redirect&prodversion=131.0&acceptformat=crx2,crx3&x=id%3Dgebbhagfogifgggkldgodflihgfeippi%26uc";
       flake = false;
@@ -66,6 +69,10 @@
     balatro.url = "path:./users/chaos/balatro";
     nvim = {
       url = "path:./users/chaos/nvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    yacht = {
+      url = "git+file:///home/chaos/Downloads/pluh/yacht";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -84,6 +91,7 @@
       nix-index-database,
       fbb,
       clogite,
+      yacht,
       ...
     }@inputs:
     {
@@ -163,6 +171,7 @@
                 fbb.nixosModules.default
                 nix-flatpak.nixosModules.nix-flatpak
                 nix-index-database.nixosModules.default
+                yacht.nixosModules.default
                 { environment.systemPackages = [ agenix.packages.${system}.default ]; }
                 home-manager.nixosModules.home-manager
                 {
@@ -172,6 +181,7 @@
                   home-manager.sharedModules = [
                     vicinae.homeManagerModules.default
                     clogite.homeManagerModules.default
+                    yacht.homeManagerModules.default
                   ];
                   home-manager.users.${userName} = import ./users/${userName}/home.nix;
                 }

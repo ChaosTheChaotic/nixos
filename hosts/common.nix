@@ -24,6 +24,7 @@ in
     ../modules/stylix.nix
     ../modules/palette.nix
     ../modules/ccache.nix
+    ../modules/yacht-bcon
     ./common-age.nix
   ];
 
@@ -218,6 +219,7 @@ in
     #    font-name = "JetBrainsMono Nerd Font Mono";
     #  };
     #};
+    yacht-bcon.enable = true;
   };
 
   time.timeZone = "Europe/London";
@@ -295,6 +297,7 @@ in
         paths.screenshot_dir = "~/Screenshots";
       };
     };
+    yacht.enable = true;
     framebuffer-browser = {
       enable = true;
       source = inputs.fbb;
@@ -303,7 +306,9 @@ in
         adblockTtlHours = 48;
         fileChooser = "terminal";
       };
-      package = ccache.withCcache pkgs (inputs.fbb.packages.${pkgs.stdenv.hostPlatform.system}.default);
+      package = inputs.yacht.lib.wrapQtApp pkgs {
+        package = ccache.withCcache pkgs (inputs.fbb.packages.${pkgs.stdenv.hostPlatform.system}.default);
+      };
       extensions = [ inputs.return-youtube-dislike ];
       env.QTWEBENGINE_CHROMIUM_FLAGS = "--force-dark-mode --enable-features=WebContentsForceDark";
     };
