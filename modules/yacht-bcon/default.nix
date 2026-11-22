@@ -1,4 +1,3 @@
-# Personal glue: bcon -> yacht. Lives in the system config, not in the yacht repo.
 {
   config,
   lib,
@@ -27,7 +26,7 @@ in
         message = "services.yacht-bcon needs programs.yacht.enable (it uses that package).";
       }
     ];
-    # A NixOS-level *user* unit: runs in every user's login manager, TTY or not.
+    # A NixOS user unit, runs in every users login manager, TTY or not
     systemd.user.services.yacht-bcon = {
       description = "Mirror bcon's clipboard into yacht";
       after = [ "yachtd.service" ];

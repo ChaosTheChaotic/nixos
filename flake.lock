@@ -1485,11 +1485,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795268568,
-        "narHash": "sha256-1RJm4DEu7YHJv94sjSY7sjqT+kHx/AUwmtUN4dtFBUo=",
+        "lastModified": 1795366757,
+        "narHash": "sha256-Tp4Kh4R7ID1f2mMCDlb2PiFQ/DZZsnXB2u2juWN+TT4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "6857c7f7c338ad181729c52071386b0d3afa24bc",
+        "rev": "3b8140d21fa0a70b1b38c2ed29853dfe686234a6",
         "type": "github"
       },
       "original": {
@@ -1588,11 +1588,11 @@
       },
       "locked": {
         "dir": "packages/nix",
-        "lastModified": 1794710897,
-        "narHash": "sha256-WZVbAUAyHuzop86IGGfcsqctVtjHLPhBnDAPt/+BfEM=",
+        "lastModified": 1795299394,
+        "narHash": "sha256-BPZeT1hnHARhoEQwkUjW6WCUC4c7A7tE3Zrh9z76EeQ=",
         "owner": "SteamClientHomebrew",
         "repo": "Millennium",
-        "rev": "ca8976dcd2822d9e4363b38bf5038bd5b1687260",
+        "rev": "3b3702aa4838a22dbf7277dbd535d40499f26e4a",
         "type": "github"
       },
       "original": {
@@ -1787,11 +1787,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794739050,
-        "narHash": "sha256-PCGNIyAydZcdUXCxEXTjrS1+wWS+k9E+ENqBkUK2Mpg=",
+        "lastModified": 1795345257,
+        "narHash": "sha256-p1dA8lUFQTLJfDI2gaTZQ+CcMKw3nxvyHNbwpVMy2rY=",
         "owner": "nix-community",
         "repo": "nix-index-database",
-        "rev": "9bd074026d6db75b59aae8cd6071b5f2fe27a36c",
+        "rev": "905f3e6f1e78165e79457c0bbe7ec4b885a5fce1",
         "type": "github"
       },
       "original": {
@@ -1810,11 +1810,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1795277792,
-        "narHash": "sha256-Zahc2TzRXRsePVUIJMM2UUzHL49Jy1vS7jwCXhR/kMs=",
+        "lastModified": 1795371348,
+        "narHash": "sha256-E+inxHVJB5qOh8SLhlgDlhYN+etdPe2mvpxwe3Po2kQ=",
         "owner": "4evy",
         "repo": "nixcord",
-        "rev": "84eff334e4373ad94af9cc84cf962379a62d9cbb",
+        "rev": "a32e58f47eb4c569bdbad0b1fe2a7b8fb66599eb",
         "type": "github"
       },
       "original": {
@@ -1922,11 +1922,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1795277543,
-        "narHash": "sha256-S9axoIAt90DWW1Gzt3SDZD47sMhSny4d5/bhf+xEm64=",
+        "lastModified": 1795384916,
+        "narHash": "sha256-hUmuRIEiKFExinmDBeXhF5/PIfrpgZtJf5RQToSVrPE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d121c4b5d3cc617420ae86ba28ba9ea95d3077c5",
+        "rev": "d86076dbdea24505327adce8486a35ad7b77329a",
         "type": "github"
       },
       "original": {
@@ -2245,11 +2245,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795277565,
-        "narHash": "sha256-bxgC+ToR2eEVwTjke+06zV71PDmN2dZhZ3nIV7qnrOw=",
+        "lastModified": 1795384984,
+        "narHash": "sha256-yAKmGik7+/EJs1xbcTRWItgcewk6dZBtXZAy17leRuQ=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "392c8af75e07dc806422b10c58326149f58fe03c",
+        "rev": "f97b91fef63ac269a721b540aad68a6467ed4b35",
         "type": "github"
       },
       "original": {
@@ -2408,11 +2408,11 @@
     "nvp-flutter-tools-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1795203245,
-        "narHash": "sha256-IM/T5Vl5cH9J2m9C0TibsOBwBM2Lk9YcUXT46QeDtyU=",
+        "lastModified": 1795374875,
+        "narHash": "sha256-a0xGbZvDSznRPuBVzO22GQpqv3kIBonbBwklO3MaeE0=",
         "owner": "nvim-flutter",
         "repo": "flutter-tools.nvim",
-        "rev": "2d7b8948c78877518e4102a2e3f86916f5fa3870",
+        "rev": "0ff50ae646599788c71779ffa47ce46350a35724",
         "type": "github"
       },
       "original": {
@@ -3429,17 +3429,17 @@
         "rust-overlay": "rust-overlay_3"
       },
       "locked": {
-        "lastModified": 1795366809,
-        "narHash": "sha256-oHXFgX026JBgFhVaO7DndMKKdrGmOLonbSF40WQ/+Lk=",
-        "ref": "refs/heads/master",
-        "rev": "226d4d5d5f5fabb6e0b2a819a5e729cc49d5920e",
-        "revCount": 3,
-        "type": "git",
-        "url": "file:///home/chaos/Downloads/pluh/yacht"
+        "lastModified": 1795385456,
+        "narHash": "sha256-cVbeH556XW5scIuuFd8V4BbQdbFFnYoI/RGuUxnD9Is=",
+        "owner": "ChaosTheChaotic",
+        "repo": "yacht",
+        "rev": "084349972c1f1d26444a24f82830d1ee725596d8",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/chaos/Downloads/pluh/yacht"
+        "owner": "ChaosTheChaotic",
+        "repo": "yacht",
+        "type": "github"
       }
     }
   },

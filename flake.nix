@@ -72,7 +72,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     yacht = {
-      url = "git+file:///home/chaos/Downloads/pluh/yacht";
+      url = "github:ChaosTheChaotic/yacht";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
