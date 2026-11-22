@@ -2845,11 +2845,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795253373,
-        "narHash": "sha256-Vg6Sg8gJCDG9qpVEdOZX+72Z50MLwdnwtfZ8FNBwiYI=",
+        "lastModified": 1795340093,
+        "narHash": "sha256-fosvQ7eeQMrh6RvUXotBc6d92dHskAI6tu1EERJQ2LY=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "52db20539ec0ba063479d66092992d9efcf456ff",
+        "rev": "5aa410a1df0e4e9c25f3818320651c2bddf66aff",
         "type": "github"
       },
       "original": {
@@ -3429,11 +3429,11 @@
         "rust-overlay": "rust-overlay_3"
       },
       "locked": {
-        "lastModified": 1795300702,
-        "narHash": "sha256-q5h4Cf1ubUbfOlnCZT2i3eUWUpzn7VAUK/lk+UzGmB0=",
+        "lastModified": 1795366809,
+        "narHash": "sha256-oHXFgX026JBgFhVaO7DndMKKdrGmOLonbSF40WQ/+Lk=",
         "ref": "refs/heads/master",
-        "rev": "b73c0a94240a643b1e14df18724439781e6094be",
-        "revCount": 2,
+        "rev": "226d4d5d5f5fabb6e0b2a819a5e729cc49d5920e",
+        "revCount": 3,
         "type": "git",
         "url": "file:///home/chaos/Downloads/pluh/yacht"
       },
