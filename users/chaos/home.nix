@@ -230,7 +230,13 @@ in
           enable = true;
           package = pkgs.symlinkJoin {
             name = "concord-with-token";
-            paths = [ pkgs.concord-tui ];
+            paths = [
+              (pkgs.concord-tui.overrideAttrs (old: {
+                patches = (old.patches or [ ]) ++ [ ../../patches/concord-spoof-windows.patch ];
+                # The tests assert the host OS
+                doCheck = false;
+              }))
+            ];
             buildInputs = [ pkgs.makeWrapper ];
             postBuild = ''
               wrapProgram $out/bin/concord --run 'set -a; source ${osConfig.age.secrets.dc-tkn.path}; set +a' --prefix PATH : ${mpvBcon}/bin

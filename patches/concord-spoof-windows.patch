@@ -1,0 +1,36 @@
+--- a/src/discord/fingerprint.rs
++++ b/src/discord/fingerprint.rs
+@@ -880,13 +880,8 @@
+ }
+ 
+ fn operating_system() -> &'static str {
+-    if cfg!(target_os = "windows") {
+-        "Windows"
+-    } else if cfg!(target_os = "macos") {
+-        "Mac OS X"
+-    } else {
+-        "Linux"
+-    }
++    // Spoof Windows to match transport.rs; chrome_os_version() maps it to "10".
++    "Windows"
+ }
+ 
+ fn operating_system_version() -> String {
+--- a/src/discord/transport.rs
++++ b/src/discord/transport.rs
+@@ -16,13 +16,8 @@
+ // Keep the wire settings and browser metadata in one fixed profile. Endpoint
+ // headers remain explicit so navigation defaults do not leak into API or WS calls.
+ static CHROME: LazyLock<wreq::Emulation> = LazyLock::new(|| {
+-    let platform = if cfg!(target_os = "windows") {
+-        Platform::Windows
+-    } else if cfg!(target_os = "macos") {
+-        Platform::MacOS
+-    } else {
+-        Platform::Linux
+-    };
++    // Spoof Windows: Discord blocks Linux user agents behind some VPN exits.
++    let platform = Platform::Windows;
+     let mut profile = Emulation::builder()
+         .profile(Profile::Chrome149)
+         .platform(platform)
