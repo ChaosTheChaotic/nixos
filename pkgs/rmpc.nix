@@ -7,6 +7,7 @@
 
 let
   blissify = pkgs.callPackage ./blissify.nix { };
+  blissify-unwrapped = blissify.passthru.blissify-unwrapped;
   mpd-minimal = stdenv.mkDerivation {
     pname = "mpd-minimal";
     version = "0.25-git";
@@ -142,7 +143,7 @@ let
     name = "bliss-sync";
     runtimeInputs = with pkgs; [
       mpc
-      blissify
+      blissify-unwrapped
       coreutils
       util-linux
     ];
@@ -186,36 +187,67 @@ pkgs.writeShellApplication {
   ];
 
   text = ''
+    RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/tmp/rmpc-$(id -u)}"
+    SOCKET_DIR="$RUNTIME_DIR/mpd"
+    SOCKET="$SOCKET_DIR/socket"
+
+    mkdir -p "$SOCKET_DIR"
     mkdir -p ~/.local/share/mpd/playlists
     mkdir -p ~/.local/share/bliss-rs
-    mkdir -p /tmp/rmpc/cache
     mkdir -p ~/.lyrics
-    SOCKET="/tmp/mpd_socket"
-    # mpc and blissify both find MPD through this
+    mkdir -p /tmp/rmpc/cache
+
     export MPD_HOST="$SOCKET"
     rm -f "$SOCKET"
 
-    mpd --no-daemon &
+    # MPD does not expand env vars in mpd.conf, so render the template
+    MPD_CONF="$SOCKET_DIR/mpd.conf"
+    sed "s|@SOCKET@|$SOCKET|g" "$HOME/.config/mpd/mpd.conf" > "$MPD_CONF"
+
+    mpd --no-daemon "$MPD_CONF" &
     MPD_PID=$!
 
-    # Wait until the MPD Unix socket is created
     for _ in {1..30}; do
-        if [ -S "$SOCKET" ]; then
-            break
-        fi
-        sleep 0.1
+      if [ -S "$SOCKET" ]; then break; fi
+      sleep 0.1
     done
+    if [ ! -S "$SOCKET" ]; then
+      echo "mpd failed to start (config: $MPD_CONF)" >&2
+      exit 1
+    fi
 
     mpd-mpris -network unix -host "$SOCKET" >/dev/null 2>&1 &
     MPRIS_PID=$!
 
-    # Background blissify sync in its own process group so it can be killed as one
     setsid ${blissSync}/bin/bliss-sync >>"$HOME/.local/share/bliss-rs/sync.log" 2>&1 &
     SYNC_PID=$!
 
-    trap 'kill $MPD_PID $MPRIS_PID 2>/dev/null || true; kill -- -$SYNC_PID 2>/dev/null || true' EXIT
+    cleanup() {
+      kill "$MPD_PID" "$MPRIS_PID" 2>/dev/null || true
+      kill -- "-$SYNC_PID" 2>/dev/null || true
+      rm -f "$SOCKET"
+    }
+    trap cleanup EXIT
 
-    ${pkgs.rmpc}/bin/rmpc "$@"
-    rm -f "$SOCKET"
+    # Decide whether to inject --address
+    #   * --clean must be the only argument -> never inject with it
+    #   * Respect a user-provided -a/--address (clap would reject a duplicate)
+    inject_address=1
+    for arg in "$@"; do
+      case "$arg" in
+        --clean)      inject_address=0 ;;
+        -a|--address) inject_address=0 ;;
+        --address=*)  inject_address=0 ;;
+        -a?*)         inject_address=0 ;;   # -aVALUE form
+      esac
+    done
+
+    rmpc_args=()
+    if [ "$inject_address" -eq 1 ]; then
+      rmpc_args+=(--address "$SOCKET")
+    fi
+    rmpc_args+=("$@")
+
+    ${pkgs.rmpc}/bin/rmpc "''${rmpc_args[@]}"
   '';
 }

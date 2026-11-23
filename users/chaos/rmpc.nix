@@ -17,7 +17,7 @@
 
         auto_update "yes"
 
-        bind_to_address    "/tmp/mpd_socket"
+        bind_to_address    "@SOCKET@"
 
         audio_output {
           type       "pipewire"
@@ -29,7 +29,6 @@
         #![enable(unwrap_newtypes)]
         #![enable(unwrap_variant_newtypes)]
         (
-          address: "/tmp/mpd_socket",
           password: None,
           theme: "def",
           cache_dir: Some("/tmp/rmpc/cache"),
