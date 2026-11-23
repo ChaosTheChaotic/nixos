@@ -6,6 +6,7 @@
 }:
 
 let
+  blissify = pkgs.callPackage ./blissify.nix { };
   mpd-minimal = stdenv.mkDerivation {
     pname = "mpd-minimal";
     version = "0.25-git";
@@ -133,33 +134,6 @@ let
       "-Dzeroconf=disabled"
     ]
     ++ arch.mesonCflags;
-  };
-
-  blissify = pkgs.rustPlatform.buildRustPackage rec {
-    pname = "blissify";
-    version = "0.6.1";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "Polochon-street";
-      repo = "blissify-rs";
-      rev = "v${version}";
-      hash = "sha256-C0f9JNILTbwA71VSLVS8mtWXoOAbBbMDcnNQwHaKKvg=";
-    };
-
-    cargoHash = "sha256-ShStjDSeXCSLU1u2SkAS3HCeRDAOpvNH71Sm/787RM0=";
-
-    nativeBuildInputs = with pkgs; [
-      pkg-config
-      rustPlatform.bindgenHook
-      llvmPackages.clang
-    ];
-
-    buildInputs = with pkgs; [
-      ffmpeg_7
-      sqlite
-    ];
-
-    LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
   };
 
   # Keeps blissifys database in step with MPDs

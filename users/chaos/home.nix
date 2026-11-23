@@ -143,6 +143,8 @@ in
           inherit pkgs master tereix;
           balatroLsp = true;
         })
+
+        (pkgs.callPackage ../../pkgs/blissify.nix { })
       ];
     };
 
