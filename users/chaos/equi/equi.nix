@@ -284,7 +284,6 @@
         whosWatching.enable = true;
         jumpTo.enable = true;
         jumpToTop.enable = true;
-        youtubeAdblock.enable = true;
         zipPreview.enable = true;
       };
     };
