@@ -62,6 +62,7 @@ let
       "-Dlocal_socket=true"
       "-Ddatabase=true"
       "-Dzlib=enabled"
+      "-Dinotify=true"
 
       "-Dpulse=disabled"
       "-Dfaad=disabled"
@@ -69,7 +70,6 @@ let
       "-Dipv6=disabled"
       "-Diconv=disabled"
       "-Ddocumentation=disabled"
-      "-Dinotify=false"
       "-Ddaemon=false"
       "-Dtcp=false"
       "-Dhtml_manual=false"
@@ -135,6 +135,71 @@ let
     ++ arch.mesonCflags;
   };
 
+  blissify = pkgs.rustPlatform.buildRustPackage rec {
+    pname = "blissify";
+    version = "0.6.1";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "Polochon-street";
+      repo = "blissify-rs";
+      rev = "v${version}";
+      hash = "sha256-C0f9JNILTbwA71VSLVS8mtWXoOAbBbMDcnNQwHaKKvg=";
+    };
+
+    cargoHash = "sha256-ShStjDSeXCSLU1u2SkAS3HCeRDAOpvNH71Sm/787RM0=";
+
+    nativeBuildInputs = with pkgs; [
+      pkg-config
+      rustPlatform.bindgenHook
+      llvmPackages.clang
+    ];
+
+    buildInputs = with pkgs; [
+      ffmpeg_7
+      sqlite
+    ];
+
+    LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
+  };
+
+  # Keeps blissifys database in step with MPDs
+  # Started by the rmpc wrapper below (needs MPD_HOST pointing at the MPD socket)
+  blissSync = pkgs.writeShellApplication {
+    name = "bliss-sync";
+    runtimeInputs = with pkgs; [
+      mpc
+      blissify
+      coreutils
+      util-linux
+    ];
+    text = ''
+      cfg="$HOME/.local/share/bliss-rs/config.json"
+
+      bliss_sync() {
+        if [ -f "$cfg" ]; then
+          nice -n 19 ionice -c 3 blissify update
+        else
+      		# On first run we analyse whole library (which can take a while)
+      		# If rmpc is closed halfway through, the next update picks up from the rest
+          nice -n 19 ionice -c 3 blissify init "$HOME/Music"
+        fi
+      }
+
+      echo "[$(date -Is)] startup sync"
+      mpc --wait update || true # make sure MPD has seen files added while it was off
+      bliss_sync || true
+
+      # MPD emits a database event whenever an update finishes
+      # (inotify-triggered or manual), so no extra file watcher is needed.
+      mpc idleloop database | while read -r _; do
+      	# Debounce
+        while read -r -t 10 _; do :; done
+        echo "[$(date -Is)] database changed, syncing"
+        bliss_sync || true
+      done
+    '';
+  };
+
 in
 pkgs.writeShellApplication {
   name = "rmpc";
@@ -143,32 +208,40 @@ pkgs.writeShellApplication {
     mpd-minimal
     pkgs.mpd-mpris
     pkgs.rmpc
+    pkgs.util-linux # setsid
   ];
 
   text = ''
-        mkdir -p ~/.local/share/mpd/playlists
-    		mkdir -p /tmp/rmpc/cache
-    		mkdir -p ~/.lyrics
-        SOCKET="/tmp/mpd_socket"
-        rm -f "$SOCKET"
+    mkdir -p ~/.local/share/mpd/playlists
+    mkdir -p ~/.local/share/bliss-rs
+    mkdir -p /tmp/rmpc/cache
+    mkdir -p ~/.lyrics
+    SOCKET="/tmp/mpd_socket"
+    # mpc and blissify both find MPD through this
+    export MPD_HOST="$SOCKET"
+    rm -f "$SOCKET"
 
-        mpd --no-daemon &
-        MPD_PID=$!
+    mpd --no-daemon &
+    MPD_PID=$!
 
-        # Wait until the MPD Unix socket is created
-        for _ in {1..30}; do
-            if [ -S "$SOCKET" ]; then
-                break
-            fi
-            sleep 0.1
-        done
+    # Wait until the MPD Unix socket is created
+    for _ in {1..30}; do
+        if [ -S "$SOCKET" ]; then
+            break
+        fi
+        sleep 0.1
+    done
 
-        mpd-mpris -network unix -host "$SOCKET" >/dev/null 2>&1 &
-        MPRIS_PID=$!
+    mpd-mpris -network unix -host "$SOCKET" >/dev/null 2>&1 &
+    MPRIS_PID=$!
 
-        trap 'kill $MPD_PID $MPRIS_PID 2>/dev/null || true' EXIT
+    # Background blissify sync in its own process group so it can be killed as one
+    setsid ${blissSync}/bin/bliss-sync >>"$HOME/.local/share/bliss-rs/sync.log" 2>&1 &
+    SYNC_PID=$!
 
-        ${pkgs.rmpc}/bin/rmpc "$@"
-        rm -f "$SOCKET"
+    trap 'kill $MPD_PID $MPRIS_PID 2>/dev/null || true; kill -- -$SYNC_PID 2>/dev/null || true' EXIT
+
+    ${pkgs.rmpc}/bin/rmpc "$@"
+    rm -f "$SOCKET"
   '';
 }
