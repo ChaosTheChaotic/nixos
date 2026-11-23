@@ -149,7 +149,10 @@ in
     programs = {
       home-manager.enable = true;
       quickshell.enable = true;
-      yacht.enable = true;
+      yacht = {
+        enable = true;
+        ttyWrap = true;
+      };
       clogite = {
         enable = true;
         keepHistfile = false;
