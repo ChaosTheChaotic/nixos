@@ -25,6 +25,7 @@ in
     ../modules/palette.nix
     ../modules/ccache.nix
     ../modules/yacht-bcon
+    ../modules/capture/capture.nix
     ./common-age.nix
   ];
 
