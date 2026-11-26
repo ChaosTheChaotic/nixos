@@ -72,7 +72,6 @@ let
       "-Dipv6=disabled"
       "-Diconv=disabled"
       "-Ddocumentation=disabled"
-      "-Ddaemon=false"
       "-Dtcp=false"
       "-Dhtml_manual=false"
       "-Dmanpages=false"
@@ -204,7 +203,7 @@ pkgs.writeShellApplication {
     MPD_CONF="$SOCKET_DIR/mpd.conf"
     sed "s|@SOCKET@|$SOCKET|g" "$HOME/.config/mpd/mpd.conf" > "$MPD_CONF"
 
-    mpd --no-daemon "$MPD_CONF" &
+    mpd "$MPD_CONF" &
     MPD_PID=$!
 
     for _ in {1..30}; do
