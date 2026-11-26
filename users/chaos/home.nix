@@ -34,6 +34,12 @@ let
   tereix = ccache.withCcache pkgs (
     arch.withCflags inputs.tereix.packages.${pkgs.stdenv.hostPlatform.system}.default
   );
+  nixSearch = pkgs.writeShellScriptBin "ns" ''
+    exec nix-search-tv print | ${pkgs.fzf}/bin/fzf \
+      --preview 'nix-search-tv preview {}' \
+      --scheme history \
+      --bind 'ctrl-y:execute-silent(nix-search-tv source {} | wl-copy 2>/dev/null || true)'
+  '';
 in
 {
   imports = [
@@ -130,6 +136,7 @@ in
         nix-prefetch-github
         shellcheck
         nix-output-monitor
+        nixSearch
 
         # Custom Inputs
         (ccache.withCcache pkgs (
