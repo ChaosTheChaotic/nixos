@@ -266,6 +266,17 @@ in
             };
           };
         };
+      nix-search-tv = {
+        enable = true;
+        enableTelevisionIntegration = false;
+        settings = {
+          indexes = [
+            "nixpkgs"
+            "home-manager"
+            "nixos"
+          ];
+        };
+      };
     };
 
     xdg.configFile."concord/config.toml".force = lib.mkForce true; # Fix for nix complaining that the folder will be clobbered every time
