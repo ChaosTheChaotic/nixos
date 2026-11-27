@@ -108,6 +108,10 @@
       url = "github:catgoose/nvim-colorizer.lua";
       flake = false;
     };
+    nvp-asm-for-nvim = {
+      url = "0xdeadf1sh/AssemblyForNeovim";
+      flake = false;
+    };
   };
 
   outputs =
